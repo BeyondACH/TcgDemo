@@ -1,0 +1,100 @@
+[gd_scene load_steps=7 format=3 uid="uid://c7h4nlf3i3gx0"]
+
+[ext_resource type="Script" path="res://ui/battle_scene.gd" id="1_battle"]
+[ext_resource type="Script" path="res://core/game_manager.gd" id="2_game"]
+[ext_resource type="Script" path="res://ui/board_view.gd" id="3_board"]
+[ext_resource type="Script" path="res://ui/hand_view.gd" id="4_hand"]
+[ext_resource type="Script" path="res://ui/log_panel.gd" id="5_log"]
+[ext_resource type="Script" path="res://ui/phase_indicator.gd" id="6_phase"]
+
+[node name="BattleScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_battle")
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("2_game")
+
+[node name="Root" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="Root/TopBar"]
+layout_mode = 2
+text = "Turn 1"
+
+[node name="ActivePlayerLabel" type="Label" parent="Root/TopBar"]
+layout_mode = 2
+text = "Active: P1"
+
+[node name="PhaseIndicator" type="Label" parent="Root/TopBar"]
+layout_mode = 2
+script = ExtResource("6_phase")
+text = "Phase: START"
+
+[node name="NextPhaseButton" type="Button" parent="Root/TopBar"]
+layout_mode = 2
+text = "Next Phase"
+
+[node name="NoBlockButton" type="Button" parent="Root/TopBar"]
+layout_mode = 2
+text = "No Block"
+
+[node name="WinnerLabel" type="Label" parent="Root/TopBar"]
+layout_mode = 2
+text = "Winner: -"
+
+[node name="OpponentBoard" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+script = ExtResource("3_board")
+
+[node name="PlayerBoard" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+script = ExtResource("3_board")
+
+[node name="HandView" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+script = ExtResource("4_hand")
+
+[node name="ActionBar" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+
+[node name="SelectedCardLabel" type="Label" parent="Root/ActionBar"]
+layout_mode = 2
+text = "No card selected"
+
+[node name="PlayFrontButton" type="Button" parent="Root/ActionBar"]
+layout_mode = 2
+text = "Play Front"
+
+[node name="PlayEnergyButton" type="Button" parent="Root/ActionBar"]
+layout_mode = 2
+text = "Play Energy"
+
+[node name="UseEventButton" type="Button" parent="Root/ActionBar"]
+layout_mode = 2
+text = "Use Event"
+
+[node name="CancelSelectionButton" type="Button" parent="Root/ActionBar"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="LogPanel" type="PanelContainer" parent="Root"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("5_log")
