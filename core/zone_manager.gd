@@ -1,4 +1,4 @@
-﻿extends RefCounted
+extends RefCounted
 class_name ZoneManager
 
 func get_zone_array(player: PlayerState, zone: int):
@@ -41,7 +41,7 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 	var to_array = get_zone_array(to_player, to_zone)
 	if to_array != null:
 		to_array.append(card_uid)
-	card.zone = to_zone
+	card.zone = to_zone as UATypes.Zone
 	card.controller_player_id = target_player_id
 
 func draw_card(state: GameState, player_id: String) -> String:

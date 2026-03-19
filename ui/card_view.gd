@@ -6,12 +6,14 @@ signal card_pressed(owner_player_id: String, card_uid: String, zone_name: String
 var owner_player_id := ""
 var card_uid := ""
 var zone_name := ""
+var _display_text := ""
 
 func setup(card_data: Dictionary, p_owner_player_id: String, p_zone_name: String) -> void:
 	owner_player_id = p_owner_player_id
 	card_uid = str(card_data.get("uid", ""))
 	zone_name = p_zone_name
-	text = _build_text(card_data)
+	_display_text = _build_text(card_data)
+	text = _display_text
 	custom_minimum_size = Vector2(150, 96)
 	pressed.connect(_on_pressed)
 
@@ -43,6 +45,20 @@ func _format_number(value) -> String:
 			return str(int(round(number)))
 		return str(number)
 	return str(value)
+
+func _get_drag_data(_at_position: Vector2):
+	if zone_name != "hand":
+		return null
+	var preview := Label.new()
+	preview.text = _display_text
+	preview.custom_minimum_size = Vector2(150, 96)
+	set_drag_preview(preview)
+	return {
+		"kind": "hand_card",
+		"card_uid": card_uid,
+		"owner_player_id": owner_player_id,
+		"source_zone": zone_name
+	}
 
 func _on_pressed() -> void:
 	emit_signal("card_pressed", owner_player_id, card_uid, zone_name)

@@ -651,9 +651,9 @@ type CardInstance = {
   currentBP?: number
   stackedUnder: string[]       // 突进叠放在下方的实例ID
   flags: {
-    attackedThisTurn?: boolean
-    blockedThisTurn?: boolean
-    activatedMainThisTurn?: boolean
+	attackedThisTurn?: boolean
+	blockedThisTurn?: boolean
+	activatedMainThisTurn?: boolean
   }
   attachedEffects?: RuntimeEffect[]
 }

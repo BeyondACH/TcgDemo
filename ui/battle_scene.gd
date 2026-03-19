@@ -35,8 +35,10 @@ func _ready() -> void:
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
 	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
 	opponent_board.energy_card_pressed.connect(_on_energy_card_pressed)
+	opponent_board.zone_drop_requested.connect(_on_zone_drop_requested)
 	player_board.front_card_pressed.connect(_on_front_card_pressed)
 	player_board.energy_card_pressed.connect(_on_energy_card_pressed)
+	player_board.zone_drop_requested.connect(_on_zone_drop_requested)
 	_clear_selection()
 	no_block_button.visible = false
 	_on_state_changed(game_manager.get_snapshot())
@@ -69,9 +71,6 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 
 func _on_hand_card_selected(card_uid: String) -> void:
 	_selected_hand_card_uid = card_uid
-	if _try_auto_play_selected_card():
-		_clear_selection()
-		return
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 
@@ -87,6 +86,17 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
 	if str(_snapshot.get("phase", "")) == "MOVE" and player_id == str(_snapshot.get("active_player_id", "")):
 		game_manager.move_energy_to_front(card_uid)
+
+func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
+	if str(_snapshot.get("phase", "")) != "MAIN":
+		return
+	if player_id != str(_snapshot.get("active_player_id", "")):
+		return
+	if zone_name == "front_line":
+		game_manager.play_card(card_uid, UATypes.Zone.FRONT_LINE)
+	elif zone_name == "energy_line":
+		game_manager.play_card(card_uid, UATypes.Zone.ENERGY_LINE)
+	_clear_selection()
 
 func _on_blockers_requested(request: Dictionary) -> void:
 	var blockers: Array = request.get("blockers", [])
@@ -150,34 +160,6 @@ func _find_hand_card(player_id: String, card_uid: String) -> Dictionary:
 		if str(card_data.get("uid", "")) == card_uid:
 			return card_data
 	return {}
-
-# Single-click hand play: event -> use, field -> energy, character -> front first then energy.
-func _try_auto_play_selected_card() -> bool:
-	if str(_snapshot.get("phase", "")) != "MAIN":
-		return false
-	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-	var players: Dictionary = _snapshot.get("players", {})
-	var player_data: Dictionary = players.get(active_player_id, {})
-	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
-	if card_data.is_empty():
-		return false
-	var card_type := str(card_data.get("card_type", ""))
-	if card_type == "EVENT":
-		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.OUTSIDE)
-		return true
-	if card_type == "FIELD":
-		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.ENERGY_LINE)
-		return true
-	if card_type == "CHARACTER":
-		var front_line: Array = player_data.get("front_line", [])
-		var energy_line: Array = player_data.get("energy_line", [])
-		if front_line.size() < UATypes.MAX_FRONT_LINE:
-			game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.FRONT_LINE)
-			return true
-		if energy_line.size() < UATypes.MAX_ENERGY_LINE:
-			game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.ENERGY_LINE)
-			return true
-	return false
 
 func _update_action_buttons() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
