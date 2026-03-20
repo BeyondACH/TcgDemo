@@ -99,6 +99,38 @@
 
 当前仓库里部分中文/Japanese 文本在终端下可能显示乱码，这更像是编码或终端代码页问题；在批量改动数据文件前，建议先确认原始文件编码。
 
+## 卡组导入
+
+项目提供了一个卡组导入脚本，可把类似 [import.txt](D:\CodexWork\TcgDemo\import.txt) 的文本导入为 `data/decks/` 下的 JSON 卡组文件。
+
+支持格式：
+
+- 每行一条卡牌，格式为 `数量x卡牌编号`
+- 例如：`4xUA31BT_MMM-1-002`
+- 空行、`#` 注释行、`//` 注释行会被忽略
+
+匹配规则：
+
+- 优先按 `base_cards.json` 中的卡牌 `id` / `number` 做规范化匹配
+- 会忽略大小写以及 `/`、`-`、`_` 等分隔符差异
+- 生成的卡组内容仍使用 `base_cards.json` 里的真实 `id`
+
+执行方式：
+
+```powershell
+godot --headless --path D:\CodexWork\TcgDemo --script res://docs/import_deck.gd -- --name 我的卡组
+```
+
+也可以显式指定源文件和输出目录：
+
+```powershell
+godot --headless --path D:\CodexWork\TcgDemo --script res://docs/import_deck.gd -- --name 我的卡组 --source res://import.txt --output-dir res://data/decks
+```
+
+执行成功后会生成：
+
+- `data/decks/我的卡组.json`
+
 ## 开发建议
 
 - 规则逻辑优先放在 `core/`
