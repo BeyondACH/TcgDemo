@@ -47,7 +47,7 @@ func setup_game() -> void:
 	emit_state_changed()
 
 func advance_phase() -> void:
-	if _has_winner():
+	if _has_winner() or _has_pending_life_triggers():
 		return
 	if game_state.phase == UATypes.Phase.END:
 		effect_resolver.cleanup_turn_expirations(game_state, game_state.active_player_id)
@@ -56,7 +56,7 @@ func advance_phase() -> void:
 
 # UI 发起的出牌统一入口，负责校验、支付 AP、落位和触发效果。
 func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> void:
-	if _has_winner():
+	if _has_winner() or _has_pending_life_triggers():
 		return
 	var card: CardInstance = game_state.get_card(card_uid)
 	if card == null:
@@ -101,7 +101,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 	emit_state_changed()
 
 func move_energy_to_front(card_uid: String) -> void:
-	if _has_winner():
+	if _has_winner() or _has_pending_life_triggers():
 		return
 	var validation: Dictionary = rules_engine.can_move_energy_to_front(game_state, game_state.active_player_id, card_uid)
 	if not bool(validation.get("ok", false)):
@@ -118,7 +118,7 @@ func move_energy_to_front(card_uid: String) -> void:
 	emit_state_changed()
 
 func request_attack(attacker_uid: String) -> void:
-	if _has_winner():
+	if _has_winner() or _has_pending_life_triggers():
 		return
 	var result: Dictionary = battle_resolver.declare_attack(game_state, attacker_uid)
 	if not bool(result.get("ok", false)):
@@ -128,9 +128,15 @@ func request_attack(attacker_uid: String) -> void:
 	emit_signal("blockers_requested", result)
 
 func resolve_attack(attacker_uid: String, blocker_uid := "") -> void:
-	if _has_winner():
+	if _has_winner() or _has_pending_life_triggers():
 		return
 	_apply_logs(battle_resolver.resolve_attack(game_state, attacker_uid, blocker_uid))
+	emit_state_changed()
+
+func resolve_life_trigger_decision(card_uid: String, activate: bool) -> void:
+	if _has_winner():
+		return
+	_apply_logs(effect_resolver.resolve_life_trigger_decision(game_state, card_uid, activate))
 	emit_state_changed()
 
 func get_snapshot() -> Dictionary:
@@ -141,6 +147,7 @@ func get_snapshot() -> Dictionary:
 		"active_player_id": game_state.active_player_id,
 		"phase": UATypes.phase_to_text(game_state.phase),
 		"winner_player_id": game_state.winner_player_id,
+		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),
 		"players": {
 			UATypes.PLAYER_ONE: _serialize_player(UATypes.PLAYER_ONE),
 			UATypes.PLAYER_TWO: _serialize_player(UATypes.PLAYER_TWO)
@@ -262,3 +269,6 @@ func _read_json(path: String):
 
 func _has_winner() -> bool:
 	return game_state.winner_player_id != ""
+
+func _has_pending_life_triggers() -> bool:
+	return not game_state.pending_life_triggers.is_empty()

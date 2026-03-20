@@ -118,13 +118,47 @@ func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> 
 	var logs: Array[String] = []
 	if player_id == "":
 		return logs
-	var moved: Array[String] = zone_manager.mill_life_to_outside(state, player_id, amount)
+	var moved: Array[String] = _collect_life_damage_cards(state, player_id, amount)
 	logs.append("%s takes %d damage." % [player_id, amount])
+	if moved.is_empty():
+		var defeat_now: Dictionary = victory_checker.check_victory(state)
+		if not defeat_now.is_empty():
+			_apply_victory(state, defeat_now)
+		return logs
+	var queued_count := 0
 	for life_uid in moved:
-		logs.append_array(resolve_trigger(life_uid, UATypes.TriggerType.ON_LIFE_TRIGGER, state, {"target_player_id": player_id}))
-	var defeat: Dictionary = victory_checker.check_victory(state)
-	if not defeat.is_empty():
-		_apply_victory(state, defeat)
+		if _card_has_trigger(state, life_uid, UATypes.TriggerType.ON_LIFE_TRIGGER):
+			var entry := _build_life_trigger_entry(state, player_id, life_uid)
+			state.pending_life_triggers.append(entry)
+			queued_count += 1
+	if queued_count > 0:
+		logs.append("%s may resolve %d life trigger(s) in any order." % [player_id, queued_count])
+	elif not moved.is_empty():
+		logs.append_array(_finalize_pending_life_damage(state))
+	return logs
+
+func resolve_life_trigger_decision(state: GameState, card_uid: String, activate: bool) -> Array[String]:
+	var logs: Array[String] = []
+	var pending_index := -1
+	var pending_entry := {}
+	for i in range(state.pending_life_triggers.size()):
+		var candidate: Dictionary = state.pending_life_triggers[i]
+		if str(candidate.get("card_uid", "")) == card_uid:
+			pending_index = i
+			pending_entry = candidate
+			break
+	if pending_index == -1:
+		return ["Life trigger decision failed: missing pending card."]
+	state.pending_life_triggers.remove_at(pending_index)
+	var owner_player_id := str(pending_entry.get("player_id", ""))
+	var card_name := str(pending_entry.get("card_name", card_uid))
+	if activate:
+		logs.append("%s activates life trigger of %s." % [owner_player_id, card_name])
+		logs.append_array(resolve_trigger(card_uid, UATypes.TriggerType.ON_LIFE_TRIGGER, state, {"target_player_id": owner_player_id}))
+	else:
+		logs.append("%s skips life trigger of %s." % [owner_player_id, card_name])
+	if state.pending_life_triggers.is_empty():
+		logs.append_array(_finalize_pending_life_damage(state))
 	return logs
 
 func _execute_steps(state: GameState, source_card_uid: String, steps: Array, context: Dictionary) -> Array[String]:
@@ -203,6 +237,55 @@ func _execute_operation(state: GameState, source_card_uid: String, effect: Dicti
 		return logs
 	logs.append("Reserved unsupported effect type: %s" % effect_type)
 	return logs
+
+func _collect_life_damage_cards(state: GameState, player_id: String, amount: int) -> Array[String]:
+	var moved: Array[String] = []
+	var player = state.get_player(player_id)
+	if player == null:
+		return moved
+	for i in range(amount):
+		if player.life.is_empty():
+			break
+		var card_uid: String = player.life.pop_front()
+		moved.append(card_uid)
+		state.pending_life_damage_cards.append({
+			"player_id": player_id,
+			"card_uid": card_uid,
+		})
+	return moved
+
+func _finalize_pending_life_damage(state: GameState) -> Array[String]:
+	var logs: Array[String] = []
+	for entry_variant in state.pending_life_damage_cards:
+		var entry: Dictionary = entry_variant
+		var player_id := str(entry.get("player_id", ""))
+		var card_uid := str(entry.get("card_uid", ""))
+		var player = state.get_player(player_id)
+		if player == null or card_uid == "":
+			continue
+		if not player.outside.has(card_uid):
+			player.outside.append(card_uid)
+		var card = state.get_card(card_uid)
+		if card != null:
+			card.zone = UATypes.Zone.OUTSIDE
+	state.pending_life_damage_cards.clear()
+	var defeat: Dictionary = victory_checker.check_victory(state)
+	if not defeat.is_empty():
+		_apply_victory(state, defeat)
+	return logs
+
+func _build_life_trigger_entry(state: GameState, player_id: String, card_uid: String) -> Dictionary:
+	var card_name := card_uid
+	var card = state.get_card(card_uid)
+	if card != null:
+		var card_def = state.get_card_def(card.def_id)
+		if card_def != null:
+			card_name = card_def.name
+	return {
+		"player_id": player_id,
+		"card_uid": card_uid,
+		"card_name": card_name,
+	}
 
 func _register_delayed_effect(state: GameState, source_card_uid: String, step: Dictionary) -> void:
 	var source_card = state.get_card(source_card_uid)
@@ -407,6 +490,19 @@ func _trigger_matches(effect: Dictionary, trigger_type: int) -> bool:
 			return name == "ON_LIFE_TRIGGER"
 		UATypes.TriggerType.MAIN_ACTIVATE:
 			return name == "MAIN_ACTIVATE"
+	return false
+
+func _card_has_trigger(state: GameState, card_uid: String, trigger_type: int) -> bool:
+	var source_card = state.get_card(card_uid)
+	if source_card == null:
+		return false
+	var card_def = state.get_card_def(source_card.def_id)
+	if card_def == null:
+		return false
+	for effect_variant in card_def.trigger_effects:
+		var effect: Dictionary = effect_variant
+		if _trigger_matches(effect, trigger_type) and _is_effect_enabled_for_card(source_card, effect):
+			return true
 	return false
 
 func _opponent_of(player_id: String) -> String:

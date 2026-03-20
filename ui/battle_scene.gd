@@ -36,6 +36,9 @@ const SMALL_HEIGHT_THRESHOLD := 760.0
 @onready var play_front_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayFrontButton
 @onready var play_energy_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayEnergyButton
 @onready var use_event_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/UseEventButton
+@onready var life_trigger_picker: OptionButton = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/LifeTriggerPicker
+@onready var activate_life_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/ActivateLifeButton
+@onready var skip_life_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SkipLifeButton
 @onready var cancel_selection_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/CancelSelectionButton
 @onready var log_panel: LogPanel = $UILayer/BottomHUD/BottomPanel/BottomContent/LogPanel
 
@@ -43,6 +46,7 @@ var _snapshot: Dictionary = {}
 var _selected_hand_card_uid := ""
 var _pending_attack_uid := ""
 var _pending_defender_player_id := ""
+var _selected_life_trigger_uid := ""
 
 func _ready() -> void:
 	_setup_optional_art()
@@ -54,6 +58,9 @@ func _ready() -> void:
 	play_front_button.pressed.connect(_on_play_front_pressed)
 	play_energy_button.pressed.connect(_on_play_energy_pressed)
 	use_event_button.pressed.connect(_on_use_event_pressed)
+	activate_life_button.pressed.connect(_on_activate_life_pressed)
+	skip_life_button.pressed.connect(_on_skip_life_pressed)
+	life_trigger_picker.item_selected.connect(_on_life_trigger_selected)
 	cancel_selection_button.pressed.connect(_clear_selection)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
 	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
@@ -64,6 +71,9 @@ func _ready() -> void:
 	player_board.zone_drop_requested.connect(_on_zone_drop_requested)
 	_clear_selection()
 	no_block_button.visible = false
+	life_trigger_picker.visible = false
+	activate_life_button.visible = false
+	skip_life_button.visible = false
 	get_viewport().size_changed.connect(_update_responsive_layout)
 	_update_responsive_layout()
 	_on_state_changed(game_manager.get_snapshot())
@@ -110,22 +120,31 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	if active_player_id == UATypes.PLAYER_ONE:
 		active_hand = p1.get("hand", [])
 	hand_view.set_hand(active_player_id, active_hand)
+	_sync_life_trigger_controls()
 	selected_card_label.text = _selected_label_text(active_player_id)
 	_update_action_buttons()
 	log_panel.set_logs(snapshot.get("logs", []))
-	if str(snapshot.get("winner_player_id", "")) != "":
-		next_phase_button.disabled = true
-		play_front_button.disabled = true
-		play_energy_button.disabled = true
-		use_event_button.disabled = true
-		no_block_button.disabled = true
+	var has_winner := str(snapshot.get("winner_player_id", "")) != ""
+	var has_pending_life := _has_pending_life_triggers()
+	next_phase_button.disabled = has_winner or has_pending_life
+	play_front_button.disabled = play_front_button.disabled or has_winner or has_pending_life
+	play_energy_button.disabled = play_energy_button.disabled or has_winner or has_pending_life
+	use_event_button.disabled = use_event_button.disabled or has_winner or has_pending_life
+	no_block_button.disabled = has_winner or has_pending_life
+	cancel_selection_button.disabled = cancel_selection_button.disabled or has_winner or has_pending_life
+	activate_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == ""
+	skip_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == ""
 
 func _on_hand_card_selected(card_uid: String) -> void:
+	if _has_pending_life_triggers():
+		return
 	_selected_hand_card_uid = card_uid
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 
 func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
+	if _has_pending_life_triggers():
+		return
 	if _pending_attack_uid != "":
 		if player_id == _pending_defender_player_id:
 			game_manager.resolve_attack(_pending_attack_uid, card_uid)
@@ -135,10 +154,14 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 		game_manager.request_attack(card_uid)
 
 func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
+	if _has_pending_life_triggers():
+		return
 	if str(_snapshot.get("phase", "")) == "MOVE" and player_id == str(_snapshot.get("active_player_id", "")):
 		game_manager.move_energy_to_front(card_uid)
 
 func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
+	if _has_pending_life_triggers():
+		return
 	if str(_snapshot.get("phase", "")) != "MAIN":
 		return
 	if player_id != str(_snapshot.get("active_player_id", "")):
@@ -160,34 +183,62 @@ func _on_blockers_requested(request: Dictionary) -> void:
 	selected_card_label.text = "Choose a blocker or click No Block"
 
 func _on_next_phase_pressed() -> void:
+	if _has_pending_life_triggers():
+		return
 	_clear_pending_attack()
 	game_manager.advance_phase()
 
 func _on_no_block_pressed() -> void:
+	if _has_pending_life_triggers():
+		return
 	if _pending_attack_uid == "":
 		return
 	game_manager.resolve_attack(_pending_attack_uid)
 	_clear_pending_attack()
 
 func _on_play_front_pressed() -> void:
+	if _has_pending_life_triggers():
+		return
 	if _selected_hand_card_uid != "":
 		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.FRONT_LINE)
 		_clear_selection()
 
 func _on_play_energy_pressed() -> void:
+	if _has_pending_life_triggers():
+		return
 	if _selected_hand_card_uid != "":
 		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.ENERGY_LINE)
 		_clear_selection()
 
 func _on_use_event_pressed() -> void:
+	if _has_pending_life_triggers():
+		return
 	if _selected_hand_card_uid != "":
 		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.OUTSIDE)
 		_clear_selection()
 
+func _on_activate_life_pressed() -> void:
+	if _selected_life_trigger_uid == "":
+		return
+	game_manager.resolve_life_trigger_decision(_selected_life_trigger_uid, true)
+
+func _on_skip_life_pressed() -> void:
+	if _selected_life_trigger_uid == "":
+		return
+	game_manager.resolve_life_trigger_decision(_selected_life_trigger_uid, false)
+
+func _on_life_trigger_selected(index: int) -> void:
+	var pending: Array = _snapshot.get("pending_life_triggers", [])
+	if index < 0 or index >= pending.size():
+		_selected_life_trigger_uid = ""
+		return
+	_selected_life_trigger_uid = str((pending[index] as Dictionary).get("card_uid", ""))
+	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+
 func _clear_selection() -> void:
 	_selected_hand_card_uid = ""
 	_update_action_buttons()
-	selected_card_label.text = "No card selected"
+	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 
 func _clear_pending_attack() -> void:
 	_pending_attack_uid = ""
@@ -195,6 +246,14 @@ func _clear_pending_attack() -> void:
 	no_block_button.visible = false
 
 func _selected_label_text(active_player_id: String) -> String:
+	if _has_pending_life_triggers():
+		var owner_id := ""
+		for entry_variant in _snapshot.get("pending_life_triggers", []):
+			var entry: Dictionary = entry_variant
+			owner_id = str(entry.get("player_id", owner_id))
+			if str(entry.get("card_uid", "")) == _selected_life_trigger_uid:
+				return "Life trigger: %s chooses %s" % [owner_id, str(entry.get("card_name", "Unknown"))]
+		return "Resolve pending life triggers"
 	if _pending_attack_uid != "":
 		return "Choose a blocker or click No Block"
 	if _selected_hand_card_uid == "":
@@ -221,3 +280,31 @@ func _update_action_buttons() -> void:
 	play_energy_button.disabled = card_type != "CHARACTER" and card_type != "FIELD"
 	use_event_button.disabled = card_type != "EVENT"
 	cancel_selection_button.disabled = _selected_hand_card_uid == ""
+
+func _sync_life_trigger_controls() -> void:
+	var pending: Array = _snapshot.get("pending_life_triggers", [])
+	life_trigger_picker.clear()
+	if pending.is_empty():
+		_selected_life_trigger_uid = ""
+		life_trigger_picker.visible = false
+		activate_life_button.visible = false
+		skip_life_button.visible = false
+		return
+	var selected_index := 0
+	for i in range(pending.size()):
+		var entry: Dictionary = pending[i]
+		var card_uid := str(entry.get("card_uid", ""))
+		var label := "%s: %s" % [str(entry.get("player_id", "")), str(entry.get("card_name", card_uid))]
+		life_trigger_picker.add_item(label)
+		if card_uid == _selected_life_trigger_uid:
+			selected_index = i
+	if _selected_life_trigger_uid == "":
+		_selected_life_trigger_uid = str((pending[0] as Dictionary).get("card_uid", ""))
+	life_trigger_picker.select(selected_index)
+	_selected_life_trigger_uid = str((pending[selected_index] as Dictionary).get("card_uid", ""))
+	life_trigger_picker.visible = true
+	activate_life_button.visible = true
+	skip_life_button.visible = true
+
+func _has_pending_life_triggers() -> bool:
+	return not (_snapshot.get("pending_life_triggers", []) as Array).is_empty()

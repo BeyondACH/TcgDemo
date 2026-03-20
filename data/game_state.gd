@@ -18,6 +18,8 @@ var winner_player_id := ""
 var loser_player_id := ""
 var delayed_effects: Array = []
 var static_modifiers: Array = []
+var pending_life_damage_cards: Array[Dictionary] = []
+var pending_life_triggers: Array[Dictionary] = []
 var _runtime_id_seed := 1
 
 func get_player(player_id: String) -> PlayerState:

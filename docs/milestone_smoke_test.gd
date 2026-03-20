@@ -14,6 +14,7 @@ func _init() -> void:
 	_run_test("角色出牌与移动", _test_play_and_move_character)
 	_run_test("事件牌抽牌效果", _test_event_draw)
 	_run_test("攻击造成伤害", _test_attack_damage)
+	_run_test("生命触发需要显式决策", _test_life_trigger_requires_decision)
 	_run_test("生命归零胜负", _test_life_zero_victory)
 	_run_test("空牌库抽牌败北", _test_deck_out_loss)
 	_run_test("RAID 突进叠放", _test_raid_stack_play)
@@ -220,6 +221,38 @@ func _test_attack_damage() -> Dictionary:
 		return _fail("未阻挡攻击应使对手生命减少 1")
 	if attacker.state != UATypes.CardState.RESTED:
 		return _fail("攻击后的角色应变为 RESTED")
+	return _ok()
+
+func _test_life_trigger_requires_decision() -> Dictionary:
+	var manager := _new_manager()
+	var p2 := _player(manager, UATypes.PLAYER_TWO)
+	p2.life.clear()
+	var trigger_uid := _spawn_card(manager, UATypes.PLAYER_TWO, "UA_LIFE_TRIGGER_DRAW", UATypes.Zone.LIFE, true)
+	var basic_uid := _spawn_card(manager, UATypes.PLAYER_TWO, "UA_CHAR_BASIC", UATypes.Zone.LIFE, true)
+	if trigger_uid == "" or basic_uid == "":
+		return _fail("生命触发测试卡创建失败")
+	p2.life = [trigger_uid, basic_uid]
+	var hand_before := p2.hand.size()
+	var deck_before := p2.deck.size()
+	var outside_before := p2.outside.size()
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 2)
+	if p2.hand.size() != hand_before:
+		return _fail("生命受伤后不应自动发动抽牌效果")
+	if p2.outside.size() != outside_before:
+		return _fail("生命触发待决策时，生命卡不应提前进入场外")
+	if manager.game_state.pending_life_triggers.size() != 1:
+		return _fail("应存在 1 个待决策生命触发")
+	manager.resolve_life_trigger_decision(trigger_uid, true)
+	if p2.hand.size() != hand_before + 1:
+		return _fail("选择发动生命触发后应抽 1 张牌")
+	if p2.deck.size() != deck_before - 1:
+		return _fail("生命触发抽牌后牌库应减少 1")
+	if p2.outside.size() != outside_before + 2:
+		return _fail("生命触发结算完成后，两张受伤生命卡都应进入场外")
+	if not manager.game_state.pending_life_triggers.is_empty():
+		return _fail("生命触发结算完成后不应残留待决策项")
+	if manager.game_state.winner_player_id != UATypes.PLAYER_ONE:
+		return _fail("生命触发结算完成且生命归零后，应判定 P1 获胜")
 	return _ok()
 
 func _test_life_zero_victory() -> Dictionary:

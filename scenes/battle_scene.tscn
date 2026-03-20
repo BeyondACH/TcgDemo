@@ -222,6 +222,21 @@ text = "Play Energy"
 layout_mode = 2
 text = "Use Event"
 
+[node name="LifeTriggerPicker" type="OptionButton" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ActivateLifeButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+visible = false
+layout_mode = 2
+text = "Activate Life"
+
+[node name="SkipLifeButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+visible = false
+layout_mode = 2
+text = "Skip Life"
+
 [node name="CancelSelectionButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Cancel"

@@ -85,6 +85,35 @@
     "trigger_effects": []
   },
   {
+    "id": "UA_LIFE_TRIGGER_DRAW",
+    "name": "生命触发抽牌角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-2-002",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "operations": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "UA_MMM_BASE_MADOKA",
     "name": "鹿目 まどか",
     "card_type": "CHARACTER",
