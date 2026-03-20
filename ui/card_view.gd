@@ -28,7 +28,11 @@ func _build_text(card_data: Dictionary) -> String:
 	lines.append("Give: %s" % _format_energy_map(card_data.get("energy_provided", {})))
 	if int(card_data.get("bp", 0)) > 0:
 		lines.append("BP %d" % int(card_data.get("bp", 0)))
-	lines.append(str(card_data.get("state", "ACTIVE")))
+	lines.append("%s / %s" % [str(card_data.get("zone", "?")), str(card_data.get("state", "ACTIVE"))])
+	lines.append("KW: %s" % _format_string_list(card_data.get("keywords", [])))
+	lines.append("Under: %s" % _format_string_list(card_data.get("stacked_under", [])))
+	lines.append("Flags: %s" % _format_flags(card_data.get("flags", {})))
+	lines.append("Acts: %s" % _format_string_list(card_data.get("available_actions", [])))
 	return "\n".join(lines)
 
 func _format_energy_map(energy_map: Dictionary) -> String:
@@ -39,6 +43,32 @@ func _format_energy_map(energy_map: Dictionary) -> String:
 		parts.append("%s:%s" % [str(color), _format_number(energy_map.get(color, 0))])
 	parts.sort()
 	return ", ".join(parts)
+
+func _format_string_list(values) -> String:
+	if values is Array and not values.is_empty():
+		var items: Array[String] = []
+		for value in values:
+			items.append(str(value))
+		return ", ".join(items)
+	return "-"
+
+func _format_flags(flags) -> String:
+	if not (flags is Dictionary):
+		return "-"
+	var parts: Array[String] = []
+	if bool(flags.get("attacked_this_turn", false)):
+		parts.append("ATK")
+	if bool(flags.get("blocked_this_turn", false)):
+		parts.append("BLK")
+	if bool(flags.get("activated_main_this_turn", false)):
+		parts.append("MAIN")
+	if bool(flags.get("double_attack_consumed", false)):
+		parts.append("2A")
+	if bool(flags.get("double_block_consumed", false)):
+		parts.append("2B")
+	if bool(flags.get("entered_via_raid", false)):
+		parts.append("RAID")
+	return ", ".join(parts) if not parts.is_empty() else "-"
 
 func _format_number(value) -> String:
 	if value is int:

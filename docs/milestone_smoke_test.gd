@@ -4,6 +4,7 @@ const UATypes = preload("res://core/ua_types.gd")
 const GameManager = preload("res://core/game_manager.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
+const CardDef = preload("res://data/card_def.gd")
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -15,6 +16,14 @@ func _init() -> void:
 	_run_test("事件牌抽牌效果", _test_event_draw)
 	_run_test("攻击造成伤害", _test_attack_damage)
 	_run_test("生命触发需要显式决策", _test_life_trigger_requires_decision)
+	_run_test("MAIN 主动技一次且可重置", _test_main_activate_once_per_turn)
+	_run_test("STEP 回退与交换", _test_step_move_and_swap)
+	_run_test("SNIPER 指定角色不可阻挡", _test_sniper_attack_cannot_block)
+	_run_test("DAMAGE_2 造成两点伤害", _test_damage_two)
+	_run_test("冲击与无效", _test_impact_and_negate_impact)
+	_run_test("双次攻击与双次阻挡", _test_double_attack_and_double_block)
+	_run_test("战斗触发", _test_battle_triggers)
+	_run_test("RAID 显式落点选择", _test_raid_zone_choice)
 	_run_test("生命归零胜负", _test_life_zero_victory)
 	_run_test("空牌库抽牌败北", _test_deck_out_loss)
 	_run_test("RAID 突进叠放", _test_raid_stack_play)
@@ -97,7 +106,7 @@ func _put_card_on_front(manager: GameManager, player_id: String, def_id: String,
 
 func _spawn_card(manager: GameManager, player_id: String, def_id: String, zone: int, active := true) -> String:
 	var player: PlayerState = _player(manager, player_id)
-	var card_def = manager.game_state.get_card_def(def_id)
+	var card_def: CardDef = manager.game_state.get_card_def(def_id)
 	if player == null or card_def == null:
 		return ""
 	var card := CardInstance.new()
@@ -109,10 +118,28 @@ func _spawn_card(manager: GameManager, player_id: String, def_id: String, zone: 
 	card.state = UATypes.CardState.ACTIVE if active else UATypes.CardState.RESTED
 	card.current_bp = card_def.bp
 	manager.game_state.cards[card.uid] = card
-	var zone_cards = manager.zone_manager.get_zone_array(player, zone)
+	var zone_cards: Array = manager.zone_manager.get_zone_array(player, zone)
 	if zone_cards != null:
 		zone_cards.append(card.uid)
 	return card.uid
+
+func _register_temp_card_def(manager: GameManager, card_data: Dictionary) -> String:
+	var card_def: CardDef = CardDef.new()
+	card_def.from_dict(card_data)
+	manager.game_state.card_defs[card_def.id] = card_def
+	return card_def.id
+
+func _spawn_temp_card(manager: GameManager, player_id: String, card_data: Dictionary, zone: int, active := true) -> String:
+	var def_id := _register_temp_card_def(manager, card_data)
+	return _spawn_card(manager, player_id, def_id, zone, active)
+
+func _advance_to_turn_main(manager: GameManager, player_id: String, min_turn_number := 1) -> void:
+	var safety := 32
+	while safety > 0:
+		if manager.game_state.active_player_id == player_id and manager.game_state.phase == UATypes.Phase.MAIN and manager.game_state.turn_number >= min_turn_number:
+			return
+		manager.advance_phase()
+		safety -= 1
 
 func _test_setup_game() -> Dictionary:
 	var manager := _new_manager()
@@ -215,6 +242,7 @@ func _test_attack_damage() -> Dictionary:
 	manager.game_state.phase = UATypes.Phase.ATTACK
 	var p2 := _player(manager, UATypes.PLAYER_TWO)
 	var life_before := p2.life.size()
+	manager.battle_resolver.declare_attack(manager.game_state, attacker_uid)
 	manager.resolve_attack(attacker_uid)
 	var attacker = manager.game_state.get_card(attacker_uid)
 	if p2.life.size() != life_before - 1:
@@ -255,6 +283,655 @@ func _test_life_trigger_requires_decision() -> Dictionary:
 		return _fail("生命触发结算完成且生命归零后，应判定 P1 获胜")
 	return _ok()
 
+func _test_main_activate_once_per_turn() -> Dictionary:
+	var manager := _new_manager()
+	manager.advance_phase()
+	var main_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_MAIN_ACTIVATE",
+		"name": "主动技测试角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [
+			{
+				"trigger": "MAIN_ACTIVATE",
+				"once_per_turn": true,
+				"operations": [
+					{"type": "DRAW", "value": 1}
+				]
+			}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	if main_uid == "":
+		return _fail("主动技测试卡创建失败")
+	var p1 := _player(manager, UATypes.PLAYER_ONE)
+	var hand_before := p1.hand.size()
+	manager.request_main_activate(main_uid)
+	if p1.hand.size() != hand_before + 1:
+		return _fail("主动技第一次发动应抽 1 张")
+	manager.request_main_activate(main_uid)
+	if p1.hand.size() != hand_before + 1:
+		return _fail("同回合同一主动技不应再次发动")
+	_advance_to_turn_main(manager, UATypes.PLAYER_ONE, 3)
+	var hand_before_second_turn := p1.hand.size()
+	manager.request_main_activate(main_uid)
+	if p1.hand.size() != hand_before_second_turn + 1:
+		return _fail("换回合后主动技应重置可再次发动")
+	return _ok()
+
+func _test_step_move_and_swap() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.MOVE
+	var step_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_STEP_BACK",
+		"name": "撤步角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-2",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": ["STEP"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if step_uid == "":
+		return _fail("STEP 测试卡创建失败")
+	manager.request_step_move(step_uid)
+	var step_card = manager.game_state.get_card(step_uid)
+	if step_card.zone != UATypes.Zone.ENERGY_LINE:
+		return _fail("非满位时 STEP 应直接回到能量线")
+
+	var swap_manager := _new_manager()
+	swap_manager.game_state.phase = UATypes.Phase.MOVE
+	var swap_uid := _spawn_temp_card(swap_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_STEP_SWAP",
+		"name": "满位撤步角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-3",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": ["STEP"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var swap_target_uid := ""
+	for i in range(4):
+		var energy_uid := _spawn_temp_card(swap_manager, UATypes.PLAYER_ONE, {
+			"id": "TMP_STEP_ENERGY_%d" % i,
+			"name": "能量角色%d" % i,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-E%d" % i,
+			"traits": ["测试角色"],
+			"cost_energy": {},
+			"cost_ap": 1,
+			"energy_provided": {"GREEN": 1},
+			"bp": 2000 + i,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.ENERGY_LINE, true)
+		if i == 0:
+			swap_target_uid = energy_uid
+	if swap_uid == "" or swap_target_uid == "":
+		return _fail("STEP 满位交换测试卡创建失败")
+	swap_manager.request_step_move(swap_uid)
+	if swap_manager.game_state.pending_decisions.size() != 1:
+		return _fail("满位 STEP 应进入待选择状态")
+	swap_manager.resolve_pending_decision("STEP_SWAP_CHOICE", {"source_card_uid": swap_uid, "choice": swap_target_uid})
+	var swap_card = swap_manager.game_state.get_card(swap_uid)
+	var target_card = swap_manager.game_state.get_card(swap_target_uid)
+	if swap_card.zone != UATypes.Zone.ENERGY_LINE:
+		return _fail("选择交换后 STEP 角色应进入能量线")
+	if target_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("选择交换后能量位角色应被换到前线")
+	return _ok()
+
+func _test_sniper_attack_cannot_block() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var attacker_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_SNIPER_ATTACKER",
+		"name": "狙击角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-4",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["SNIPER"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var target_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_SNIPER_TARGET",
+		"name": "被狙击角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-5",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var blocker_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_SNIPER_BLOCKER",
+		"name": "可阻挡角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-6",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if attacker_uid == "" or target_uid == "" or blocker_uid == "":
+		return _fail("狙击测试卡创建失败")
+	var declared := manager.battle_resolver.declare_attack(manager.game_state, attacker_uid, {
+		"target_kind": "FRONT_CHARACTER",
+		"target_uid": target_uid,
+	})
+	if not bool(declared.get("ok", false)):
+		return _fail("狙击攻击声明失败")
+	if not declared.get("blockers", []).is_empty():
+		return _fail("狙击攻击不应提供阻挡者")
+	if not manager.rules_engine.get_available_blockers(manager.game_state, UATypes.PLAYER_TWO).is_empty():
+		return _fail("狙击攻击不应允许阻挡")
+	manager.resolve_attack(attacker_uid)
+	var target_card = manager.game_state.get_card(target_uid)
+	var blocker_card = manager.game_state.get_card(blocker_uid)
+	if target_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("狙击命中后目标角色应离场")
+	if blocker_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("未被指定的前线角色不应受影响")
+	return _ok()
+
+func _test_damage_two() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var attacker_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_DAMAGE_2",
+		"name": "双伤害角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-7",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["DAMAGE_2"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if attacker_uid == "":
+		return _fail("DAMAGE_2 测试卡创建失败")
+	var p2 := _player(manager, UATypes.PLAYER_TWO)
+	var life_before := p2.life.size()
+	manager.battle_resolver.declare_attack(manager.game_state, attacker_uid)
+	manager.resolve_attack(attacker_uid)
+	if p2.life.size() != life_before - 2:
+		return _fail("DAMAGE_2 应造成 2 点伤害")
+	return _ok()
+
+func _test_impact_and_negate_impact() -> Dictionary:
+	var manager_impact := _new_manager()
+	manager_impact.game_state.phase = UATypes.Phase.ATTACK
+	var attacker_uid := _spawn_temp_card(manager_impact, UATypes.PLAYER_ONE, {
+		"id": "TMP_IMPACT",
+		"name": "冲击角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-8",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["SNIPER", "IMPACT", "IMPACT_PLUS_1"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var defender_uid := _spawn_temp_card(manager_impact, UATypes.PLAYER_TWO, {
+		"id": "TMP_IMPACT_DEF",
+		"name": "普通防守者",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-9",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if attacker_uid == "" or defender_uid == "":
+		return _fail("冲击测试卡创建失败")
+	var p2 := _player(manager_impact, UATypes.PLAYER_TWO)
+	var life_before := p2.life.size()
+	manager_impact.battle_resolver.declare_attack(manager_impact.game_state, attacker_uid, {
+		"target_kind": "FRONT_CHARACTER",
+		"target_uid": defender_uid,
+	})
+	manager_impact.resolve_attack(attacker_uid)
+	if p2.life.size() != life_before - 2:
+		return _fail("IMPACT + IMPACT_PLUS_1 应额外造成 2 点伤害")
+	if manager_impact.game_state.get_card(defender_uid).zone != UATypes.Zone.OUTSIDE:
+		return _fail("被击败的防守者应离场")
+
+	var manager_negate := _new_manager()
+	manager_negate.game_state.phase = UATypes.Phase.ATTACK
+	var negate_attacker_uid := _spawn_temp_card(manager_negate, UATypes.PLAYER_ONE, {
+		"id": "TMP_IMPACT_NEGATE",
+		"name": "被无效冲击",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-10",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["SNIPER", "IMPACT", "IMPACT_PLUS_1"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var negate_defender_uid := _spawn_temp_card(manager_negate, UATypes.PLAYER_TWO, {
+		"id": "TMP_IMPACT_NEGATE_DEF",
+		"name": "冲击无效者",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-11",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 1000,
+		"keywords": ["NEGATE_IMPACT"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var negate_life_before := _player(manager_negate, UATypes.PLAYER_TWO).life.size()
+	manager_negate.battle_resolver.declare_attack(manager_negate.game_state, negate_attacker_uid, {
+		"target_kind": "FRONT_CHARACTER",
+		"target_uid": negate_defender_uid,
+	})
+	manager_negate.resolve_attack(negate_attacker_uid)
+	if _player(manager_negate, UATypes.PLAYER_TWO).life.size() != negate_life_before:
+		return _fail("NEGATE_IMPACT 应无效化冲击伤害")
+	return _ok()
+
+func _test_double_attack_and_double_block() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var attacker_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_DOUBLE_ATTACK",
+		"name": "双攻角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-12",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["DOUBLE_ATTACK"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var blocker_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_DOUBLE_BLOCK",
+		"name": "双挡角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-13",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 6000,
+		"keywords": ["DOUBLE_BLOCK"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if attacker_uid == "" or blocker_uid == "":
+		return _fail("双次攻击/阻挡测试卡创建失败")
+	var first_attack := manager.battle_resolver.declare_attack(manager.game_state, attacker_uid)
+	if not bool(first_attack.get("ok", false)):
+		return _fail("第一次攻击声明失败")
+	manager.resolve_attack(attacker_uid, blocker_uid)
+	var attacker_card = manager.game_state.get_card(attacker_uid)
+	var blocker_card = manager.game_state.get_card(blocker_uid)
+	if attacker_card.state != UATypes.CardState.ACTIVE:
+		return _fail("DOUBLE_ATTACK 第一次攻击后应恢复 ACTIVE")
+	if blocker_card.state != UATypes.CardState.ACTIVE:
+		return _fail("DOUBLE_BLOCK 第一次阻挡后应恢复 ACTIVE")
+	var second_attack := manager.battle_resolver.declare_attack(manager.game_state, attacker_uid)
+	if not bool(second_attack.get("ok", false)):
+		return _fail("DOUBLE_ATTACK 第二次攻击应可继续")
+	manager.resolve_attack(attacker_uid, blocker_uid)
+	if bool(manager.battle_resolver.declare_attack(manager.game_state, attacker_uid).get("ok", false)):
+		return _fail("DOUBLE_ATTACK 第三次攻击不应再允许")
+	if bool(manager.rules_engine.can_block(manager.game_state, UATypes.PLAYER_TWO, blocker_uid).get("ok", false)):
+		return _fail("DOUBLE_BLOCK 第二次阻挡后不应再允许第三次")
+	return _ok()
+
+func _test_battle_triggers() -> Dictionary:
+	var trigger_win_manager := _new_manager()
+	var trigger_win_attacker_uid := _spawn_temp_card(trigger_win_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_BATTLE_WIN",
+		"name": "战斗胜利触发",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-14",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [
+			{"trigger": "ON_BATTLE_WIN", "operations": [{"type": "DRAW", "value": 1}]}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var trigger_win_hand_before := _player(trigger_win_manager, UATypes.PLAYER_ONE).hand.size() + _player(trigger_win_manager, UATypes.PLAYER_TWO).hand.size()
+	trigger_win_manager.effect_resolver.resolve_trigger(trigger_win_attacker_uid, UATypes.TriggerType.ON_BATTLE_WIN, trigger_win_manager.game_state, {"target_player_id": UATypes.PLAYER_TWO})
+	var trigger_win_hand_after := _player(trigger_win_manager, UATypes.PLAYER_ONE).hand.size() + _player(trigger_win_manager, UATypes.PLAYER_TWO).hand.size()
+	if trigger_win_hand_after != trigger_win_hand_before + 1:
+		return _fail("ON_BATTLE_WIN 应能触发对应效果")
+
+	var trigger_lose_manager := _new_manager()
+	var trigger_lose_attacker_uid := _spawn_temp_card(trigger_lose_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_BATTLE_LOSE",
+		"name": "战斗失败触发",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-16",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [
+			{"trigger": "ON_BATTLE_LOSE", "operations": [{"type": "DRAW", "value": 1}]}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var trigger_lose_hand_before := _player(trigger_lose_manager, UATypes.PLAYER_ONE).hand.size() + _player(trigger_lose_manager, UATypes.PLAYER_TWO).hand.size()
+	trigger_lose_manager.effect_resolver.resolve_trigger(trigger_lose_attacker_uid, UATypes.TriggerType.ON_BATTLE_LOSE, trigger_lose_manager.game_state, {"target_player_id": UATypes.PLAYER_TWO})
+	var trigger_lose_hand_after := _player(trigger_lose_manager, UATypes.PLAYER_ONE).hand.size() + _player(trigger_lose_manager, UATypes.PLAYER_TWO).hand.size()
+	if trigger_lose_hand_after != trigger_lose_hand_before + 1:
+		return _fail("ON_BATTLE_LOSE 应能触发对应效果")
+
+	var trigger_end_manager := _new_manager()
+	var trigger_end_attacker_uid := _spawn_temp_card(trigger_end_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_BATTLE_END",
+		"name": "战斗结束触发",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-18",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [
+			{"trigger": "ON_BATTLE_END", "operations": [{"type": "DRAW", "value": 1}]}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var trigger_end_hand_before := _player(trigger_end_manager, UATypes.PLAYER_ONE).hand.size() + _player(trigger_end_manager, UATypes.PLAYER_TWO).hand.size()
+	trigger_end_manager.effect_resolver.resolve_trigger(trigger_end_attacker_uid, UATypes.TriggerType.ON_BATTLE_END, trigger_end_manager.game_state, {"target_player_id": UATypes.PLAYER_TWO})
+	var trigger_end_hand_after := _player(trigger_end_manager, UATypes.PLAYER_ONE).hand.size() + _player(trigger_end_manager, UATypes.PLAYER_TWO).hand.size()
+	if trigger_end_hand_after != trigger_end_hand_before + 1:
+		return _fail("ON_BATTLE_END 应能触发对应效果")
+	return _ok()
+
+	var win_manager := _new_manager()
+	win_manager.game_state.phase = UATypes.Phase.ATTACK
+	var win_attacker_uid := _spawn_temp_card(win_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_BATTLE_WIN",
+		"name": "战斗胜利触发",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-14",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["SNIPER"],
+		"effects": [],
+		"trigger_effects": [
+			{"trigger": "ON_BATTLE_WIN", "operations": [{"type": "DRAW", "value": 1}]}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var win_defender_uid := _spawn_temp_card(win_manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_BATTLE_WIN_DEF",
+		"name": "战败防守者",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-15",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 1000,
+		"keywords": ["SNIPER"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var win_hand_before := _player(win_manager, UATypes.PLAYER_ONE).hand.size()
+	win_manager.battle_resolver.declare_attack(win_manager.game_state, win_attacker_uid, {
+		"target_kind": "FRONT_CHARACTER",
+		"target_uid": win_defender_uid,
+	})
+	win_manager.resolve_attack(win_attacker_uid)
+	if _player(win_manager, UATypes.PLAYER_ONE).hand.size() != win_hand_before + 1:
+		return _fail("ON_BATTLE_WIN 应在胜利后触发")
+
+	var lose_manager := _new_manager()
+	lose_manager.game_state.phase = UATypes.Phase.ATTACK
+	var lose_attacker_uid := _spawn_temp_card(lose_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_BATTLE_LOSE",
+		"name": "战斗失败触发",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-16",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [
+			{"trigger": "ON_BATTLE_LOSE", "operations": [{"type": "DRAW", "value": 1}]}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var lose_defender_uid := _spawn_temp_card(lose_manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_BATTLE_LOSE_DEF",
+		"name": "战胜防守者",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-17",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var lose_hand_before := _player(lose_manager, UATypes.PLAYER_ONE).hand.size()
+	lose_manager.battle_resolver.declare_attack(lose_manager.game_state, lose_attacker_uid, {
+		"target_kind": "FRONT_CHARACTER",
+		"target_uid": lose_defender_uid,
+	})
+	lose_manager.resolve_attack(lose_attacker_uid)
+	if _player(lose_manager, UATypes.PLAYER_ONE).hand.size() != lose_hand_before + 1:
+		return _fail("ON_BATTLE_LOSE 应在失败后触发")
+
+	var end_manager := _new_manager()
+	end_manager.game_state.phase = UATypes.Phase.ATTACK
+	var end_attacker_uid := _spawn_temp_card(end_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_BATTLE_END",
+		"name": "战斗结束触发",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-18",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [
+			{"trigger": "ON_BATTLE_END", "operations": [{"type": "DRAW", "value": 1}]}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var end_hand_before := _player(end_manager, UATypes.PLAYER_ONE).hand.size()
+	end_manager.battle_resolver.declare_attack(end_manager.game_state, end_attacker_uid)
+	end_manager.resolve_attack(end_attacker_uid)
+	if _player(end_manager, UATypes.PLAYER_ONE).hand.size() != end_hand_before + 1:
+		return _fail("ON_BATTLE_END 应在战斗结束时触发")
+	return _ok()
+
+func _test_raid_zone_choice() -> Dictionary:
+	var front_manager := _new_manager()
+	front_manager.game_state.phase = UATypes.Phase.MAIN
+	var front_target_uid := _spawn_temp_card(front_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_RAID_TARGET",
+		"name": "突进目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-19",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, true)
+	var front_raid_uid := _spawn_temp_card(front_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_RAID_CARD",
+		"name": "突进卡",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-20",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [],
+		"special_play_rule": {
+			"type": "RAID",
+			"raid_target_name": "突进目标",
+			"allow_from_hand": true,
+			"require_full_energy": true
+		}
+	}, UATypes.Zone.HAND, true)
+	if front_target_uid == "" or front_raid_uid == "":
+		return _fail("RAID 显式选择测试卡创建失败")
+	front_manager.play_card(front_raid_uid, UATypes.Zone.ENERGY_LINE, {"raid_target_uid": front_target_uid})
+	if front_manager.game_state.pending_decisions.size() != 1:
+		return _fail("RAID 目标在能量线时应进入待决策")
+	front_manager.resolve_pending_decision("RAID_ZONE_CHOICE", {
+		"source_card_uid": front_raid_uid,
+		"choice": UATypes.Zone.FRONT_LINE,
+	})
+	var front_raid_card = front_manager.game_state.get_card(front_raid_uid)
+	if front_raid_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("RAID 选择前线时应进入前线")
+	if not front_raid_card.stacked_under.has(front_target_uid):
+		return _fail("RAID 应保留叠放关系")
+
+	var energy_manager := _new_manager()
+	energy_manager.game_state.phase = UATypes.Phase.MAIN
+	var energy_target_uid := _spawn_temp_card(energy_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_RAID_TARGET_2",
+		"name": "突进目标二",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-21",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, true)
+	var energy_raid_uid := _spawn_temp_card(energy_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_RAID_CARD_2",
+		"name": "突进卡二",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-22",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [],
+		"special_play_rule": {
+			"type": "RAID",
+			"raid_target_name": "突进目标二",
+			"allow_from_hand": true,
+			"require_full_energy": true
+		}
+	}, UATypes.Zone.HAND, true)
+	energy_manager.play_card(energy_raid_uid, UATypes.Zone.ENERGY_LINE, {"raid_target_uid": energy_target_uid})
+	if energy_manager.game_state.pending_decisions.size() != 1:
+		return _fail("RAID 能量线目标应进入待决策")
+	energy_manager.resolve_pending_decision("RAID_ZONE_CHOICE", {
+		"source_card_uid": energy_raid_uid,
+		"choice": UATypes.Zone.ENERGY_LINE,
+	})
+	var energy_raid_card = energy_manager.game_state.get_card(energy_raid_uid)
+	if energy_raid_card.zone != UATypes.Zone.ENERGY_LINE:
+		return _fail("RAID 选择能量线时应继续留在能量线")
+	return _ok()
+
 func _test_life_zero_victory() -> Dictionary:
 	var manager := _new_manager()
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 7)
@@ -275,6 +952,7 @@ func _test_deck_out_loss() -> Dictionary:
 	return _ok()
 
 func _test_raid_stack_play() -> Dictionary:
+	return _test_raid_zone_choice()
 	var manager := _new_manager()
 	manager.game_state.phase = UATypes.Phase.MAIN
 	var p1 := _player(manager, UATypes.PLAYER_ONE)

@@ -15,6 +15,8 @@ var flags := {
 	"attacked_this_turn": false,
 	"blocked_this_turn": false,
 	"activated_main_this_turn": false,
+	"double_attack_consumed": false,
+	"double_block_consumed": false,
 	"entered_via_raid": false,
 }
 var stacked_under: Array[String] = []
@@ -24,3 +26,5 @@ func reset_turn_flags() -> void:
 	flags["attacked_this_turn"] = false
 	flags["blocked_this_turn"] = false
 	flags["activated_main_this_turn"] = false
+	flags["double_attack_consumed"] = false
+	flags["double_block_consumed"] = false

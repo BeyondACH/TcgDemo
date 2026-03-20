@@ -59,13 +59,14 @@ func set_compact_mode(compact: bool) -> void:
 
 func _apply_board_data() -> void:
 	_name_label.text = _display_name
-	_stats_label.text = "Life:%d  Deck:%d  Hand:%d  AP:%d/%d  Outside:%d" % [
+	_stats_label.text = "Life:%d  Deck:%d  Hand:%d  AP:%d/%d  Outside:%d  Energy:%s" % [
 		int(_last_data.get("life_count", 0)),
 		int(_last_data.get("deck_count", 0)),
 		int(_last_data.get("hand_count", 0)),
 		int(_last_data.get("ap_active", 0)),
 		int(_last_data.get("ap_total", 0)),
 		int(_last_data.get("outside_count", 0)),
+		_format_energy_map(_last_data.get("available_energy", {})),
 	]
 	_front_drop_zone.setup(_player_id, "front_line", _current_card_size)
 	_energy_drop_zone.setup(_player_id, "energy_line", _current_card_size)
@@ -181,3 +182,12 @@ func _on_card_pressed(owner_player_id: String, card_uid: String, zone_name: Stri
 
 func _on_zone_dropped(player_id: String, zone_name: String, card_uid: String) -> void:
 	emit_signal("zone_drop_requested", player_id, zone_name, card_uid)
+
+func _format_energy_map(energy_map: Dictionary) -> String:
+	if energy_map.is_empty():
+		return "0"
+	var parts: Array[String] = []
+	for color in energy_map.keys():
+		parts.append("%s:%s" % [str(color), str(energy_map.get(color, 0))])
+	parts.sort()
+	return ", ".join(parts)

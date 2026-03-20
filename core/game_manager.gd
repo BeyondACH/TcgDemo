@@ -47,31 +47,56 @@ func setup_game() -> void:
 	emit_state_changed()
 
 func advance_phase() -> void:
-	if _has_winner() or _has_pending_life_triggers():
+	if _has_winner() or _has_pending_gate():
 		return
 	if game_state.phase == UATypes.Phase.END:
 		effect_resolver.cleanup_turn_expirations(game_state, game_state.active_player_id)
+		game_state.battle_context = {}
 	_apply_logs(turn_manager.advance_phase(game_state))
 	emit_state_changed()
 
 # UI 发起的出牌统一入口，负责校验、支付 AP、落位和触发效果。
 func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> void:
-	if _has_winner() or _has_pending_life_triggers():
+	if _has_winner() or _has_pending_gate():
 		return
 	var card: CardInstance = game_state.get_card(card_uid)
 	if card == null:
 		return
+	var card_def: CardDef = game_state.get_card_def(card.def_id)
+	if card_def == null:
+		return
+	var play_options := options.duplicate(true)
+	if str(play_options.get("raid_target_uid", "")) != "":
+		var raid_target: CardInstance = game_state.get_card(str(play_options.get("raid_target_uid", "")))
+		if raid_target != null and raid_target.zone == UATypes.Zone.ENERGY_LINE and not play_options.has("raid_target_zone_choice"):
+			_enqueue_pending_decision({
+				"type": "RAID_ZONE_CHOICE",
+				"owner_player_id": game_state.active_player_id,
+				"source_card_uid": card_uid,
+				"choices": [
+					{"label": "Stay Energy", "value": UATypes.Zone.ENERGY_LINE},
+					{"label": "Move Front", "value": UATypes.Zone.FRONT_LINE},
+				],
+				"context": {
+					"target_zone": target_zone,
+					"raid_target_uid": str(play_options.get("raid_target_uid", "")),
+				}
+			})
+			_apply_logs(["Choose raid destination for %s." % card_def.name])
+			emit_state_changed()
+			return
+		if raid_target != null and raid_target.zone == UATypes.Zone.ENERGY_LINE and not play_options.has("raid_target_zone_choice"):
+			play_options["raid_target_zone_choice"] = target_zone
 	var play_modifiers := effect_resolver.preview_play_modifiers(game_state, game_state.active_player_id, card_uid, {
 		"target_player_id": game_state.active_player_id,
 		"target_zone": target_zone,
 	})
-	var validation: Dictionary = rules_engine.can_play_card(game_state, game_state.active_player_id, card_uid, target_zone, play_modifiers, options)
+	var validation: Dictionary = rules_engine.can_play_card(game_state, game_state.active_player_id, card_uid, target_zone, play_modifiers, play_options)
 	if not bool(validation.get("ok", false)):
 		_apply_logs(["Cannot play card: %s" % validation.get("reason", "unknown")])
 		emit_state_changed()
 		return
 	var player: PlayerState = game_state.get_player(game_state.active_player_id)
-	var card_def: CardDef = game_state.get_card_def(card.def_id)
 	var effective_cost_ap := int(validation.get("cost_ap", play_modifiers.get("cost_ap", card_def.cost_ap)))
 	zone_manager.spend_ap(player, effective_cost_ap)
 	var special_play: Dictionary = validation.get("special_play", {})
@@ -101,7 +126,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 	emit_state_changed()
 
 func move_energy_to_front(card_uid: String) -> void:
-	if _has_winner() or _has_pending_life_triggers():
+	if _has_winner() or _has_pending_gate():
 		return
 	var validation: Dictionary = rules_engine.can_move_energy_to_front(game_state, game_state.active_player_id, card_uid)
 	if not bool(validation.get("ok", false)):
@@ -117,10 +142,10 @@ func move_energy_to_front(card_uid: String) -> void:
 		_apply_logs(["%s moves %s from energy to front line." % [game_state.active_player_id, card_def.name]])
 	emit_state_changed()
 
-func request_attack(attacker_uid: String) -> void:
-	if _has_winner() or _has_pending_life_triggers():
+func request_attack(attacker_uid: String, options: Dictionary = {}) -> void:
+	if _has_winner() or _has_pending_gate():
 		return
-	var result: Dictionary = battle_resolver.declare_attack(game_state, attacker_uid)
+	var result: Dictionary = battle_resolver.declare_attack(game_state, attacker_uid, options)
 	if not bool(result.get("ok", false)):
 		_apply_logs(["Cannot attack: %s" % result.get("reason", "unknown")])
 		emit_state_changed()
@@ -128,9 +153,86 @@ func request_attack(attacker_uid: String) -> void:
 	emit_signal("blockers_requested", result)
 
 func resolve_attack(attacker_uid: String, blocker_uid := "") -> void:
-	if _has_winner() or _has_pending_life_triggers():
+	if _has_winner() or _has_pending_gate():
 		return
 	_apply_logs(battle_resolver.resolve_attack(game_state, attacker_uid, blocker_uid))
+	emit_state_changed()
+
+func request_main_activate(card_uid: String, effect_index := 0) -> void:
+	if _has_winner() or _has_pending_gate():
+		return
+	_apply_logs(effect_resolver.activate_main_effect(game_state, game_state.active_player_id, card_uid, effect_index))
+	emit_state_changed()
+
+func request_step_move(card_uid: String, options: Dictionary = {}) -> void:
+	if _has_winner() or _has_pending_gate():
+		return
+	var swap_uid := str(options.get("swap_uid", ""))
+	var validation := rules_engine.can_step_move_to_energy(game_state, game_state.active_player_id, card_uid, swap_uid)
+	if not bool(validation.get("ok", false)):
+		if str(validation.get("reason", "")) == "step_swap_required":
+			var player: PlayerState = game_state.get_player(game_state.active_player_id)
+			if player != null:
+				var choices: Array[Dictionary] = []
+				for energy_uid in player.energy_line:
+					var energy_card := game_state.get_card(energy_uid)
+					if energy_card == null:
+						continue
+					var energy_def := game_state.get_card_def(energy_card.def_id)
+					choices.append({
+						"label": energy_def.name if energy_def != null else energy_uid,
+						"value": energy_uid,
+					})
+				_enqueue_pending_decision({
+					"type": "STEP_SWAP_CHOICE",
+					"owner_player_id": game_state.active_player_id,
+					"source_card_uid": card_uid,
+					"choices": choices,
+					"context": {},
+				})
+				_apply_logs(["Choose an energy character to swap with STEP."])
+				emit_state_changed()
+				return
+		_apply_logs(["Cannot step move: %s" % validation.get("reason", "unknown")])
+		emit_state_changed()
+		return
+	var result := zone_manager.step_move_to_energy(game_state, card_uid, swap_uid)
+	if not bool(result.get("ok", false)):
+		_apply_logs(["Cannot step move: %s" % result.get("reason", "unknown")])
+	else:
+		var card := game_state.get_card(card_uid)
+		var card_def := game_state.get_card_def(card.def_id) if card != null else null
+		if bool(result.get("swapped", false)):
+			var swap_card := game_state.get_card(str(result.get("swap_uid", "")))
+			var swap_def := game_state.get_card_def(swap_card.def_id) if swap_card != null else null
+			_apply_logs(["%s steps back to energy and swaps with %s." % [
+				card_def.name if card_def != null else card_uid,
+				swap_def.name if swap_def != null else str(result.get("swap_uid", "")),
+			]])
+		else:
+			_apply_logs(["%s steps back to energy." % [card_def.name if card_def != null else card_uid]])
+	emit_state_changed()
+
+func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -> void:
+	if _has_winner():
+		return
+	var decision := _take_pending_decision(decision_type, payload)
+	if decision.is_empty():
+		_apply_logs(["Pending decision not found: %s" % decision_type])
+		emit_state_changed()
+		return
+	match decision_type:
+		"RAID_ZONE_CHOICE":
+			var play_options := {
+				"raid_target_uid": str(decision.get("context", {}).get("raid_target_uid", "")),
+				"raid_target_zone_choice": int(payload.get("choice", UATypes.Zone.ENERGY_LINE)),
+			}
+			play_card(str(decision.get("source_card_uid", "")), int(decision.get("context", {}).get("target_zone", UATypes.Zone.ENERGY_LINE)), play_options)
+			return
+		"STEP_SWAP_CHOICE":
+			request_step_move(str(decision.get("source_card_uid", "")), {"swap_uid": str(payload.get("choice", ""))})
+			return
+	_apply_logs(["Unsupported decision type: %s" % decision_type])
 	emit_state_changed()
 
 func resolve_life_trigger_decision(card_uid: String, activate: bool) -> void:
@@ -147,6 +249,8 @@ func get_snapshot() -> Dictionary:
 		"active_player_id": game_state.active_player_id,
 		"phase": UATypes.phase_to_text(game_state.phase),
 		"winner_player_id": game_state.winner_player_id,
+		"battle_context": game_state.battle_context.duplicate(true),
+		"pending_decisions": game_state.pending_decisions.duplicate(true),
 		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),
 		"players": {
 			UATypes.PLAYER_ONE: _serialize_player(UATypes.PLAYER_ONE),
@@ -218,6 +322,7 @@ func _serialize_player(player_id: String) -> Dictionary:
 		"life_count": player.life.size(),
 		"ap_total": player.ap_total(),
 		"ap_active": player.ap_active_count(),
+		"available_energy": _energy_pool_for_player(player),
 		"hand": _serialize_cards(player.hand),
 		"front_line": _serialize_cards(player.front_line),
 		"energy_line": _serialize_cards(player.energy_line),
@@ -244,6 +349,10 @@ func _serialize_cards(card_uids: Array[String]) -> Array[Dictionary]:
 			"cost_ap": card_def.cost_ap,
 			"cost_energy": card_def.cost_energy.duplicate(true),
 			"energy_provided": card_def.energy_provided.duplicate(true),
+			"keywords": card_def.keywords.duplicate(),
+			"stacked_under": card.stacked_under.duplicate(),
+			"flags": card.flags.duplicate(true),
+			"available_actions": _available_actions_for_card(card, card_def),
 		})
 	return result
 
@@ -272,3 +381,57 @@ func _has_winner() -> bool:
 
 func _has_pending_life_triggers() -> bool:
 	return not game_state.pending_life_triggers.is_empty()
+
+func _has_pending_decisions() -> bool:
+	return not game_state.pending_decisions.is_empty()
+
+func _has_pending_gate() -> bool:
+	return _has_pending_life_triggers() or _has_pending_decisions()
+
+func _enqueue_pending_decision(decision: Dictionary) -> void:
+	game_state.pending_decisions.append(decision)
+
+func _take_pending_decision(decision_type: String, payload: Dictionary) -> Dictionary:
+	var source_card_uid := str(payload.get("source_card_uid", ""))
+	for i in range(game_state.pending_decisions.size()):
+		var decision: Dictionary = game_state.pending_decisions[i]
+		if str(decision.get("type", "")) != decision_type:
+			continue
+		if source_card_uid != "" and str(decision.get("source_card_uid", "")) != source_card_uid:
+			continue
+		game_state.pending_decisions.remove_at(i)
+		return decision
+	return {}
+
+func _energy_pool_for_player(player: PlayerState) -> Dictionary:
+	var pool := {}
+	for card_uid in player.energy_line:
+		var card: CardInstance = game_state.get_card(card_uid)
+		var card_def: CardDef = game_state.get_card_def(card.def_id) if card != null else null
+		if card_def == null:
+			continue
+		for color in card_def.energy_provided.keys():
+			pool[color] = int(pool.get(color, 0)) + int(card_def.energy_provided.get(color, 0))
+	return pool
+
+func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array[String]:
+	var actions: Array[String] = []
+	if card.controller_player_id != game_state.active_player_id:
+		return actions
+	if card.zone == UATypes.Zone.FRONT_LINE and game_state.phase == UATypes.Phase.ATTACK:
+		var attack_result := rules_engine.can_attack(game_state, card.controller_player_id, card.uid)
+		if bool(attack_result.get("ok", false)):
+			actions.append("ATTACK_PLAYER")
+		if card_def.keywords.has("SNIPER"):
+			actions.append("SNIPER_ATTACK")
+	if card.zone == UATypes.Zone.FRONT_LINE and game_state.phase == UATypes.Phase.MOVE:
+		var step_result := rules_engine.can_step_move_to_energy(game_state, card.controller_player_id, card.uid)
+		if bool(step_result.get("ok", false)) or str(step_result.get("reason", "")) == "step_swap_required":
+			actions.append("STEP_TO_ENERGY")
+	if game_state.phase == UATypes.Phase.MAIN:
+		for effect_variant in card_def.trigger_effects:
+			var effect: Dictionary = effect_variant
+			if str(effect.get("trigger", "")) == "MAIN_ACTIVATE":
+				actions.append("MAIN_ACTIVATE")
+				break
+	return actions

@@ -82,6 +82,25 @@ func stack_card_on_target(state: GameState, top_card_uid: String, base_card_uid:
 	base_card.state = UATypes.CardState.RESTED
 	return {"ok": true, "target_zone": target_zone}
 
+func step_move_to_energy(state: GameState, step_card_uid: String, swap_uid := "") -> Dictionary:
+	var step_card: CardInstance = state.get_card(step_card_uid)
+	if step_card == null:
+		return {"ok": false, "reason": "missing_step_card"}
+	var player: PlayerState = state.get_player(step_card.controller_player_id)
+	if player == null:
+		return {"ok": false, "reason": "missing_player"}
+	if player.energy_line.size() < UATypes.MAX_ENERGY_LINE:
+		move_card(state, step_card_uid, UATypes.Zone.ENERGY_LINE, step_card.controller_player_id)
+		return {"ok": true, "swapped": false}
+	if swap_uid == "":
+		return {"ok": false, "reason": "step_swap_required"}
+	var swap_card: CardInstance = state.get_card(swap_uid)
+	if swap_card == null or swap_card.zone != UATypes.Zone.ENERGY_LINE:
+		return {"ok": false, "reason": "invalid_step_swap_target"}
+	move_card(state, swap_uid, UATypes.Zone.FRONT_LINE, swap_card.controller_player_id)
+	move_card(state, step_card_uid, UATypes.Zone.ENERGY_LINE, step_card.controller_player_id)
+	return {"ok": true, "swapped": true, "swap_uid": swap_uid}
+
 # 抽牌只负责从牌库移到手牌，不在这里处理抽空牌库导致的败北。
 func draw_card(state: GameState, player_id: String) -> String:
 	var player: PlayerState = state.get_player(player_id)

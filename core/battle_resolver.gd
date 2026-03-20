@@ -18,24 +18,42 @@ func _init(p_rules_engine: RulesEngine, p_zone_manager: ZoneManager, p_effect_re
 	zone_manager = p_zone_manager
 	effect_resolver = p_effect_resolver
 
-# 攻击宣言阶段只做攻击合法性检查，并把可阻挡者列表返回给 UI。
-func declare_attack(state: GameState, attacker_uid: String) -> Dictionary:
+func declare_attack(state: GameState, attacker_uid: String, options: Dictionary = {}) -> Dictionary:
 	var attacker := state.get_card(attacker_uid)
 	if attacker == null:
 		return {"ok": false, "reason": "missing_attacker"}
-	var result := rules_engine.can_attack(state, attacker.controller_player_id, attacker_uid)
+	var result := rules_engine.can_attack(state, attacker.controller_player_id, attacker_uid, options)
 	if not bool(result.get("ok", false)):
 		return result
 	var defender_player_id := _opponent_of(attacker.controller_player_id)
-	var blockers := rules_engine.get_available_blockers(state, defender_player_id)
+	var target_kind := str(result.get("target_kind", "PLAYER"))
+	var blockers: Array[String] = []
+	if target_kind == "PLAYER" and not bool(result.get("is_sniper_attack", false)):
+		blockers = rules_engine.get_available_blockers(state, defender_player_id)
+	var target_uid := str(result.get("target_uid", ""))
+	state.battle_context = {
+		"attacker_uid": attacker_uid,
+		"attacker_player_id": attacker.controller_player_id,
+		"defender_player_id": defender_player_id,
+		"target_kind": target_kind,
+		"target_uid": target_uid,
+		"blocker_uid": "",
+		"is_direct_attack": target_kind == "PLAYER",
+		"is_sniper_attack": bool(result.get("is_sniper_attack", false)),
+		"damage_to_player": 0,
+		"impact_damage": 0,
+		"battle_outcome": "",
+	}
 	return {
 		"ok": true,
 		"attacker_uid": attacker_uid,
 		"defender_player_id": defender_player_id,
+		"target_kind": target_kind,
+		"target_uid": target_uid,
+		"is_sniper_attack": bool(result.get("is_sniper_attack", false)),
 		"blockers": blockers,
 	}
 
-# 结算当前原型中的最小战斗流程：阻挡可选，阻挡后比 BP，未阻挡则直接打玩家。
 func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -> Array[String]:
 	var logs: Array[String] = []
 	var attacker: CardInstance = state.get_card(attacker_uid)
@@ -44,16 +62,78 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 	var attacker_def: CardDef = state.get_card_def(attacker.def_id)
 	if attacker_def == null:
 		return ["Attack failed: attacker definition missing."]
+	var battle_context: Dictionary = state.battle_context.duplicate(true)
+	if battle_context.is_empty():
+		return ["Attack failed: missing battle context."]
+	var defender_player_id := str(battle_context.get("defender_player_id", _opponent_of(attacker.controller_player_id)))
+	var target_kind := str(battle_context.get("target_kind", "PLAYER"))
+	var target_uid := str(battle_context.get("target_uid", ""))
+	var is_sniper_attack := bool(battle_context.get("is_sniper_attack", false))
+	var was_repeat_attack := bool(attacker.flags.get("attacked_this_turn", false))
 	attacker.state = UATypes.CardState.RESTED
 	attacker.flags["attacked_this_turn"] = true
 	logs.append("%s attacks." % attacker_def.name)
-	logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_ATTACK, state, {"target_player_id": _opponent_of(attacker.controller_player_id)}))
-	if blocker_uid != "":
-		var defending_player_id := _opponent_of(attacker.controller_player_id)
-		var block_validation := rules_engine.can_block(state, defending_player_id, blocker_uid)
+	logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_ATTACK, state, {
+		"target_player_id": defender_player_id,
+		"attacker_uid": attacker_uid,
+		"target_uid": target_uid,
+	}))
+	var impact_damage := _impact_damage(attacker_def)
+	if target_kind == "FRONT_CHARACTER":
+		var target_card: CardInstance = state.get_card(target_uid)
+		if target_card == null:
+			state.battle_context = {}
+			return ["Attack failed: missing target character."]
+		var target_def: CardDef = state.get_card_def(target_card.def_id)
+		if target_def == null:
+			state.battle_context = {}
+			return ["Attack failed: missing target character definition."]
+		if attacker.current_bp >= target_card.current_bp:
+			battle_context["battle_outcome"] = "ATTACKER_WIN"
+			logs.append_array(effect_resolver.resolve_trigger(target_uid, UATypes.TriggerType.ON_LEAVE, state, {
+				"target_player_id": target_card.controller_player_id,
+				"attacker_uid": attacker_uid,
+				"target_uid": target_uid,
+			}))
+			if target_card.zone == UATypes.Zone.FRONT_LINE:
+				zone_manager.move_card(state, target_uid, UATypes.Zone.OUTSIDE)
+			logs.append("%s defeats %s." % [attacker_def.name, target_def.name])
+			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_WIN, state, {
+				"target_player_id": defender_player_id,
+				"attacker_uid": attacker_uid,
+				"target_uid": target_uid,
+			}))
+			if impact_damage > 0 and not _impact_negated(state, target_uid):
+				battle_context["impact_damage"] = impact_damage
+				logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, impact_damage))
+			elif impact_damage > 0:
+				logs.append("%s negates impact damage." % target_def.name)
+		else:
+			battle_context["battle_outcome"] = "ATTACKER_FAILS_TO_DEFEAT"
+			logs.append("%s fails to defeat %s." % [attacker_def.name, target_def.name])
+			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_LOSE, state, {
+				"target_player_id": defender_player_id,
+				"attacker_uid": attacker_uid,
+				"target_uid": target_uid,
+			}))
+		logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_END, state, {
+			"target_player_id": defender_player_id,
+			"attacker_uid": attacker_uid,
+			"target_uid": target_uid,
+		}))
+		_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
+		state.battle_context = battle_context
+		return logs
+	if blocker_uid != "" and not is_sniper_attack:
+		var block_validation := rules_engine.can_block(state, defender_player_id, blocker_uid)
 		if not bool(block_validation.get("ok", false)):
 			logs.append("Selected blocker is invalid, attack hits player instead.")
-			logs.append_array(effect_resolver.deal_damage_to_player(state, defending_player_id, 1))
+			var fallback_damage := _direct_attack_damage(attacker_def)
+			battle_context["damage_to_player"] = fallback_damage
+			battle_context["battle_outcome"] = "DIRECT_DAMAGE"
+			logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, fallback_damage))
+			_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
+			state.battle_context = battle_context
 			return logs
 		var blocker: CardInstance = state.get_card(blocker_uid)
 		var blocker_def: CardDef = null
@@ -61,26 +141,107 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			blocker_def = state.get_card_def(blocker.def_id)
 		if blocker == null or blocker_def == null:
 			logs.append("Blocker missing, attack hits player instead.")
-			logs.append_array(effect_resolver.deal_damage_to_player(state, defending_player_id, 1))
+			var fallback_damage_missing := _direct_attack_damage(attacker_def)
+			battle_context["damage_to_player"] = fallback_damage_missing
+			battle_context["battle_outcome"] = "DIRECT_DAMAGE"
+			logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, fallback_damage_missing))
+			_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
+			state.battle_context = battle_context
 			return logs
+		var was_repeat_block := bool(blocker.flags.get("blocked_this_turn", false))
 		blocker.state = UATypes.CardState.RESTED
 		blocker.flags["blocked_this_turn"] = true
+		battle_context["blocker_uid"] = blocker_uid
 		logs.append("%s blocks." % blocker_def.name)
-		logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_BLOCK, state))
-		# 当前实现只有“攻击者 BP 足够则击退阻挡者”这一层，
-		# 尚未处理双败、反击伤害或更多关键字规则。
+		logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_BLOCK, state, {
+			"target_player_id": defender_player_id,
+			"attacker_uid": attacker_uid,
+			"blocker_uid": blocker_uid,
+		}))
 		if attacker.current_bp >= blocker.current_bp:
-			logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_LEAVE, state, {"target_player_id": blocker.controller_player_id}))
+			battle_context["battle_outcome"] = "ATTACKER_WIN"
+			logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_LEAVE, state, {
+				"target_player_id": blocker.controller_player_id,
+				"attacker_uid": attacker_uid,
+				"blocker_uid": blocker_uid,
+			}))
 			if blocker.zone == UATypes.Zone.FRONT_LINE:
 				zone_manager.move_card(state, blocker_uid, UATypes.Zone.OUTSIDE)
 				logs.append("%s wins the battle. %s is moved to outside." % [attacker_def.name, blocker_def.name])
 			else:
 				logs.append("%s wins the battle. %s leaves the field." % [attacker_def.name, blocker_def.name])
+			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_WIN, state, {
+				"target_player_id": defender_player_id,
+				"attacker_uid": attacker_uid,
+				"blocker_uid": blocker_uid,
+			}))
+			if impact_damage > 0 and not _impact_negated(state, blocker_uid):
+				battle_context["impact_damage"] = impact_damage
+				logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, impact_damage))
+			elif impact_damage > 0:
+				logs.append("%s negates impact damage." % blocker_def.name)
 		else:
+			battle_context["battle_outcome"] = "ATTACKER_FAILS_TO_DEFEAT"
 			logs.append("%s fails to defeat %s." % [attacker_def.name, blocker_def.name])
+			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_LOSE, state, {
+				"target_player_id": defender_player_id,
+				"attacker_uid": attacker_uid,
+				"blocker_uid": blocker_uid,
+			}))
+		logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_END, state, {
+			"target_player_id": defender_player_id,
+			"attacker_uid": attacker_uid,
+			"blocker_uid": blocker_uid,
+		}))
+		_after_block_state_change(blocker, blocker_def, was_repeat_block)
 	else:
-		logs.append_array(effect_resolver.deal_damage_to_player(state, _opponent_of(attacker.controller_player_id), 1))
+		var direct_damage := _direct_attack_damage(attacker_def)
+		battle_context["damage_to_player"] = direct_damage
+		battle_context["battle_outcome"] = "DIRECT_DAMAGE"
+		logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, direct_damage))
+		logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_END, state, {
+			"target_player_id": defender_player_id,
+			"attacker_uid": attacker_uid,
+		}))
+	_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
+	state.battle_context = battle_context
 	return logs
+
+func _direct_attack_damage(attacker_def: CardDef) -> int:
+	if attacker_def.keywords.has("DAMAGE_2"):
+		return 2
+	return 1
+
+func _impact_damage(attacker_def: CardDef) -> int:
+	var base := 1 if attacker_def.keywords.has("IMPACT") else 0
+	if attacker_def.keywords.has("IMPACT_PLUS_1"):
+		base += 1
+	return base
+
+func _impact_negated(state: GameState, card_uid: String) -> bool:
+	var card: CardInstance = state.get_card(card_uid)
+	if card == null:
+		return false
+	var card_def: CardDef = state.get_card_def(card.def_id)
+	if card_def == null:
+		return false
+	return card_def.keywords.has("NEGATE_IMPACT")
+
+func _after_attack_state_change(attacker: CardInstance, attacker_def: CardDef, was_repeat_attack: bool) -> void:
+	if not attacker_def.keywords.has("DOUBLE_ATTACK"):
+		return
+	if was_repeat_attack:
+		attacker.flags["double_attack_consumed"] = true
+	else:
+		attacker.state = UATypes.CardState.ACTIVE
+
+func _after_block_state_change(blocker: CardInstance, blocker_def: CardDef, was_repeat_block: bool) -> void:
+	if not blocker_def.keywords.has("DOUBLE_BLOCK"):
+		return
+	if was_repeat_block:
+		blocker.flags["double_block_consumed"] = true
+	else:
+		blocker.state = UATypes.CardState.ACTIVE
 
 func _opponent_of(player_id: String) -> String:
 	if player_id == UATypes.PLAYER_ONE:

@@ -222,6 +222,18 @@ text = "Play Energy"
 layout_mode = 2
 text = "Use Event"
 
+[node name="MainActivateButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+layout_mode = 2
+text = "Main Activate"
+
+[node name="StepButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+layout_mode = 2
+text = "Step"
+
+[node name="SniperAttackButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+layout_mode = 2
+text = "Sniper Attack"
+
 [node name="LifeTriggerPicker" type="OptionButton" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 visible = false
 layout_mode = 2
@@ -240,6 +252,28 @@ text = "Skip Life"
 [node name="CancelSelectionButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Cancel"
+
+[node name="PendingDecisionPanel" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="PendingDecisionLabel" type="Label" parent="UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel"]
+layout_mode = 2
+text = "Pending Decision"
+
+[node name="PendingDecisionPicker" type="OptionButton" parent="UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PendingDecisionChoicePicker" type="OptionButton" parent="UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResolvePendingDecisionButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel"]
+layout_mode = 2
+text = "Resolve Pending Decision"
 
 [node name="LogPanel" type="PanelContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 layout_mode = 2

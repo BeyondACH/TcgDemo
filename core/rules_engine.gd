@@ -73,7 +73,35 @@ func can_move_energy_to_front(state: GameState, player_id: String, card_uid: Str
 		return {"ok": false, "reason": "front_line_full"}
 	return {"ok": true}
 
-func can_attack(state: GameState, player_id: String, card_uid: String) -> Dictionary:
+func can_step_move_to_energy(state: GameState, player_id: String, card_uid: String, swap_uid := "") -> Dictionary:
+	var player: PlayerState = state.get_player(player_id)
+	var card: CardInstance = state.get_card(card_uid)
+	if player == null or card == null:
+		return {"ok": false, "reason": "missing_card_or_player"}
+	if state.active_player_id != player_id or state.phase != UATypes.Phase.MOVE:
+		return {"ok": false, "reason": "wrong_phase"}
+	if card.zone != UATypes.Zone.FRONT_LINE:
+		return {"ok": false, "reason": "not_in_front"}
+	var card_def: CardDef = state.get_card_def(card.def_id)
+	if card_def == null or card_def.card_type != UATypes.CardType.CHARACTER:
+		return {"ok": false, "reason": "only_character_can_step"}
+	if not card_def.keywords.has("STEP"):
+		return {"ok": false, "reason": "missing_step_keyword"}
+	if player.energy_line.size() < UATypes.MAX_ENERGY_LINE:
+		return {"ok": true, "swap_required": false}
+	if swap_uid == "":
+		return {"ok": false, "reason": "step_swap_required"}
+	var swap_card: CardInstance = state.get_card(swap_uid)
+	if swap_card == null or swap_card.controller_player_id != player_id:
+		return {"ok": false, "reason": "invalid_step_swap_target"}
+	if swap_card.zone != UATypes.Zone.ENERGY_LINE:
+		return {"ok": false, "reason": "step_swap_target_not_in_energy"}
+	var swap_def: CardDef = state.get_card_def(swap_card.def_id)
+	if swap_def == null or swap_def.card_type != UATypes.CardType.CHARACTER:
+		return {"ok": false, "reason": "step_swap_target_not_character"}
+	return {"ok": true, "swap_required": true, "swap_uid": swap_uid}
+
+func can_attack(state: GameState, player_id: String, card_uid: String, options: Dictionary = {}) -> Dictionary:
 	var player: PlayerState = state.get_player(player_id)
 	var card: CardInstance = state.get_card(card_uid)
 	if player == null or card == null:
@@ -87,9 +115,34 @@ func can_attack(state: GameState, player_id: String, card_uid: String) -> Dictio
 	var card_def: CardDef = state.get_card_def(card.def_id)
 	if card_def == null or card_def.card_type != UATypes.CardType.CHARACTER:
 		return {"ok": false, "reason": "only_character_can_attack"}
-	return {"ok": true}
+	if bool(card.flags.get("attacked_this_turn", false)):
+		if not card_def.keywords.has("DOUBLE_ATTACK") or bool(card.flags.get("double_attack_consumed", false)):
+			return {"ok": false, "reason": "already_attacked"}
+	var target_kind := str(options.get("target_kind", "PLAYER"))
+	var target_uid := str(options.get("target_uid", ""))
+	var is_sniper := target_kind == "FRONT_CHARACTER"
+	if is_sniper:
+		if not card_def.keywords.has("SNIPER"):
+			return {"ok": false, "reason": "missing_sniper_keyword"}
+		if target_uid == "":
+			return {"ok": false, "reason": "missing_target_uid"}
+		var target_card: CardInstance = state.get_card(target_uid)
+		if target_card == null:
+			return {"ok": false, "reason": "missing_target_card"}
+		if target_card.controller_player_id == player_id:
+			return {"ok": false, "reason": "cannot_attack_own_character"}
+		if target_card.zone != UATypes.Zone.FRONT_LINE:
+			return {"ok": false, "reason": "sniper_target_not_in_front"}
+	return {
+		"ok": true,
+		"target_kind": "FRONT_CHARACTER" if is_sniper else "PLAYER",
+		"target_uid": target_uid,
+		"is_sniper_attack": is_sniper,
+	}
 
 func can_block(state: GameState, player_id: String, card_uid: String) -> Dictionary:
+	if bool(state.battle_context.get("is_sniper_attack", false)):
+		return {"ok": false, "reason": "cannot_block_sniper"}
 	var card: CardInstance = state.get_card(card_uid)
 	if card == null or card.zone != UATypes.Zone.FRONT_LINE:
 		return {"ok": false, "reason": "not_in_front"}
@@ -100,6 +153,9 @@ func can_block(state: GameState, player_id: String, card_uid: String) -> Diction
 	var card_def: CardDef = state.get_card_def(card.def_id)
 	if card_def == null or card_def.card_type != UATypes.CardType.CHARACTER:
 		return {"ok": false, "reason": "only_character_can_block"}
+	if bool(card.flags.get("blocked_this_turn", false)):
+		if not card_def.keywords.has("DOUBLE_BLOCK") or bool(card.flags.get("double_block_consumed", false)):
+			return {"ok": false, "reason": "already_blocked"}
 	return {"ok": true}
 
 func get_available_blockers(state: GameState, defender_player_id: String) -> Array[String]:
@@ -158,16 +214,25 @@ func _validate_special_play_rule(state: GameState, player_id: String, card: Card
 	var required_name := str(card_def.special_play_rule.get("raid_target_name", ""))
 	if required_name != "" and raid_target_def.name != required_name:
 		return {"ok": false, "reason": "raid_target_name_mismatch"}
-	var resolved_target_zone := target_zone
+	var requested_zone := int(options.get("raid_target_zone_choice", target_zone))
+	var resolved_target_zone := requested_zone
 	if raid_target.zone == UATypes.Zone.FRONT_LINE:
-		if target_zone != UATypes.Zone.FRONT_LINE:
+		if requested_zone != UATypes.Zone.FRONT_LINE:
 			return {"ok": false, "reason": "raid_target_zone_locked_front"}
 		resolved_target_zone = UATypes.Zone.FRONT_LINE
 	elif raid_target.zone == UATypes.Zone.ENERGY_LINE:
-		if target_zone != UATypes.Zone.FRONT_LINE and target_zone != UATypes.Zone.ENERGY_LINE:
+		if requested_zone == -1:
+			return {
+				"ok": false,
+				"reason": "raid_zone_choice_required",
+				"needs_choice": true,
+				"raid_target_uid": raid_target_uid,
+				"raid_target_zone": raid_target.zone,
+			}
+		if requested_zone != UATypes.Zone.FRONT_LINE and requested_zone != UATypes.Zone.ENERGY_LINE:
 			return {"ok": false, "reason": "raid_bad_target_zone"}
 		var player: PlayerState = state.get_player(player_id)
-		if target_zone == UATypes.Zone.FRONT_LINE and player != null and player.front_line.size() >= UATypes.MAX_FRONT_LINE:
+		if requested_zone == UATypes.Zone.FRONT_LINE and player != null and player.front_line.size() >= UATypes.MAX_FRONT_LINE:
 			return {"ok": false, "reason": "front_line_full"}
 	return {
 		"ok": true,

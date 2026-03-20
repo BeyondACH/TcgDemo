@@ -289,5 +289,222 @@
       "source_image_extraction": true,
       "ocr_confidence": "medium"
     }
+  },
+  {
+    "id": "UA_CHAR_MAIN_ACTIVATE",
+    "name": "主动技测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-001",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "once_per_turn": true,
+        "operations": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "text": "1 回合 1 次：抽 1 张牌。"
+      }
+    ]
+  },
+  {
+    "id": "UA_CHAR_STEP",
+    "name": "撤步测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-002",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "STEP"
+    ],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA_CHAR_SNIPER",
+    "name": "狙击测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-003",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "SNIPER"
+    ],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA_CHAR_DAMAGE_2",
+    "name": "二伤测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-004",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "DAMAGE_2"
+    ],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA_CHAR_IMPACT",
+    "name": "冲击测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-005",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "IMPACT"
+    ],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA_CHAR_IMPACT_PLUS_1",
+    "name": "强冲击测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-006",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "IMPACT_PLUS_1"
+    ],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA_CHAR_NEGATE_IMPACT",
+    "name": "冲击无效测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-007",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT"
+    ],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA_CHAR_DOUBLE_ATTACK",
+    "name": "二次攻击测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-008",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "DOUBLE_ATTACK"
+    ],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA_CHAR_DOUBLE_BLOCK",
+    "name": "二次阻挡测试角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-3-009",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "DOUBLE_BLOCK"
+    ],
+    "effects": [],
+    "trigger_effects": []
   }
 ]

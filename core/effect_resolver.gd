@@ -38,9 +38,46 @@ func resolve_trigger(source_card_uid: String, trigger_type: int, state: GameStat
 	var card_def = state.get_card_def(source_card.def_id)
 	if card_def == null:
 		return logs
+	var trigger_context := context.duplicate(true)
+	trigger_context["source_player_id"] = source_card.controller_player_id
 	for effect in card_def.trigger_effects:
 		if _trigger_matches(effect, trigger_type) and _is_effect_enabled_for_card(source_card, effect):
-			logs.append_array(resolve_effect(state, source_card_uid, effect, context))
+			logs.append_array(resolve_effect(state, source_card_uid, effect, trigger_context))
+	return logs
+
+func activate_main_effect(state: GameState, player_id: String, card_uid: String, effect_index := 0) -> Array[String]:
+	var logs: Array[String] = []
+	var card = state.get_card(card_uid)
+	if card == null:
+		return ["Main activate failed: missing card."]
+	if state.active_player_id != player_id or state.phase != UATypes.Phase.MAIN:
+		return ["Main activate failed: wrong phase."]
+	if card.controller_player_id != player_id:
+		return ["Main activate failed: wrong controller."]
+	if card.zone != UATypes.Zone.FRONT_LINE and card.zone != UATypes.Zone.ENERGY_LINE:
+		return ["Main activate failed: card is not on the field."]
+	var card_def = state.get_card_def(card.def_id)
+	if card_def == null:
+		return ["Main activate failed: missing definition."]
+	var main_effects: Array[Dictionary] = []
+	for effect_variant in card_def.trigger_effects:
+		var effect: Dictionary = effect_variant
+		if _trigger_matches(effect, UATypes.TriggerType.MAIN_ACTIVATE) and _is_effect_enabled_for_card(card, effect):
+			main_effects.append(effect)
+	if effect_index < 0 or effect_index >= main_effects.size():
+		return ["Main activate failed: effect index out of range."]
+	var selected_effect: Dictionary = main_effects[effect_index]
+	if bool(selected_effect.get("once_per_turn", false)) and bool(card.flags.get("activated_main_this_turn", false)):
+		return ["Main activate failed: once per turn already used."]
+	card.flags["activated_main_this_turn"] = bool(selected_effect.get("once_per_turn", false))
+	logs.append("%s activates a main effect." % card_def.name)
+	logs.append_array(resolve_effect(state, card_uid, selected_effect, {
+		"player_id": player_id,
+		"target_player_id": player_id,
+		"attacker_uid": str(state.battle_context.get("attacker_uid", "")),
+		"blocker_uid": str(state.battle_context.get("blocker_uid", "")),
+		"target_uid": str(state.battle_context.get("target_uid", "")),
+	}))
 	return logs
 
 func preview_play_modifiers(state: GameState, player_id: String, card_uid: String, context: Dictionary = {}) -> Dictionary:
@@ -195,7 +232,7 @@ func _execute_operation(state: GameState, source_card_uid: String, effect: Dicti
 	var logs: Array[String] = []
 	var effect_type := str(effect.get("type", ""))
 	if effect_type == "DRAW":
-		var target_player_id := str(context.get("target_player_id", state.active_player_id))
+		var target_player_id := str(context.get("draw_player_id", context.get("source_player_id", context.get("target_player_id", state.active_player_id))))
 		var amount := int(effect.get("value", 1))
 		for i in range(amount):
 			var draw_uid: String = zone_manager.draw_card(state, target_player_id)
@@ -234,6 +271,13 @@ func _execute_operation(state: GameState, source_card_uid: String, effect: Dicti
 		logs.append_array(deal_damage_to_player(state, target_id, damage))
 		return logs
 	if effect_type == "MODIFY_PLAY_COST_AP":
+		return logs
+	if effect_type == "QUEUE_EFFECT":
+		state.effect_queue.append({
+			"source_card_uid": source_card_uid,
+			"effect": effect.duplicate(true),
+			"context": context.duplicate(true),
+		})
 		return logs
 	logs.append("Reserved unsupported effect type: %s" % effect_type)
 	return logs
@@ -356,6 +400,8 @@ func _resolve_owner_player_ids(state: GameState, owner_mode: String, source_play
 		return [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]
 	if owner_mode == "ACTIVE_PLAYER":
 		return [state.active_player_id]
+	if owner_mode == "TARGET_PLAYER":
+		return [str(state.battle_context.get("defender_player_id", source_player_id))]
 	return [source_player_id]
 
 func _matches_play_permission_modifier(state: GameState, modifier: Dictionary, context: Dictionary) -> bool:
@@ -490,6 +536,12 @@ func _trigger_matches(effect: Dictionary, trigger_type: int) -> bool:
 			return name == "ON_LIFE_TRIGGER"
 		UATypes.TriggerType.MAIN_ACTIVATE:
 			return name == "MAIN_ACTIVATE"
+		UATypes.TriggerType.ON_BATTLE_WIN:
+			return name == "ON_BATTLE_WIN"
+		UATypes.TriggerType.ON_BATTLE_LOSE:
+			return name == "ON_BATTLE_LOSE"
+		UATypes.TriggerType.ON_BATTLE_END:
+			return name == "ON_BATTLE_END"
 	return false
 
 func _card_has_trigger(state: GameState, card_uid: String, trigger_type: int) -> bool:
