@@ -1,5 +1,12 @@
-﻿extends RefCounted
+extends RefCounted
 class_name TurnManager
+
+const UATypes = preload("res://core/ua_types.gd")
+const ZoneManager = preload("res://core/zone_manager.gd")
+const VictoryChecker = preload("res://core/victory_checker.gd")
+const GameState = preload("res://data/game_state.gd")
+const PlayerState = preload("res://data/player_state.gd")
+const CardInstance = preload("res://data/card_instance.gd")
 
 var zone_manager: ZoneManager
 var victory_checker: VictoryChecker
@@ -8,7 +15,7 @@ func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker) -> vo
 	zone_manager = p_zone_manager
 	victory_checker = p_victory_checker
 
-# Starts the match at player one and immediately resolves the start step.
+# 从 P1 开始对局，并立刻执行回合开始阶段。
 func begin_game(state: GameState) -> Array[String]:
 	state.turn_number = 1
 	state.active_player_id = UATypes.PLAYER_ONE
@@ -16,7 +23,7 @@ func begin_game(state: GameState) -> Array[String]:
 	state.phase = UATypes.Phase.START
 	return begin_turn(state)
 
-# Handles draw/AP growth and resets phase to MOVE when the start step resolves.
+# 处理回合开始时的抽牌、AP 成长与状态重置，结束后切到 MOVE 阶段。
 func begin_turn(state: GameState) -> Array[String]:
 	var logs: Array[String] = []
 	var player: PlayerState = state.get_player(state.active_player_id)
@@ -25,6 +32,7 @@ func begin_turn(state: GameState) -> Array[String]:
 	player.turn_count += 1
 	player.used_bonus_draw = false
 	zone_manager.reset_turn_flags(state, state.active_player_id)
+	# 当前原型按玩家已进行回合数推导 AP 上限，并受 MAX_AP 限制。
 	var ap_target: int = _ap_target_for_player(player, state.active_player_id)
 	zone_manager.add_ap(player, ap_target)
 	logs.append("%s turn %d starts." % [state.active_player_id, player.turn_count])
@@ -89,6 +97,7 @@ func _apply_hand_limit(state: GameState, player_id: String, logs: Array[String])
 	var player: PlayerState = state.get_player(player_id)
 	if player == null:
 		return
+	# 超出手牌上限时，当前实现直接从手牌尾部移除，后续可替换成玩家选择弃牌。
 	while player.hand.size() > UATypes.HAND_LIMIT:
 		var discarded_uid: String = player.hand.pop_back()
 		player.removed.append(discarded_uid)

@@ -1,6 +1,7 @@
-﻿extends RefCounted
+extends RefCounted
 class_name PlayerState
 
+# 玩家持有的各区域状态。区域里保存的是卡牌 uid，具体卡牌数据统一在 GameState.cards 中查。
 var player_id := ""
 var deck: Array[String] = []
 var hand: Array[String] = []

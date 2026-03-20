@@ -1,6 +1,18 @@
 extends Node
 class_name GameManager
 
+const UATypes = preload("res://core/ua_types.gd")
+const GameState = preload("res://data/game_state.gd")
+const ZoneManager = preload("res://core/zone_manager.gd")
+const VictoryChecker = preload("res://core/victory_checker.gd")
+const RulesEngine = preload("res://core/rules_engine.gd")
+const EffectResolver = preload("res://core/effect_resolver.gd")
+const BattleResolver = preload("res://core/battle_resolver.gd")
+const TurnManager = preload("res://core/turn_manager.gd")
+const PlayerState = preload("res://data/player_state.gd")
+const CardInstance = preload("res://data/card_instance.gd")
+const CardDef = preload("res://data/card_def.gd")
+
 signal state_changed(snapshot: Dictionary)
 signal blockers_requested(request: Dictionary)
 signal log_added(text: String)
@@ -21,7 +33,7 @@ func _ready() -> void:
 	randomize()
 	setup_game()
 
-# Loads data, builds both players and starts the opening turn.
+# 初始化整局游戏：加载卡牌和卡组、创建双方玩家、发起手并进入首回合。
 func setup_game() -> void:
 	game_state = GameState.new()
 	_load_card_defs()
@@ -40,7 +52,7 @@ func advance_phase() -> void:
 	_apply_logs(turn_manager.advance_phase(game_state))
 	emit_state_changed()
 
-# Entry point for hand play requests coming from the UI.
+# UI 发起的出牌统一入口，负责校验、支付 AP、落位和触发效果。
 func play_card(card_uid: String, target_zone: int) -> void:
 	if _has_winner():
 		return
@@ -101,6 +113,8 @@ func resolve_attack(attacker_uid: String, blocker_uid := "") -> void:
 	emit_state_changed()
 
 func get_snapshot() -> Dictionary:
+	# 这里返回的是面向 UI 的快照，而不是完整内部状态，
+	# 这样界面层只消费自己需要的字段，降低耦合。
 	return {
 		"turn_number": game_state.turn_number,
 		"active_player_id": game_state.active_player_id,
@@ -120,7 +134,7 @@ func _load_card_defs() -> void:
 	var json: Array = _read_json(CARD_DATA_PATH)
 	for item in json:
 		var item_dict: Dictionary = item
-		var card_def: CardDef = CardDef.from_dict(item_dict)
+		var card_def: CardDef = CardDef.new().from_dict(item_dict)
 		game_state.card_defs[card_def.id] = card_def
 
 func _create_player(player_id: String, deck_list: Array) -> void:
@@ -152,6 +166,7 @@ func _prepare_starting_zones(player_id: String) -> void:
 	var player: PlayerState = game_state.get_player(player_id)
 	if player == null:
 		return
+	# 先抽起手，再从牌顶放置生命区，保持当前原型的准备流程简单直接。
 	for i in range(UATypes.STARTING_HAND):
 		zone_manager.draw_card(game_state, player_id)
 	for i in range(UATypes.STARTING_LIFE):

@@ -1,6 +1,9 @@
 extends RefCounted
 class_name CardDef
 
+const UATypes = preload("res://core/ua_types.gd")
+
+# 静态卡牌定义，直接映射 JSON 中的卡牌原型数据。
 var id = ""
 var name = ""
 var card_type = UATypes.CardType.CHARACTER
@@ -15,26 +18,26 @@ var keywords = []
 var effects = []
 var trigger_effects = []
 
-static func from_dict(source: Dictionary):
-	var result = CardDef.new()
-	result.id = str(source.get("id", ""))
-	result.name = str(source.get("name", ""))
-	result.card_type = _parse_card_type(str(source.get("card_type", "CHARACTER")))
-	result.title_code = str(source.get("title_code", ""))
-	result.number = str(source.get("number", ""))
+func from_dict(source: Dictionary):
+	# 这里做一次深拷贝，避免运行期修改效果配置时反向污染原始字典。
+	id = str(source.get("id", ""))
+	name = str(source.get("name", ""))
+	card_type = _parse_card_type(str(source.get("card_type", "CHARACTER")))
+	title_code = str(source.get("title_code", ""))
+	number = str(source.get("number", ""))
 	for value in source.get("traits", []):
-		result.traits.append(str(value))
-	result.cost_energy = source.get("cost_energy", {}).duplicate(true)
-	result.cost_ap = int(source.get("cost_ap", 0))
-	result.energy_provided = source.get("energy_provided", {}).duplicate(true)
-	result.bp = int(source.get("bp", 0))
+		traits.append(str(value))
+	cost_energy = source.get("cost_energy", {}).duplicate(true)
+	cost_ap = int(source.get("cost_ap", 0))
+	energy_provided = source.get("energy_provided", {}).duplicate(true)
+	bp = int(source.get("bp", 0))
 	for value in source.get("keywords", []):
-		result.keywords.append(str(value))
+		keywords.append(str(value))
 	for value in source.get("effects", []):
-		result.effects.append(value.duplicate(true))
+		effects.append(value.duplicate(true))
 	for value in source.get("trigger_effects", []):
-		result.trigger_effects.append(value.duplicate(true))
-	return result
+		trigger_effects.append(value.duplicate(true))
+	return self
 
 static func _parse_card_type(value: String) -> int:
 	match value:

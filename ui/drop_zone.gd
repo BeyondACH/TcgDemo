@@ -22,6 +22,7 @@ func get_row_container() -> HBoxContainer:
 	return _row
 
 func _can_drop_data(_at_position: Vector2, data) -> bool:
+	# 这里只做最基础的数据结构校验，具体规则限制仍由 GameManager 再判一次。
 	if not (data is Dictionary):
 		return false
 	if str(data.get("kind", "")) != "hand_card":

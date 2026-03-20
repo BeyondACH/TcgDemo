@@ -1,6 +1,9 @@
 extends VBoxContainer
 class_name BoardView
 
+const DropZone = preload("res://ui/drop_zone.gd")
+const CardView = preload("res://ui/card_view.gd")
+
 signal front_card_pressed(player_id: String, card_uid: String)
 signal energy_card_pressed(player_id: String, card_uid: String)
 signal zone_drop_requested(player_id: String, zone_name: String, card_uid: String)
@@ -12,6 +15,7 @@ var _front_drop_zone: DropZone
 var _energy_drop_zone: DropZone
 
 func _ready() -> void:
+	# 面板内容完全由代码动态构建，便于原型期快速调整布局。
 	_name_label = Label.new()
 	_stats_label = Label.new()
 	add_child(_name_label)
@@ -54,6 +58,7 @@ func _rebuild_row(row: HBoxContainer, cards: Array, zone_name: String) -> void:
 		card_view.card_pressed.connect(_on_card_pressed)
 		row.add_child(card_view)
 	for i in range(max(0, 4 - cards.size())):
+		# 用占位文本维持固定槽位感，后续可以替换成更明确的空位组件。
 		var placeholder := Label.new()
 		placeholder.text = "[Drop Here]"
 		placeholder.custom_minimum_size = Vector2(120, 72)

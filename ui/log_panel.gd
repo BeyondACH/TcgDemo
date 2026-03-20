@@ -4,6 +4,7 @@ class_name LogPanel
 var _label: RichTextLabel
 
 func _ready() -> void:
+	# 直接在代码中创建日志组件，避免原型期频繁改场景树。
 	_label = RichTextLabel.new()
 	_label.fit_content = true
 	_label.scroll_active = true

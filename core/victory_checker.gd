@@ -1,6 +1,10 @@
-﻿extends RefCounted
+extends RefCounted
 class_name VictoryChecker
 
+const UATypes = preload("res://core/ua_types.gd")
+const GameState = preload("res://data/game_state.gd")
+
+# 常规胜负检查：任意一方生命归零则对手获胜。
 func check_victory(state: GameState) -> Dictionary:
 	for player_id in [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]:
 		var player := state.get_player(player_id)

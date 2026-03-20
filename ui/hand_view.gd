@@ -1,5 +1,7 @@
-﻿extends VBoxContainer
+extends VBoxContainer
 class_name HandView
+
+const CardView = preload("res://ui/card_view.gd")
 
 signal hand_card_selected(card_uid: String)
 
@@ -17,6 +19,7 @@ func _ready() -> void:
 func set_hand(player_id: String, hand_cards: Array) -> void:
 	if _row == null:
 		return
+	# 手牌区每次按快照整体重建，逻辑简单，但后续可优化为增量刷新。
 	for child in _row.get_children():
 		child.queue_free()
 	for card_data in hand_cards:

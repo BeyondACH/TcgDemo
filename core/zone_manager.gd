@@ -1,6 +1,12 @@
 extends RefCounted
 class_name ZoneManager
 
+const UATypes = preload("res://core/ua_types.gd")
+const PlayerState = preload("res://data/player_state.gd")
+const GameState = preload("res://data/game_state.gd")
+const CardInstance = preload("res://data/card_instance.gd")
+
+# 根据区域枚举返回玩家对应的卡牌列表引用，供移动和查询复用。
 func get_zone_array(player: PlayerState, zone: int):
 	match zone:
 		UATypes.Zone.DECK:
@@ -44,6 +50,7 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 	card.zone = to_zone as UATypes.Zone
 	card.controller_player_id = target_player_id
 
+# 抽牌只负责从牌库移到手牌，不在这里处理抽空牌库导致的败北。
 func draw_card(state: GameState, player_id: String) -> String:
 	var player: PlayerState = state.get_player(player_id)
 	if player == null or player.deck.is_empty():
@@ -75,6 +82,7 @@ func add_ap(player: PlayerState, total_slots: int) -> void:
 	while player.ap_area.size() < mini(total_slots, UATypes.MAX_AP):
 		player.ap_area.append({"index": player.ap_area.size(), "active": true})
 
+# AP 消耗按顺序横置可用槽位，当前不区分不同来源的 AP。
 func spend_ap(player: PlayerState, amount: int) -> bool:
 	if player.ap_active_count() < amount:
 		return false

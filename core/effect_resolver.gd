@@ -1,5 +1,10 @@
-﻿extends RefCounted
+extends RefCounted
 class_name EffectResolver
+
+const UATypes = preload("res://core/ua_types.gd")
+const ZoneManager = preload("res://core/zone_manager.gd")
+const VictoryChecker = preload("res://core/victory_checker.gd")
+const GameState = preload("res://data/game_state.gd")
 
 var zone_manager: ZoneManager
 var victory_checker: VictoryChecker
@@ -8,7 +13,7 @@ func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker) -> vo
 	zone_manager = p_zone_manager
 	victory_checker = p_victory_checker
 
-# Resolves the small effect set used by the prototype.
+# 结算当前原型支持的少量效果类型。
 func resolve_operations(state: GameState, source_card_uid: String, effect_list: Array[Dictionary], context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
 	for effect in effect_list:
@@ -49,6 +54,7 @@ func resolve_operations(state: GameState, source_card_uid: String, effect_list: 
 				logs.append("Reserved unsupported effect type: %s" % effect_type)
 	return logs
 
+# 触发器本身只负责筛选匹配的触发项，实际操作仍复用统一的效果结算入口。
 func resolve_trigger(source_card_uid: String, trigger_type: int, state: GameState, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
 	var source_card := state.get_card(source_card_uid)
@@ -66,6 +72,7 @@ func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> 
 	var logs: Array[String] = []
 	if player_id == "":
 		return logs
+	# 当前“受伤”表现为从生命区翻入场外区，并为这些牌补触发生命触发。
 	var moved := zone_manager.mill_life_to_outside(state, player_id, amount)
 	logs.append("%s takes %d damage." % [player_id, amount])
 	for life_uid in moved:

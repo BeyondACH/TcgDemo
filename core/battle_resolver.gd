@@ -1,5 +1,13 @@
-﻿extends RefCounted
+extends RefCounted
 class_name BattleResolver
+
+const UATypes = preload("res://core/ua_types.gd")
+const RulesEngine = preload("res://core/rules_engine.gd")
+const ZoneManager = preload("res://core/zone_manager.gd")
+const EffectResolver = preload("res://core/effect_resolver.gd")
+const GameState = preload("res://data/game_state.gd")
+const CardInstance = preload("res://data/card_instance.gd")
+const CardDef = preload("res://data/card_def.gd")
 
 var rules_engine: RulesEngine
 var zone_manager: ZoneManager
@@ -10,7 +18,7 @@ func _init(p_rules_engine: RulesEngine, p_zone_manager: ZoneManager, p_effect_re
 	zone_manager = p_zone_manager
 	effect_resolver = p_effect_resolver
 
-# Returns blockers available for the declared attack.
+# 攻击宣言阶段只做攻击合法性检查，并把可阻挡者列表返回给 UI。
 func declare_attack(state: GameState, attacker_uid: String) -> Dictionary:
 	var attacker := state.get_card(attacker_uid)
 	if attacker == null:
@@ -27,7 +35,7 @@ func declare_attack(state: GameState, attacker_uid: String) -> Dictionary:
 		"blockers": blockers,
 	}
 
-# Resolves the minimum UA battle flow: optional block, BP compare, or player damage.
+# 结算当前原型中的最小战斗流程：阻挡可选，阻挡后比 BP，未阻挡则直接打玩家。
 func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -> Array[String]:
 	var logs: Array[String] = []
 	var attacker: CardInstance = state.get_card(attacker_uid)
@@ -59,6 +67,8 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		blocker.flags["blocked_this_turn"] = true
 		logs.append("%s blocks." % blocker_def.name)
 		logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_BLOCK, state))
+		# 当前实现只有“攻击者 BP 足够则击退阻挡者”这一层，
+		# 尚未处理双败、反击伤害或更多关键字规则。
 		if attacker.current_bp >= blocker.current_bp:
 			zone_manager.move_card(state, blocker_uid, UATypes.Zone.OUTSIDE)
 			logs.append("%s wins the battle. %s is moved to outside." % [attacker_def.name, blocker_def.name])
