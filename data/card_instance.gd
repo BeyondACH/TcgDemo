@@ -15,6 +15,7 @@ var flags := {
 	"attacked_this_turn": false,
 	"blocked_this_turn": false,
 	"activated_main_this_turn": false,
+	"entered_via_raid": false,
 }
 var stacked_under: Array[String] = []
 

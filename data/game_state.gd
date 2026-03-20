@@ -6,7 +6,6 @@ const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
 
-# 对局全局状态容器，负责集中保存玩家、卡牌、回合和日志信息。
 var turn_number := 1
 var active_player_id := UATypes.PLAYER_ONE
 var priority_player_id := UATypes.PLAYER_ONE
@@ -17,6 +16,9 @@ var card_defs := {}
 var logs: Array[String] = []
 var winner_player_id := ""
 var loser_player_id := ""
+var delayed_effects: Array = []
+var static_modifiers: Array = []
+var _runtime_id_seed := 1
 
 func get_player(player_id: String) -> PlayerState:
 	return players.get(player_id)
@@ -29,6 +31,10 @@ func get_card_def(def_id: String) -> CardDef:
 
 func add_log(text: String) -> void:
 	logs.append(text)
-	# 保持日志长度可控，避免长对局持续堆积文本。
 	if logs.size() > 100:
 		logs.pop_front()
+
+func next_runtime_id(prefix := "runtime") -> String:
+	var result := "%s_%d" % [prefix, _runtime_id_seed]
+	_runtime_id_seed += 1
+	return result

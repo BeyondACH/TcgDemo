@@ -34,6 +34,7 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 	var card: CardInstance = state.get_card(card_uid)
 	if card == null:
 		return
+	_release_stacked_under_if_leaving_field(state, card, to_zone)
 	var from_player: PlayerState = state.get_player(card.controller_player_id)
 	var target_player_id := card.controller_player_id
 	if to_player_id != "":
@@ -49,6 +50,37 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 		to_array.append(card_uid)
 	card.zone = to_zone as UATypes.Zone
 	card.controller_player_id = target_player_id
+
+func stack_card_on_target(state: GameState, top_card_uid: String, base_card_uid: String, target_zone: int) -> Dictionary:
+	var top_card: CardInstance = state.get_card(top_card_uid)
+	var base_card: CardInstance = state.get_card(base_card_uid)
+	if top_card == null or base_card == null:
+		return {"ok": false, "reason": "missing_card"}
+	var top_player: PlayerState = state.get_player(top_card.controller_player_id)
+	var base_player: PlayerState = state.get_player(base_card.controller_player_id)
+	if top_player == null or base_player == null:
+		return {"ok": false, "reason": "missing_player"}
+	var top_from_array = get_zone_array(top_player, top_card.zone)
+	if top_from_array != null:
+		top_from_array.erase(top_card_uid)
+	var base_from_array = get_zone_array(base_player, base_card.zone)
+	var base_zone := base_card.zone
+	var base_state := base_card.state
+	if base_from_array != null:
+		base_from_array.erase(base_card_uid)
+	var target_array = get_zone_array(base_player, target_zone)
+	if target_array != null:
+		target_array.append(top_card_uid)
+	top_card.zone = target_zone
+	top_card.controller_player_id = base_card.controller_player_id
+	top_card.owner_player_id = top_card.owner_player_id
+	top_card.state = UATypes.CardState.ACTIVE if base_state == UATypes.CardState.RESTED else base_state
+	top_card.stacked_under.append(base_card_uid)
+	top_card.stacked_under.append_array(base_card.stacked_under)
+	base_card.stacked_under.clear()
+	base_card.zone = target_zone
+	base_card.state = UATypes.CardState.RESTED
+	return {"ok": true, "target_zone": target_zone}
 
 # 抽牌只负责从牌库移到手牌，不在这里处理抽空牌库导致的败北。
 func draw_card(state: GameState, player_id: String) -> String:
@@ -117,3 +149,15 @@ func reset_turn_flags(state: GameState, player_id: String) -> void:
 			var card: CardInstance = state.get_card(card_uid)
 			if card != null:
 				card.reset_turn_flags()
+
+func _release_stacked_under_if_leaving_field(state: GameState, card: CardInstance, to_zone: int) -> void:
+	if card.stacked_under.is_empty():
+		return
+	var from_field := card.zone == UATypes.Zone.FRONT_LINE or card.zone == UATypes.Zone.ENERGY_LINE
+	var to_field := to_zone == UATypes.Zone.FRONT_LINE or to_zone == UATypes.Zone.ENERGY_LINE
+	if not from_field or to_field:
+		return
+	var stacked_copy: Array[String] = card.stacked_under.duplicate()
+	card.stacked_under.clear()
+	for stacked_uid in stacked_copy:
+		move_card(state, stacked_uid, UATypes.Zone.OUTSIDE, card.controller_player_id)

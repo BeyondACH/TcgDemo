@@ -17,6 +17,12 @@
 - 任何代码实现、测试、重构、示例数据、注释说明，只要与 `rule.md` 冲突，都必须以 `rule.md` 为准。
 - 如果用户需求与 `rule.md` 冲突，不要直接实现冲突方案；先指出冲突点，再给出遵循 `rule.md` 的实现建议。
 
+### 开发计划文件
+
+- 项目当前的正式开发计划保存在 `docs/plan/project_development_plan.md`。
+- 主 agent 在进入需求拆分、接口冻结、并行分工、阶段验收前，应先对齐该计划与 `docs/rules/rule.md`。
+- 如果新的需求会改变里程碑优先级、接口冻结项或测试策略，应先更新 `docs/plan/project_development_plan.md`，再组织多 agent 实施。
+
 ### 当前目录职责
 
 - `core/`：回合流程、规则校验、战斗、效果结算、胜负判断、区域管理

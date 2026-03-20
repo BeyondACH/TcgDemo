@@ -49,34 +49,55 @@ func setup_game() -> void:
 func advance_phase() -> void:
 	if _has_winner():
 		return
+	if game_state.phase == UATypes.Phase.END:
+		effect_resolver.cleanup_turn_expirations(game_state, game_state.active_player_id)
 	_apply_logs(turn_manager.advance_phase(game_state))
 	emit_state_changed()
 
 # UI 发起的出牌统一入口，负责校验、支付 AP、落位和触发效果。
-func play_card(card_uid: String, target_zone: int) -> void:
+func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> void:
 	if _has_winner():
 		return
 	var card: CardInstance = game_state.get_card(card_uid)
 	if card == null:
 		return
-	var validation: Dictionary = rules_engine.can_play_card(game_state, game_state.active_player_id, card_uid, target_zone)
+	var play_modifiers := effect_resolver.preview_play_modifiers(game_state, game_state.active_player_id, card_uid, {
+		"target_player_id": game_state.active_player_id,
+		"target_zone": target_zone,
+	})
+	var validation: Dictionary = rules_engine.can_play_card(game_state, game_state.active_player_id, card_uid, target_zone, play_modifiers, options)
 	if not bool(validation.get("ok", false)):
 		_apply_logs(["Cannot play card: %s" % validation.get("reason", "unknown")])
 		emit_state_changed()
 		return
 	var player: PlayerState = game_state.get_player(game_state.active_player_id)
 	var card_def: CardDef = game_state.get_card_def(card.def_id)
-	zone_manager.spend_ap(player, card_def.cost_ap)
+	var effective_cost_ap := int(validation.get("cost_ap", play_modifiers.get("cost_ap", card_def.cost_ap)))
+	zone_manager.spend_ap(player, effective_cost_ap)
+	var special_play: Dictionary = validation.get("special_play", {})
 	match card_def.card_type:
 		UATypes.CardType.CHARACTER, UATypes.CardType.FIELD:
-			zone_manager.move_card(game_state, card_uid, target_zone)
-			card.state = UATypes.CardState.RESTED
-			_apply_logs(["%s plays %s to %s." % [game_state.active_player_id, card_def.name, UATypes.zone_to_key(target_zone)]])
+			if str(special_play.get("mode", "NORMAL")) == "RAID":
+				var raid_target_uid := str(special_play.get("raid_target_uid", ""))
+				var raid_target_zone := int(special_play.get("target_zone", target_zone))
+				var raid_result := zone_manager.stack_card_on_target(game_state, card_uid, raid_target_uid, raid_target_zone)
+				if not bool(raid_result.get("ok", false)):
+					_apply_logs(["Cannot play card: %s" % str(raid_result.get("reason", "raid_failed"))])
+					emit_state_changed()
+					return
+				card.flags["entered_via_raid"] = true
+				_apply_logs(["%s raids onto %s and stays in %s." % [card_def.name, raid_target_uid, UATypes.zone_to_key(raid_target_zone)]])
+			else:
+				zone_manager.move_card(game_state, card_uid, target_zone)
+				card.state = UATypes.CardState.RESTED
+				card.flags["entered_via_raid"] = false
+				_apply_logs(["%s plays %s to %s." % [game_state.active_player_id, card_def.name, UATypes.zone_to_key(target_zone)]])
 			_apply_logs(effect_resolver.resolve_trigger(card_uid, UATypes.TriggerType.ON_ENTER, game_state, {"target_player_id": game_state.active_player_id}))
 		UATypes.CardType.EVENT:
 			_apply_logs(["%s uses event %s." % [game_state.active_player_id, card_def.name]])
 			_apply_logs(effect_resolver.resolve_operations(game_state, card_uid, card_def.effects, {"target_player_id": game_state.active_player_id}))
 			zone_manager.move_card(game_state, card_uid, UATypes.Zone.OUTSIDE)
+	effect_resolver.commit_play_modifiers(game_state, play_modifiers)
 	emit_state_changed()
 
 func move_energy_to_front(card_uid: String) -> void:

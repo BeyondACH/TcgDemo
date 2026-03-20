@@ -70,8 +70,12 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		# 当前实现只有“攻击者 BP 足够则击退阻挡者”这一层，
 		# 尚未处理双败、反击伤害或更多关键字规则。
 		if attacker.current_bp >= blocker.current_bp:
-			zone_manager.move_card(state, blocker_uid, UATypes.Zone.OUTSIDE)
-			logs.append("%s wins the battle. %s is moved to outside." % [attacker_def.name, blocker_def.name])
+			logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_LEAVE, state, {"target_player_id": blocker.controller_player_id}))
+			if blocker.zone == UATypes.Zone.FRONT_LINE:
+				zone_manager.move_card(state, blocker_uid, UATypes.Zone.OUTSIDE)
+				logs.append("%s wins the battle. %s is moved to outside." % [attacker_def.name, blocker_def.name])
+			else:
+				logs.append("%s wins the battle. %s leaves the field." % [attacker_def.name, blocker_def.name])
 		else:
 			logs.append("%s fails to defeat %s." % [attacker_def.name, blocker_def.name])
 	else:

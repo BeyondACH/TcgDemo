@@ -1,0 +1,38 @@
+[
+  {
+	"id": "UA31BT_MMM_1_002",
+	"name": "アルティメットまどか",
+	"card_type": "CHARACTER",
+	"title_code": "MMM",
+	"number": "UA31BT/MMM-1-002",
+	"traits": ["鹿目 まどか", "魔法少女", "円環の理"],
+	"cost_energy": {"YELLOW": 7},
+	"cost_ap": 1,
+	"energy_provided": {"YELLOW": 1},
+	"bp": 5000,
+	"keywords": ["RAID"],
+	"effects": [],
+	"trigger_effects": [
+	  {
+		"trigger": "ON_ENTER",
+		"operations": [],
+		"text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。"
+	  },
+	  {
+		"trigger": "ON_LEAVE",
+		"operations": [
+		  {"type": "MOVE_ZONE", "to_zone": 7}
+		],
+		"text": "退場時、このキャラをリムーブエリアに置く。"
+	  }
+	],
+	"meta": {
+	  "color": "YELLOW",
+	  "raid_target_name": "鹿目 まどか",
+	  "raid_rule_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+	  "support_text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。",
+	  "source_image_extraction": true,
+	  "ocr_confidence": "medium"
+	}
+  }
+]

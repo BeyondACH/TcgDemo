@@ -3,6 +3,7 @@ extends SceneTree
 const UATypes = preload("res://core/ua_types.gd")
 const GameManager = preload("res://core/game_manager.gd")
 const PlayerState = preload("res://data/player_state.gd")
+const CardInstance = preload("res://data/card_instance.gd")
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -15,6 +16,8 @@ func _init() -> void:
 	_run_test("攻击造成伤害", _test_attack_damage)
 	_run_test("生命归零胜负", _test_life_zero_victory)
 	_run_test("空牌库抽牌败北", _test_deck_out_loss)
+	_run_test("RAID 突进叠放", _test_raid_stack_play)
+	_run_test("RAID 框内效果门控", _test_raid_inner_effect_gate)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
 
@@ -72,7 +75,6 @@ func _find_card_in_zones(manager: GameManager, player_id: String, def_id: String
 	return ""
 
 func _ensure_card_in_hand(manager: GameManager, player_id: String, def_id: String) -> String:
-	var player: PlayerState = _player(manager, player_id)
 	var card_uid := _find_card_in_zones(manager, player_id, def_id, ["hand"])
 	if card_uid != "":
 		return card_uid
@@ -91,6 +93,25 @@ func _put_card_on_front(manager: GameManager, player_id: String, def_id: String,
 	if card != null:
 		card.state = UATypes.CardState.ACTIVE if active else UATypes.CardState.RESTED
 	return card_uid
+
+func _spawn_card(manager: GameManager, player_id: String, def_id: String, zone: int, active := true) -> String:
+	var player: PlayerState = _player(manager, player_id)
+	var card_def = manager.game_state.get_card_def(def_id)
+	if player == null or card_def == null:
+		return ""
+	var card := CardInstance.new()
+	card.uid = "%s_custom_%s_%d" % [player_id, def_id, manager.game_state.cards.size()]
+	card.def_id = def_id
+	card.owner_player_id = player_id
+	card.controller_player_id = player_id
+	card.zone = zone
+	card.state = UATypes.CardState.ACTIVE if active else UATypes.CardState.RESTED
+	card.current_bp = card_def.bp
+	manager.game_state.cards[card.uid] = card
+	var zone_cards = manager.zone_manager.get_zone_array(player, zone)
+	if zone_cards != null:
+		zone_cards.append(card.uid)
+	return card.uid
 
 func _test_setup_game() -> Dictionary:
 	var manager := _new_manager()
@@ -218,4 +239,116 @@ func _test_deck_out_loss() -> Dictionary:
 	manager.turn_manager.begin_turn(manager.game_state)
 	if manager.game_state.winner_player_id != UATypes.PLAYER_TWO:
 		return _fail("P1 抽空牌库失败后应判定 P2 获胜")
+	return _ok()
+
+func _test_raid_stack_play() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var p1 := _player(manager, UATypes.PLAYER_ONE)
+	p1.ap_area = [
+		{"index": 0, "active": true},
+		{"index": 1, "active": true},
+		{"index": 2, "active": true}
+	]
+	for i in range(6):
+		_spawn_card(manager, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, true)
+	var base_uid := _spawn_card(manager, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, false)
+	var raid_uid := _spawn_card(manager, UATypes.PLAYER_ONE, "UA31BT_MMM_1_002", UATypes.Zone.HAND, true)
+	if base_uid == "" or raid_uid == "":
+		return _fail("RAID 测试卡牌创建失败")
+	manager.play_card(raid_uid, UATypes.Zone.ENERGY_LINE, {"raid_target_uid": base_uid})
+	var raid_card = manager.game_state.get_card(raid_uid)
+	if raid_card == null:
+		return _fail("RAID 后未找到上层卡")
+	if raid_card.zone != UATypes.Zone.ENERGY_LINE:
+		return _fail("选择留在能量线时，RAID 后上层卡应仍在能量线")
+	if raid_card.state != UATypes.CardState.ACTIVE:
+		return _fail("突进到底层休息角色上时，上层卡应转为 ACTIVE")
+	if not raid_card.stacked_under.has(base_uid):
+		return _fail("RAID 后应保留 stacked_under")
+	if p1.energy_line.count(raid_uid) != 1:
+		return _fail("选择留在能量线时，上层卡应在能量线")
+	if p1.front_line.has(raid_uid):
+		return _fail("选择留在能量线时，上层卡不应进入前线")
+	if p1.energy_line.has(base_uid):
+		return _fail("RAID 后下层卡不应继续单独留在能量线")
+	manager.zone_manager.move_card(manager.game_state, raid_uid, UATypes.Zone.OUTSIDE, UATypes.PLAYER_ONE)
+	if not p1.outside.has(raid_uid):
+		return _fail("RAID 上层离场后应进入场外")
+	if not p1.outside.has(base_uid):
+		return _fail("RAID 下层卡在上层离场后应返回场外")
+
+	var manager_front := _new_manager()
+	manager_front.game_state.phase = UATypes.Phase.MAIN
+	var p1_front := _player(manager_front, UATypes.PLAYER_ONE)
+	p1_front.ap_area = [
+		{"index": 0, "active": true},
+		{"index": 1, "active": true},
+		{"index": 2, "active": true}
+	]
+	for i in range(6):
+		_spawn_card(manager_front, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, true)
+	var base_uid_front := _spawn_card(manager_front, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, false)
+	var raid_uid_front := _spawn_card(manager_front, UATypes.PLAYER_ONE, "UA31BT_MMM_1_002", UATypes.Zone.HAND, true)
+	manager_front.play_card(raid_uid_front, UATypes.Zone.FRONT_LINE, {"raid_target_uid": base_uid_front})
+	var raid_card_front = manager_front.game_state.get_card(raid_uid_front)
+	if raid_card_front == null:
+		return _fail("选择转前线时，RAID 后未找到上层卡")
+	if raid_card_front.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("选择转前线时，RAID 后上层卡应进入前线")
+	if p1_front.front_line.count(raid_uid_front) != 1:
+		return _fail("选择转前线时，上层卡应在前线")
+	if p1_front.energy_line.has(raid_uid_front):
+		return _fail("选择转前线时，上层卡不应继续留在能量线")
+	return _ok()
+
+func _test_raid_inner_effect_gate() -> Dictionary:
+	var manager_normal := _new_manager()
+	manager_normal.game_state.phase = UATypes.Phase.MAIN
+	var p1_normal := _player(manager_normal, UATypes.PLAYER_ONE)
+	p1_normal.ap_area = [
+		{"index": 0, "active": true},
+		{"index": 1, "active": true},
+		{"index": 2, "active": true}
+	]
+	for i in range(7):
+		_spawn_card(manager_normal, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, true)
+	var outside_uid := _spawn_card(manager_normal, UATypes.PLAYER_ONE, "UA_CHAR_BASIC", UATypes.Zone.OUTSIDE, true)
+	var raid_normal_uid := _spawn_card(manager_normal, UATypes.PLAYER_ONE, "UA31BT_MMM_1_002", UATypes.Zone.HAND, true)
+	if outside_uid == "" or raid_normal_uid == "":
+		return _fail("普通登场门控测试卡牌创建失败")
+	manager_normal.play_card(raid_normal_uid, UATypes.Zone.FRONT_LINE)
+	var normal_card = manager_normal.game_state.get_card(raid_normal_uid)
+	if normal_card == null:
+		return _fail("普通登场后未找到 RAID 卡")
+	if bool(normal_card.flags.get("entered_via_raid", false)):
+		return _fail("普通登场不应标记为 entered_via_raid")
+	if p1_normal.outside.has(outside_uid) == false:
+		return _fail("普通登场时，框内效果不应把场外角色移除")
+	if p1_normal.removed.has(outside_uid):
+		return _fail("普通登场时，框内效果不应生效到移除区")
+
+	var manager_raid := _new_manager()
+	manager_raid.game_state.phase = UATypes.Phase.MAIN
+	var p1_raid := _player(manager_raid, UATypes.PLAYER_ONE)
+	p1_raid.ap_area = [
+		{"index": 0, "active": true},
+		{"index": 1, "active": true},
+		{"index": 2, "active": true}
+	]
+	for i in range(7):
+		_spawn_card(manager_raid, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, true)
+	var base_uid := _spawn_card(manager_raid, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.FRONT_LINE, true)
+	var outside_uid_raid := _spawn_card(manager_raid, UATypes.PLAYER_ONE, "UA_CHAR_BASIC", UATypes.Zone.OUTSIDE, true)
+	var raid_uid := _spawn_card(manager_raid, UATypes.PLAYER_ONE, "UA31BT_MMM_1_002", UATypes.Zone.HAND, true)
+	if base_uid == "" or outside_uid_raid == "" or raid_uid == "":
+		return _fail("突进门控测试卡牌创建失败")
+	manager_raid.play_card(raid_uid, UATypes.Zone.FRONT_LINE, {"raid_target_uid": base_uid})
+	var raid_card = manager_raid.game_state.get_card(raid_uid)
+	if raid_card == null:
+		return _fail("突进后未找到 RAID 卡")
+	if not bool(raid_card.flags.get("entered_via_raid", false)):
+		return _fail("通过突进登场后应标记 entered_via_raid")
+	if not p1_raid.removed.has(outside_uid_raid):
+		return _fail("通过突进登场时，框内效果应把场外角色移到移除区")
 	return _ok()

@@ -14,7 +14,7 @@ func _init(p_zone_manager: ZoneManager) -> void:
 	zone_manager = p_zone_manager
 
 # 校验手牌能否被打到目标区域。
-func can_play_card(state: GameState, player_id: String, card_uid: String, target_zone: int) -> Dictionary:
+func can_play_card(state: GameState, player_id: String, card_uid: String, target_zone: int, play_modifiers: Dictionary = {}, options: Dictionary = {}) -> Dictionary:
 	var player: PlayerState = state.get_player(player_id)
 	var card: CardInstance = state.get_card(card_uid)
 	if player == null or card == null:
@@ -23,12 +23,18 @@ func can_play_card(state: GameState, player_id: String, card_uid: String, target
 		return {"ok": false, "reason": "not_active_player"}
 	if state.phase != UATypes.Phase.MAIN:
 		return {"ok": false, "reason": "wrong_phase"}
-	if card.zone != UATypes.Zone.HAND:
-		return {"ok": false, "reason": "not_in_hand"}
+	var allow_current_zone := bool(play_modifiers.get("allow_current_zone", false))
+	if card.zone != UATypes.Zone.HAND and not allow_current_zone:
+		return {"ok": false, "reason": "not_in_playable_zone"}
 	var card_def: CardDef = state.get_card_def(card.def_id)
 	if card_def == null:
 		return {"ok": false, "reason": "missing_def"}
-	if not _can_pay_ap(player, card_def.cost_ap):
+	var raid_validation := _validate_special_play_rule(state, player_id, card, card_def, target_zone, options)
+	if not bool(raid_validation.get("ok", false)):
+		return raid_validation
+	var is_raid_play := str(raid_validation.get("mode", "NORMAL")) == "RAID"
+	var effective_cost_ap := int(play_modifiers.get("cost_ap", card_def.cost_ap))
+	if not _can_pay_ap(player, effective_cost_ap):
 		return {"ok": false, "reason": "not_enough_ap"}
 	if not _has_required_energy(state, player, card_def.cost_energy):
 		return {"ok": false, "reason": "not_enough_energy"}
@@ -36,9 +42,9 @@ func can_play_card(state: GameState, player_id: String, card_uid: String, target
 		UATypes.CardType.CHARACTER:
 			if target_zone != UATypes.Zone.FRONT_LINE and target_zone != UATypes.Zone.ENERGY_LINE:
 				return {"ok": false, "reason": "bad_character_zone"}
-			if target_zone == UATypes.Zone.FRONT_LINE and player.front_line.size() >= UATypes.MAX_FRONT_LINE:
+			if not is_raid_play and target_zone == UATypes.Zone.FRONT_LINE and player.front_line.size() >= UATypes.MAX_FRONT_LINE:
 				return {"ok": false, "reason": "front_line_full"}
-			if target_zone == UATypes.Zone.ENERGY_LINE and player.energy_line.size() >= UATypes.MAX_ENERGY_LINE:
+			if not is_raid_play and target_zone == UATypes.Zone.ENERGY_LINE and player.energy_line.size() >= UATypes.MAX_ENERGY_LINE:
 				return {"ok": false, "reason": "energy_line_full"}
 		UATypes.CardType.FIELD:
 			if target_zone != UATypes.Zone.ENERGY_LINE:
@@ -48,7 +54,7 @@ func can_play_card(state: GameState, player_id: String, card_uid: String, target
 		UATypes.CardType.EVENT:
 			if target_zone != UATypes.Zone.OUTSIDE:
 				return {"ok": false, "reason": "event_resolves_to_outside"}
-	return {"ok": true}
+	return {"ok": true, "cost_ap": effective_cost_ap, "special_play": raid_validation}
 
 # 移动阶段允许把能量区里的角色移到前线，场地牌和事件牌都不适用该规则。
 func can_move_energy_to_front(state: GameState, player_id: String, card_uid: String) -> Dictionary:
@@ -128,3 +134,45 @@ func _has_required_energy(state: GameState, player: PlayerState, cost: Dictionar
 		if int(pool.get(color, 0)) < int(cost.get(color, 0)):
 			return false
 	return true
+
+func _validate_special_play_rule(state: GameState, player_id: String, card: CardInstance, card_def: CardDef, target_zone: int, options: Dictionary) -> Dictionary:
+	if card_def.special_play_rule.is_empty():
+		return {"ok": true, "mode": "NORMAL"}
+	if str(card_def.special_play_rule.get("type", "")) != "RAID":
+		return {"ok": true, "mode": "NORMAL"}
+	var raid_target_uid := str(options.get("raid_target_uid", ""))
+	if raid_target_uid == "":
+		return {"ok": true, "mode": "NORMAL"}
+	var raid_target: CardInstance = state.get_card(raid_target_uid)
+	if raid_target == null:
+		return {"ok": false, "reason": "raid_target_missing"}
+	if raid_target.controller_player_id != player_id:
+		return {"ok": false, "reason": "raid_target_wrong_controller"}
+	if raid_target.zone != UATypes.Zone.FRONT_LINE and raid_target.zone != UATypes.Zone.ENERGY_LINE:
+		return {"ok": false, "reason": "raid_target_bad_zone"}
+	var raid_target_def: CardDef = state.get_card_def(raid_target.def_id)
+	if raid_target_def == null:
+		return {"ok": false, "reason": "raid_target_missing_def"}
+	if raid_target_def.card_type != UATypes.CardType.CHARACTER:
+		return {"ok": false, "reason": "raid_target_not_character"}
+	var required_name := str(card_def.special_play_rule.get("raid_target_name", ""))
+	if required_name != "" and raid_target_def.name != required_name:
+		return {"ok": false, "reason": "raid_target_name_mismatch"}
+	var resolved_target_zone := target_zone
+	if raid_target.zone == UATypes.Zone.FRONT_LINE:
+		if target_zone != UATypes.Zone.FRONT_LINE:
+			return {"ok": false, "reason": "raid_target_zone_locked_front"}
+		resolved_target_zone = UATypes.Zone.FRONT_LINE
+	elif raid_target.zone == UATypes.Zone.ENERGY_LINE:
+		if target_zone != UATypes.Zone.FRONT_LINE and target_zone != UATypes.Zone.ENERGY_LINE:
+			return {"ok": false, "reason": "raid_bad_target_zone"}
+		var player: PlayerState = state.get_player(player_id)
+		if target_zone == UATypes.Zone.FRONT_LINE and player != null and player.front_line.size() >= UATypes.MAX_FRONT_LINE:
+			return {"ok": false, "reason": "front_line_full"}
+	return {
+		"ok": true,
+		"mode": "RAID",
+		"raid_target_uid": raid_target_uid,
+		"raid_target_zone": raid_target.zone,
+		"target_zone": resolved_target_zone,
+	}

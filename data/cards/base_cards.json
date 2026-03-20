@@ -1,100 +1,264 @@
 [
   {
-	"id": "UA_CHAR_BASIC",
-	"name": "基础角色",
-	"card_type": "CHARACTER",
-	"title_code": "TST",
-	"number": "TST-1-001",
-	"traits": ["测试角色"],
-	"cost_energy": {},
-	"cost_ap": 1,
-	"energy_provided": {"GREEN": 1},
-	"bp": 3000,
-	"keywords": [],
-	"effects": [],
-	"trigger_effects": []
+    "id": "UA_CHAR_BASIC",
+    "name": "基础角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-1-001",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": []
   },
   {
-	"id": "UA_FIELD_BASIC",
-	"name": "基础场地",
-	"card_type": "FIELD",
-	"title_code": "TST",
-	"number": "TST-1-002",
-	"traits": ["测试场地"],
-	"cost_energy": {"GREEN": 1},
-	"cost_ap": 1,
-	"energy_provided": {"GREEN": 1},
-	"bp": 0,
-	"keywords": [],
-	"effects": [],
-	"trigger_effects": []
+    "id": "UA_FIELD_BASIC",
+    "name": "基础场地",
+    "card_type": "FIELD",
+    "title_code": "TST",
+    "number": "TST-1-002",
+    "traits": [
+      "测试场地"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": []
   },
   {
-	"id": "UA_EVENT_DRAW",
-	"name": "基础事件",
-	"card_type": "EVENT",
-	"title_code": "TST",
-	"number": "TST-1-003",
-	"traits": ["测试事件"],
-	"cost_energy": {"GREEN": 1},
-	"cost_ap": 1,
-	"energy_provided": {},
-	"bp": 0,
-	"keywords": [],
-	"effects": [
-	  {"type": "DRAW", "value": 1}
-	],
-	"trigger_effects": []
+    "id": "UA_EVENT_DRAW",
+    "name": "基础事件",
+    "card_type": "EVENT",
+    "title_code": "TST",
+    "number": "TST-1-003",
+    "traits": [
+      "测试事件"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "type": "DRAW",
+        "value": 1
+      }
+    ],
+    "trigger_effects": []
   },
   {
-	"id": "UA_CHAR_HEAVY",
-	"name": "高BP角色",
-	"card_type": "CHARACTER",
-	"title_code": "TST",
-	"number": "TST-2-001",
-	"traits": ["测试角色"],
-	"cost_energy": {"GREEN": 1},
-	"cost_ap": 1,
-	"energy_provided": {"GREEN": 1},
-	"bp": 4000,
-	"keywords": [],
-	"effects": [],
-	"trigger_effects": []
+    "id": "UA_CHAR_HEAVY",
+    "name": "高BP角色",
+    "card_type": "CHARACTER",
+    "title_code": "TST",
+    "number": "TST-2-001",
+    "traits": [
+      "测试角色"
+    ],
+    "cost_energy": {
+      "GREEN": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "GREEN": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": []
   },
   {
-	"id": "UA31BT_MMM_1_002",
-	"name": "アルティメットまどか",
-	"card_type": "CHARACTER",
-	"title_code": "MMM",
-	"number": "UA31BT/MMM-1-002",
-	"traits": ["鹿目 まどか", "魔法少女", "円環の理"],
-	"cost_energy": {"YELLOW": 7},
-	"cost_ap": 1,
-	"energy_provided": {"YELLOW": 1},
-	"bp": 5000,
-	"keywords": ["RAID"],
-	"effects": [],
-	"trigger_effects": [
-	  {
-		"trigger": "ON_ENTER",
-		"operations": [],
-		"text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。"
-	  },
-	  {
-		"trigger": "ON_LEAVE",
-		"operations": [
-		  {"type": "MOVE_ZONE", "to_zone": 7}
-		],
-		"text": "退場時、このキャラをリムーブエリアに置く。"
-	  }
-	],
-	"meta": {
-	  "color": "YELLOW",
-	  "raid_target_name": "鹿目 まどか",
-	  "raid_rule_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
-	  "support_text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。",
-	  "source_image_extraction": true,
-	  "ocr_confidence": "medium"
-	}
+    "id": "UA_MMM_BASE_MADOKA",
+    "name": "鹿目 まどか",
+    "card_type": "CHARACTER",
+    "title_code": "MMM",
+    "number": "UA31BT/MMM-0-001",
+    "traits": [
+      "鹿目 まどか",
+      "魔法少女"
+    ],
+    "cost_energy": {
+      "YELLOW": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": []
+  },
+  {
+    "id": "UA31BT_MMM_1_002",
+    "name": "アルティメットまどか",
+    "card_type": "CHARACTER",
+    "title_code": "MMM",
+    "number": "UA31BT/MMM-1-002",
+    "traits": [
+      "鹿目 まどか",
+      "魔法少女",
+      "円環の理"
+    ],
+    "cost_energy": {
+      "YELLOW": 7
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 5000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "effect_box": "RAID_INNER",
+        "operations": [],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_cards",
+            "target": {
+              "type": "CARD_SET",
+              "from_zone": "OUTSIDE",
+              "owner": "SELF",
+              "filters": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 2
+            }
+          },
+          {
+            "type": "FOR_EACH",
+            "items_var": "selected_cards",
+            "current_var": "current_item",
+            "steps": [
+              {
+                "type": "MOVE_ZONE",
+                "target": {
+                  "type": "CURRENT_ITEM"
+                },
+                "to": "REMOVED"
+              }
+            ]
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_PLAY_CARD",
+            "once": true,
+            "expires": "END_OF_TURN",
+            "filters": [
+              {
+                "type": "PLAYED_FROM_ZONE_IS",
+                "value": "REMOVED"
+              }
+            ],
+            "steps": [
+              {
+                "type": "MODIFY_PLAY_COST_AP",
+                "value": -1
+              }
+            ]
+          }
+        ],
+        "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。"
+      },
+      {
+        "trigger": "ON_LEAVE",
+        "operations": [
+          {
+            "type": "MOVE_ZONE",
+            "to_zone": 7
+          }
+        ],
+        "steps": [
+          {
+            "type": "MOVE_ZONE",
+            "to": "REMOVED"
+          }
+        ],
+        "text": "退场时，这个角色放置到移除区。"
+      },
+      {
+        "trigger": "ON_ENTER",
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "PLAY_PERMISSION",
+            "while": [
+              {
+                "type": "SELF_IN_ZONE",
+                "zone": "FRONT_LINE"
+              }
+            ],
+            "from_zone": "REMOVED",
+            "owner": "SELF",
+            "filters": [
+              {
+                "type": "NAME_NOT",
+                "value": "鹿目 まどか"
+              },
+              {
+                "type": "NOT_HAS_KEYWORD",
+                "value": "RAID"
+              },
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "HAS_TRAIT",
+                    "value": "魔法少女"
+                  },
+                  {
+                    "type": "HAS_TRAIT",
+                    "value": "円環の理"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。"
+      }
+    ],
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "鹿目 まどか",
+      "allow_from_hand": true,
+      "require_full_energy": true,
+      "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+    },
+    "meta": {
+      "color": "YELLOW",
+      "raid_target_name": "鹿目 まどか",
+      "raid_rule_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "support_text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。",
+      "source_image_extraction": true,
+      "ocr_confidence": "medium"
+    }
   }
 ]

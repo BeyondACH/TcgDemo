@@ -17,6 +17,7 @@ var bp = 0
 var keywords = []
 var effects = []
 var trigger_effects = []
+var special_play_rule = {}
 
 func from_dict(source: Dictionary):
 	# 这里做一次深拷贝，避免运行期修改效果配置时反向污染原始字典。
@@ -29,6 +30,7 @@ func from_dict(source: Dictionary):
 	keywords.clear()
 	effects.clear()
 	trigger_effects.clear()
+	special_play_rule.clear()
 	for value in source.get("traits", []):
 		traits.append(str(value))
 	cost_energy = source.get("cost_energy", {}).duplicate(true)
@@ -41,6 +43,7 @@ func from_dict(source: Dictionary):
 		effects.append(value.duplicate(true))
 	for value in source.get("trigger_effects", []):
 		trigger_effects.append(value.duplicate(true))
+	special_play_rule = source.get("special_play_rule", {}).duplicate(true)
 	return self
 
 static func _parse_card_type(value: String) -> int:
