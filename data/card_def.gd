@@ -25,6 +25,10 @@ func from_dict(source: Dictionary):
 	card_type = _parse_card_type(str(source.get("card_type", "CHARACTER")))
 	title_code = str(source.get("title_code", ""))
 	number = str(source.get("number", ""))
+	traits.clear()
+	keywords.clear()
+	effects.clear()
+	trigger_effects.clear()
 	for value in source.get("traits", []):
 		traits.append(str(value))
 	cost_energy = source.get("cost_energy", {}).duplicate(true)

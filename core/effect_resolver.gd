@@ -14,7 +14,7 @@ func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker) -> vo
 	victory_checker = p_victory_checker
 
 # 结算当前原型支持的少量效果类型。
-func resolve_operations(state: GameState, source_card_uid: String, effect_list: Array[Dictionary], context: Dictionary = {}) -> Array[String]:
+func resolve_operations(state: GameState, source_card_uid: String, effect_list: Array, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
 	for effect in effect_list:
 		var effect_type := str(effect.get("type", ""))
@@ -54,7 +54,7 @@ func resolve_operations(state: GameState, source_card_uid: String, effect_list: 
 				logs.append("Reserved unsupported effect type: %s" % effect_type)
 	return logs
 
-# 触发器本身只负责筛选匹配的触发项，实际操作仍复用统一的效果结算入口。
+# 触发器只负责筛选匹配项，实际操作统一复用效果结算入口。
 func resolve_trigger(source_card_uid: String, trigger_type: int, state: GameState, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
 	var source_card := state.get_card(source_card_uid)
@@ -72,7 +72,7 @@ func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> 
 	var logs: Array[String] = []
 	if player_id == "":
 		return logs
-	# 当前“受伤”表现为从生命区翻入场外区，并为这些牌补触发生命触发。
+	# 当前“受伤”表现为从生命区翻入场外区，并为这些牌补发生命触发。
 	var moved := zone_manager.mill_life_to_outside(state, player_id, amount)
 	logs.append("%s takes %d damage." % [player_id, amount])
 	for life_uid in moved:
