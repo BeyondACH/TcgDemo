@@ -19,82 +19,214 @@ script = ExtResource("1_battle")
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("2_game")
 
-[node name="Root" type="VBoxContainer" parent="."]
+[node name="BackgroundLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 12.0
-offset_right = -12.0
-offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="BackgroundLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BoardLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BoardMargin" type="MarginContainer" parent="BoardLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 72.0
+offset_right = -24.0
+offset_bottom = -196.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TopBar" type="HBoxContainer" parent="Root"]
+[node name="BoardContent" type="VBoxContainer" parent="BoardLayer/BoardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 24
+size_flags_vertical = 3
+
+[node name="OpponentBoard" type="VBoxContainer" parent="BoardLayer/BoardMargin/BoardContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_board")
+
+[node name="BoardSpacer" type="Control" parent="BoardLayer/BoardMargin/BoardContent"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerBoard" type="VBoxContainer" parent="BoardLayer/BoardMargin/BoardContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_board")
+
+[node name="CardLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AnimatedCards" type="Control" parent="CardLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="EffectLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SelectionHighlight" type="TextureRect" parent="EffectLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+self_modulate = Color(1, 1, 1, 0.35)
+
+[node name="SlotHighlight" type="TextureRect" parent="EffectLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+self_modulate = Color(0.5, 0.85, 1, 0.3)
+
+[node name="UILayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopHUD" type="MarginContainer" parent="UILayer"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+grow_horizontal = 2
+
+[node name="TopBar" type="HBoxContainer" parent="UILayer/TopHUD"]
 layout_mode = 2
 
-[node name="TurnLabel" type="Label" parent="Root/TopBar"]
+[node name="TurnLabel" type="Label" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 text = "Turn 1"
 
-[node name="ActivePlayerLabel" type="Label" parent="Root/TopBar"]
+[node name="ActivePlayerLabel" type="Label" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 text = "Active: P1"
 
-[node name="PhaseIndicator" type="Label" parent="Root/TopBar"]
+[node name="PhaseIndicator" type="Label" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 script = ExtResource("6_phase")
 text = "Phase: START"
 
-[node name="NextPhaseButton" type="Button" parent="Root/TopBar"]
+[node name="NextPhaseButton" type="Button" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 text = "Next Phase"
 
-[node name="NoBlockButton" type="Button" parent="Root/TopBar"]
+[node name="NoBlockButton" type="Button" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 text = "No Block"
 
-[node name="WinnerLabel" type="Label" parent="Root/TopBar"]
+[node name="WinnerLabel" type="Label" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 text = "Winner: -"
 
-[node name="OpponentBoard" type="VBoxContainer" parent="Root"]
-layout_mode = 2
-script = ExtResource("3_board")
+[node name="BottomHUD" type="MarginContainer" parent="UILayer"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -184.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="PlayerBoard" type="VBoxContainer" parent="Root"]
+[node name="BottomPanel" type="PanelContainer" parent="UILayer/BottomHUD"]
 layout_mode = 2
-script = ExtResource("3_board")
+size_flags_horizontal = 3
 
-[node name="HandView" type="VBoxContainer" parent="Root"]
+[node name="BottomContent" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+size_flags_horizontal = 3
+
+[node name="HandView" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 layout_mode = 2
 script = ExtResource("4_hand")
 
-[node name="ActionBar" type="HBoxContainer" parent="Root"]
+[node name="ActionBar" type="HBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 layout_mode = 2
 
-[node name="SelectedCardLabel" type="Label" parent="Root/ActionBar"]
+[node name="SelectedCardLabel" type="Label" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "No card selected"
 
-[node name="PlayFrontButton" type="Button" parent="Root/ActionBar"]
+[node name="PlayFrontButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Play Front"
 
-[node name="PlayEnergyButton" type="Button" parent="Root/ActionBar"]
+[node name="PlayEnergyButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Play Energy"
 
-[node name="UseEventButton" type="Button" parent="Root/ActionBar"]
+[node name="UseEventButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Use Event"
 
-[node name="CancelSelectionButton" type="Button" parent="Root/ActionBar"]
+[node name="CancelSelectionButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Cancel"
 
-[node name="LogPanel" type="PanelContainer" parent="Root"]
+[node name="LogPanel" type="PanelContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 layout_mode = 2
-size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 64)
 script = ExtResource("5_log")

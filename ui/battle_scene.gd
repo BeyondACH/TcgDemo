@@ -8,22 +8,36 @@ const HandView = preload("res://ui/hand_view.gd")
 const LogPanel = preload("res://ui/log_panel.gd")
 const PhaseIndicator = preload("res://ui/phase_indicator.gd")
 
+const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.png"
+const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
+const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
+const COMPACT_HEIGHT_THRESHOLD := 880.0
+const SMALL_HEIGHT_THRESHOLD := 760.0
+
 @onready var game_manager: GameManager = $GameManager
-@onready var turn_label: Label = $Root/TopBar/TurnLabel
-@onready var active_player_label: Label = $Root/TopBar/ActivePlayerLabel
-@onready var phase_indicator: PhaseIndicator = $Root/TopBar/PhaseIndicator
-@onready var next_phase_button: Button = $Root/TopBar/NextPhaseButton
-@onready var no_block_button: Button = $Root/TopBar/NoBlockButton
-@onready var winner_label: Label = $Root/TopBar/WinnerLabel
-@onready var opponent_board: BoardView = $Root/OpponentBoard
-@onready var player_board: BoardView = $Root/PlayerBoard
-@onready var hand_view: HandView = $Root/HandView
-@onready var selected_card_label: Label = $Root/ActionBar/SelectedCardLabel
-@onready var play_front_button: Button = $Root/ActionBar/PlayFrontButton
-@onready var play_energy_button: Button = $Root/ActionBar/PlayEnergyButton
-@onready var use_event_button: Button = $Root/ActionBar/UseEventButton
-@onready var cancel_selection_button: Button = $Root/ActionBar/CancelSelectionButton
-@onready var log_panel: LogPanel = $Root/LogPanel
+@onready var background_texture_rect: TextureRect = $BackgroundLayer/Background
+@onready var selection_highlight: TextureRect = $EffectLayer/SelectionHighlight
+@onready var slot_highlight: TextureRect = $EffectLayer/SlotHighlight
+@onready var board_margin: MarginContainer = $BoardLayer/BoardMargin
+@onready var board_spacer: Control = $BoardLayer/BoardMargin/BoardContent/BoardSpacer
+@onready var top_hud: MarginContainer = $UILayer/TopHUD
+@onready var bottom_hud: MarginContainer = $UILayer/BottomHUD
+@onready var bottom_panel: PanelContainer = $UILayer/BottomHUD/BottomPanel
+@onready var turn_label: Label = $UILayer/TopHUD/TopBar/TurnLabel
+@onready var active_player_label: Label = $UILayer/TopHUD/TopBar/ActivePlayerLabel
+@onready var phase_indicator: PhaseIndicator = $UILayer/TopHUD/TopBar/PhaseIndicator
+@onready var next_phase_button: Button = $UILayer/TopHUD/TopBar/NextPhaseButton
+@onready var no_block_button: Button = $UILayer/TopHUD/TopBar/NoBlockButton
+@onready var winner_label: Label = $UILayer/TopHUD/TopBar/WinnerLabel
+@onready var opponent_board: BoardView = $BoardLayer/BoardMargin/BoardContent/OpponentBoard
+@onready var player_board: BoardView = $BoardLayer/BoardMargin/BoardContent/PlayerBoard
+@onready var hand_view: HandView = $UILayer/BottomHUD/BottomPanel/BottomContent/HandView
+@onready var selected_card_label: Label = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SelectedCardLabel
+@onready var play_front_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayFrontButton
+@onready var play_energy_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayEnergyButton
+@onready var use_event_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/UseEventButton
+@onready var cancel_selection_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/CancelSelectionButton
+@onready var log_panel: LogPanel = $UILayer/BottomHUD/BottomPanel/BottomContent/LogPanel
 
 var _snapshot: Dictionary = {}
 var _selected_hand_card_uid := ""
@@ -31,7 +45,8 @@ var _pending_attack_uid := ""
 var _pending_defender_player_id := ""
 
 func _ready() -> void:
-	# UI 只通过 GameManager 的信号和快照交互，不直接操作底层状态对象。
+	_setup_optional_art()
+	# UI only consumes GameManager signals and snapshots.
 	game_manager.state_changed.connect(_on_state_changed)
 	game_manager.blockers_requested.connect(_on_blockers_requested)
 	next_phase_button.pressed.connect(_on_next_phase_pressed)
@@ -49,7 +64,35 @@ func _ready() -> void:
 	player_board.zone_drop_requested.connect(_on_zone_drop_requested)
 	_clear_selection()
 	no_block_button.visible = false
+	get_viewport().size_changed.connect(_update_responsive_layout)
+	_update_responsive_layout()
 	_on_state_changed(game_manager.get_snapshot())
+
+func _setup_optional_art() -> void:
+	_assign_optional_texture(background_texture_rect, BATTLE_BG_PATH)
+	_assign_optional_texture(selection_highlight, SELECTION_HIGHLIGHT_PATH)
+	_assign_optional_texture(slot_highlight, SLOT_HIGHLIGHT_PATH)
+
+func _assign_optional_texture(target: TextureRect, resource_path: String) -> void:
+	if ResourceLoader.exists(resource_path):
+		target.texture = load(resource_path)
+	else:
+		target.texture = null
+
+func _update_responsive_layout() -> void:
+	var viewport_height := get_viewport_rect().size.y
+	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD
+	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD
+
+	top_hud.offset_top = 12.0
+	board_margin.offset_top = 60.0 if compact else 72.0
+	board_margin.offset_bottom = -160.0 if very_small else (-176.0 if compact else -196.0)
+	board_spacer.custom_minimum_size = Vector2(0, 12.0 if very_small else (16.0 if compact else 24.0))
+	bottom_hud.offset_top = -148.0 if very_small else (-168.0 if compact else -184.0)
+	bottom_panel.custom_minimum_size = Vector2(0, 136.0 if very_small else (152.0 if compact else 172.0))
+
+	opponent_board.set_compact_mode(compact)
+	player_board.set_compact_mode(compact)
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
@@ -84,7 +127,6 @@ func _on_hand_card_selected(card_uid: String) -> void:
 
 func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 	if _pending_attack_uid != "":
-		# 有待处理攻击时，再次点击前线牌视为选择阻挡者。
 		if player_id == _pending_defender_player_id:
 			game_manager.resolve_attack(_pending_attack_uid, card_uid)
 			_clear_pending_attack()
@@ -174,7 +216,7 @@ func _update_action_buttons() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
 	var card_type := str(card_data.get("card_type", ""))
-	# 按卡牌类型粗粒度控制按钮状态，具体是否合法仍以 GameManager 校验为准。
+	# Button availability stays coarse-grained and defers final validation to GameManager.
 	play_front_button.disabled = card_type != "CHARACTER"
 	play_energy_button.disabled = card_type != "CHARACTER" and card_type != "FIELD"
 	use_event_button.disabled = card_type != "EVENT"

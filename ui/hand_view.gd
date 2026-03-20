@@ -9,11 +9,14 @@ var _title: Label
 var _row: HBoxContainer
 
 func _ready() -> void:
+	add_theme_constant_override("separation", 6)
 	_title = Label.new()
 	_title.text = "Active Hand"
 	add_child(_title)
 	_row = HBoxContainer.new()
 	_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	_row.add_theme_constant_override("separation", 8)
 	add_child(_row)
 
 func set_hand(player_id: String, hand_cards: Array) -> void:
