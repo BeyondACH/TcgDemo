@@ -139,6 +139,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="TopHUD" type="MarginContainer" parent="UILayer"]
 layout_mode = 1
@@ -149,8 +150,11 @@ offset_top = 12.0
 offset_right = -12.0
 grow_horizontal = 2
 
-[node name="TopBar" type="HBoxContainer" parent="UILayer/TopHUD"]
+[node name="TopBar" type="HFlowContainer" parent="UILayer/TopHUD"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 6
 
 [node name="TurnLabel" type="Label" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
@@ -196,18 +200,19 @@ size_flags_horizontal = 3
 
 [node name="BottomContent" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 size_flags_horizontal = 3
 
-[node name="HandView" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
+[node name="ActionBar" type="HFlowContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 layout_mode = 2
-script = ExtResource("4_hand")
-
-[node name="ActionBar" type="HBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
-layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 6
 
 [node name="SelectedCardLabel" type="Label" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 3
 text = "No card selected"
 
 [node name="PlayFrontButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
@@ -229,6 +234,10 @@ text = "Main Activate"
 [node name="StepButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Step"
+
+[node name="MoveFrontButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+layout_mode = 2
+text = "Move Front"
 
 [node name="SniperAttackButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
@@ -252,6 +261,11 @@ text = "Skip Life"
 [node name="CancelSelectionButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Cancel"
+
+[node name="HandView" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("4_hand")
 
 [node name="PendingDecisionPanel" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 visible = false
@@ -279,3 +293,4 @@ text = "Resolve Pending Decision"
 layout_mode = 2
 custom_minimum_size = Vector2(0, 64)
 script = ExtResource("5_log")
+

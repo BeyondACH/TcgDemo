@@ -33,7 +33,7 @@ func _ready() -> void:
 	randomize()
 	setup_game()
 
-# 初始化整局游戏：加载卡牌和卡组、创建双方玩家、发起手并进入首回合。
+# Initialize a fresh game state, decks, starting hands, and opening turn.
 func setup_game() -> void:
 	game_state = GameState.new()
 	_load_card_defs()
@@ -55,7 +55,7 @@ func advance_phase() -> void:
 	_apply_logs(turn_manager.advance_phase(game_state))
 	emit_state_changed()
 
-# UI 发起的出牌统一入口，负责校验、支付 AP、落位和触发效果。
+# Unified card-play entry point used by the UI.
 func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> void:
 	if _has_winner() or _has_pending_gate():
 		return
@@ -242,8 +242,7 @@ func resolve_life_trigger_decision(card_uid: String, activate: bool) -> void:
 	emit_state_changed()
 
 func get_snapshot() -> Dictionary:
-	# 这里返回的是面向 UI 的快照，而不是完整内部状态，
-	# 这样界面层只消费自己需要的字段，降低耦合。
+	# Return a UI-facing snapshot instead of exposing raw runtime state.
 	return {
 		"turn_number": game_state.turn_number,
 		"active_player_id": game_state.active_player_id,
@@ -262,6 +261,9 @@ func get_snapshot() -> Dictionary:
 func emit_state_changed() -> void:
 	emit_signal("state_changed", get_snapshot())
 
+func append_ui_log(text: String) -> void:
+	_apply_logs([text])
+	emit_state_changed()
 func _load_card_defs() -> void:
 	var json: Array = _read_json(CARD_DATA_PATH)
 	for item in json:
@@ -298,7 +300,7 @@ func _prepare_starting_zones(player_id: String) -> void:
 	var player: PlayerState = game_state.get_player(player_id)
 	if player == null:
 		return
-	# 先抽起手，再从牌顶放置生命区，保持当前原型的准备流程简单直接。
+	# Draw the opening hand first, then place starting life cards.
 	for i in range(UATypes.STARTING_HAND):
 		zone_manager.draw_card(game_state, player_id)
 	for i in range(UATypes.STARTING_LIFE):
@@ -428,6 +430,10 @@ func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array
 		var step_result := rules_engine.can_step_move_to_energy(game_state, card.controller_player_id, card.uid)
 		if bool(step_result.get("ok", false)) or str(step_result.get("reason", "")) == "step_swap_required":
 			actions.append("STEP_TO_ENERGY")
+	if card.zone == UATypes.Zone.ENERGY_LINE and game_state.phase == UATypes.Phase.MOVE:
+		var move_result := rules_engine.can_move_energy_to_front(game_state, card.controller_player_id, card.uid)
+		if bool(move_result.get("ok", false)):
+			actions.append("MOVE_TO_FRONT")
 	if game_state.phase == UATypes.Phase.MAIN:
 		for effect_variant in card_def.trigger_effects:
 			var effect: Dictionary = effect_variant

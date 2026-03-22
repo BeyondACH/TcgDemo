@@ -13,6 +13,9 @@ const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlig
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
 const COMPACT_HEIGHT_THRESHOLD := 880.0
 const SMALL_HEIGHT_THRESHOLD := 760.0
+const COMPACT_WIDTH_THRESHOLD := 1380.0
+const SMALL_WIDTH_THRESHOLD := 1180.0
+const BOARD_BOTTOM_GAP := 28.0
 
 @onready var game_manager: GameManager = $GameManager
 @onready var background_texture_rect: TextureRect = $BackgroundLayer/Background
@@ -23,6 +26,7 @@ const SMALL_HEIGHT_THRESHOLD := 760.0
 @onready var top_hud: MarginContainer = $UILayer/TopHUD
 @onready var bottom_hud: MarginContainer = $UILayer/BottomHUD
 @onready var bottom_panel: PanelContainer = $UILayer/BottomHUD/BottomPanel
+@onready var top_bar: HFlowContainer = $UILayer/TopHUD/TopBar
 @onready var turn_label: Label = $UILayer/TopHUD/TopBar/TurnLabel
 @onready var active_player_label: Label = $UILayer/TopHUD/TopBar/ActivePlayerLabel
 @onready var phase_indicator: PhaseIndicator = $UILayer/TopHUD/TopBar/PhaseIndicator
@@ -32,12 +36,14 @@ const SMALL_HEIGHT_THRESHOLD := 760.0
 @onready var opponent_board: BoardView = $BoardLayer/BoardMargin/BoardContent/OpponentBoard
 @onready var player_board: BoardView = $BoardLayer/BoardMargin/BoardContent/PlayerBoard
 @onready var hand_view: HandView = $UILayer/BottomHUD/BottomPanel/BottomContent/HandView
+@onready var action_bar: HFlowContainer = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar
 @onready var selected_card_label: Label = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SelectedCardLabel
 @onready var play_front_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayFrontButton
 @onready var play_energy_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayEnergyButton
 @onready var use_event_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/UseEventButton
 @onready var main_activate_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/MainActivateButton
 @onready var step_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/StepButton
+@onready var move_front_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/MoveFrontButton
 @onready var sniper_attack_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SniperAttackButton
 @onready var life_trigger_picker: OptionButton = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/LifeTriggerPicker
 @onready var activate_life_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/ActivateLifeButton
@@ -72,6 +78,7 @@ func _ready() -> void:
 	use_event_button.pressed.connect(_on_use_event_pressed)
 	main_activate_button.pressed.connect(_on_main_activate_pressed)
 	step_button.pressed.connect(_on_step_pressed)
+	move_front_button.pressed.connect(_on_move_front_pressed)
 	sniper_attack_button.pressed.connect(_on_sniper_attack_pressed)
 	activate_life_button.pressed.connect(_on_activate_life_pressed)
 	skip_life_button.pressed.connect(_on_skip_life_pressed)
@@ -91,6 +98,7 @@ func _ready() -> void:
 	no_block_button.visible = false
 	main_activate_button.visible = false
 	step_button.visible = false
+	move_front_button.visible = false
 	sniper_attack_button.visible = false
 	life_trigger_picker.visible = false
 	activate_life_button.visible = false
@@ -112,19 +120,29 @@ func _assign_optional_texture(target: TextureRect, resource_path: String) -> voi
 		target.texture = null
 
 func _update_responsive_layout() -> void:
-	var viewport_height := get_viewport_rect().size.y
-	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD
-	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD
+	var viewport_size := get_viewport_rect().size
+	var viewport_width := viewport_size.x
+	var viewport_height := viewport_size.y
+	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
+	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
+	var bottom_height := 148.0 if very_small else (170.0 if compact else 196.0)
 
 	top_hud.offset_top = 12.0
-	board_margin.offset_top = 60.0 if compact else 72.0
-	board_margin.offset_bottom = -160.0 if very_small else (-176.0 if compact else -196.0)
+	board_margin.offset_top = 56.0 if compact else 72.0
+	board_margin.offset_bottom = -(bottom_height + BOARD_BOTTOM_GAP)
 	board_spacer.custom_minimum_size = Vector2(0, 12.0 if very_small else (16.0 if compact else 24.0))
-	bottom_hud.offset_top = -148.0 if very_small else (-168.0 if compact else -184.0)
-	bottom_panel.custom_minimum_size = Vector2(0, 136.0 if very_small else (152.0 if compact else 172.0))
+	bottom_hud.offset_top = -bottom_height
+	bottom_panel.custom_minimum_size = Vector2(0, bottom_height - 4.0)
+	top_bar.add_theme_constant_override("h_separation", 8 if compact else 12)
+	top_bar.add_theme_constant_override("v_separation", 6)
+	action_bar.add_theme_constant_override("h_separation", 8 if compact else 10)
+	action_bar.add_theme_constant_override("v_separation", 6)
+	selected_card_label.custom_minimum_size = Vector2(180 if compact else 220, 0)
+	log_panel.custom_minimum_size = Vector2(0, 42 if very_small else (56 if compact else 72))
 
 	opponent_board.set_compact_mode(compact)
 	player_board.set_compact_mode(compact)
+	hand_view.set_compact_mode(compact)
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
@@ -157,6 +175,7 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	use_event_button.disabled = use_event_button.disabled or has_winner or has_pending_gate
 	main_activate_button.disabled = main_activate_button.disabled or has_winner or has_pending_gate
 	step_button.disabled = step_button.disabled or has_winner or has_pending_gate
+	move_front_button.disabled = move_front_button.disabled or has_winner or has_pending_gate
 	sniper_attack_button.disabled = sniper_attack_button.disabled or has_winner or has_pending_gate
 	no_block_button.disabled = has_winner or has_pending_gate
 	cancel_selection_button.disabled = cancel_selection_button.disabled or has_winner or has_pending_gate
@@ -219,8 +238,13 @@ func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
 	_selected_hand_card_uid = ""
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
-	if str(_snapshot.get("phase", "")) == "MOVE" and player_id == str(_snapshot.get("active_player_id", "")):
-		game_manager.move_energy_to_front(card_uid)
+	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var card_data := _find_board_card(player_id, card_uid)
+	var card_name := str(card_data.get("name", card_uid))
+	var action_text := ", ".join(card_data.get("available_actions", []) as Array)
+	if action_text == "":
+		action_text = "none"
+	game_manager.append_ui_log("Select energy card: %s | owner=%s | active=%s | phase=%s | actions=%s" % [card_name, player_id, active_player_id, str(_snapshot.get("phase", "")), action_text])
 
 func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
 	if _has_pending_gate():
@@ -289,6 +313,27 @@ func _on_step_pressed() -> void:
 	if _selected_board_card_uid == "" or _has_pending_gate():
 		return
 	game_manager.request_step_move(_selected_board_card_uid)
+
+func _on_move_front_pressed() -> void:
+	if _selected_board_card_uid == "":
+		game_manager.append_ui_log("Move Front ignored: no selected board card.")
+		return
+	if _has_pending_gate():
+		game_manager.append_ui_log("Move Front ignored: pending gate is active.")
+		return
+	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var card_data := _find_board_card(active_player_id, _selected_board_card_uid)
+	if card_data.is_empty():
+		game_manager.append_ui_log("Move Front ignored: selected card not found in active player's board snapshot.")
+		return
+	if _selected_board_zone_name != "energy_line":
+		game_manager.append_ui_log("Move Front ignored: selected card is not from energy line.")
+		return
+	var action_text := ", ".join(card_data.get("available_actions", []) as Array)
+	if action_text == "":
+		action_text = "none"
+	game_manager.append_ui_log("Move Front pressed: %s | phase=%s | actions=%s" % [str(card_data.get("name", _selected_board_card_uid)), str(_snapshot.get("phase", "")), action_text])
+	game_manager.move_energy_to_front(_selected_board_card_uid)
 
 func _on_sniper_attack_pressed() -> void:
 	if _selected_board_card_uid == "" or _has_pending_gate():
@@ -392,6 +437,8 @@ func _update_action_buttons() -> void:
 	main_activate_button.disabled = not available_actions.has("MAIN_ACTIVATE")
 	step_button.visible = not board_card_data.is_empty() and available_actions.has("STEP_TO_ENERGY")
 	step_button.disabled = not available_actions.has("STEP_TO_ENERGY")
+	move_front_button.visible = not board_card_data.is_empty() and available_actions.has("MOVE_TO_FRONT")
+	move_front_button.disabled = not available_actions.has("MOVE_TO_FRONT")
 	sniper_attack_button.visible = not board_card_data.is_empty() and available_actions.has("SNIPER_ATTACK")
 	sniper_attack_button.disabled = not available_actions.has("SNIPER_ATTACK") or _sniper_attack_source_uid != ""
 	cancel_selection_button.disabled = _selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == ""

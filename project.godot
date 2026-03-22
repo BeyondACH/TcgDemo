@@ -8,14 +8,17 @@
 
 config_version=5
 
-"茂禄驴config_version"=5
-
 [application]
 
 config/name="ua"
 run/main_scene="res://scenes/battle_scene.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=2048
+window/size/viewport_height=1080
 
 [physics]
 

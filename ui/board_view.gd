@@ -6,8 +6,8 @@ const CardView = preload("res://ui/card_view.gd")
 
 const MAX_VISIBLE_SLOTS := 4
 const SLOT_PLATE_TEXTURE_PATH := "res://assets/battle/slots/slot_plate.png"
-const DEFAULT_CARD_SIZE := Vector2(150, 96)
-const COMPACT_CARD_SIZE := Vector2(124, 82)
+const DEFAULT_CARD_SIZE := Vector2(172, 112)
+const COMPACT_CARD_SIZE := Vector2(144, 92)
 
 signal front_card_pressed(player_id: String, card_uid: String)
 signal energy_card_pressed(player_id: String, card_uid: String)
@@ -29,7 +29,10 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 8)
 	_slot_plate_texture = _load_optional_texture(SLOT_PLATE_TEXTURE_PATH)
 	_name_label = Label.new()
+	_name_label.add_theme_font_size_override("font_size", 18)
 	_stats_label = Label.new()
+	_stats_label.add_theme_font_size_override("font_size", 12)
+	_stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_name_label)
 	add_child(_stats_label)
 
@@ -81,6 +84,7 @@ func _create_zone_section(title_text: String) -> Dictionary:
 
 	var title := Label.new()
 	title.text = title_text
+	title.add_theme_font_size_override("font_size", 13)
 	section.add_child(title)
 
 	var overlay_root := Control.new()
@@ -160,7 +164,7 @@ func _rebuild_row(row: HBoxContainer, cards: Array, zone_name: String) -> void:
 		child.queue_free()
 	for card_data in cards:
 		var card_view := CardView.new()
-		card_view.setup(card_data, _player_id, zone_name, _current_card_size)
+		card_view.setup(card_data, _player_id, zone_name, _current_card_size, CardView.DISPLAY_MODE_BOARD)
 		card_view.card_pressed.connect(_on_card_pressed)
 		row.add_child(card_view)
 	for i in range(max(0, MAX_VISIBLE_SLOTS - cards.size())):
