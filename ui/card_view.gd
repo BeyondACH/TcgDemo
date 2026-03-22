@@ -3,9 +3,13 @@ class_name CardView
 
 signal card_pressed(owner_player_id: String, card_uid: String, zone_name: String)
 
-const DEFAULT_CARD_SIZE := Vector2(150, 96)
+const DEFAULT_CARD_SIZE := Vector2(120, 168)
 const DISPLAY_MODE_BOARD := "board"
 const DISPLAY_MODE_HAND := "hand"
+const HAND_PADDING := 4
+const HAND_IMAGE_ASPECT_RATIO := 5.0 / 7.0
+const BOARD_PADDING := 4
+const BOARD_INFO_HEIGHT_RATIO := 0.28
 
 var owner_player_id := ""
 var card_uid := ""
@@ -13,22 +17,146 @@ var zone_name := ""
 var _display_text := ""
 var _card_size := DEFAULT_CARD_SIZE
 var _display_mode := DISPLAY_MODE_BOARD
+var _card_data: Dictionary = {}
+
+var _content_root: Control
+var _fallback_label: Label
+var _hand_row: HBoxContainer
+var _hand_image: TextureRect
+var _hand_text: Label
+var _board_column: VBoxContainer
+var _board_image: TextureRect
+var _board_text: Label
+
+func _ready() -> void:
+	_ensure_ui()
+	_refresh_view()
 
 func setup(card_data: Dictionary, p_owner_player_id: String, p_zone_name: String, card_size: Vector2 = DEFAULT_CARD_SIZE, display_mode := DISPLAY_MODE_BOARD) -> void:
 	owner_player_id = p_owner_player_id
 	card_uid = str(card_data.get("uid", ""))
 	zone_name = p_zone_name
+	_card_data = card_data.duplicate(true)
 	_card_size = card_size
 	_display_mode = display_mode
-	_display_text = _build_text(card_data)
-	text = _display_text
+	_display_text = _build_text(_card_data)
 	custom_minimum_size = _card_size
 	clip_contents = true
 	alignment = HORIZONTAL_ALIGNMENT_LEFT
-	autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var font_size := 10 if _card_size.y <= 44 else (11 if _card_size.y <= 60 else (12 if _card_size.y <= 72 else 14))
-	add_theme_font_size_override("font_size", font_size)
+	text = ""
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	_ensure_ui()
+	_refresh_view()
+
+func _ensure_ui() -> void:
+	if _content_root != null:
+		return
+	_content_root = Control.new()
+	_content_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_content_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_content_root)
+
+	_fallback_label = Label.new()
+	_fallback_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_fallback_label.offset_left = HAND_PADDING
+	_fallback_label.offset_top = HAND_PADDING
+	_fallback_label.offset_right = -HAND_PADDING
+	_fallback_label.offset_bottom = -HAND_PADDING
+	_fallback_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fallback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_fallback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_fallback_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_fallback_label.clip_text = true
+	_content_root.add_child(_fallback_label)
+
+	_hand_row = HBoxContainer.new()
+	_hand_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_hand_row.offset_left = HAND_PADDING
+	_hand_row.offset_top = HAND_PADDING
+	_hand_row.offset_right = -HAND_PADDING
+	_hand_row.offset_bottom = -HAND_PADDING
+	_hand_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hand_row.add_theme_constant_override("separation", 6)
+	_content_root.add_child(_hand_row)
+
+	_hand_image = TextureRect.new()
+	_hand_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hand_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_hand_image.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_hand_row.add_child(_hand_image)
+
+	_hand_text = Label.new()
+	_hand_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hand_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_hand_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_hand_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hand_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_hand_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_hand_text.clip_text = true
+	_hand_row.add_child(_hand_text)
+
+	_board_column = VBoxContainer.new()
+	_board_column.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_board_column.offset_left = BOARD_PADDING
+	_board_column.offset_top = BOARD_PADDING
+	_board_column.offset_right = -BOARD_PADDING
+	_board_column.offset_bottom = -BOARD_PADDING
+	_board_column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_board_column.add_theme_constant_override("separation", 4)
+	_content_root.add_child(_board_column)
+
+	_board_image = TextureRect.new()
+	_board_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_board_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_board_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_board_image.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_board_image.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_board_column.add_child(_board_image)
+
+	_board_text = Label.new()
+	_board_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_board_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_board_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_board_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_board_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_board_text.clip_text = true
+	_board_column.add_child(_board_text)
+
+func _refresh_view() -> void:
+	if _content_root == null:
+		return
+	var font_size: int = 10 if _card_size.y <= 44 else (11 if _card_size.y <= 60 else (12 if _card_size.y <= 72 else 14))
+	var hand_font_size: int = maxi(9, font_size - 1)
+	var board_font_size: int = maxi(8, font_size - 1)
+	add_theme_font_size_override("font_size", font_size)
+	_fallback_label.add_theme_font_size_override("font_size", font_size)
+	_hand_text.add_theme_font_size_override("font_size", hand_font_size)
+	_board_text.add_theme_font_size_override("font_size", board_font_size)
+	_fallback_label.visible = true
+	_hand_row.visible = false
+	_board_column.visible = false
+	if _display_mode == DISPLAY_MODE_HAND:
+		var hand_texture := _resolve_card_texture(_card_data)
+		if hand_texture != null:
+			_display_text = _build_hand_text(_card_data)
+			_fallback_label.visible = false
+			_hand_row.visible = true
+			_hand_image.texture = hand_texture
+			_hand_image.custom_minimum_size = _hand_image_size()
+			_hand_text.text = _build_hand_thumbnail_text(_card_data)
+			return
+	elif _display_mode == DISPLAY_MODE_BOARD:
+		var board_texture := _resolve_card_texture(_card_data)
+		if board_texture != null:
+			_display_text = _build_board_text(_card_data)
+			_fallback_label.visible = false
+			_board_column.visible = true
+			_board_image.texture = board_texture
+			_board_image.custom_minimum_size = _board_image_size()
+			_board_text.custom_minimum_size = Vector2(0, _board_info_height())
+			_board_text.text = _build_board_thumbnail_text(_card_data)
+			return
+	_fallback_label.text = _build_text(_card_data)
 
 func _build_text(card_data: Dictionary) -> String:
 	if _display_mode == DISPLAY_MODE_HAND:
@@ -39,12 +167,11 @@ func _build_hand_text(card_data: Dictionary) -> String:
 	var name := str(card_data.get("name", "Unknown"))
 	var card_type := str(card_data.get("card_type", "?"))
 	var ap_text := _format_number(card_data.get("cost_ap", 0))
+	var need_text := _format_energy_map(card_data.get("cost_energy", {}))
 	if _card_size.y <= 44:
-		return "%s\n%s/%s" % [_shorten(name, 10), _short_type(card_type), ap_text]
+		return "%s\nAP:%s N:%s" % [_shorten(name, 10), ap_text, need_text]
 	if _card_size.y <= 60:
-		var line_two := "%s | AP:%s" % [_short_type(card_type), ap_text]
-		if int(card_data.get("bp", 0)) > 0:
-			line_two += " | %s" % _format_number(card_data.get("bp", 0))
+		var line_two := "%s | AP:%s | N:%s" % [_short_type(card_type), ap_text, need_text]
 		return "%s\n%s" % [_shorten(name, 12), line_two]
 	var lines: Array[String] = [name]
 	lines.append("%s | AP:%s" % [card_type, ap_text])
@@ -52,13 +179,23 @@ func _build_hand_text(card_data: Dictionary) -> String:
 		_format_energy_map(card_data.get("cost_energy", {})),
 		_format_energy_map(card_data.get("energy_provided", {})),
 	])
-	if int(card_data.get("bp", 0)) > 0:
-		lines.append("BP %d | %s" % [
-			int(card_data.get("bp", 0)),
-			str(card_data.get("state", "ACTIVE")),
-		])
-	else:
-		lines.append(str(card_data.get("state", "ACTIVE")))
+	lines.append(str(card_data.get("state", "ACTIVE")))
+	return "\n".join(lines)
+
+func _build_hand_thumbnail_text(card_data: Dictionary) -> String:
+	var name := str(card_data.get("name", "Unknown"))
+	var ap_text := _format_number(card_data.get("cost_ap", 0))
+	var need_text := _format_energy_map(card_data.get("cost_energy", {}))
+	if _card_size.y <= 44:
+		return "%s\nAP:%s N:%s" % [_shorten(name, 8), ap_text, need_text]
+	var lines: Array[String] = [
+		_shorten(name, 12),
+		"AP:%s" % ap_text,
+		"Need:%s" % need_text,
+	]
+	var state := str(card_data.get("state", "ACTIVE"))
+	if _card_size.y >= 60 and state != "ACTIVE":
+		lines.append(state)
 	return "\n".join(lines)
 
 func _build_board_text(card_data: Dictionary) -> String:
@@ -90,6 +227,70 @@ func _build_board_text(card_data: Dictionary) -> String:
 	if detail_hint != "":
 		lines.append(detail_hint)
 	return "\n".join(lines)
+
+func _build_board_thumbnail_text(card_data: Dictionary) -> String:
+	var name := _shorten(str(card_data.get("name", "Unknown")), 10)
+	var lines: Array[String] = [name]
+	if int(card_data.get("bp", 0)) > 0:
+		lines.append("BP %d" % int(card_data.get("bp", 0)))
+	lines.append("AP:%s" % _format_number(card_data.get("cost_ap", 0)))
+	var state := str(card_data.get("state", "ACTIVE"))
+	if state != "ACTIVE":
+		lines.append(state)
+	return "\n".join(lines)
+
+func _resolve_card_texture(card_data: Dictionary) -> Texture2D:
+	for image_path in _card_image_candidates(card_data):
+		if ResourceLoader.exists(image_path):
+			var texture := load(image_path)
+			if texture is Texture2D:
+				return texture
+	return null
+
+func _card_image_candidates(card_data: Dictionary) -> Array[String]:
+	var candidates: Array[String] = []
+	var source_image := str(card_data.get("source_image", "")).strip_edges()
+	if source_image != "":
+		_append_card_image_candidate(candidates, source_image)
+	var number := str(card_data.get("number", "")).strip_edges()
+	if number == "":
+		return candidates
+	var normalized_values := [
+		number.replace("/", "-"),
+		number.replace("/", "_").replace("-", "_"),
+		number.replace("/", "-").replace("_", "-"),
+	]
+	for value in normalized_values:
+		var normalized := str(value).strip_edges()
+		if normalized == "":
+			continue
+		var filename := normalized if normalized.to_lower().ends_with(".png") else "%s.png" % normalized
+		_append_card_image_candidate(candidates, filename)
+	return candidates
+
+func _append_card_image_candidate(candidates: Array[String], filename: String) -> void:
+	var normalized := filename.strip_edges()
+	if normalized == "":
+		return
+	for path in [
+		"res://pic/micro/%s" % normalized,
+		"res://pic/%s" % normalized,
+	]:
+		if not candidates.has(path):
+			candidates.append(path)
+
+func _hand_image_size() -> Vector2:
+	var content_height: float = maxi(24.0, _card_size.y - float(HAND_PADDING * 2))
+	var image_width: float = round(content_height * HAND_IMAGE_ASPECT_RATIO)
+	return Vector2(image_width, content_height)
+
+func _board_image_size() -> Vector2:
+	var image_height: float = maxi(48.0, _card_size.y - _board_info_height() - float(BOARD_PADDING * 2))
+	var image_width: float = round(image_height * HAND_IMAGE_ASPECT_RATIO)
+	return Vector2(minf(_card_size.x - float(BOARD_PADDING * 2), image_width), image_height)
+
+func _board_info_height() -> float:
+	return round(_card_size.y * BOARD_INFO_HEIGHT_RATIO)
 
 func _compact_hint(card_data: Dictionary) -> String:
 	var actions := _format_string_list(card_data.get("available_actions", []))

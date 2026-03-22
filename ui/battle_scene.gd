@@ -16,12 +16,18 @@ const SMALL_HEIGHT_THRESHOLD := 760.0
 const COMPACT_WIDTH_THRESHOLD := 1380.0
 const SMALL_WIDTH_THRESHOLD := 1180.0
 const BOARD_BOTTOM_GAP := 28.0
+const BOARD_TOP_GAP := 18.0
+const BOTTOM_HUD_BOTTOM_MARGIN := 12.0
+const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
+const MIN_BOARD_VISIBLE_HEIGHT_COMPACT := 460.0
+const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 400.0
 
 @onready var game_manager: GameManager = $GameManager
 @onready var background_texture_rect: TextureRect = $BackgroundLayer/Background
 @onready var selection_highlight: TextureRect = $EffectLayer/SelectionHighlight
 @onready var slot_highlight: TextureRect = $EffectLayer/SlotHighlight
 @onready var board_margin: MarginContainer = $BoardLayer/BoardMargin
+@onready var board_content: VBoxContainer = $BoardLayer/BoardMargin/BoardContent
 @onready var board_spacer: Control = $BoardLayer/BoardMargin/BoardContent/BoardSpacer
 @onready var top_hud: MarginContainer = $UILayer/TopHUD
 @onready var bottom_hud: MarginContainer = $UILayer/BottomHUD
@@ -124,23 +130,36 @@ func _assign_optional_texture(target: TextureRect, resource_path: String) -> voi
 
 func _update_responsive_layout() -> void:
 	var viewport_size := get_viewport_rect().size
-	var viewport_width := viewport_size.x
-	var viewport_height := viewport_size.y
+	var viewport_width: float = viewport_size.x
+	var viewport_height: float = viewport_size.y
 	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
 	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
-	var bottom_height := 148.0 if very_small else (170.0 if compact else 196.0)
+	var bottom_height: float = 196.0 if very_small else (216.0 if compact else 244.0)
+	var top_hud_height: float = top_hud.get_combined_minimum_size().y if top_hud != null else 0.0
+	var board_core_gap: float = 12.0 if very_small else (16.0 if compact else 24.0)
+	var min_board_visible_height: float = MIN_BOARD_VISIBLE_HEIGHT_SMALL if very_small else (MIN_BOARD_VISIBLE_HEIGHT_COMPACT if compact else MIN_BOARD_VISIBLE_HEIGHT_DEFAULT)
+	var max_bottom_height: float = viewport_height - top_hud_height - BOARD_TOP_GAP - BOARD_BOTTOM_GAP - BOTTOM_HUD_BOTTOM_MARGIN - min_board_visible_height
+	if max_bottom_height > 0.0:
+		bottom_height = clamp(bottom_height, 176.0, max_bottom_height)
 
 	top_hud.offset_top = 12.0
-	board_margin.offset_top = 56.0 if compact else 72.0
-	board_margin.offset_bottom = -(bottom_height + BOARD_BOTTOM_GAP)
-	board_spacer.custom_minimum_size = Vector2(0, 12.0 if very_small else (16.0 if compact else 24.0))
-	bottom_hud.offset_top = -bottom_height
-	bottom_panel.custom_minimum_size = Vector2(0, bottom_height - 4.0)
+	board_margin.offset_top = top_hud.offset_top + top_hud_height + BOARD_TOP_GAP
+	board_margin.offset_bottom = -(bottom_height + BOARD_BOTTOM_GAP + BOTTOM_HUD_BOTTOM_MARGIN)
+	board_content.alignment = BoxContainer.ALIGNMENT_CENTER
+	board_content.add_theme_constant_override("separation", board_core_gap)
+	board_spacer.size_flags_vertical = 0
+	board_spacer.custom_minimum_size = Vector2(0, board_core_gap)
+	opponent_board.size_flags_vertical = 0
+	player_board.size_flags_vertical = 0
+	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
+	bottom_panel.custom_minimum_size = Vector2(0, bottom_height)
 	top_bar.add_theme_constant_override("h_separation", 8 if compact else 12)
 	top_bar.add_theme_constant_override("v_separation", 6)
 	action_bar.add_theme_constant_override("h_separation", 8 if compact else 10)
 	action_bar.add_theme_constant_override("v_separation", 6)
 	selected_card_label.custom_minimum_size = Vector2(180 if compact else 220, 0)
+	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	log_panel.size_flags_vertical = 0
 	log_panel.custom_minimum_size = Vector2(0, 42 if very_small else (56 if compact else 72))
 
 	opponent_board.set_compact_mode(compact)

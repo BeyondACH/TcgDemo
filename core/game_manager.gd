@@ -17,9 +17,10 @@ signal state_changed(snapshot: Dictionary)
 signal blockers_requested(request: Dictionary)
 signal log_added(text: String)
 
-const CARD_DATA_PATH := "res://data/cards/base_cards.json"
-const STARTER_A_PATH := "res://data/decks/starter_a.json"
-const STARTER_B_PATH := "res://data/decks/starter_b.json"
+const CARD_DATA_PATH := "res://data/cards/cards_raw.json"
+const LEGACY_CARD_DATA_PATH := "res://data/cards/base_cards.json"
+const STARTER_A_PATH := "res://data/decks/starter_a.txt"
+const STARTER_B_PATH := "res://data/decks/starter_b.txt"
 
 var game_state := GameState.new()
 var zone_manager := ZoneManager.new()
@@ -28,6 +29,7 @@ var rules_engine := RulesEngine.new(zone_manager)
 var effect_resolver := EffectResolver.new(zone_manager, victory_checker)
 var battle_resolver := BattleResolver.new(rules_engine, zone_manager, effect_resolver)
 var turn_manager := TurnManager.new(zone_manager, victory_checker)
+var _deck_card_lookup := {}
 
 func _ready() -> void:
 	randomize()
@@ -272,10 +274,21 @@ func append_ui_log(text: String) -> void:
 	_apply_logs([text])
 	emit_state_changed()
 func _load_card_defs() -> void:
+	_deck_card_lookup.clear()
 	var json: Array = _read_json(CARD_DATA_PATH)
 	for item in json:
 		var item_dict: Dictionary = item
 		var card_def: CardDef = CardDef.new().from_dict(item_dict)
+		game_state.card_defs[card_def.id] = card_def
+		_register_deck_lookup(card_def)
+	var legacy_json: Array = _read_json(LEGACY_CARD_DATA_PATH)
+	for item in legacy_json:
+		var item_dict: Dictionary = item
+		var card_def: CardDef = CardDef.new().from_dict(item_dict)
+		if card_def.id == "":
+			continue
+		if game_state.card_defs.has(card_def.id):
+			continue
 		game_state.card_defs[card_def.id] = card_def
 
 func _create_player(player_id: String, deck_list: Array) -> void:
@@ -353,6 +366,8 @@ func _serialize_cards(card_uids: Array[String]) -> Array[Dictionary]:
 			"uid": card.uid,
 			"name": card_def.name,
 			"card_type": UATypes.card_type_to_text(card_def.card_type),
+			"number": card_def.number,
+			"source_image": card_def.source_image,
 			"zone": UATypes.zone_to_key(card.zone),
 			"state": UATypes.state_to_text(card.state),
 			"bp": card.current_bp,
@@ -372,7 +387,64 @@ func _apply_logs(logs: Array[String]) -> void:
 		emit_signal("log_added", line)
 
 func _load_deck_list(path: String) -> Array:
+	if path.get_extension().to_lower() == "txt":
+		return _read_text_deck(path)
 	return _read_json(path)
+
+func _read_text_deck(path: String) -> Array:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		push_error("Failed to open %s" % path)
+		return []
+	var result: Array = []
+	while not file.eof_reached():
+		var line := file.get_line().strip_edges()
+		if line == "" or line.begins_with("#"):
+			continue
+		var expanded := _expand_deck_line(line)
+		if expanded.is_empty():
+			push_error("Failed to parse deck line: %s" % line)
+			continue
+		result.append_array(expanded)
+	return result
+
+func _expand_deck_line(line: String) -> Array:
+	var split_index := line.find("x")
+	if split_index <= 0:
+		return []
+	var count := int(line.substr(0, split_index))
+	var raw_code := line.substr(split_index + 1).strip_edges()
+	if count <= 0 or raw_code == "":
+		return []
+	var def_id := _resolve_deck_card_id(raw_code)
+	if def_id == "":
+		push_error("Missing card definition for deck code: %s" % raw_code)
+		return []
+	var expanded: Array = []
+	for i in range(count):
+		expanded.append(def_id)
+	return expanded
+
+func _resolve_deck_card_id(raw_code: String) -> String:
+	var normalized_candidates := [
+		raw_code,
+		raw_code.replace("/", "_").replace("-", "_"),
+		raw_code.replace("_", "/"),
+	]
+	for candidate_variant in normalized_candidates:
+		var candidate := str(candidate_variant)
+		if _deck_card_lookup.has(candidate):
+			return str(_deck_card_lookup[candidate])
+	return ""
+
+func _register_deck_lookup(card_def: CardDef) -> void:
+	if card_def.id != "":
+		_deck_card_lookup[card_def.id] = card_def.id
+		_deck_card_lookup[card_def.id.replace("/", "_").replace("-", "_")] = card_def.id
+	if card_def.number != "":
+		_deck_card_lookup[card_def.number] = card_def.id
+		_deck_card_lookup[card_def.number.replace("/", "_")] = card_def.id
+		_deck_card_lookup[card_def.number.replace("/", "_").replace("-", "_")] = card_def.id
 
 func _read_json(path: String):
 	var file := FileAccess.open(path, FileAccess.READ)

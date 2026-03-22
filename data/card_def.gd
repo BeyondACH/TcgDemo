@@ -9,6 +9,7 @@ var name = ""
 var card_type = UATypes.CardType.CHARACTER
 var title_code = ""
 var number = ""
+var source_image = ""
 var traits = []
 var cost_energy = {}
 var cost_ap = 0
@@ -26,6 +27,7 @@ func from_dict(source: Dictionary):
 	card_type = _parse_card_type(str(source.get("card_type", "CHARACTER")))
 	title_code = str(source.get("title_code", ""))
 	number = str(source.get("number", ""))
+	source_image = str(source.get("source_image", ""))
 	traits.clear()
 	keywords.clear()
 	effects.clear()

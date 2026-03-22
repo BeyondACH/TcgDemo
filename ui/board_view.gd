@@ -6,8 +6,8 @@ const CardView = preload("res://ui/card_view.gd")
 
 const MAX_VISIBLE_SLOTS := 4
 const SLOT_PLATE_TEXTURE_PATH := "res://assets/battle/slots/slot_plate.png"
-const DEFAULT_CARD_SIZE := Vector2(172, 112)
-const COMPACT_CARD_SIZE := Vector2(144, 92)
+const DEFAULT_CARD_SIZE := Vector2(108, 152)
+const COMPACT_CARD_SIZE := Vector2(92, 128)
 
 signal front_card_pressed(player_id: String, card_uid: String)
 signal energy_card_pressed(player_id: String, card_uid: String)
@@ -29,8 +29,12 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 8)
 	_slot_plate_texture = _load_optional_texture(SLOT_PLATE_TEXTURE_PATH)
 	_name_label = Label.new()
+	_name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_name_label.add_theme_font_size_override("font_size", 18)
 	_stats_label = Label.new()
+	_stats_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_stats_label.add_theme_font_size_override("font_size", 12)
 	_stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_name_label)
@@ -83,6 +87,8 @@ func _create_zone_section(title_text: String) -> Dictionary:
 	section.add_theme_constant_override("separation", 6)
 
 	var title := Label.new()
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.text = title_text
 	title.add_theme_font_size_override("font_size", 13)
 	section.add_child(title)

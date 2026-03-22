@@ -3,7 +3,7 @@ class_name DropZone
 
 signal card_dropped(player_id: String, zone_name: String, card_uid: String)
 
-const DEFAULT_ZONE_HEIGHT := 96.0
+const DEFAULT_ZONE_HEIGHT := 152.0
 
 var player_id := ""
 var zone_name := ""
