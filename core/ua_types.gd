@@ -1,4 +1,4 @@
-﻿extends RefCounted
+extends RefCounted
 class_name UATypes
 
 enum CardType {
@@ -25,6 +25,7 @@ enum CardState {
 
 enum Phase {
 	START,
+	DRAW,
 	MOVE,
 	MAIN,
 	ATTACK,
@@ -78,6 +79,8 @@ static func phase_to_text(phase: int) -> String:
 	match phase:
 		Phase.START:
 			return "START"
+		Phase.DRAW:
+			return "DRAW"
 		Phase.MOVE:
 			return "MOVE"
 		Phase.MAIN:

@@ -31,6 +31,7 @@ const BOARD_BOTTOM_GAP := 28.0
 @onready var active_player_label: Label = $UILayer/TopHUD/TopBar/ActivePlayerLabel
 @onready var phase_indicator: PhaseIndicator = $UILayer/TopHUD/TopBar/PhaseIndicator
 @onready var next_phase_button: Button = $UILayer/TopHUD/TopBar/NextPhaseButton
+@onready var bonus_draw_button: Button = $UILayer/TopHUD/TopBar/BonusDrawButton
 @onready var no_block_button: Button = $UILayer/TopHUD/TopBar/NoBlockButton
 @onready var winner_label: Label = $UILayer/TopHUD/TopBar/WinnerLabel
 @onready var opponent_board: BoardView = $BoardLayer/BoardMargin/BoardContent/OpponentBoard
@@ -72,6 +73,7 @@ func _ready() -> void:
 	game_manager.state_changed.connect(_on_state_changed)
 	game_manager.blockers_requested.connect(_on_blockers_requested)
 	next_phase_button.pressed.connect(_on_next_phase_pressed)
+	bonus_draw_button.pressed.connect(_on_bonus_draw_pressed)
 	no_block_button.pressed.connect(_on_no_block_pressed)
 	play_front_button.pressed.connect(_on_play_front_pressed)
 	play_energy_button.pressed.connect(_on_play_energy_pressed)
@@ -96,6 +98,7 @@ func _ready() -> void:
 	player_board.zone_drop_requested.connect(_on_zone_drop_requested)
 	_clear_selection()
 	no_block_button.visible = false
+	bonus_draw_button.visible = false
 	main_activate_button.visible = false
 	step_button.visible = false
 	move_front_button.visible = false
@@ -169,6 +172,10 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	var has_pending_life := _has_pending_life_triggers()
 	var has_pending_decisions := _has_pending_decisions()
 	var has_pending_gate := has_pending_life or has_pending_decisions
+	var phase := str(snapshot.get("phase", "START"))
+	var can_bonus_draw := bool(snapshot.get("can_bonus_draw", false))
+	bonus_draw_button.visible = phase == "DRAW"
+	bonus_draw_button.disabled = has_winner or has_pending_gate or not can_bonus_draw
 	next_phase_button.disabled = has_winner or has_pending_gate
 	play_front_button.disabled = play_front_button.disabled or has_winner or has_pending_gate
 	play_energy_button.disabled = play_energy_button.disabled or has_winner or has_pending_gate
@@ -283,6 +290,11 @@ func _on_no_block_pressed() -> void:
 	game_manager.resolve_attack(_pending_attack_uid)
 	_clear_pending_attack()
 
+func _on_bonus_draw_pressed() -> void:
+	if _has_pending_gate():
+		return
+	game_manager.request_bonus_draw()
+
 func _on_play_front_pressed() -> void:
 	if _has_pending_gate():
 		return
@@ -375,6 +387,7 @@ func _clear_pending_attack() -> void:
 	_pending_attack_uid = ""
 	_pending_defender_player_id = ""
 	no_block_button.visible = false
+	bonus_draw_button.visible = false
 
 func _selected_label_text(active_player_id: String) -> String:
 	if _has_pending_decisions():

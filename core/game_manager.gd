@@ -55,6 +55,12 @@ func advance_phase() -> void:
 	_apply_logs(turn_manager.advance_phase(game_state))
 	emit_state_changed()
 
+func request_bonus_draw() -> void:
+	if _has_winner() or _has_pending_gate():
+		return
+	_apply_logs(turn_manager.request_bonus_draw(game_state))
+	emit_state_changed()
+
 # Unified card-play entry point used by the UI.
 func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> void:
 	if _has_winner() or _has_pending_gate():
@@ -247,6 +253,7 @@ func get_snapshot() -> Dictionary:
 		"turn_number": game_state.turn_number,
 		"active_player_id": game_state.active_player_id,
 		"phase": UATypes.phase_to_text(game_state.phase),
+		"can_bonus_draw": _can_active_player_bonus_draw(),
 		"winner_player_id": game_state.winner_player_id,
 		"battle_context": game_state.battle_context.duplicate(true),
 		"pending_decisions": game_state.pending_decisions.duplicate(true),
@@ -324,6 +331,7 @@ func _serialize_player(player_id: String) -> Dictionary:
 		"life_count": player.life.size(),
 		"ap_total": player.ap_total(),
 		"ap_active": player.ap_active_count(),
+		"used_bonus_draw": player.used_bonus_draw,
 		"available_energy": _energy_pool_for_player(player),
 		"hand": _serialize_cards(player.hand),
 		"front_line": _serialize_cards(player.front_line),
@@ -389,6 +397,14 @@ func _has_pending_decisions() -> bool:
 
 func _has_pending_gate() -> bool:
 	return _has_pending_life_triggers() or _has_pending_decisions()
+
+func _can_active_player_bonus_draw() -> bool:
+	if game_state.phase != UATypes.Phase.DRAW:
+		return false
+	var player: PlayerState = game_state.get_player(game_state.active_player_id)
+	if player == null:
+		return false
+	return not player.used_bonus_draw and player.ap_active_count() >= 1
 
 func _enqueue_pending_decision(decision: Dictionary) -> void:
 	game_state.pending_decisions.append(decision)

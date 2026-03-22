@@ -173,6 +173,10 @@ text = "Phase: START"
 layout_mode = 2
 text = "Next Phase"
 
+[node name="BonusDrawButton" type="Button" parent="UILayer/TopHUD/TopBar"]
+layout_mode = 2
+text = "Bonus Draw (1 AP)"
+
 [node name="NoBlockButton" type="Button" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 text = "No Block"
