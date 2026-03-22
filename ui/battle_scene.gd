@@ -153,6 +153,7 @@ func _update_responsive_layout() -> void:
 	player_board.size_flags_vertical = 0
 	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
 	bottom_panel.custom_minimum_size = Vector2(0, bottom_height)
+	top_bar.alignment = FlowContainer.ALIGNMENT_CENTER
 	top_bar.add_theme_constant_override("h_separation", 8 if compact else 12)
 	top_bar.add_theme_constant_override("v_separation", 6)
 	action_bar.add_theme_constant_override("h_separation", 8 if compact else 10)
