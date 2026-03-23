@@ -23,7 +23,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [],
     "analysis": {
@@ -58,7 +59,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -116,7 +118,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -183,7 +186,8 @@
           "allow_from_hand": true,
           "require_full_energy": true
         }
-      ]
+      ],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -245,7 +249,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -309,7 +314,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -373,7 +379,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -452,7 +459,8 @@
           "require_full_energy": true,
           "life_trigger_only": true
         }
-      ]
+      ],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -534,7 +542,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -596,7 +605,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -715,7 +725,8 @@
           "require_full_energy": true,
           "life_trigger_only": true
         }
-      ]
+      ],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -799,7 +810,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [],
     "analysis": {
@@ -838,7 +850,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [],
     "analysis": {
@@ -873,7 +886,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [],
     "analysis": {
@@ -910,7 +924,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1005,7 +1020,8 @@
           "require_full_energy": true,
           "life_trigger_only": true
         }
-      ]
+      ],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1127,7 +1143,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1293,7 +1310,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1351,7 +1369,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1415,7 +1434,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1479,7 +1499,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1583,7 +1604,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1766,7 +1788,8 @@
           "require_full_energy": true,
           "life_trigger_only": true
         }
-      ]
+      ],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1846,7 +1869,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -1979,7 +2003,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2013,8 +2038,52 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_life_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "LIFE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_life_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_life_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "LIFE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_life_card",
+            "to": "HAND"
+          },
+          {
+            "type": "DRAW",
+            "value": 2
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2023,8 +2092,7 @@
           "effect_box": "OUTER",
           "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -2032,7 +2100,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "DRAW_THEN_SELECT_AND_MOVE"
       ]
     }
   },
@@ -2060,7 +2128,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2176,7 +2245,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2292,7 +2362,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2381,7 +2452,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2470,7 +2542,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2559,7 +2632,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2640,7 +2714,24 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": [
+        {
+          "type": "SELF_HAND_AP_DELTA",
+          "from_zone": "HAND",
+          "ap_delta": -1,
+          "requirements": [
+            {
+              "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+              "value": "佐倉 杏子"
+            }
+          ],
+          "ui": {
+            "text": "自分の場に〈佐倉 杏子〉がある場合、手札にあるこのカードの消費APを-1する。",
+            "effect_box": "OUTER"
+          }
+        }
+      ]
     },
     "abilities": [
       {
@@ -2701,26 +2792,6 @@
           "text": "相手のフロントLのキャラを1枚選び、退場させる。"
         },
         "status": "SUPPORTED"
-      },
-      {
-        "id": "UA31BT_MMM_1_099_on_play_3012f184af",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": "自分の場に〈佐倉 杏子〉がある場合、手札にあるこのカードの消費APを-1する。"
-        },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
       },
       {
         "id": "UA31BT_MMM_1_099_on_play_053ee4c1d1",
@@ -2796,8 +2867,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -2825,7 +2895,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -2899,8 +2970,64 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_cost_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "佐倉 杏子"
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_cost_card"
+          },
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_CONTEXT_CARD",
+                  "context_var": "selected_cost_card"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "DRAW",
+            "value": 2
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2909,8 +3036,14 @@
           "effect_box": "OUTER",
           "text": "自分の場の〈佐倉 杏子〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "costs": [
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_cost_card",
+            "to": "OUTSIDE"
+          }
+        ]
       }
     ],
     "analysis": {
@@ -2918,7 +3051,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -2960,7 +3093,8 @@
           "require_full_energy": true,
           "life_trigger_only": true
         }
-      ]
+      ],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3021,7 +3155,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3079,7 +3214,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3137,7 +3273,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3203,7 +3340,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [],
     "analysis": {
@@ -3238,7 +3376,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [],
     "analysis": {
@@ -3273,7 +3412,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3333,7 +3473,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3433,7 +3574,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3549,7 +3691,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3642,7 +3785,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3745,7 +3889,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3830,7 +3975,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3888,7 +4034,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -3992,7 +4139,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -4003,7 +4151,12 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 2
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4012,8 +4165,7 @@
           "effect_box": "OUTER",
           "text": "カードを2枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31ST_MMM_1_106_on_life_trigger_bab7196d2b",
@@ -4084,7 +4236,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "DRAW_2",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -4115,7 +4267,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [],
     "analysis": {
@@ -4148,7 +4301,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {
@@ -4229,7 +4383,8 @@
     },
     "play_rule": {
       "mode": "NORMAL",
-      "special_modes": []
+      "special_modes": [],
+      "cost_modifiers": []
     },
     "abilities": [
       {

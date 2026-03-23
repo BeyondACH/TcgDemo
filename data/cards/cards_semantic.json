@@ -549,7 +549,7 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "DRAW_THEN_SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -563,16 +563,14 @@
       {
         "id": "UA31BT_MMM_1_092_on_play_f2b978407b",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_093",
@@ -759,8 +757,7 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -772,14 +769,6 @@
         "template_type": "SELECT_AND_MOVE"
       },
       {
-        "id": "UA31BT_MMM_1_099_on_play_3012f184af",
-        "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
-        "text": "自分の場に〈佐倉 杏子〉がある場合、手札にあるこのカードの消費APを-1する。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
-      },
-      {
         "id": "UA31BT_MMM_1_099_on_play_053ee4c1d1",
         "timing": "ON_PLAY",
         "status": "SUPPORTED",
@@ -788,10 +777,8 @@
         "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_100",
@@ -799,7 +786,7 @@
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
-      "UNSUPPORTED"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -813,16 +800,14 @@
       {
         "id": "UA31BT_MMM_1_100_on_play_ac3b29a0b0",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場の〈佐倉 杏子〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "COMPOSITE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31ST_MMM_1_104",
@@ -1132,17 +1117,17 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "DRAW_2",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
       {
         "id": "UA31ST_MMM_1_106_on_enter_43b9134aa2",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを2枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "DRAW_2"
       },
       {
         "id": "UA31ST_MMM_1_106_on_life_trigger_bab7196d2b",
@@ -1153,10 +1138,8 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31ST_MMM_1_107",

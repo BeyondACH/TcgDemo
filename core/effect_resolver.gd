@@ -157,6 +157,16 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 	var allow_current_zone := false
 	var consumed_delayed_effect_ids: Array[String] = []
 
+	for modifier_variant in card_def.play_rule.get("cost_modifiers", []):
+		var modifier: Dictionary = modifier_variant
+		var modifier_type := str(modifier.get("type", ""))
+		var from_zone := _parse_zone(modifier.get("from_zone", -1))
+		if from_zone != -1 and card.zone != from_zone:
+			continue
+		if modifier_type == "SELF_HAND_AP_DELTA":
+			if _requirements_met(state, card_uid, modifier.get("requirements", []), play_context, card_uid):
+				ap_delta += int(modifier.get("ap_delta", 0))
+
 	for modifier_variant in state.static_modifiers:
 		var modifier: Dictionary = modifier_variant
 		if not _is_modifier_active(state, modifier):
@@ -899,6 +909,18 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		if compare_card == null:
 			return false
 		return int(compare_card.current_bp) <= int(requirement.get("value", 0))
+	if requirement_type == "CARD_BP_LTE_CONTEXT_CARD":
+		var compare_card = candidate_card if candidate_card != null else source_card
+		if compare_card == null:
+			return false
+		var context_var := str(requirement.get("context_var", ""))
+		if context_var == "":
+			return false
+		var reference_uid := str(context.get(context_var, ""))
+		var reference_card = state.get_card(reference_uid)
+		if reference_card == null:
+			return false
+		return int(compare_card.current_bp) <= int(reference_card.current_bp)
 	if requirement_type == "PLAYER_LIFE_IS_EMPTY":
 		var player_mode := str(requirement.get("player", "SELF"))
 		var player_id := str(context.get("target_player_id", context.get("source_player_id", "")))

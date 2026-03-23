@@ -210,3 +210,13 @@
 - 摘要：同步更新项目里程碑盘点，修正效果系统阶段状态为“已接入统一队列消费链路”，补充 `cards_raw.json` 最小样例对局脚本与最新冒烟通过数，并将后续动作调整为继续扩展复杂条件、费用、目标与正式 raw 样例覆盖。
 - 影响文件或模块：`docs/plan/mile_stone.md`、`docs/logs.md`
 - 验证方式与结果：对照 `docs/logs.md` 最近功能记录、`docs/milestone_smoke_test.gd` 23 项通过结果与 `docs/cards_raw_minimal_duel_smoke_test.gd` 4 项通过结果，确认里程碑文档中的 M4 状态、风险项、验证结论与下一步动作已和当前实现保持一致；本次为文档同步，未新增脚本执行。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：继续推进 M4 效果系统与正式 raw 样例覆盖，新增 `DRAW_2` 与“生命区取 1 到手后再抽 2”两类 DSL 编译模板，并把 `cards_raw` 最小对局冒烟补到 5 条正式样例。
+- 影响文件或模块：`tools/compile_cards_effects.py`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 56 个已支持能力、18 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 5 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；随后在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败。两次 Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：继续沿 `cards_raw` 最小样例对局补齐正式 raw 卡覆盖，新增手牌中自减 AP、离场回手与“先支付角色退场代价、再按其 BP 选择目标并抽 2”的多步骤费用结算模板，并把最小 raw 冒烟扩展到 8 条正式样例。
+- 影响文件或模块：`core/effect_resolver.gd`、`tools/compile_cards_effects.py`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 57 个已支持能力、16 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 8 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；随后在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败。两次 Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。

@@ -45,7 +45,38 @@ def _build_play_rule(card: dict) -> dict:
         if str(mode.get("type", "")) == "RAID" and _has_life_trigger_raid_text(card):
             mode["life_trigger_only"] = True
         special_modes.append(mode)
-    return {"mode": "NORMAL", "special_modes": special_modes}
+    return {
+        "mode": "NORMAL",
+        "special_modes": special_modes,
+        "cost_modifiers": _build_play_cost_modifiers(card),
+    }
+
+
+def _build_play_cost_modifiers(card: dict) -> list[dict]:
+    modifiers: list[dict] = []
+    for effect_entry in card.get("effects", []):
+        text = str(effect_entry.get("text", "")).strip()
+        match = re.fullmatch(r"自分の場に〈(.+)〉がある場合、手札にあるこのカードの消費APを-1する。", text)
+        if not match:
+            continue
+        modifiers.append(
+            {
+                "type": "SELF_HAND_AP_DELTA",
+                "from_zone": "HAND",
+                "ap_delta": -1,
+                "requirements": [
+                    {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": match.group(1),
+                    }
+                ],
+                "ui": {
+                    "text": text,
+                    "effect_box": str(effect_entry.get("effect_box", "OUTER")),
+                },
+            }
+        )
+    return modifiers
 
 
 def _has_life_trigger_raid_text(card: dict) -> bool:
@@ -168,6 +199,9 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
     if text == "カードを1枚引く。":
         return _supported_ability(card, event_name, trigger_entry, [], [], [{"type": "DRAW", "value": 1}])
 
+    if text == "カードを2枚引く。":
+        return _supported_ability(card, event_name, trigger_entry, [], [], [{"type": "DRAW", "value": 2}])
+
     match = re.fullmatch(r"自分の場に〈(.+)〉がある場合、カードを1枚引く。", text)
     if match:
         return _supported_ability(
@@ -258,7 +292,7 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
     return _unsupported_ability(card, event_name, trigger_entry, "当前原子要求/步骤模板尚未覆盖该文本模式。")
 
 
-def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str, dict]) -> dict:
+def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str, dict]) -> dict | None:
     event_name = "ON_PLAY"
     text = str(effect_entry.get("text", "")).strip()
     pseudo_trigger = {
@@ -288,6 +322,83 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
     if text == "カードを1枚引く。":
         return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 1}], "TRIGGERED")
 
+    if text == "カードを2枚引く。":
+        return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 2}], "TRIGGERED")
+
+    if re.fullmatch(r"自分の場に〈(.+)〉がある場合、手札にあるこのカードの消費APを-1する。", text):
+        return None
+
+    if text == "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。":
+        target_specs, steps = _manual_single_target("SELF", ["LIFE"], [], 1, 1, "selected_life_card")
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_life_card", "to": "HAND"})
+        steps.append({"type": "DRAW", "value": 2})
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    match = re.fullmatch(
+        r"自分の場の〈(.+)〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。",
+        text,
+    )
+    if match:
+        source_name = match.group(1)
+        target_specs = [
+            {
+                "id": "selected_cost_card",
+                "scope": "CARD",
+                "candidate": {
+                    "owner": "SELF",
+                    "zones": ["FRONT_LINE", "ENERGY_LINE"],
+                    "requirements": [
+                        {"type": "CARD_NAME_IS", "value": source_name},
+                    ],
+                },
+                "select": {
+                    "min": 1,
+                    "max": 1,
+                    "mode": "MANUAL",
+                },
+                "store_as": "selected_cost_card",
+            },
+            {
+                "id": "selected_target",
+                "scope": "CARD",
+                "candidate": {
+                    "owner": "OPPONENT",
+                    "zones": ["FRONT_LINE"],
+                    "requirements": [
+                        {
+                            "type": "CARD_BP_LTE_CONTEXT_CARD",
+                            "context_var": "selected_cost_card",
+                        }
+                    ],
+                },
+                "select": {
+                    "min": 0,
+                    "max": 1,
+                    "mode": "MANUAL",
+                },
+                "store_as": "selected_target",
+            },
+        ]
+        steps = [
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "selected_target",
+                "to": "OUTSIDE",
+            },
+            {"type": "DRAW", "value": 2},
+        ]
+        pseudo_trigger = dict(pseudo_trigger)
+        pseudo_trigger["costs"] = [
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "selected_cost_card",
+                "to": "OUTSIDE",
+            }
+        ]
+        ability = _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+        ability["costs"] = pseudo_trigger["costs"]
+        return ability
+
     semantic_entry = semantic_map.get(card["id"])
     if semantic_entry and not semantic_entry.get("can_be_expressed_by_dsl", True):
         reason = " / ".join(semantic_entry.get("missing_capabilities", []))
@@ -302,7 +413,9 @@ def _build_card_effects(card: dict, semantic_map: dict[str, dict]) -> dict:
         abilities.append(_compile_trigger(card, trigger_entry, semantic_map))
     if str(card.get("card_type", "")) == "EVENT":
         for effect_entry in card.get("effects", []):
-            abilities.append(_compile_event_effect(card, effect_entry, semantic_map))
+            ability = _compile_event_effect(card, effect_entry, semantic_map)
+            if ability:
+                abilities.append(ability)
 
     semantic_entry = semantic_map.get(card["id"], {})
     return {
@@ -418,7 +531,8 @@ def _infer_template_type(ability: dict) -> str:
         return "NO_OP"
     step_types = [str(step.get("type", "")) for step in steps if isinstance(step, dict)]
     if step_types == ["DRAW"]:
-        return "DRAW_1"
+        draw_value = int(steps[0].get("value", 1))
+        return f"DRAW_{draw_value}"
     if step_types == ["MOVE_CARD"]:
         return "MOVE_SELF"
     if step_types == ["ACTIVATE_AP_SLOTS"]:

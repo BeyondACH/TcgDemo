@@ -5,7 +5,12 @@ const GameManager = preload("res://core/game_manager.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 
-const RAW_ENTER_DRAW := "UA31BT_MMM_1_074"
+const RAW_ENTER_DRAW_TWO := "UA31ST_MMM_1_106"
+const RAW_PLAY_LIFE_TO_HAND_DRAW_TWO := "UA31BT_MMM_1_092"
+const RAW_ON_LEAVE_TO_HAND := "UA31BT_MMM_1_069"
+const RAW_KYOKO := "UA31BT_MMM_1_082"
+const RAW_EVENT_AP_DISCOUNT := "UA31BT_MMM_1_099"
+const RAW_EVENT_COMPLEX_COST := "UA31BT_MMM_1_100"
 const RAW_TARGET_REMOVE := "UA31BT_MMM_1_077"
 const RAW_LIFE_TRIGGER_TARGET := "UA31BT_MMM_1_084"
 const RAW_MAIN_ACTIVATE := "UA31BT_MMM_1_089"
@@ -15,7 +20,11 @@ var _failures: Array[String] = []
 var _passes: Array[String] = []
 
 func _init() -> void:
-	_run_test("Raw ON_ENTER Draw", _test_raw_on_enter_draw)
+	_run_test("Raw ON_ENTER Draw 2", _test_raw_on_enter_draw_two)
+	_run_test("Raw ON_PLAY Life To Hand Draw 2", _test_raw_on_play_life_to_hand_draw_two)
+	_run_test("Raw Hand AP Discount", _test_raw_hand_ap_discount)
+	_run_test("Raw ON_LEAVE Return To Hand", _test_raw_on_leave_return_to_hand)
+	_run_test("Raw Complex Cost Combo", _test_raw_complex_cost_combo)
 	_run_test("Raw MAIN_ACTIVATE Life To Hand", _test_raw_main_activate_life_to_hand)
 	_run_test("Raw Event Ready AP", _test_raw_event_ready_ap)
 	_run_test("Raw Life Trigger Target Selection", _test_raw_life_trigger_target_selection)
@@ -62,25 +71,152 @@ func _new_manager() -> GameManager:
 	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 	return manager
 
-func _test_raw_on_enter_draw() -> Dictionary:
+func _test_raw_on_enter_draw_two() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _place_red_energy(manager, player_id, 3):
+		return _fail("Should be able to prepare 3 raw red energy cards for ON_ENTER.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ENTER_DRAW_TWO, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw ON_ENTER draw-2 sample card should be available.")
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var deck_before := player.deck.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if player.hand.size() != hand_before + 1:
+		return _fail("Raw ON_ENTER draw-2 should increase hand by exactly 1 after playing from hand.")
+	if player.deck.size() != deck_before - 2:
+		return _fail("Raw ON_ENTER draw-2 should draw exactly 2 cards.")
+	return _ok()
+
+func _test_raw_on_play_life_to_hand_draw_two() -> Dictionary:
 	var manager := _new_manager()
 	var player_id := UATypes.PLAYER_ONE
 	manager.game_state.phase = UATypes.Phase.MAIN
 	_fill_ap(_player(manager, player_id), 3)
 	if not _place_red_energy(manager, player_id, 2):
-		return _fail("Should be able to prepare 2 raw red energy cards for ON_ENTER.")
-	var target_uid := _move_card_to_zone(manager, player_id, RAW_TARGET_REMOVE, UATypes.Zone.FRONT_LINE)
-	var source_uid := _move_card_to_zone(manager, player_id, RAW_ENTER_DRAW, UATypes.Zone.HAND)
-	if target_uid == "" or source_uid == "":
-		return _fail("Raw ON_ENTER sample cards should be available.")
+		return _fail("Should be able to prepare 2 raw red energy cards for ON_PLAY.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_PLAY_LIFE_TO_HAND_DRAW_TWO, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw ON_PLAY sample card should be available.")
+	var chosen_life_uid := _ensure_life_card(manager, player_id)
+	if chosen_life_uid == "":
+		return _fail("Raw ON_PLAY sample should have a selectable life card.")
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var life_before := player.life.size()
+	var deck_before := player.deck.size()
+	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw ON_PLAY sample should request explicit life target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
+		return _fail("Raw ON_PLAY sample should use ability target selection.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": chosen_life_uid,
+	})
+	if not player.hand.has(chosen_life_uid):
+		return _fail("Raw ON_PLAY sample should move the selected life card to hand.")
+	if player.hand.size() != hand_before + 2:
+		return _fail("Raw ON_PLAY sample should add the life card and draw 2.")
+	if player.life.size() != life_before - 1:
+		return _fail("Raw ON_PLAY sample should reduce life by exactly 1.")
+	if player.deck.size() != deck_before - 2:
+		return _fail("Raw ON_PLAY sample should draw exactly 2 cards.")
+	return _ok()
+
+func _test_raw_hand_ap_discount() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Should be able to prepare 4 raw red energy cards for the AP discount event.")
+	var discount_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_AP_DISCOUNT, UATypes.Zone.HAND)
+	var kyoko_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_KYOKO, UATypes.Zone.FRONT_LINE)
+	var target_uid := _move_or_spawn_card_to_zone(manager, opponent_id, RAW_ON_LEAVE_TO_HAND, UATypes.Zone.FRONT_LINE)
+	if discount_uid == "" or kyoko_uid == "" or target_uid == "":
+		return _fail("Raw AP discount sample cards should be available.")
+	var player := _player(manager, player_id)
+	var ap_before := player.ap_active_count()
+	manager.play_card(discount_uid, UATypes.Zone.OUTSIDE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw AP discount event should request explicit target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
+		return _fail("Raw AP discount event should use ability target selection.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": target_uid,
+	})
+	if player.ap_active_count() != ap_before - 1:
+		return _fail("Raw AP discount event should reduce the play cost by exactly 1 AP while Kyoko is on the field.")
+	if not player.outside.has(discount_uid):
+		return _fail("Raw AP discount event should move itself to outside after resolution.")
+	return _ok()
+
+func _test_raw_on_leave_return_to_hand() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ON_LEAVE_TO_HAND, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw ON_LEAVE sample card should be available.")
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_LEAVE, manager.game_state, {"target_player_id": player_id})
+	if not player.hand.has(source_uid):
+		return _fail("Raw ON_LEAVE sample should move itself back to hand.")
+	if player.hand.size() != hand_before + 1:
+		return _fail("Raw ON_LEAVE sample should add exactly 1 card to hand.")
+	return _ok()
+
+func _test_raw_complex_cost_combo() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Should be able to prepare 4 raw red energy cards for the complex event.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_COMPLEX_COST, UATypes.Zone.HAND)
+	var kyoko_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_KYOKO, UATypes.Zone.FRONT_LINE)
+	var target_uid := _move_or_spawn_card_to_zone(manager, opponent_id, RAW_ON_LEAVE_TO_HAND, UATypes.Zone.FRONT_LINE)
+	if source_uid == "" or kyoko_uid == "" or target_uid == "":
+		return _fail("Raw complex cost sample cards should be available.")
 	var player := _player(manager, player_id)
 	var hand_before := player.hand.size()
 	var deck_before := player.deck.size()
-	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if player.hand.size() != hand_before:
-		return _fail("Raw ON_ENTER draw should offset the played card.")
-	if player.deck.size() != deck_before - 1:
-		return _fail("Raw ON_ENTER draw should draw exactly 1 card.")
+	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw complex cost event should first request the cost card selection.")
+	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(first_decision.get("resolution_id", "")),
+		"choice": kyoko_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw complex cost event should then request the enemy target selection.")
+	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(second_decision.get("resolution_id", "")),
+		"choice": target_uid,
+	})
+	var kyoko_card := manager.game_state.get_card(kyoko_uid)
+	var target_card := manager.game_state.get_card(target_uid)
+	if kyoko_card == null or kyoko_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw complex cost event should move the selected Kyoko to outside as a cost.")
+	if target_card == null or target_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw complex cost event should move the selected enemy to outside.")
+	if player.hand.size() != hand_before + 1:
+		return _fail("Raw complex cost event should net +1 hand after drawing 2 from hand.")
+	if deck_before - player.deck.size() != 2:
+		return _fail("Raw complex cost event should draw exactly 2 cards.")
+	if not player.outside.has(source_uid):
+		return _fail("Raw complex cost event should move itself to outside after resolution.")
 	return _ok()
 
 func _test_raw_main_activate_life_to_hand() -> Dictionary:
@@ -197,6 +333,28 @@ func _place_red_energy(manager: GameManager, player_id: String, count: int) -> b
 		card.state = UATypes.CardState.RESTED
 		moved += 1
 	return moved >= count
+
+func _ensure_red_energy(manager: GameManager, player_id: String, count: int) -> bool:
+	if _place_red_energy(manager, player_id, count):
+		return true
+	while _count_red_energy(manager, player_id) < count:
+		var card_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ON_LEAVE_TO_HAND, UATypes.Zone.ENERGY_LINE)
+		if card_uid == "":
+			break
+		var card := manager.game_state.get_card(card_uid)
+		if card != null:
+			card.state = UATypes.CardState.RESTED
+	return _count_red_energy(manager, player_id) >= count
+
+func _count_red_energy(manager: GameManager, player_id: String) -> int:
+	var total := 0
+	for card_uid in _player(manager, player_id).energy_line:
+		var card := manager.game_state.get_card(card_uid)
+		var card_def := manager.game_state.get_card_def(card.def_id) if card != null else null
+		if card_def == null:
+			continue
+		total += int(card_def.energy_provided.get("RED", 0))
+	return total
 
 func _ensure_life_card(manager: GameManager, player_id: String) -> String:
 	var player := _player(manager, player_id)

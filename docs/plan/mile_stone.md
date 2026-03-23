@@ -123,11 +123,12 @@
 - `resolve_effect`、`resolve_trigger`、`MAIN_ACTIVATE` 与手动目标续执行已统一接入 `effect_queue`，并在遇到显式决策或生命触发阻塞点时暂停消费。
 - IR 层 `costs` 与 `target_specs` 已打通运行时消费，当前已覆盖显式目标选择、`PAY_AP`、`REST_SOURCE` 等最小费用链路。
 - `GameManager.get_snapshot()` 已补充 `effect_queue_count`，便于 UI 与调试面观察队列状态。
+- `cards_raw.json` 新增支持 `DRAW_2`、手牌中自减 AP，以及“先选择己方代价对象，再按其 BP 选择敌方目标并抽 2”这类多步骤费用结算模板；当前统一 DSL 已提升到 57 个已支持能力、16 个未支持能力。
 
 尚未闭环部分：
 
 - 更复杂的条件组合、费用模板、目标筛选与多触发顺序仍未完全扩展到计划书目标范围。
-- 当前 `cards_raw.json` 最小样例脚本已覆盖 4 类正式 raw 效果入口，但尚未覆盖更多事件牌、离场触发与多目标结算组合。
+- 当前 `cards_raw.json` 最小样例脚本已覆盖 8 条正式 raw 样例、5 类正式 raw 效果入口，但尚未覆盖更多检索/看牌堆顶、离场触发链与更复杂多目标结算组合。
 
 对应实现位置：
 
@@ -196,8 +197,8 @@
 - 已执行 `docs/deck_import_smoke_test.gd`
   - 结果：通过。
 - 已执行 `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - 结果：4 项通过，0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。
-  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 四类效果入口。
+  - 结果：8 项通过，0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。
+  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`ON_LEAVE`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 五类效果入口，并补齐 `DRAW_2`、手牌中自减 AP、离场回手与多步骤复杂费用结算样例。
 - 已尝试执行 `docs/draw_phase_smoke_test.gd`
   - 结果：Godot headless 进程崩溃，未获得可用业务验证结论。
 - 已执行 Godot headless 启动检查：`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit`
@@ -208,4 +209,4 @@
 ## 6. 建议的下一步里程碑动作
 
 - 继续扩展效果系统的原子条件、目标筛选、费用模板与多触发顺序，向完整 DSL/IR 运行时收敛。
-- 以 `docs/cards_raw_minimal_duel_smoke_test.gd` 为基底，继续补齐更多正式 raw 卡样例，优先覆盖事件牌、离场触发、双目标/多步骤结算与更复杂费用组合。
+- 以 `docs/cards_raw_minimal_duel_smoke_test.gd` 为基底，继续补齐更多正式 raw 卡样例，优先覆盖看牌堆顶后的检索/回底、多目标并行结算、离场触发链与更复杂费用组合。
