@@ -210,6 +210,11 @@ func get_legal_actions(state: GameState, player_id: String) -> Array[Dictionary]
 ### 6.2 动作生成范围
 
 #### 回合阶段动作
+- `DRAW` 阶段:
+  - 先攻玩家第一回合不抽牌
+  - 后攻玩家第一回合抽牌
+  - 后续每个玩家的抽牌阶段都抽一张牌
+  - 每回合一次可以支付1AP抽一张牌
 
 - `MOVE` 阶段：
   - 能量线角色移到前线
