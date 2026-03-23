@@ -78,7 +78,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		"attacker_uid": attacker_uid,
 		"target_uid": target_uid,
 	}))
-	var impact_damage := _impact_damage(attacker_def)
+	var impact_damage := _impact_damage(attacker, attacker_def)
 	if target_kind == "FRONT_CHARACTER":
 		var target_card: CardInstance = state.get_card(target_uid)
 		if target_card == null:
@@ -128,7 +128,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		var block_validation := rules_engine.can_block(state, defender_player_id, blocker_uid)
 		if not bool(block_validation.get("ok", false)):
 			logs.append("Selected blocker is invalid, attack hits player instead.")
-			var fallback_damage := _direct_attack_damage(attacker_def)
+			var fallback_damage := _direct_attack_damage(attacker, attacker_def)
 			battle_context["damage_to_player"] = fallback_damage
 			battle_context["battle_outcome"] = "DIRECT_DAMAGE"
 			logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, fallback_damage))
@@ -141,7 +141,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			blocker_def = state.get_card_def(blocker.def_id)
 		if blocker == null or blocker_def == null:
 			logs.append("Blocker missing, attack hits player instead.")
-			var fallback_damage_missing := _direct_attack_damage(attacker_def)
+			var fallback_damage_missing := _direct_attack_damage(attacker, attacker_def)
 			battle_context["damage_to_player"] = fallback_damage_missing
 			battle_context["battle_outcome"] = "DIRECT_DAMAGE"
 			logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, fallback_damage_missing))
@@ -195,7 +195,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		}))
 		_after_block_state_change(blocker, blocker_def, was_repeat_block)
 	else:
-		var direct_damage := _direct_attack_damage(attacker_def)
+		var direct_damage := _direct_attack_damage(attacker, attacker_def)
 		battle_context["damage_to_player"] = direct_damage
 		battle_context["battle_outcome"] = "DIRECT_DAMAGE"
 		logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, direct_damage))
@@ -207,14 +207,14 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 	state.battle_context = battle_context
 	return logs
 
-func _direct_attack_damage(attacker_def: CardDef) -> int:
-	if attacker_def.keywords.has("DAMAGE_2"):
+func _direct_attack_damage(attacker: CardInstance, attacker_def: CardDef) -> int:
+	if _card_has_keyword(attacker, attacker_def, "DAMAGE_2"):
 		return 2
 	return 1
 
-func _impact_damage(attacker_def: CardDef) -> int:
-	var base := 1 if attacker_def.keywords.has("IMPACT") else 0
-	if attacker_def.keywords.has("IMPACT_PLUS_1"):
+func _impact_damage(attacker: CardInstance, attacker_def: CardDef) -> int:
+	var base := 1 if _card_has_keyword(attacker, attacker_def, "IMPACT") else 0
+	if _card_has_keyword(attacker, attacker_def, "IMPACT_PLUS_1"):
 		base += 1
 	return base
 
@@ -225,10 +225,10 @@ func _impact_negated(state: GameState, card_uid: String) -> bool:
 	var card_def: CardDef = state.get_card_def(card.def_id)
 	if card_def == null:
 		return false
-	return card_def.keywords.has("NEGATE_IMPACT")
+	return _card_has_keyword(card, card_def, "NEGATE_IMPACT")
 
 func _after_attack_state_change(attacker: CardInstance, attacker_def: CardDef, was_repeat_attack: bool) -> void:
-	if not attacker_def.keywords.has("DOUBLE_ATTACK"):
+	if not _card_has_keyword(attacker, attacker_def, "DOUBLE_ATTACK"):
 		return
 	if was_repeat_attack:
 		attacker.flags["double_attack_consumed"] = true
@@ -236,7 +236,7 @@ func _after_attack_state_change(attacker: CardInstance, attacker_def: CardDef, w
 		attacker.state = UATypes.CardState.ACTIVE
 
 func _after_block_state_change(blocker: CardInstance, blocker_def: CardDef, was_repeat_block: bool) -> void:
-	if not blocker_def.keywords.has("DOUBLE_BLOCK"):
+	if not _card_has_keyword(blocker, blocker_def, "DOUBLE_BLOCK"):
 		return
 	if was_repeat_block:
 		blocker.flags["double_block_consumed"] = true
@@ -247,3 +247,9 @@ func _opponent_of(player_id: String) -> String:
 	if player_id == UATypes.PLAYER_ONE:
 		return UATypes.PLAYER_TWO
 	return UATypes.PLAYER_ONE
+
+func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
+	if card_def.keywords.has(keyword):
+		return true
+	var temp_keywords: Array = card.flags.get("temp_keywords", [])
+	return temp_keywords.has(keyword)

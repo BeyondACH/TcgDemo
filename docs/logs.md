@@ -1,29 +1,3 @@
-# 鍙樻洿鏃ュ織
-
-鏈枃浠剁敤浜庤褰曟瘡涓€娆″姛鑳芥洿鏂颁笌 bugfix銆?
-## 璁板綍妯℃澘
-
-- 鏃ユ湡锛歒YYY-MM-DD
-- 绫诲瀷锛氬姛鑳芥洿鏂?| bugfix
-- 鎽樿锛?..
-- 褰卞搷鏂囦欢锛?..
-- 楠岃瘉缁撴灉锛?..
-
-- 鏃ユ湡锛?026-03-22
-- 绫诲瀷锛氬姛鑳芥洿鏂?- 鎽樿锛氭柊澧炵嫭绔嬬殑 DRAW 闃舵锛屼繚鐣欏厛鏀婚鍥炲悎璺宠繃绯荤粺鎶界墝鐨勮鍒欙紝骞舵敮鎸佸湪褰撳墠琛屽姩鐜╁鑷繁鐨?DRAW 闃舵鍐呮敮浠?1 AP 鎵ц姣忓洖鍚堜竴娆＄殑棰濆鎶界墝銆?- 褰卞搷鏂囦欢锛歝ore/ua_types.gd锛宑ore/turn_manager.gd锛宑ore/game_manager.gd锛寀i/battle_scene.gd锛宻cenes/battle_scene.tscn锛宒ocs/draw_phase_smoke_test.gd
-- 楠岃瘉缁撴灉锛氫娇鐢?Godot headless 杩愯 `res://docs/draw_phase_smoke_test.gd`锛岀粨鏋滀负 `DRAW_PHASE_SMOKE_OK`銆?
-- 鏃ユ湡锛?026-03-23
-- 绫诲瀷锛氬姛鑳芥洿鏂?- 鎽樿锛氳皟鏁存墜鐗屽崱闈俊鎭睍绀猴紝淇濈暀娑堣€?AP 鏂囨骞堕殣钘?BP 鏁板€硷紝閬垮厤鎵嬬墝鍖哄煙鏄剧ず澶氫綑鎴樻枟淇℃伅銆?- 褰卞搷鏂囦欢锛歶i/card_view.gd锛宒ocs/logs.md
-- 楠岃瘉缁撴灉锛氫唬鐮佹鏌ョ‘璁ゆ墜鐗屾ā寮忎粎灞曠ず AP銆佽兘閲忎笌鐘舵€佷俊鎭紱闅忓悗杩愯椤圭洰鍐掔儫鑴氭湰杩涜鍥炲綊楠岃瘉銆?
-- 鏃ユ湡锛?026-03-23
-- 绫诲瀷锛氬姛鑳芥洿鏂?- 鎽樿锛氬皢 P1 鍗＄粍璇诲彇鍒囨崲涓?`data/decks/starter_a.txt` 鐨勬暟閲忓姞缂栧彿鏍煎紡锛屽苟鏀逛负浼樺厛鍔犺浇 `data/cards/cards_raw.json` 浣滀负鍗＄墝瀹氫箟鏉ユ簮锛屼娇鎶藉埌鐨勫崱鍙寜 raw id 瑙ｆ瀽鍒板師濮嬪崱闈㈡暟鎹紱鍚屾椂淇濈暀 `base_cards.json` 浣滀负鍏煎鍏滃簳锛岄伩鍏嶇幇鏈?`starter_b.json` 澶辨晥銆?- 褰卞搷鏂囦欢锛歝ore/game_manager.gd锛宒ocs/starter_a_txt_raw_smoke_test.gd锛宒ocs/logs.md
-- 楠岃瘉缁撴灉锛氫娇鐢?Godot headless 杩愯 `res://docs/starter_a_txt_raw_smoke_test.gd`锛岀粨鏋滀负 `STARTER_A_TXT_RAW_SMOKE_OK`銆?
-- 鏃ユ湡锛?026-03-23
-- 绫诲瀷锛氬姛鑳芥洿鏂?- 鎽樿锛氳ˉ鍏呮墜鐗岀揣鍑戣鍥句腑鐨勬墍闇€鑳介噺鏄剧ず锛岀‘淇濆皬灏哄鎵嬬墝涔熻兘鐩存帴鏌ョ湅鍑虹墝鑳介噺闇€姹傘€?- 褰卞搷鏂囦欢锛歶i/card_view.gd锛宒ocs/logs.md
-- 楠岃瘉缁撴灉锛氫唬鐮佹鏌ョ‘璁ゆ墜鐗屽悇灏哄灞曠ず鍧囧寘鍚?AP 涓庢墍闇€鑳介噺淇℃伅銆?
-- 鏃ユ湡锛?026-03-23
-- 绫诲瀷锛氬姛鑳芥洿鏂?- 鎽樿锛氭墜鐗屽尯鍩熸柊澧炲崱鍥剧缉鐣ュ浘灞曠ず锛岄噰鐢ㄥ乏鍥惧彸鏂囧竷灞€锛屽苟鍦ㄧ己灏戝崱鍥炬椂鍥為€€涓烘枃瀛楀崱闈€?- 褰卞搷鏂囦欢锛歞ata/card_def.gd锛宑ore/game_manager.gd锛寀i/card_view.gd锛寀i/hand_view.gd锛宒ocs/logs.md
-- 楠岃瘉缁撴灉锛氳繍琛?Godot headless 鍐掔儫鑴氭湰纭鏈柊澧?UI 鐩稿叧鎶ラ敊锛涙棦鏈夐樁娈垫祦杞け璐ラ」淇濇寔涓嶅彉銆
 
 - 日期：2026-03-23
 - 类型：功能更新
@@ -158,3 +132,31 @@
 - 摘要：补齐开局一次换牌决策流程，并在战场左侧新增生命区 7 张盖牌展示；双方需依次完成起手换牌后才会放置生命区并进入首回合。
 - 影响文件或模块：data/game_state.gd、core/game_manager.gd、ui/board_view.gd、ui/life_stack_view.gd、ui/battle_scene.gd、docs/milestone_smoke_test.gd、docs/starter_a_txt_raw_smoke_test.gd、docs/plan/project_development_plan.md
 - 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 19 项通过、0 项失败，新增覆盖开局待决策、不换牌生命区顺序与换牌重抽流程；在沙箱外执行 Godot headless --quit 未出现新增脚本解析错误；在沙箱外执行 res://docs/starter_a_txt_raw_smoke_test.gd 输出 STARTER_TXT_RAW_SMOKE_OK。代码检查确认生命区已位于战场左侧，且本次新增生命区为战场内部左侧列，不会把底部手牌区抬高到遮挡战场。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：在 AGENTS 协作规范中新增卡牌 DSL/IR 设计原则，明确按原子能力建模、要求与步骤分离、固定格式、统一 IR 运行时与主 agent 验收检查要求。
+- 影响文件或模块：AGENTS.md、docs/logs.md
+- 验证方式与结果：代码检查确认新小节位于“项目事实与权威来源”之后、“多 Agent 协作原则”之前，且同步补充了 DSL/IR 契约冻结要求、主 agent 集成检查项与推荐串行/并行场景约束；新增日志记录为中文。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：落地卡牌 DSL/IR 三层数据链路，改为由 `cards_raw.json` 编译生成 `cards_semantic.json` 与统一运行时 `cards_effects.json`，并让运行时与卡组导入只消费最终 DSL；同时补齐显式目标选择待决策、原子步骤执行与旧样例卡兼容接入。
+- 影响文件或模块：tools/compile_cards_effects.py、data/cards/cards_semantic.json、data/cards/cards_effects.json、data/card_def.gd、core/effect_resolver.gd、core/game_manager.gd、docs/deck_importer.gd、docs/logs.md
+- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 成功生成 67 张卡的最终 DSL，统计结果为 33 个已支持能力、41 个未支持能力；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果为 19 项通过、0 项失败。两次 Godot headless 退出时仍有既有资源泄漏警告，但未影响本轮规则与数据链路验证通过。
+
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：继续扩充卡牌 DSL 编译模板，新增抽1弃1、生命区回手后二次结算、可选单体退场、事件牌 AP 区域重置等固定格式能力映射，并重写 `compile_cards_effects.py` 为干净 UTF-8 版本以消除历史编码噪声。
+- 影响文件或模块：tools/compile_cards_effects.py、core/effect_resolver.gd、data/cards/cards_semantic.json、data/cards/cards_effects.json、docs/logs.md
+- 验证方式与结果：再次执行 `python tools/compile_cards_effects.py`，最终统计提升为 41 个已支持能力、33 个未支持能力；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果仍为 19 项通过、0 项失败。Godot headless 退出时仍有既有资源泄漏警告，但未引入新的规则回归。
+
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：优先补齐“本回合临时增益/临时能力”原子能力链，新增 `ADD_TEMP_BP_MODIFIER` 与 `ADD_TEMP_KEYWORD` 原子步骤、回合结束自动回滚、运行时关键词读取与临时效果快照输出，并接入常见的本回合 BP 增益模板。
+- 影响文件或模块：core/effect_resolver.gd、core/rules_engine.gd、core/battle_resolver.gd、core/game_manager.gd、data/card_instance.gd、tools/compile_cards_effects.py、data/cards/cards_semantic.json、data/cards/cards_effects.json、docs/logs.md
+- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后支持能力提升为 49 个、未支持能力降为 25 个；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果保持 19 项通过、0 项失败。Godot headless 退出时仍有既有资源泄漏警告，但未影响本轮临时效果链路验证。
+
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：实现标准 RAID 二选一文本的“仅生命触发”改造，将 `このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。` 编译为 `ON_LIFE_TRIGGER` 下的显式二选一决策，并把直接 RAID 的入口收紧为只可从该生命触发决策进入。
+- 影响文件或模块：tools/compile_cards_effects.py、core/effect_resolver.gd、core/rules_engine.gd、core/game_manager.gd、docs/milestone_smoke_test.gd、data/cards/cards_semantic.json、data/cards/cards_effects.json、docs/logs.md
+- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，5 张标准 RAID 文本全部编译为 `LIFE_TRIGGER_RAID_CHOICE` 模板，支持能力提升为 54 个、未支持能力降为 20 个；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果为 20 项通过、0 项失败。Godot headless 退出时仍有既有资源泄漏警告，但未影响本轮生命触发 RAID 决策链验证通过。

@@ -1,110 +1,1454 @@
 [
   {
-    "card_id": "UA31BT_MMM_1_002",
-    "trigger": [
+    "card_id": "UA31BT_MMM_1_068",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_069",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
       {
-        "source": "trigger_effect",
-        "trigger": "ON_ENTER",
-        "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。"
-      },
-      {
-        "source": "trigger_effect",
-        "trigger": "ON_LEAVE",
-        "text": "退場時、このキャラをリムーブエリアに置く。"
-      },
-      {
-        "source": "keyword_rule",
-        "trigger": "RAID_RULE",
-        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
-      },
-      {
-        "source": "support_text",
-        "trigger": "STATIC_FRONT_LINE_PERMISSION",
-        "text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。"
+        "id": "UA31BT_MMM_1_069_on_leave_0a3e81b9d0",
+        "timing": "ON_LEAVE",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
       }
     ],
-    "play_cost_energy": {
-      "YELLOW": 7
-    },
-    "play_cost_ap": 1,
-    "requirements": [
-      "通常使用时需要支付 7 点 YELLOW 能量和 1 点 AP。",
-      "RAID 规则要求以《鹿目 まどか》为突进对象，并在加入手牌或满足必要能量时才能进行 RAID 使用。",
-      "ON_ENTER 需要从自己场外区域选择至多 2 张角色卡。",
-      "AP -1 的减免只适用于本回合中下一张从リムーブエリア使用的卡。",
-      "support_text 仅在此卡位于前线时生效，并限制可从リムーブエリア使用的卡必须不是《鹿目 まどか》、不持有 [RAID]，且具有【特徴:魔法少女】或〈円環の理〉。"
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_070",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
     ],
-    "target_summary": [
+    "abilities": [
       {
-        "scope": "ON_ENTER_step_1",
-        "target": "自己场外区域中的至多 2 张角色卡"
-      },
-      {
-        "scope": "ON_ENTER_step_2",
-        "target": "本回合下一张从リムーブエリア使用的卡"
-      },
-      {
-        "scope": "ON_LEAVE",
-        "target": "自身"
-      },
-      {
-        "scope": "RAID_RULE",
-        "target": "名称为《鹿目 まどか》的 RAID 叠放目标"
-      },
-      {
-        "scope": "STATIC_FRONT_LINE_PERMISSION",
-        "target": "自己リムーブエリア中符合名称/关键词/特征限制的可使用卡"
+        "id": "UA31BT_MMM_1_070_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
       }
-    ],
-    "effect_steps_summary": [
-      {
-        "scope": "ON_ENTER",
-        "steps": [
-          "从自己场外区域选择至多 2 张角色卡。",
-          "将这些卡移动到リムーブエリア。",
-          "创建一个持续到回合结束的延迟效果。",
-          "当本回合下一次从リムーブエリア使用卡时，将该次使用的 AP 消耗减少 1。"
-        ]
-      },
-      {
-        "scope": "ON_LEAVE",
-        "steps": [
-          "当此卡退场时，将此卡自身移动到リムーブエリア。"
-        ]
-      },
-      {
-        "scope": "RAID_RULE",
-        "steps": [
-          "检查是否存在名称为《鹿目 まどか》的可突进对象。",
-          "检查该卡是否加入手牌或已满足必要能量条件。",
-          "满足条件时允许以 RAID 方式使用。"
-        ]
-      },
-      {
-        "scope": "STATIC_FRONT_LINE_PERMISSION",
-        "steps": [
-          "持续检查此卡是否位于前线。",
-          "放宽自己从リムーブエリア使用卡的合法性范围。",
-          "仅允许使用不是《鹿目 まどか》、不带 [RAID]，且具有【特徴:魔法少女】或〈円環の理〉的卡。"
-        ]
-      }
-    ],
-    "template_type": [
-      "TRIGGERED_MULTI_STEP_ZONE_TRANSFER_WITH_DELAYED_AP_DISCOUNT",
-      "TRIGGERED_SELF_MOVE_TO_REMOVED_ON_LEAVE",
-      "RAID_STACK_RULE_WITH_NAMED_TARGET",
-      "STATIC_FRONT_LINE_REMOVED_AREA_PLAY_PERMISSION"
     ],
     "can_be_expressed_by_dsl": false,
     "missing_capabilities": [
-      "缺少从特定区域按卡牌类型筛选并选择 0 到 N 张目标的 DSL 目标能力。",
-      "缺少一次效果内对多个被选目标执行批量 MOVE_ZONE 的 DSL 表达。",
-      "缺少“本回合中下一次满足条件的使用事件”这种延迟触发/监听未来事件的 DSL 能力。",
-      "缺少对卡牌使用费用施加一次性 AP 减免的运行时费用修正能力。",
-      "缺少限定来源区域为リムーブエリア的使用事件过滤能力。",
-      "缺少持续性静态效果：当此卡位于前线时修改可使用区域/使用合法性的 DSL 能力。",
-      "缺少按名称排除、按关键词排除、按特征包含的复合可使用性过滤表达。",
-      "缺少 RAID 的命名目标叠放/突进规则建模能力。"
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
     ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_071",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_071_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_072",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_072_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_073",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_073_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_074",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_074_on_enter_711316c8a7",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈鹿目 まどか〉がある場合、カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_075",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_075_on_enter_4c7186800a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。自分の場に〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックできない。」を与える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_075_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_076",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_076_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_077",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_077_on_life_trigger_a41bad1555",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_078",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_078_on_enter_e0e3e89124",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "このカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、退場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_078_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_079",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_080",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_081",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_082",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_082_on_enter_e350de8f27",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_082_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_083",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "TEMP_BP",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_083_on_attack_55de0988ed",
+        "timing": "ON_ATTACK",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+        "reason": "",
+        "template_type": "TEMP_BP"
+      },
+      {
+        "id": "UA31BT_MMM_1_083_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_084",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_084_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA31BT_MMM_1_084_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_085",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_085_on_enter_43348ae670",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_086",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_086_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_087",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_087_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_088",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_088_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_089",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "LIFE_TO_HAND_AND_READY_SOURCE",
+      "SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_089_main_activate_fd2a89248e",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラをアクティブにする。",
+        "reason": "",
+        "template_type": "LIFE_TO_HAND_AND_READY_SOURCE"
+      },
+      {
+        "id": "UA31BT_MMM_1_089_on_life_trigger_a41bad1555",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_090",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_090_main_activate_a191957804",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラは次の自分のターン開始時まで、「このカードを自分の場にレストで登場させるかレイドさせる。」を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_090_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_091",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TEMP_BP",
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_091_main_activate_11145b9ec6",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "自分の場の［特徴：魔法少女］を1枚選び、このターン中、BP+500。",
+        "reason": "",
+        "template_type": "TEMP_BP"
+      },
+      {
+        "id": "UA31BT_MMM_1_091_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_092",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_092_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA31BT_MMM_1_092_on_play_f2b978407b",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_093",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_093_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA31BT_MMM_1_093_on_play_e65f2078bd",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_094",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_094_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA31BT_MMM_1_094_on_play_ca29c14b61",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_095",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_095_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA31BT_MMM_1_095_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_096",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_096_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA31BT_MMM_1_096_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_097",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_097_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA31BT_MMM_1_097_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_098",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_098_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA31BT_MMM_1_098_on_play_ed61005103",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から5枚見る。その中からキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。公開したカードがを持つ［特徴：魔法少女］の場合、自分のAPカードを1枚まで選び、アクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_099",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_099_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA31BT_MMM_1_099_on_play_3012f184af",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に〈佐倉 杏子〉がある場合、手札にあるこのカードの消費APを-1する。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_099_on_play_053ee4c1d1",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "BP5000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31BT_MMM_1_100",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_100_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      },
+      {
+        "id": "UA31BT_MMM_1_100_on_play_ac3b29a0b0",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の〈佐倉 杏子〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_104",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_104_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_069",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_069_on_leave_0a3e81b9d0",
+        "timing": "ON_LEAVE",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_070",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_070_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_076",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_076_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_080",
+    "source": "cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_081",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_085",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_085_on_enter_43348ae670",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_088",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_088_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_094",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_094_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA31ST_MMM_1_094_on_play_ca29c14b61",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_095",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_095_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA31ST_MMM_1_095_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_101",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_101_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_102",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_102_on_enter_135c622495",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の〈鹿目 まどか〉を1枚自分の山札の下に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーが4以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31ST_MMM_1_102_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_103",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_103_on_enter_930ab826c1",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_105",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_105_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_106",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_106_on_enter_43b9134aa2",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "カードを2枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31ST_MMM_1_106_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_107",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31ST_MMM_1_108",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_108_on_enter_af81445bb8",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが3以下で消費APが1の［特徴：魔法少女］を1枚まで手札に加える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA31ST_MMM_1_108_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA31ST_MMM_1_109",
+    "source": "cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_109_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA31ST_MMM_1_109_on_play_3ded668e6e",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から5枚見る。その中から異なるカード名の［特徴：魔法少女］をそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA_CHAR_BASIC",
+    "source": "base_cards.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_FIELD_BASIC",
+    "source": "base_cards.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_EVENT_DRAW",
+    "source": "base_cards.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "LEGACY_PASSTHROUGH"
+    ],
+    "abilities": [
+      {
+        "id": "UA_EVENT_DRAW_on_play_0",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "",
+        "reason": "",
+        "template_type": "LEGACY_PASSTHROUGH"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_HEAVY",
+    "source": "base_cards.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_LIFE_TRIGGER_DRAW",
+    "source": "base_cards.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "LEGACY_PASSTHROUGH"
+    ],
+    "abilities": [
+      {
+        "id": "UA_LIFE_TRIGGER_DRAW_on_life_trigger_0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "",
+        "reason": "",
+        "template_type": "LEGACY_PASSTHROUGH"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_MMM_BASE_MADOKA",
+    "source": "base_cards.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA31BT_MMM_1_002",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "LEGACY_PASSTHROUGH"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_002_on_enter_0",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。",
+        "reason": "",
+        "template_type": "LEGACY_PASSTHROUGH"
+      },
+      {
+        "id": "UA31BT_MMM_1_002_on_leave_1",
+        "timing": "ON_LEAVE",
+        "status": "SUPPORTED",
+        "text": "退场时，这个角色放置到移除区。",
+        "reason": "",
+        "template_type": "LEGACY_PASSTHROUGH"
+      },
+      {
+        "id": "UA31BT_MMM_1_002_on_enter_2",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。",
+        "reason": "",
+        "template_type": "LEGACY_PASSTHROUGH"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_MAIN_ACTIVATE",
+    "source": "base_cards.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "LEGACY_PASSTHROUGH"
+    ],
+    "abilities": [
+      {
+        "id": "UA_CHAR_MAIN_ACTIVATE_main_activate_0",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "1 回合 1 次：抽 1 张牌。",
+        "reason": "",
+        "template_type": "LEGACY_PASSTHROUGH"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_STEP",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_SNIPER",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "SNIPER"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_DAMAGE_2",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "DAMAGE_2"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_IMPACT",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "IMPACT"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_IMPACT_PLUS_1",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "IMPACT_PLUS_1"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_NEGATE_IMPACT",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_DOUBLE_ATTACK",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "DOUBLE_ATTACK"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA_CHAR_DOUBLE_BLOCK",
+    "source": "base_cards.json",
+    "inferred_keywords": [
+      "DOUBLE_BLOCK"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   }
 ]

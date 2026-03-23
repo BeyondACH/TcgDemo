@@ -25,6 +25,7 @@ func _init() -> void:
 	_run_test("双次攻击与双次阻挡", _test_double_attack_and_double_block)
 	_run_test("战斗触发", _test_battle_triggers)
 	_run_test("RAID 显式落点选择", _test_raid_zone_choice)
+	_run_test("RAID 生命触发二选一", _test_life_trigger_raid_choice)
 	_run_test("生命归零胜负", _test_life_zero_victory)
 	_run_test("空牌库抽牌败北", _test_deck_out_loss)
 	_run_test("RAID 突进叠放", _test_raid_stack_play)
@@ -1054,6 +1055,137 @@ func _test_raid_zone_choice() -> Dictionary:
 	var energy_raid_card = energy_manager.game_state.get_card(energy_raid_uid)
 	if energy_raid_card.zone != UATypes.Zone.ENERGY_LINE:
 		return _fail("RAID 选择能量线时应继续留在能量线")
+	return _ok()
+
+func _test_life_trigger_raid_choice() -> Dictionary:
+	var hand_manager := _new_manager()
+	var hand_player := _player(hand_manager, UATypes.PLAYER_TWO)
+	hand_player.life.clear()
+	var hand_target_uid := _spawn_temp_card(hand_manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_LIFE_RAID_TARGET",
+		"name": "生命触发RAID目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LR-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var hand_raid_uid := _spawn_temp_card(hand_manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_LIFE_RAID_CARD",
+		"name": "生命触发RAID牌",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LR-2",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [
+			{
+				"trigger": "ON_LIFE_TRIGGER",
+				"effect_box": "OUTER",
+				"text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+				"steps": [{"type": "LIFE_TRIGGER_RAID_CHOICE"}]
+			}
+		],
+		"special_play_rule": {
+			"type": "RAID",
+			"raid_target_name": "生命触发RAID目标",
+			"allow_from_hand": true,
+			"require_full_energy": true,
+			"life_trigger_only": true
+		}
+	}, UATypes.Zone.LIFE, true)
+	hand_player.life = [hand_raid_uid]
+	hand_manager.effect_resolver.deal_damage_to_player(hand_manager.game_state, UATypes.PLAYER_TWO, 1)
+	hand_manager.resolve_life_trigger_decision(hand_raid_uid, true)
+	if hand_manager.game_state.pending_decisions.is_empty():
+		return _fail("生命触发RAID应进入二选一待决策")
+	var hand_decision: Dictionary = hand_manager.game_state.pending_decisions[0]
+	if str(hand_decision.get("type", "")) != "LIFE_TRIGGER_RAID_CHOICE":
+		return _fail("生命触发RAID待决策类型错误")
+	hand_manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"source_card_uid": hand_raid_uid, "choice": "ADD_TO_HAND"})
+	var hand_raid_card = hand_manager.game_state.get_card(hand_raid_uid)
+	if hand_raid_card == null or hand_raid_card.zone != UATypes.Zone.HAND:
+		return _fail("选择加入手牌后，牌应进入手牌")
+	if not hand_player.hand.has(hand_raid_uid):
+		return _fail("选择加入手牌后，玩家手牌中应包含该牌")
+
+	var raid_manager := _new_manager()
+	var raid_player := _player(raid_manager, UATypes.PLAYER_TWO)
+	raid_player.life.clear()
+	raid_player.ap_area = [
+		{"index": 0, "active": true},
+		{"index": 1, "active": true},
+		{"index": 2, "active": true}
+	]
+	var raid_target_uid := _spawn_temp_card(raid_manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_LIFE_RAID_TARGET_2",
+		"name": "生命触发RAID目标二",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LR-3",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var raid_life_uid := _spawn_temp_card(raid_manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_LIFE_RAID_CARD_2",
+		"name": "生命触发RAID牌二",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LR-4",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [
+			{
+				"trigger": "ON_LIFE_TRIGGER",
+				"effect_box": "OUTER",
+				"text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+				"steps": [{"type": "LIFE_TRIGGER_RAID_CHOICE"}]
+			}
+		],
+		"special_play_rule": {
+			"type": "RAID",
+			"raid_target_name": "生命触发RAID目标二",
+			"allow_from_hand": true,
+			"require_full_energy": true,
+			"life_trigger_only": true
+		}
+	}, UATypes.Zone.LIFE, true)
+	raid_player.life = [raid_life_uid]
+	raid_manager.effect_resolver.deal_damage_to_player(raid_manager.game_state, UATypes.PLAYER_TWO, 1)
+	raid_manager.resolve_life_trigger_decision(raid_life_uid, true)
+	raid_manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"source_card_uid": raid_life_uid, "choice": "RAID_NOW"})
+	if raid_manager.game_state.pending_decisions.is_empty():
+		return _fail("选择立即RAID后，应进入RAID目标选择")
+	raid_manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"source_card_uid": raid_life_uid, "choice": raid_target_uid})
+	var raid_card = raid_manager.game_state.get_card(raid_life_uid)
+	if raid_card == null or raid_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("选择立即RAID后，牌应叠放到前线")
+	if not bool(raid_card.flags.get("entered_via_raid", false)):
+		return _fail("生命触发直接RAID后应标记 entered_via_raid")
+	if not raid_card.stacked_under.has(raid_target_uid):
+		return _fail("生命触发直接RAID后应保留叠放关系")
 	return _ok()
 
 func _test_life_zero_victory() -> Dictionary:

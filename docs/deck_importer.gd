@@ -1,7 +1,7 @@
 extends RefCounted
 class_name DeckImporter
 
-const BASE_CARDS_PATH := "res://data/cards/base_cards.json"
+const BASE_CARDS_PATH := "res://data/cards/cards_effects.json"
 
 func import_deck(deck_name: String, source_path: String, output_dir: String) -> Dictionary:
 	if deck_name.strip_edges().is_empty():

@@ -17,8 +17,7 @@ signal state_changed(snapshot: Dictionary)
 signal blockers_requested(request: Dictionary)
 signal log_added(text: String)
 
-const CARD_DATA_PATH := "res://data/cards/cards_raw.json"
-const LEGACY_CARD_DATA_PATH := "res://data/cards/base_cards.json"
+const CARD_DATA_PATH := "res://data/cards/cards_effects.json"
 const STARTER_A_PATH := "res://data/decks/starter_a.txt"
 const STARTER_B_PATH := "res://data/decks/starter_b.txt"
 
@@ -65,8 +64,9 @@ func request_bonus_draw() -> void:
 
 # Unified card-play entry point used by the UI.
 func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> void:
-	if _has_winner() or _has_pending_gate():
+	if _has_winner() or (_has_pending_gate() and not bool(options.get("ignore_pending_gate", false))):
 		return
+	var acting_player_id := str(options.get("player_id", game_state.active_player_id))
 	var card: CardInstance = game_state.get_card(card_uid)
 	if card == null:
 		return
@@ -79,7 +79,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 		if raid_target != null and raid_target.zone == UATypes.Zone.ENERGY_LINE and not play_options.has("raid_target_zone_choice"):
 			_enqueue_pending_decision({
 				"type": "RAID_ZONE_CHOICE",
-				"owner_player_id": game_state.active_player_id,
+				"owner_player_id": acting_player_id,
 				"source_card_uid": card_uid,
 				"choices": [
 					{"label": "Stay Energy", "value": UATypes.Zone.ENERGY_LINE},
@@ -95,16 +95,18 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 			return
 		if raid_target != null and raid_target.zone == UATypes.Zone.ENERGY_LINE and not play_options.has("raid_target_zone_choice"):
 			play_options["raid_target_zone_choice"] = target_zone
-	var play_modifiers := effect_resolver.preview_play_modifiers(game_state, game_state.active_player_id, card_uid, {
-		"target_player_id": game_state.active_player_id,
+	var play_modifiers := effect_resolver.preview_play_modifiers(game_state, acting_player_id, card_uid, {
+		"target_player_id": acting_player_id,
 		"target_zone": target_zone,
 	})
-	var validation: Dictionary = rules_engine.can_play_card(game_state, game_state.active_player_id, card_uid, target_zone, play_modifiers, play_options)
+	if bool(options.get("force_allow_current_zone", false)):
+		play_modifiers["allow_current_zone"] = true
+	var validation: Dictionary = rules_engine.can_play_card(game_state, acting_player_id, card_uid, target_zone, play_modifiers, play_options)
 	if not bool(validation.get("ok", false)):
 		_apply_logs(["Cannot play card: %s" % validation.get("reason", "unknown")])
 		emit_state_changed()
 		return
-	var player: PlayerState = game_state.get_player(game_state.active_player_id)
+	var player: PlayerState = game_state.get_player(acting_player_id)
 	var effective_cost_ap := int(validation.get("cost_ap", play_modifiers.get("cost_ap", card_def.cost_ap)))
 	zone_manager.spend_ap(player, effective_cost_ap)
 	var special_play: Dictionary = validation.get("special_play", {})
@@ -124,11 +126,12 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 				zone_manager.move_card(game_state, card_uid, target_zone)
 				card.state = UATypes.CardState.RESTED
 				card.flags["entered_via_raid"] = false
-				_apply_logs(["%s plays %s to %s." % [game_state.active_player_id, card_def.name, UATypes.zone_to_key(target_zone)]])
-			_apply_logs(effect_resolver.resolve_trigger(card_uid, UATypes.TriggerType.ON_ENTER, game_state, {"target_player_id": game_state.active_player_id}))
+				_apply_logs(["%s plays %s to %s." % [acting_player_id, card_def.name, UATypes.zone_to_key(target_zone)]])
+			_apply_logs(effect_resolver.resolve_trigger(card_uid, UATypes.TriggerType.ON_ENTER, game_state, {"target_player_id": acting_player_id}))
 		UATypes.CardType.EVENT:
-			_apply_logs(["%s uses event %s." % [game_state.active_player_id, card_def.name]])
-			_apply_logs(effect_resolver.resolve_operations(game_state, card_uid, card_def.effects, {"target_player_id": game_state.active_player_id}))
+			_apply_logs(["%s uses event %s." % [acting_player_id, card_def.name]])
+			for effect_variant in card_def.effects:
+				_apply_logs(effect_resolver.resolve_effect(game_state, card_uid, effect_variant, {"target_player_id": acting_player_id}))
 			zone_manager.move_card(game_state, card_uid, UATypes.Zone.OUTSIDE)
 	effect_resolver.commit_play_modifiers(game_state, play_modifiers)
 	emit_state_changed()
@@ -237,11 +240,35 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 			var play_options := {
 				"raid_target_uid": str(decision.get("context", {}).get("raid_target_uid", "")),
 				"raid_target_zone_choice": int(payload.get("choice", UATypes.Zone.ENERGY_LINE)),
+				"allow_raid_play": bool(decision.get("context", {}).get("allow_raid_play", false)),
+				"force_allow_current_zone": bool(decision.get("context", {}).get("force_allow_current_zone", false)),
+				"ignore_pending_gate": bool(decision.get("context", {}).get("ignore_pending_gate", false)),
+				"ignore_play_timing": bool(decision.get("context", {}).get("ignore_play_timing", false)),
+				"player_id": str(decision.get("context", {}).get("player_id", game_state.active_player_id)),
 			}
 			play_card(str(decision.get("source_card_uid", "")), int(decision.get("context", {}).get("target_zone", UATypes.Zone.ENERGY_LINE)), play_options)
+			if bool(decision.get("context", {}).get("finalize_life_damage", false)) and game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty():
+				_apply_logs(effect_resolver.finalize_pending_life_damage(game_state))
+				emit_state_changed()
+			return
+		"LIFE_TRIGGER_RAID_CHOICE":
+			_apply_logs(_resolve_life_trigger_raid_choice(decision, str(payload.get("choice", "ADD_TO_HAND"))))
+			emit_state_changed()
+			return
+		"LIFE_TRIGGER_RAID_TARGET":
+			_apply_logs(_resolve_life_trigger_raid_target(decision, str(payload.get("choice", ""))))
+			emit_state_changed()
 			return
 		"STEP_SWAP_CHOICE":
 			request_step_move(str(decision.get("source_card_uid", "")), {"swap_uid": str(payload.get("choice", ""))})
+			return
+		"ABILITY_TARGET_SELECTION":
+			_apply_logs(effect_resolver.resolve_target_selection_decision(
+				game_state,
+				str(decision.get("resolution_id", "")),
+				payload.get("choice", payload.get("choices", []))
+			))
+			emit_state_changed()
 			return
 	_apply_logs(["Unsupported decision type: %s" % decision_type])
 	emit_state_changed()
@@ -285,15 +312,6 @@ func _load_card_defs() -> void:
 		var card_def: CardDef = CardDef.new().from_dict(item_dict)
 		game_state.card_defs[card_def.id] = card_def
 		_register_deck_lookup(card_def)
-	var legacy_json: Array = _read_json(LEGACY_CARD_DATA_PATH)
-	for item in legacy_json:
-		var item_dict: Dictionary = item
-		var card_def: CardDef = CardDef.new().from_dict(item_dict)
-		if card_def.id == "":
-			continue
-		if game_state.card_defs.has(card_def.id):
-			continue
-		game_state.card_defs[card_def.id] = card_def
 
 func _create_player(player_id: String, deck_list: Array) -> void:
 	var player := PlayerState.new()
@@ -448,7 +466,7 @@ func _serialize_cards(card_uids: Array[String]) -> Array[Dictionary]:
 			"cost_ap": card_def.cost_ap,
 			"cost_energy": card_def.cost_energy.duplicate(true),
 			"energy_provided": card_def.energy_provided.duplicate(true),
-			"keywords": card_def.keywords.duplicate(),
+			"keywords": _runtime_keywords_for(card, card_def),
 			"stacked_under": card.stacked_under.duplicate(),
 			"flags": card.flags.duplicate(true),
 			"available_actions": _available_actions_for_card(card, card_def),
@@ -568,9 +586,12 @@ func _enqueue_pending_decision(decision: Dictionary) -> void:
 
 func _take_pending_decision(decision_type: String, payload: Dictionary) -> Dictionary:
 	var source_card_uid := str(payload.get("source_card_uid", ""))
+	var resolution_id := str(payload.get("resolution_id", ""))
 	for i in range(game_state.pending_decisions.size()):
 		var decision: Dictionary = game_state.pending_decisions[i]
 		if str(decision.get("type", "")) != decision_type:
+			continue
+		if resolution_id != "" and str(decision.get("resolution_id", "")) != resolution_id:
 			continue
 		if source_card_uid != "" and str(decision.get("source_card_uid", "")) != source_card_uid:
 			continue
@@ -597,7 +618,7 @@ func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array
 		var attack_result := rules_engine.can_attack(game_state, card.controller_player_id, card.uid)
 		if bool(attack_result.get("ok", false)):
 			actions.append("ATTACK_PLAYER")
-		if card_def.keywords.has("SNIPER"):
+		if _card_has_runtime_keyword(card, card_def, "SNIPER"):
 			actions.append("SNIPER_ATTACK")
 	if card.zone == UATypes.Zone.FRONT_LINE and game_state.phase == UATypes.Phase.MOVE:
 		var step_result := rules_engine.can_step_move_to_energy(game_state, card.controller_player_id, card.uid)
@@ -614,3 +635,142 @@ func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array
 				actions.append("MAIN_ACTIVATE")
 				break
 	return actions
+
+func _resolve_life_trigger_raid_choice(decision: Dictionary, choice: String) -> Array[String]:
+	var logs: Array[String] = []
+	var card_uid := str(decision.get("source_card_uid", ""))
+	var owner_player_id := str(decision.get("owner_player_id", ""))
+	if card_uid == "" or owner_player_id == "":
+		return ["Life trigger raid choice failed: missing card or owner."]
+	if choice == "ADD_TO_HAND":
+		_move_pending_life_card_to_hand(card_uid, owner_player_id)
+		var card = game_state.get_card(card_uid)
+		var card_def = game_state.get_card_def(card.def_id) if card != null else null
+		logs.append("%s adds %s to hand." % [owner_player_id, card_def.name if card_def != null else card_uid])
+		if game_state.pending_life_triggers.is_empty():
+			logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
+		return logs
+	if choice != "RAID_NOW":
+		return ["Life trigger raid choice failed: unsupported choice."]
+	var raid_choices := _build_life_trigger_raid_target_choices(card_uid, owner_player_id)
+	var enabled_choices: Array[Dictionary] = []
+	for choice_variant in raid_choices:
+		var raid_choice: Dictionary = choice_variant
+		if bool(raid_choice.get("enabled", true)):
+			enabled_choices.append(raid_choice)
+	if enabled_choices.is_empty():
+		return ["Life trigger raid choice failed: no legal raid target."]
+	_enqueue_pending_decision({
+		"type": "LIFE_TRIGGER_RAID_TARGET",
+		"owner_player_id": owner_player_id,
+		"source_card_uid": card_uid,
+		"choices": raid_choices,
+		"context": {
+			"allow_raid_play": true,
+		},
+	})
+	logs.append("Choose a raid target.")
+	return logs
+
+func _resolve_life_trigger_raid_target(decision: Dictionary, raid_target_uid: String) -> Array[String]:
+	var logs: Array[String] = []
+	var card_uid := str(decision.get("source_card_uid", ""))
+	if card_uid == "" or raid_target_uid == "":
+		return ["Life trigger raid target failed: missing card or target."]
+	var raid_target = game_state.get_card(raid_target_uid)
+	if raid_target == null:
+		return ["Life trigger raid target failed: target not found."]
+	if raid_target.zone == UATypes.Zone.ENERGY_LINE:
+		_move_pending_life_card_to_hand(card_uid, str(decision.get("owner_player_id", "")))
+		_enqueue_pending_decision({
+			"type": "RAID_ZONE_CHOICE",
+			"owner_player_id": str(decision.get("owner_player_id", "")),
+			"source_card_uid": card_uid,
+			"choices": [
+				{"label": "Stay Energy", "value": UATypes.Zone.ENERGY_LINE},
+				{"label": "Move Front", "value": UATypes.Zone.FRONT_LINE},
+			],
+			"context": {
+				"target_zone": UATypes.Zone.ENERGY_LINE,
+				"raid_target_uid": raid_target_uid,
+				"allow_raid_play": true,
+				"force_allow_current_zone": true,
+				"ignore_pending_gate": true,
+				"ignore_play_timing": true,
+				"player_id": str(decision.get("owner_player_id", "")),
+				"finalize_life_damage": true,
+			}
+		})
+		logs.append("Choose raid destination.")
+		return logs
+	_move_pending_life_card_to_hand(card_uid, str(decision.get("owner_player_id", "")))
+	play_card(card_uid, UATypes.Zone.FRONT_LINE, {
+		"raid_target_uid": raid_target_uid,
+		"raid_target_zone_choice": UATypes.Zone.FRONT_LINE,
+		"allow_raid_play": true,
+		"force_allow_current_zone": true,
+		"ignore_pending_gate": true,
+		"ignore_play_timing": true,
+		"player_id": str(decision.get("owner_player_id", "")),
+	})
+	if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty():
+		logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
+	return logs
+
+func _build_life_trigger_raid_target_choices(card_uid: String, owner_player_id: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var card = game_state.get_card(card_uid)
+	var card_def = game_state.get_card_def(card.def_id) if card != null else null
+	if card == null or card_def == null:
+		return result
+	var required_name := str(card_def.special_play_rule.get("raid_target_name", ""))
+	var player: PlayerState = game_state.get_player(owner_player_id)
+	if player == null:
+		return result
+	for zone_cards in [player.front_line, player.energy_line]:
+		for candidate_uid_variant in zone_cards:
+			var candidate_uid := str(candidate_uid_variant)
+			var candidate_card = game_state.get_card(candidate_uid)
+			var candidate_def = game_state.get_card_def(candidate_card.def_id) if candidate_card != null else null
+			if candidate_card == null or candidate_def == null:
+				continue
+			if candidate_def.card_type != UATypes.CardType.CHARACTER:
+				continue
+			if required_name != "" and candidate_def.name != required_name:
+				continue
+			var validation := rules_engine.can_play_card(game_state, owner_player_id, card_uid, UATypes.Zone.FRONT_LINE, {"allow_current_zone": true}, {
+				"raid_target_uid": candidate_uid,
+				"raid_target_zone_choice": UATypes.Zone.FRONT_LINE if candidate_card.zone == UATypes.Zone.FRONT_LINE else UATypes.Zone.ENERGY_LINE,
+				"allow_raid_play": true,
+				"ignore_play_timing": true,
+			})
+			result.append({
+				"label": candidate_def.name,
+				"value": candidate_uid,
+				"enabled": bool(validation.get("ok", false)),
+				"reason": "" if bool(validation.get("ok", false)) else str(validation.get("reason", "")),
+			})
+	return result
+
+func _move_pending_life_card_to_hand(card_uid: String, owner_player_id: String) -> void:
+	for i in range(game_state.pending_life_damage_cards.size()):
+		var entry: Dictionary = game_state.pending_life_damage_cards[i]
+		if str(entry.get("card_uid", "")) != card_uid:
+			continue
+		game_state.pending_life_damage_cards.remove_at(i)
+		break
+	zone_manager.move_card(game_state, card_uid, UATypes.Zone.HAND, owner_player_id)
+
+func _runtime_keywords_for(card: CardInstance, card_def: CardDef) -> Array:
+	var keywords: Array = card_def.keywords.duplicate()
+	for value in card.flags.get("temp_keywords", []):
+		var keyword := str(value)
+		if keyword != "" and not keywords.has(keyword):
+			keywords.append(keyword)
+	return keywords
+
+func _card_has_runtime_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
+	if card_def.keywords.has(keyword):
+		return true
+	var temp_keywords: Array = card.flags.get("temp_keywords", [])
+	return temp_keywords.has(keyword)

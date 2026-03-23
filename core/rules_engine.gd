@@ -19,9 +19,10 @@ func can_play_card(state: GameState, player_id: String, card_uid: String, target
 	var card: CardInstance = state.get_card(card_uid)
 	if player == null or card == null:
 		return {"ok": false, "reason": "missing_card_or_player"}
-	if state.active_player_id != player_id:
+	var ignore_play_timing := bool(options.get("ignore_play_timing", false))
+	if state.active_player_id != player_id and not ignore_play_timing:
 		return {"ok": false, "reason": "not_active_player"}
-	if state.phase != UATypes.Phase.MAIN:
+	if state.phase != UATypes.Phase.MAIN and not ignore_play_timing:
 		return {"ok": false, "reason": "wrong_phase"}
 	var allow_current_zone := bool(play_modifiers.get("allow_current_zone", false))
 	if card.zone != UATypes.Zone.HAND and not allow_current_zone:
@@ -85,7 +86,7 @@ func can_step_move_to_energy(state: GameState, player_id: String, card_uid: Stri
 	var card_def: CardDef = state.get_card_def(card.def_id)
 	if card_def == null or card_def.card_type != UATypes.CardType.CHARACTER:
 		return {"ok": false, "reason": "only_character_can_step"}
-	if not card_def.keywords.has("STEP"):
+	if not _card_has_keyword(card, card_def, "STEP"):
 		return {"ok": false, "reason": "missing_step_keyword"}
 	if player.energy_line.size() < UATypes.MAX_ENERGY_LINE:
 		return {"ok": true, "swap_required": false}
@@ -116,13 +117,13 @@ func can_attack(state: GameState, player_id: String, card_uid: String, options: 
 	if card_def == null or card_def.card_type != UATypes.CardType.CHARACTER:
 		return {"ok": false, "reason": "only_character_can_attack"}
 	if bool(card.flags.get("attacked_this_turn", false)):
-		if not card_def.keywords.has("DOUBLE_ATTACK") or bool(card.flags.get("double_attack_consumed", false)):
+		if not _card_has_keyword(card, card_def, "DOUBLE_ATTACK") or bool(card.flags.get("double_attack_consumed", false)):
 			return {"ok": false, "reason": "already_attacked"}
 	var target_kind := str(options.get("target_kind", "PLAYER"))
 	var target_uid := str(options.get("target_uid", ""))
 	var is_sniper := target_kind == "FRONT_CHARACTER"
 	if is_sniper:
-		if not card_def.keywords.has("SNIPER"):
+		if not _card_has_keyword(card, card_def, "SNIPER"):
 			return {"ok": false, "reason": "missing_sniper_keyword"}
 		if target_uid == "":
 			return {"ok": false, "reason": "missing_target_uid"}
@@ -154,7 +155,7 @@ func can_block(state: GameState, player_id: String, card_uid: String) -> Diction
 	if card_def == null or card_def.card_type != UATypes.CardType.CHARACTER:
 		return {"ok": false, "reason": "only_character_can_block"}
 	if bool(card.flags.get("blocked_this_turn", false)):
-		if not card_def.keywords.has("DOUBLE_BLOCK") or bool(card.flags.get("double_block_consumed", false)):
+		if not _card_has_keyword(card, card_def, "DOUBLE_BLOCK") or bool(card.flags.get("double_block_consumed", false)):
 			return {"ok": false, "reason": "already_blocked"}
 	return {"ok": true}
 
@@ -195,6 +196,8 @@ func _validate_special_play_rule(state: GameState, player_id: String, card: Card
 	if card_def.special_play_rule.is_empty():
 		return {"ok": true, "mode": "NORMAL"}
 	if str(card_def.special_play_rule.get("type", "")) != "RAID":
+		return {"ok": true, "mode": "NORMAL"}
+	if bool(card_def.special_play_rule.get("life_trigger_only", false)) and not bool(options.get("allow_raid_play", false)):
 		return {"ok": true, "mode": "NORMAL"}
 	var raid_target_uid := str(options.get("raid_target_uid", ""))
 	if raid_target_uid == "":
@@ -241,3 +244,9 @@ func _validate_special_play_rule(state: GameState, player_id: String, card: Card
 		"raid_target_zone": raid_target.zone,
 		"target_zone": resolved_target_zone,
 	}
+
+func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
+	if card_def.keywords.has(keyword):
+		return true
+	var temp_keywords: Array = card.flags.get("temp_keywords", [])
+	return temp_keywords.has(keyword)

@@ -1,0 +1,5249 @@
+[
+  {
+    "id": "UA31BT_MMM_1_068",
+    "card_meta": {
+      "name": "上条 恭介",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-068",
+      "source_image": "UA31BT-MMM-1-068.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "相手の場に黄か紫のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_069",
+    "card_meta": {
+      "name": "キュゥべえ",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-069",
+      "source_image": "UA31BT-MMM-1-069.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "このカードを手札に加える。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_069_on_leave_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LEAVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "退場時",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_070",
+    "card_meta": {
+      "name": "志筑 仁美",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-070",
+      "source_image": "UA31BT-MMM-1-070.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 1000,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_070_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_071",
+    "card_meta": {
+      "name": "人魚の魔女",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-071",
+      "source_image": "UA31BT-MMM-1-071.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "このカードは〈美樹 さやか〉としても扱う。\n自分のライフが5以上の場合、このカードは使用できない。\n〈美樹 さやか〉アクティブにし、フロントLに移動できる\n（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）\nこのキャラはBP2000以下のキャラにブロックされない。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "美樹 さやか",
+          "allow_from_hand": true,
+          "require_full_energy": true
+        }
+      ]
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_071_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_072",
+    "card_meta": {
+      "name": "暁美 ほむら",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-072",
+      "source_image": "UA31BT-MMM-1-072.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_072_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_073",
+    "card_meta": {
+      "name": "暁美 ほむら",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-073",
+      "source_image": "UA31BT-MMM-1-073.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 3000,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_073_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_074",
+    "card_meta": {
+      "name": "暁美 ほむら",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-074",
+      "source_image": "UA31BT-MMM-1-074.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈鹿目 まどか〉がある場合、カードを1枚引く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_074_on_enter_711316c8a7",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+            "value": "鹿目 まどか"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈鹿目 まどか〉がある場合、カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_075",
+    "card_meta": {
+      "name": "暁美 ほむら",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-075",
+      "source_image": "UA31BT-MMM-1-075.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈暁美 ほむら〉アクティブにし、フロントLに移動できる\n自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。自分の場に〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックできない。」を与える。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "暁美 ほむら",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ]
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_075_on_enter_4c7186800a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。自分の場に〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックできない。」を与える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31BT_MMM_1_075_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_076",
+    "card_meta": {
+      "name": "鹿目 まどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-076",
+      "source_image": "UA31BT-MMM-1-076.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_076_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_077",
+    "card_meta": {
+      "name": "鹿目 まどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-077",
+      "source_image": "UA31BT-MMM-1-077.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "このカード以外の自分の場の［特徴：魔法少女］のカード名が3種類以上ある場合、このキャラの発生エナジー+。",
+        "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_077_on_life_trigger_a41bad1555",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "カラー",
+          "effect_box": "OUTER",
+          "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_078",
+    "card_meta": {
+      "name": "鹿目 まどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-078",
+      "source_image": "UA31BT-MMM-1-078.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 5
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈鹿目 まどか〉アクティブにし、フロントLに移動できる\nこのカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、退場させる。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "鹿目 まどか",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ]
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_078_on_enter_e0e3e89124",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "このカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、退場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31BT_MMM_1_078_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_079",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-079",
+      "source_image": "UA31BT-MMM-1-079.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_080",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-080",
+      "source_image": "UA31BT-MMM-1-080.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラはBP+1000。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_081",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-081",
+      "source_image": "UA31BT-MMM-1-081.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_082",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-082",
+      "source_image": "UA31BT-MMM-1-082.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_082_on_enter_e350de8f27",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31BT_MMM_1_082_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_083",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-083",
+      "source_image": "UA31BT-MMM-1-083.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈佐倉 杏子〉アクティブにし、フロントLに移動できる\nこのターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラは（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。\n自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "佐倉 杏子",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ]
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_083_on_attack_55de0988ed",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ATTACK"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アタック時",
+          "effect_box": "RAID_INNER",
+          "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_083_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TEMP_BP",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_084",
+    "card_meta": {
+      "name": "巴 マミ",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-084",
+      "source_image": "UA31BT-MMM-1-084.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_084_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_084_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_085",
+    "card_meta": {
+      "name": "巴 マミ",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-085",
+      "source_image": "UA31BT-MMM-1-085.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_085_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_086",
+    "card_meta": {
+      "name": "美樹 さやか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-086",
+      "source_image": "UA31BT-MMM-1-086.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_086_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_087",
+    "card_meta": {
+      "name": "美樹 さやか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-087",
+      "source_image": "UA31BT-MMM-1-087.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈佐倉 杏子〉がある場合、このキャラはBP+1000。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_087_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_088",
+    "card_meta": {
+      "name": "美樹 さやか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-088",
+      "source_image": "UA31BT-MMM-1-088.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_088_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_089",
+    "card_meta": {
+      "name": "美樹 さやか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-089",
+      "source_image": "UA31BT-MMM-1-089.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のライフが4以下の場合、このキャラはBP+500。\n自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラをアクティブにする。",
+        "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_089_main_activate_fd2a89248e",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_life_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "LIFE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_life_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_life_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "LIFE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_life_card",
+            "to": "HAND"
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_uid": "SOURCE_CARD"
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラをアクティブにする。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_089_on_life_trigger_a41bad1555",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "カラー",
+          "effect_box": "OUTER",
+          "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "LIFE_TO_HAND_AND_READY_SOURCE",
+        "SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_090",
+    "card_meta": {
+      "name": "美樹 さやか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-090",
+      "source_image": "UA31BT-MMM-1-090.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈美樹 さやか〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）\n（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラは次の自分のターン開始時まで、「このカードを自分の場にレストで登場させるかレイドさせる。」を得る。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "美樹 さやか",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ]
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_090_main_activate_a191957804",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "RAID_INNER",
+          "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラは次の自分のターン開始時まで、「このカードを自分の場にレストで登場させるかレイドさせる。」を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31BT_MMM_1_090_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_091",
+    "card_meta": {
+      "name": "見滝原",
+      "card_type": "FIELD",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-091",
+      "source_image": "UA31BT-MMM-1-091.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "このフィールドはアクティブで場に登場させる。\n自分の場の［特徴：魔法少女］を1枚選び、このターン中、BP+500。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_091_main_activate_11145b9ec6",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 500,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "自分の場の［特徴：魔法少女］を1枚選び、このターン中、BP+500。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_091_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TEMP_BP",
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_092",
+    "card_meta": {
+      "name": "あたしって、ほんとバカ……",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-092",
+      "source_image": "UA31BT-MMM-1-092.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_092_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_092_on_play_f2b978407b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_093",
+    "card_meta": {
+      "name": "奇跡も、魔法も、あるんだよ",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-093",
+      "source_image": "UA31BT-MMM-1-093.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_093_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_093_on_play_e65f2078bd",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_094",
+    "card_meta": {
+      "name": "クラスのみんなには、内緒だよ",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-094",
+      "source_image": "UA31BT-MMM-1-094.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_094_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_094_on_play_ca29c14b61",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_095",
+    "card_meta": {
+      "name": "ソウルジェム（鹿目 まどか）",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-095",
+      "source_image": "UA31BT-MMM-1-095.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_095_on_life_trigger_40f54dabd9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [
+          {
+            "type": "PLAYER_LIFE_IS_EMPTY",
+            "player": "SELF"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_TOP_DECK_TO_LIFE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ファイナル",
+          "effect_box": "OUTER",
+          "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_095_on_play_0da85cfcde",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "value": 2
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TOP_DECK_TO_LIFE",
+        "READY_AP"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_096",
+    "card_meta": {
+      "name": "ソウルジェム（佐倉 杏子）",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-096",
+      "source_image": "UA31BT-MMM-1-096.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_096_on_life_trigger_40f54dabd9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [
+          {
+            "type": "PLAYER_LIFE_IS_EMPTY",
+            "player": "SELF"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_TOP_DECK_TO_LIFE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ファイナル",
+          "effect_box": "OUTER",
+          "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_096_on_play_0da85cfcde",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "value": 2
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TOP_DECK_TO_LIFE",
+        "READY_AP"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_097",
+    "card_meta": {
+      "name": "ソウルジェム（美樹 さやか）",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-097",
+      "source_image": "UA31BT-MMM-1-097.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_097_on_life_trigger_40f54dabd9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [
+          {
+            "type": "PLAYER_LIFE_IS_EMPTY",
+            "player": "SELF"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_TOP_DECK_TO_LIFE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ファイナル",
+          "effect_box": "OUTER",
+          "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_097_on_play_0da85cfcde",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "value": 2
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TOP_DECK_TO_LIFE",
+        "READY_AP"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_098",
+    "card_meta": {
+      "name": "それはとっても嬉しいなって",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-098",
+      "source_image": "UA31BT-MMM-1-098.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から5枚見る。その中からキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。公開したカードがを持つ［特徴：魔法少女］の場合、自分のAPカードを1枚まで選び、アクティブにする。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_098_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_098_on_play_ed61005103",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から5枚見る。その中からキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。公開したカードがを持つ［特徴：魔法少女］の場合、自分のAPカードを1枚まで選び、アクティブにする。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_099",
+    "card_meta": {
+      "name": "そんなの、あたしが許さない",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-099",
+      "source_image": "UA31BT-MMM-1-099.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 2,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈佐倉 杏子〉がある場合、手札にあるこのカードの消費APを-1する。\nBP5000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_099_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_099_on_play_3012f184af",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈佐倉 杏子〉がある場合、手札にあるこのカードの消費APを-1する。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31BT_MMM_1_099_on_play_053ee4c1d1",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "BP5000以下の相手のフロントLのキャラを1枚まで選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_100",
+    "card_meta": {
+      "name": "独りぼっちは、寂しいもんな……",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-100",
+      "source_image": "UA31BT-MMM-1-100.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場の〈佐倉 杏子〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_100_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31BT_MMM_1_100_on_play_ac3b29a0b0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場の〈佐倉 杏子〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_104",
+    "card_meta": {
+      "name": "鹿目 まどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-104",
+      "source_image": "UA31ST-MMM-104.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈鹿目 まどか〉アクティブにし、フロントLに移動できる\nこのカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数により、このキャラは以下の効果を全て得る。\n2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。\n4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "鹿目 まどか",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ]
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_104_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_069",
+    "card_meta": {
+      "name": "キュゥべえ",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-069",
+      "source_image": "UA31ST-MMM-1-069.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "このカードを手札に加える。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_069_on_leave_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LEAVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "退場時",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_070",
+    "card_meta": {
+      "name": "志筑 仁美",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-070",
+      "source_image": "UA31ST-MMM-1-070.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 1000,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_070_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_076",
+    "card_meta": {
+      "name": "鹿目 まどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-076",
+      "source_image": "UA31ST-MMM-1-076.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_076_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_080",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-080",
+      "source_image": "UA31ST-MMM-1-080.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラはBP+1000。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_081",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-081",
+      "source_image": "UA31ST-MMM-1-081.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_085",
+    "card_meta": {
+      "name": "巴 マミ",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-085",
+      "source_image": "UA31ST-MMM-1-085.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_085_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_088",
+    "card_meta": {
+      "name": "美樹 さやか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-088",
+      "source_image": "UA31ST-MMM-1-088.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_088_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_094",
+    "card_meta": {
+      "name": "クラスのみんなには、内緒だよ",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-094",
+      "source_image": "UA31ST-MMM-1-094.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_094_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31ST_MMM_1_094_on_play_ca29c14b61",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_095",
+    "card_meta": {
+      "name": "ソウルジェム（鹿目 まどか）",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-095",
+      "source_image": "UA31ST-MMM-1-095.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_095_on_life_trigger_40f54dabd9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [
+          {
+            "type": "PLAYER_LIFE_IS_EMPTY",
+            "player": "SELF"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_TOP_DECK_TO_LIFE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ファイナル",
+          "effect_box": "OUTER",
+          "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31ST_MMM_1_095_on_play_0da85cfcde",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "value": 2
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TOP_DECK_TO_LIFE",
+        "READY_AP"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_101",
+    "card_meta": {
+      "name": "暁美 ほむら",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-101",
+      "source_image": "UA31ST-MMM-1-101.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_101_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_102",
+    "card_meta": {
+      "name": "暁美 ほむら",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-102",
+      "source_image": "UA31ST-MMM-1-102.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場の〈鹿目 まどか〉を1枚自分の山札の下に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーが4以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_102_on_enter_135c622495",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場の〈鹿目 まどか〉を1枚自分の山札の下に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーが4以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31ST_MMM_1_102_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_103",
+    "card_meta": {
+      "name": "鹿目 まどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-103",
+      "source_image": "UA31ST-MMM-1-103.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_103_on_enter_930ab826c1",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_105",
+    "card_meta": {
+      "name": "佐倉 杏子",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-105",
+      "source_image": "UA31ST-MMM-1-105.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_105_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_106",
+    "card_meta": {
+      "name": "巴 マミ",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-106",
+      "source_image": "UA31ST-MMM-1-106.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 2,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラはアクティブで場に登場させる。\n自分のターン開始時、このキャラを退場させる。\nカードを2枚引く。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_106_on_enter_43b9134aa2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを2枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31ST_MMM_1_106_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_107",
+    "card_meta": {
+      "name": "美樹 さやか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-107",
+      "source_image": "UA31ST-MMM-1-107.png",
+      "traits": [
+        "魔法少女"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_108",
+    "card_meta": {
+      "name": "見滝原中学校",
+      "card_type": "FIELD",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-108",
+      "source_image": "UA31ST-MMM-1-108.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが3以下で消費APが1の［特徴：魔法少女］を1枚まで手札に加える。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_108_on_enter_af81445bb8",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが3以下で消費APが1の［特徴：魔法少女］を1枚まで手札に加える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA31ST_MMM_1_108_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA31ST_MMM_1_109",
+    "card_meta": {
+      "name": "僕と契約して、魔法少女になってよ!",
+      "card_type": "EVENT",
+      "title_code": "MMM",
+      "number": "UA31ST/MMM-1-109",
+      "source_image": "UA31ST-MMM-1-109.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から5枚見る。その中から異なるカード名の［特徴：魔法少女］をそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_109_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA31ST_MMM_1_109_on_play_3ded668e6e",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から5枚見る。その中から異なるカード名の［特徴：魔法少女］をそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA_CHAR_BASIC",
+    "card_meta": {
+      "name": "基础角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-1-001",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_FIELD_BASIC",
+    "card_meta": {
+      "name": "基础场地",
+      "card_type": "FIELD",
+      "title_code": "TST",
+      "number": "TST-1-002",
+      "source_image": "",
+      "traits": [
+        "测试场地"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_EVENT_DRAW",
+    "card_meta": {
+      "name": "基础事件",
+      "card_type": "EVENT",
+      "title_code": "TST",
+      "number": "TST-1-003",
+      "source_image": "",
+      "traits": [
+        "测试事件"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA_EVENT_DRAW_on_play_0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {},
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": ""
+        },
+        "status": "SUPPORTED",
+        "legacy_effect": {
+          "type": "DRAW",
+          "value": 1
+        }
+      }
+    ],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_HEAVY",
+    "card_meta": {
+      "name": "高BP角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-2-001",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 4000,
+      "keywords": [],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_LIFE_TRIGGER_DRAW",
+    "card_meta": {
+      "name": "生命触发抽牌角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-2-002",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA_LIFE_TRIGGER_DRAW_on_life_trigger_0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": ""
+        },
+        "status": "SUPPORTED",
+        "legacy_effect": {
+          "trigger": "ON_LIFE_TRIGGER",
+          "operations": [
+            {
+              "type": "DRAW",
+              "value": 1
+            }
+          ]
+        }
+      }
+    ],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_MMM_BASE_MADOKA",
+    "card_meta": {
+      "name": "鹿目 まどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-0-001",
+      "source_image": "",
+      "traits": [
+        "鹿目 まどか",
+        "魔法少女"
+      ],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA31BT_MMM_1_002",
+    "card_meta": {
+      "name": "アルティメットまどか",
+      "card_type": "CHARACTER",
+      "title_code": "MMM",
+      "number": "UA31BT/MMM-1-002",
+      "source_image": "",
+      "traits": [
+        "鹿目 まどか",
+        "魔法少女",
+        "円環の理"
+      ],
+      "cost_energy": {
+        "YELLOW": 7
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 5000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "鹿目 まどか",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        }
+      ]
+    },
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_002_on_enter_0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_cards",
+            "target": {
+              "type": "CARD_SET",
+              "from_zone": "OUTSIDE",
+              "owner": "SELF",
+              "filters": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 2
+            }
+          },
+          {
+            "type": "FOR_EACH",
+            "items_var": "selected_cards",
+            "current_var": "current_item",
+            "steps": [
+              {
+                "type": "MOVE_ZONE",
+                "target": {
+                  "type": "CURRENT_ITEM"
+                },
+                "to": "REMOVED"
+              }
+            ]
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_PLAY_CARD",
+            "once": true,
+            "expires": "END_OF_TURN",
+            "filters": [
+              {
+                "type": "PLAYED_FROM_ZONE_IS",
+                "value": "REMOVED"
+              }
+            ],
+            "steps": [
+              {
+                "type": "MODIFY_PLAY_COST_AP",
+                "value": -1
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "RAID_INNER",
+          "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。"
+        },
+        "status": "SUPPORTED",
+        "legacy_effect": {
+          "trigger": "ON_ENTER",
+          "effect_box": "RAID_INNER",
+          "operations": [],
+          "steps": [
+            {
+              "type": "SELECT_TARGETS",
+              "var": "selected_cards",
+              "target": {
+                "type": "CARD_SET",
+                "from_zone": "OUTSIDE",
+                "owner": "SELF",
+                "filters": [
+                  {
+                    "type": "CARD_TYPE_IS",
+                    "value": "CHARACTER"
+                  }
+                ],
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "type": "FOR_EACH",
+              "items_var": "selected_cards",
+              "current_var": "current_item",
+              "steps": [
+                {
+                  "type": "MOVE_ZONE",
+                  "target": {
+                    "type": "CURRENT_ITEM"
+                  },
+                  "to": "REMOVED"
+                }
+              ]
+            },
+            {
+              "type": "REGISTER_DELAYED_EFFECT",
+              "event": "ON_PLAY_CARD",
+              "once": true,
+              "expires": "END_OF_TURN",
+              "filters": [
+                {
+                  "type": "PLAYED_FROM_ZONE_IS",
+                  "value": "REMOVED"
+                }
+              ],
+              "steps": [
+                {
+                  "type": "MODIFY_PLAY_COST_AP",
+                  "value": -1
+                }
+              ]
+            }
+          ],
+          "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。"
+        }
+      },
+      {
+        "id": "UA31BT_MMM_1_002_on_leave_1",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LEAVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_ZONE",
+            "to": "REMOVED"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "退场时，这个角色放置到移除区。"
+        },
+        "status": "SUPPORTED",
+        "legacy_effect": {
+          "trigger": "ON_LEAVE",
+          "operations": [
+            {
+              "type": "MOVE_ZONE",
+              "to_zone": 7
+            }
+          ],
+          "steps": [
+            {
+              "type": "MOVE_ZONE",
+              "to": "REMOVED"
+            }
+          ],
+          "text": "退场时，这个角色放置到移除区。"
+        }
+      },
+      {
+        "id": "UA31BT_MMM_1_002_on_enter_2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "PLAY_PERMISSION",
+            "while": [
+              {
+                "type": "SELF_IN_ZONE",
+                "zone": "FRONT_LINE"
+              }
+            ],
+            "from_zone": "REMOVED",
+            "owner": "SELF",
+            "filters": [
+              {
+                "type": "NAME_NOT",
+                "value": "鹿目 まどか"
+              },
+              {
+                "type": "NOT_HAS_KEYWORD",
+                "value": "RAID"
+              },
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "HAS_TRAIT",
+                    "value": "魔法少女"
+                  },
+                  {
+                    "type": "HAS_TRAIT",
+                    "value": "円環の理"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。"
+        },
+        "status": "SUPPORTED",
+        "legacy_effect": {
+          "trigger": "ON_ENTER",
+          "steps": [
+            {
+              "type": "REGISTER_STATIC_MODIFIER",
+              "modifier_type": "PLAY_PERMISSION",
+              "while": [
+                {
+                  "type": "SELF_IN_ZONE",
+                  "zone": "FRONT_LINE"
+                }
+              ],
+              "from_zone": "REMOVED",
+              "owner": "SELF",
+              "filters": [
+                {
+                  "type": "NAME_NOT",
+                  "value": "鹿目 まどか"
+                },
+                {
+                  "type": "NOT_HAS_KEYWORD",
+                  "value": "RAID"
+                },
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "魔法少女"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "円環の理"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "text": "フロントLにある場合、自分は自分のリムーブエリアの《鹿目まどか》以外の[レイド]を持たない【特徴:魔法少女】か〈円環の理〉を使用できる。"
+        }
+      }
+    ],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_MAIN_ACTIVATE",
+    "card_meta": {
+      "name": "主动技测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-001",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [
+      {
+        "id": "UA_CHAR_MAIN_ACTIVATE_main_activate_0",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "1 回合 1 次：抽 1 张牌。"
+        },
+        "status": "SUPPORTED",
+        "legacy_effect": {
+          "trigger": "MAIN_ACTIVATE",
+          "once_per_turn": true,
+          "operations": [
+            {
+              "type": "DRAW",
+              "value": 1
+            }
+          ],
+          "text": "1 回合 1 次：抽 1 张牌。"
+        }
+      }
+    ],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_STEP",
+    "card_meta": {
+      "name": "撤步测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-002",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_SNIPER",
+    "card_meta": {
+      "name": "狙击测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-003",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "SNIPER"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_DAMAGE_2",
+    "card_meta": {
+      "name": "二伤测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-004",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "DAMAGE_2"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_IMPACT",
+    "card_meta": {
+      "name": "冲击测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-005",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "IMPACT"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_IMPACT_PLUS_1",
+    "card_meta": {
+      "name": "强冲击测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-006",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "IMPACT_PLUS_1"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_NEGATE_IMPACT",
+    "card_meta": {
+      "name": "冲击无效测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-007",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "NEGATE_IMPACT"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_DOUBLE_ATTACK",
+    "card_meta": {
+      "name": "二次攻击测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-008",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "DOUBLE_ATTACK"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA_CHAR_DOUBLE_BLOCK",
+    "card_meta": {
+      "name": "二次阻挡测试角色",
+      "card_type": "CHARACTER",
+      "title_code": "TST",
+      "number": "TST-3-009",
+      "source_image": "",
+      "traits": [
+        "测试角色"
+      ],
+      "cost_energy": {
+        "GREEN": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "GREEN": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "DOUBLE_BLOCK"
+      ],
+      "text": {
+        "effect": "",
+        "trigger": "",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": []
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "base_cards.json",
+      "semantic_available": false,
+      "semantic_template_types": []
+    }
+  }
+]

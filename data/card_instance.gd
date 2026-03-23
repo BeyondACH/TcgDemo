@@ -18,6 +18,8 @@ var flags := {
 	"double_attack_consumed": false,
 	"double_block_consumed": false,
 	"entered_via_raid": false,
+	"temp_keywords": [],
+	"temp_keyword_counts": {},
 }
 var stacked_under: Array[String] = []
 
