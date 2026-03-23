@@ -9,6 +9,8 @@ const CardDef = preload("res://data/card_def.gd")
 func _init() -> void:
 	var manager := GameManager.new()
 	manager.setup_game()
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 	var p1: PlayerState = manager.game_state.get_player(UATypes.PLAYER_ONE)
 	var p2: PlayerState = manager.game_state.get_player(UATypes.PLAYER_TWO)
 	_assert(p1 != null, "P1 should exist.")

@@ -3,6 +3,7 @@ class_name BoardView
 
 const DropZone = preload("res://ui/drop_zone.gd")
 const CardView = preload("res://ui/card_view.gd")
+const LifeStackView = preload("res://ui/life_stack_view.gd")
 
 const MAX_VISIBLE_SLOTS := 4
 const SLOT_PLATE_TEXTURE_PATH := "res://assets/battle/slots/slot_plate.png"
@@ -16,6 +17,9 @@ signal zone_drop_requested(player_id: String, zone_name: String, card_uid: Strin
 var _player_id := ""
 var _name_label: Label
 var _stats_label: Label
+var _content_row: HBoxContainer
+var _zones_column: VBoxContainer
+var _life_stack: LifeStackView
 var _front_drop_zone: DropZone
 var _energy_drop_zone: DropZone
 var _front_slot_backplates: HBoxContainer
@@ -40,13 +44,27 @@ func _ready() -> void:
 	add_child(_name_label)
 	add_child(_stats_label)
 
+	_content_row = HBoxContainer.new()
+	_content_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_content_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	_content_row.add_theme_constant_override("separation", 12)
+	add_child(_content_row)
+
+	var life_section := _create_life_section()
+	_content_row.add_child(life_section)
+
+	_zones_column = VBoxContainer.new()
+	_zones_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_zones_column.add_theme_constant_override("separation", 8)
+	_content_row.add_child(_zones_column)
+
 	var front_section := _create_zone_section("Front Line")
-	add_child(front_section.get("root"))
+	_zones_column.add_child(front_section.get("root"))
 	_front_drop_zone = front_section.get("drop_zone")
 	_front_slot_backplates = front_section.get("slot_backplates")
 
 	var energy_section := _create_zone_section("Energy Line")
-	add_child(energy_section.get("root"))
+	_zones_column.add_child(energy_section.get("root"))
 	_energy_drop_zone = energy_section.get("drop_zone")
 	_energy_slot_backplates = energy_section.get("slot_backplates")
 
@@ -61,6 +79,8 @@ func set_compact_mode(compact: bool) -> void:
 	if _current_card_size.is_equal_approx(target_size):
 		return
 	_current_card_size = target_size
+	if _life_stack != null:
+		_life_stack.set_compact_mode(compact)
 	if not _last_data.is_empty():
 		_apply_board_data()
 
@@ -77,10 +97,27 @@ func _apply_board_data() -> void:
 	]
 	_front_drop_zone.setup(_player_id, "front_line", _current_card_size)
 	_energy_drop_zone.setup(_player_id, "energy_line", _current_card_size)
+	_life_stack.set_life_cards(_last_data.get("life", []))
 	_rebuild_slot_backplates(_front_slot_backplates, _last_data.get("front_line", []), "front_line")
 	_rebuild_slot_backplates(_energy_slot_backplates, _last_data.get("energy_line", []), "energy_line")
 	_rebuild_row(_front_drop_zone.get_row_container(), _last_data.get("front_line", []), "front_line")
 	_rebuild_row(_energy_drop_zone.get_row_container(), _last_data.get("energy_line", []), "energy_line")
+
+func _create_life_section() -> VBoxContainer:
+	var section := VBoxContainer.new()
+	section.add_theme_constant_override("separation", 6)
+
+	var title := Label.new()
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.text = "Life"
+	title.add_theme_font_size_override("font_size", 13)
+	section.add_child(title)
+
+	_life_stack = LifeStackView.new()
+	_life_stack.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_life_stack.set_compact_mode(_current_card_size == COMPACT_CARD_SIZE)
+	section.add_child(_life_stack)
+	return section
 
 func _create_zone_section(title_text: String) -> Dictionary:
 	var section := VBoxContainer.new()

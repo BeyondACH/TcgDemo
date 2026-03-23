@@ -11,6 +11,7 @@ var _passes: Array[String] = []
 
 func _init() -> void:
 	_run_test("对局初始化", _test_setup_game)
+	_run_test("开局换牌与待决策", _test_opening_mulligan_flow)
 	_run_test("阶段推进与换手", _test_phase_advance_and_turn_switch)
 	_run_test("角色出牌与移动", _test_play_and_move_character)
 	_run_test("事件牌抽牌效果", _test_event_draw)
@@ -65,7 +66,17 @@ func _fail(message: String) -> Dictionary:
 func _new_manager() -> GameManager:
 	var manager := GameManager.new()
 	manager.setup_game()
+	_resolve_opening(manager)
 	return manager
+
+func _new_opening_manager() -> GameManager:
+	var manager := GameManager.new()
+	manager.setup_game()
+	return manager
+
+func _resolve_opening(manager: GameManager, p1_choice := "keep", p2_choice := "keep") -> void:
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": p1_choice})
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": p2_choice})
 
 func _player(manager: GameManager, player_id: String) -> PlayerState:
 	return manager.game_state.get_player(player_id)
@@ -159,6 +170,58 @@ func _test_setup_game() -> Dictionary:
 		return _fail("初始化后牌库应剩 36")
 	if p1.ap_total() != 1 or p1.ap_active_count() != 1:
 		return _fail("P1 首回合开始时 AP 应为 1/1")
+	return _ok()
+
+func _test_opening_mulligan_flow() -> Dictionary:
+	var opening_manager := _new_opening_manager()
+	if opening_manager.game_state.opening_complete:
+		return _fail("开局换牌决策前不应标记 opening_complete")
+	if opening_manager.game_state.pending_decisions.size() != 1:
+		return _fail("初始化后应先出现 1 个起手换牌待决策")
+	var first_decision: Dictionary = opening_manager.game_state.pending_decisions[0]
+	if str(first_decision.get("type", "")) != "MULLIGAN_CHOICE":
+		return _fail("第一个待决策应为起手换牌")
+	if str(first_decision.get("owner_player_id", "")) != UATypes.PLAYER_ONE:
+		return _fail("起手换牌应先轮到 P1")
+	var phase_before := opening_manager.game_state.phase
+	opening_manager.advance_phase()
+	if opening_manager.game_state.phase != phase_before:
+		return _fail("开局待决策存在时不应推进阶段")
+	var p1 := _player(opening_manager, UATypes.PLAYER_ONE)
+	var p1_life_top_expected: Array = []
+	for i in range(UATypes.STARTING_LIFE):
+		p1_life_top_expected.append(str(p1.deck[i]))
+	opening_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	if opening_manager.game_state.pending_decisions.size() != 1:
+		return _fail("P1 处理后应继续等待 P2 的起手换牌决策")
+	var second_decision: Dictionary = opening_manager.game_state.pending_decisions[0]
+	if str(second_decision.get("owner_player_id", "")) != UATypes.PLAYER_TWO:
+		return _fail("第二个起手换牌决策应轮到 P2")
+	opening_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	if not opening_manager.game_state.opening_complete:
+		return _fail("双方处理完起手换牌后应完成开局")
+	if p1.life != p1_life_top_expected:
+		return _fail("不换牌时，生命区应按牌库当前顶部顺序放置 7 张")
+
+	var mulligan_manager := _new_opening_manager()
+	var mulligan_p1 := _player(mulligan_manager, UATypes.PLAYER_ONE)
+	var opening_hand_before: Array = mulligan_p1.hand.duplicate()
+	var redraw_expected: Array = []
+	for i in range(UATypes.STARTING_HAND):
+		redraw_expected.append(str(mulligan_p1.deck[i]))
+	mulligan_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "mulligan"})
+	if mulligan_p1.hand != redraw_expected:
+		return _fail("换牌时应先按顺序重抽新的 7 张手牌")
+	for old_uid_variant in opening_hand_before:
+		if mulligan_p1.hand.has(old_uid_variant):
+			return _fail("换牌后的新手牌不应包含原有那 7 张牌")
+	if mulligan_manager.game_state.pending_decisions.size() != 1:
+		return _fail("P1 换牌后仍应继续等待 P2 决策")
+	mulligan_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	if mulligan_p1.life.size() != 7:
+		return _fail("换牌完成后仍应放置 7 张生命牌")
+	if mulligan_p1.deck.size() != 36:
+		return _fail("换牌完成后牌库应剩余 36 张")
 	return _ok()
 
 func _test_phase_advance_and_turn_switch() -> Dictionary:

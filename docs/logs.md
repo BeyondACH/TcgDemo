@@ -153,3 +153,8 @@
 - 摘要：修正回合开始时 AP 只增长槽位但不会重新恢复活跃的问题，使先攻玩家后续回合能按规则恢复并达到 3 点可用 AP；同时为抽牌阶段冒烟补充先攻下一轮 3 AP 断言。
 - 影响文件：core/zone_manager.gd，core/turn_manager.gd，docs/draw_phase_smoke_test.gd，docs/logs.md
 - 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 18 项通过、0 项失败；多次尝试执行 res://docs/draw_phase_smoke_test.gd 时仍出现 Godot headless 环境级崩溃，但该问题发生在脚本断言输出前，未见本次 AP 修复引入新的规则失败。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：补齐开局一次换牌决策流程，并在战场左侧新增生命区 7 张盖牌展示；双方需依次完成起手换牌后才会放置生命区并进入首回合。
+- 影响文件或模块：data/game_state.gd、core/game_manager.gd、ui/board_view.gd、ui/life_stack_view.gd、ui/battle_scene.gd、docs/milestone_smoke_test.gd、docs/starter_a_txt_raw_smoke_test.gd、docs/plan/project_development_plan.md
+- 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 19 项通过、0 项失败，新增覆盖开局待决策、不换牌生命区顺序与换牌重抽流程；在沙箱外执行 Godot headless --quit 未出现新增脚本解析错误；在沙箱外执行 res://docs/starter_a_txt_raw_smoke_test.gd 输出 STARTER_TXT_RAW_SMOKE_OK。代码检查确认生命区已位于战场左侧，且本次新增生命区为战场内部左侧列，不会把底部手牌区抬高到遮挡战场。

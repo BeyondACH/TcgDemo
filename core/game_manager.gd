@@ -43,9 +43,9 @@ func setup_game() -> void:
 	var starter_b: Array = _load_deck_list(STARTER_B_PATH)
 	_create_player(UATypes.PLAYER_ONE, starter_a)
 	_create_player(UATypes.PLAYER_TWO, starter_b)
-	_prepare_starting_zones(UATypes.PLAYER_ONE)
-	_prepare_starting_zones(UATypes.PLAYER_TWO)
-	_apply_logs(turn_manager.begin_game(game_state))
+	_prepare_opening_hand(UATypes.PLAYER_ONE)
+	_prepare_opening_hand(UATypes.PLAYER_TWO)
+	_enqueue_mulligan_decision(UATypes.PLAYER_ONE)
 	emit_state_changed()
 
 func advance_phase() -> void:
@@ -230,6 +230,9 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 		emit_state_changed()
 		return
 	match decision_type:
+		"MULLIGAN_CHOICE":
+			_resolve_mulligan_decision(decision, payload)
+			return
 		"RAID_ZONE_CHOICE":
 			var play_options := {
 				"raid_target_uid": str(decision.get("context", {}).get("raid_target_uid", "")),
@@ -255,6 +258,7 @@ func get_snapshot() -> Dictionary:
 		"turn_number": game_state.turn_number,
 		"active_player_id": game_state.active_player_id,
 		"phase": UATypes.phase_to_text(game_state.phase),
+		"opening_complete": game_state.opening_complete,
 		"can_bonus_draw": _can_active_player_bonus_draw(),
 		"winner_player_id": game_state.winner_player_id,
 		"battle_context": game_state.battle_context.duplicate(true),
@@ -316,13 +320,80 @@ func _create_player(player_id: String, deck_list: Array) -> void:
 	if player.deck.size() != UATypes.MAIN_DECK_SIZE:
 		_apply_logs(["Deck size warning for %s: expected 50, got %d." % [player_id, player.deck.size()]])
 
-func _prepare_starting_zones(player_id: String) -> void:
+func _prepare_opening_hand(player_id: String) -> void:
 	var player: PlayerState = game_state.get_player(player_id)
 	if player == null:
 		return
-	# Draw the opening hand first, then place starting life cards.
 	for i in range(UATypes.STARTING_HAND):
 		zone_manager.draw_card(game_state, player_id)
+	_apply_logs(["%s draws %d cards for the opening hand." % [player_id, player.hand.size()]])
+
+func _enqueue_mulligan_decision(player_id: String) -> void:
+	var player: PlayerState = game_state.get_player(player_id)
+	if player == null:
+		return
+	game_state.active_player_id = player_id
+	game_state.priority_player_id = player_id
+	game_state.phase = UATypes.Phase.START
+	_enqueue_pending_decision({
+		"type": "MULLIGAN_CHOICE",
+		"owner_player_id": player_id,
+		"source_card_uid": "",
+		"choices": [
+			{"label": "Keep Hand", "value": "keep"},
+			{"label": "Mulligan", "value": "mulligan"},
+		],
+		"context": {},
+	})
+	_apply_logs(["%s chooses whether to mulligan the opening hand." % player_id])
+
+func _resolve_mulligan_decision(decision: Dictionary, payload: Dictionary) -> void:
+	var player_id := str(decision.get("owner_player_id", ""))
+	var choice := str(payload.get("choice", "keep"))
+	_apply_logs(_apply_mulligan_choice(player_id, choice == "mulligan"))
+	if player_id == UATypes.PLAYER_ONE:
+		_enqueue_mulligan_decision(UATypes.PLAYER_TWO)
+	else:
+		_finalize_opening_setup()
+	emit_state_changed()
+
+func _apply_mulligan_choice(player_id: String, wants_mulligan: bool) -> Array[String]:
+	var logs: Array[String] = []
+	var player: PlayerState = game_state.get_player(player_id)
+	if player == null:
+		return logs
+	if not wants_mulligan:
+		game_state.opening_mulligan_hands.erase(player_id)
+		logs.append("%s keeps the opening hand." % player_id)
+		return logs
+	var old_hand: Array[String] = player.hand.duplicate()
+	game_state.opening_mulligan_hands[player_id] = old_hand.duplicate()
+	player.hand.clear()
+	for i in range(UATypes.STARTING_HAND):
+		zone_manager.draw_card(game_state, player_id)
+	for old_uid in old_hand:
+		player.deck.append(old_uid)
+		var old_card: CardInstance = game_state.get_card(old_uid)
+		if old_card != null:
+			old_card.zone = UATypes.Zone.DECK
+	zone_manager.shuffle_zone(player, UATypes.Zone.DECK)
+	logs.append("%s mulligans, redraws 7, then shuffles the original hand back into the deck." % player_id)
+	return logs
+
+func _finalize_opening_setup() -> void:
+	var logs: Array[String] = []
+	for player_id in [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]:
+		logs.append_array(_place_starting_life(player_id))
+	game_state.opening_complete = true
+	game_state.opening_mulligan_hands.clear()
+	_apply_logs(logs)
+	_apply_logs(turn_manager.begin_game(game_state))
+
+func _place_starting_life(player_id: String) -> Array[String]:
+	var logs: Array[String] = []
+	var player: PlayerState = game_state.get_player(player_id)
+	if player == null:
+		return logs
 	for i in range(UATypes.STARTING_LIFE):
 		if player.deck.is_empty():
 			break
@@ -331,7 +402,9 @@ func _prepare_starting_zones(player_id: String) -> void:
 		var card: CardInstance = game_state.get_card(card_uid)
 		if card != null:
 			card.zone = UATypes.Zone.LIFE
-	_apply_logs(["%s starts with %d hand and %d life." % [player_id, player.hand.size(), player.life.size()]])
+	logs.append("%s places %d cards face down into life." % [player_id, player.life.size()])
+	logs.append("%s starts with %d hand and %d life." % [player_id, player.hand.size(), player.life.size()])
+	return logs
 
 func _serialize_player(player_id: String) -> Dictionary:
 	var player: PlayerState = game_state.get_player(player_id)
@@ -347,6 +420,7 @@ func _serialize_player(player_id: String) -> Dictionary:
 		"used_bonus_draw": player.used_bonus_draw,
 		"available_energy": _energy_pool_for_player(player),
 		"hand": _serialize_cards(player.hand),
+		"life": _serialize_life_cards(player.life),
 		"front_line": _serialize_cards(player.front_line),
 		"energy_line": _serialize_cards(player.energy_line),
 		"outside_count": player.outside.size(),
@@ -378,6 +452,17 @@ func _serialize_cards(card_uids: Array[String]) -> Array[Dictionary]:
 			"stacked_under": card.stacked_under.duplicate(),
 			"flags": card.flags.duplicate(true),
 			"available_actions": _available_actions_for_card(card, card_def),
+		})
+	return result
+
+func _serialize_life_cards(card_uids: Array[String]) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for i in range(card_uids.size()):
+		result.append({
+			"uid": str(card_uids[i]),
+			"zone": "life",
+			"is_face_down": true,
+			"index": i,
 		})
 	return result
 

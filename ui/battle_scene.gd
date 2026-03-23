@@ -512,7 +512,10 @@ func _sync_pending_decision_controls() -> void:
 		return
 	for i in range(pending.size()):
 		var decision: Dictionary = pending[i]
-		pending_decision_picker.add_item("%s: %s" % [str(decision.get("type", "")), str(decision.get("source_card_uid", ""))])
+		var summary := str(decision.get("source_card_uid", ""))
+		if summary == "":
+			summary = str(decision.get("owner_player_id", ""))
+		pending_decision_picker.add_item("%s: %s" % [str(decision.get("type", "")), summary])
 		pending_decision_picker.set_item_metadata(i, i)
 	if _selected_pending_decision_index < 0 or _selected_pending_decision_index >= pending.size():
 		_selected_pending_decision_index = 0
@@ -526,7 +529,11 @@ func _rebuild_pending_decision_choices() -> void:
 	if _selected_pending_decision_index < 0 or _selected_pending_decision_index >= pending.size():
 		return
 	var decision: Dictionary = pending[_selected_pending_decision_index]
-	pending_decision_label.text = "Pending Decision: %s" % str(decision.get("type", "Decision"))
+	var owner_text := str(decision.get("owner_player_id", ""))
+	if owner_text == "":
+		pending_decision_label.text = "Pending Decision: %s" % str(decision.get("type", "Decision"))
+	else:
+		pending_decision_label.text = "Pending Decision: %s (%s)" % [str(decision.get("type", "Decision")), owner_text]
 	var choices: Array = decision.get("choices", [])
 	for i in range(choices.size()):
 		var choice: Dictionary = choices[i]
