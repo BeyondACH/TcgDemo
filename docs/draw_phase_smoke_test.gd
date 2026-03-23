@@ -40,6 +40,15 @@ func _init() -> void:
 	manager.request_bonus_draw()
 	_assert(p2.hand.size() == p2_hand_before + 1, "P2 bonus draw should add 1 card")
 
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	_assert(manager.game_state.active_player_id == UATypes.PLAYER_ONE, "turn should pass back to P1")
+	_assert(manager.game_state.phase == UATypes.Phase.DRAW, "P1 second turn should start in DRAW")
+	_assert(p1.ap_total() == 3, "P1 second turn should grow to 3 AP slots")
+	_assert(p1.ap_active_count() == 3, "P1 second turn should refresh to 3 active AP")
+
 	print("DRAW_PHASE_SMOKE_OK")
 	quit(0)
 

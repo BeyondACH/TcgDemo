@@ -133,6 +133,10 @@ func add_ap(player: PlayerState, total_slots: int) -> void:
 	while player.ap_area.size() < mini(total_slots, UATypes.MAX_AP):
 		player.ap_area.append({"index": player.ap_area.size(), "active": true})
 
+func ready_ap(player: PlayerState) -> void:
+	for slot in player.ap_area:
+		slot["active"] = true
+
 # AP 消耗按顺序横置可用槽位，当前不区分不同来源的 AP。
 func spend_ap(player: PlayerState, amount: int) -> bool:
 	if player.ap_active_count() < amount:

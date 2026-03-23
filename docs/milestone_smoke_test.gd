@@ -149,8 +149,8 @@ func _test_setup_game() -> Dictionary:
 		return _fail("turn_number 应为 1")
 	if manager.game_state.active_player_id != UATypes.PLAYER_ONE:
 		return _fail("首个行动玩家应为 P1")
-	if manager.game_state.phase != UATypes.Phase.MOVE:
-		return _fail("初始化后阶段应进入 MOVE")
+	if manager.game_state.phase != UATypes.Phase.DRAW:
+		return _fail("初始化后阶段应进入 DRAW")
 	if p1.hand.size() != 7 or p2.hand.size() != 7:
 		return _fail("双方起手手牌都应为 7")
 	if p1.life.size() != 7 or p2.life.size() != 7:
@@ -164,6 +164,9 @@ func _test_setup_game() -> Dictionary:
 func _test_phase_advance_and_turn_switch() -> Dictionary:
 	var manager := _new_manager()
 	manager.advance_phase()
+	if manager.game_state.phase != UATypes.Phase.MOVE:
+		return _fail("DRAW 后应进入 MOVE")
+	manager.advance_phase()
 	if manager.game_state.phase != UATypes.Phase.MAIN:
 		return _fail("MOVE 后应进入 MAIN")
 	manager.advance_phase()
@@ -176,8 +179,8 @@ func _test_phase_advance_and_turn_switch() -> Dictionary:
 	var p2 := _player(manager, UATypes.PLAYER_TWO)
 	if manager.game_state.active_player_id != UATypes.PLAYER_TWO:
 		return _fail("结束 P1 回合后应轮到 P2")
-	if manager.game_state.phase != UATypes.Phase.MOVE:
-		return _fail("新回合开始后应处于 MOVE")
+	if manager.game_state.phase != UATypes.Phase.DRAW:
+		return _fail("新回合开始后应处于 DRAW")
 	if manager.game_state.turn_number != 2:
 		return _fail("换手后 turn_number 应为 2")
 	if p2.ap_total() != 2 or p2.ap_active_count() != 2:
@@ -189,9 +192,23 @@ func _test_phase_advance_and_turn_switch() -> Dictionary:
 func _test_play_and_move_character() -> Dictionary:
 	var manager := _new_manager()
 	manager.game_state.phase = UATypes.Phase.MAIN
-	var character_uid := _ensure_card_in_hand(manager, UATypes.PLAYER_ONE, "UA_CHAR_BASIC")
+	var character_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_PLAY_MOVE_CHAR",
+		"name": "出牌移动测试角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PM-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
 	if character_uid == "":
-		return _fail("未找到可用于测试的基础角色牌")
+		return _fail("未找到可用于测试的临时角色牌")
 	manager.play_card(character_uid, UATypes.Zone.ENERGY_LINE)
 	var p1 := _player(manager, UATypes.PLAYER_ONE)
 	var card = manager.game_state.get_card(character_uid)
@@ -213,14 +230,44 @@ func _test_event_draw() -> Dictionary:
 	var manager := _new_manager()
 	while manager.game_state.active_player_id != UATypes.PLAYER_TWO:
 		manager.advance_phase()
+	_advance_to_turn_main(manager, UATypes.PLAYER_TWO, 2)
 	var p2 := _player(manager, UATypes.PLAYER_TWO)
-	manager.advance_phase()
 	if manager.game_state.phase != UATypes.Phase.MAIN:
-		return _fail("P2 MOVE 后应进入 MAIN")
-	var energy_uid := _ensure_card_in_hand(manager, UATypes.PLAYER_TWO, "UA_CHAR_BASIC")
-	var event_uid := _ensure_card_in_hand(manager, UATypes.PLAYER_TWO, "UA_EVENT_DRAW")
+		return _fail("P2 当前应进入 MAIN")
+	var energy_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_EVENT_ENERGY",
+		"name": "事件测试能量角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-EVT-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var event_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_DRAW_EVENT",
+		"name": "抽牌事件",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-EVT-2",
+		"traits": ["测试事件"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [
+			{"type": "DRAW", "value": 1}
+		],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
 	if energy_uid == "" or event_uid == "":
-		return _fail("未找到用于测试事件的角色牌或事件牌")
+		return _fail("未找到用于测试事件的临时角色牌或事件牌")
 	manager.play_card(energy_uid, UATypes.Zone.ENERGY_LINE)
 	var hand_before := p2.hand.size()
 	var deck_before := p2.deck.size()
@@ -236,9 +283,23 @@ func _test_event_draw() -> Dictionary:
 
 func _test_attack_damage() -> Dictionary:
 	var manager := _new_manager()
-	var attacker_uid := _put_card_on_front(manager, UATypes.PLAYER_ONE, "UA_CHAR_HEAVY", true)
+	var attacker_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_ATTACK_DAMAGE",
+		"name": "攻击测试角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-ATK-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
 	if attacker_uid == "":
-		return _fail("未找到可用于测试攻击的高 BP 角色")
+		return _fail("未找到可用于测试攻击的临时角色")
 	manager.game_state.phase = UATypes.Phase.ATTACK
 	var p2 := _player(manager, UATypes.PLAYER_TWO)
 	var life_before := p2.life.size()
@@ -285,7 +346,7 @@ func _test_life_trigger_requires_decision() -> Dictionary:
 
 func _test_main_activate_once_per_turn() -> Dictionary:
 	var manager := _new_manager()
-	manager.advance_phase()
+	_advance_to_turn_main(manager, UATypes.PLAYER_ONE, 1)
 	var main_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
 		"id": "TMP_MAIN_ACTIVATE",
 		"name": "主动技测试角色",
@@ -934,6 +995,26 @@ func _test_raid_zone_choice() -> Dictionary:
 
 func _test_life_zero_victory() -> Dictionary:
 	var manager := _new_manager()
+	var p2 := _player(manager, UATypes.PLAYER_TWO)
+	p2.life.clear()
+	for i in range(7):
+		var life_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+			"id": "TMP_LIFE_ZERO_%d" % i,
+			"name": "无触发生命牌%d" % i,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-LIFE-%d" % i,
+			"traits": ["测试角色"],
+			"cost_energy": {},
+			"cost_ap": 1,
+			"energy_provided": {"GREEN": 1},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.LIFE, true)
+		if life_uid == "":
+			return _fail("生命归零测试卡创建失败")
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 7)
 	if manager.game_state.winner_player_id != UATypes.PLAYER_ONE:
 		return _fail("P2 生命归零后应判定 P1 获胜")

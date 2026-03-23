@@ -138,3 +138,18 @@
 - 摘要：继续补齐战场视觉中轴，将顶部状态栏改为围绕战场核心居中排列，避免窗口拉伸后顶部控件整体偏左。
 - 影响文件：ui/battle_scene.gd，docs/logs.md
 - 验证方式与结果：代码检查确认 TopBar 改为居中对齐；随后执行 Godot headless 冒烟，未新增布局脚本解析错误。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：读取当前项目协作规范、规则文档、开发计划与核心实现，新增 docs/plan/mile_stone.md 对已实现功能、已达成里程碑、未闭环能力与当前验证结果进行统一盘点。
+- 影响文件：docs/plan/mile_stone.md，docs/logs.md
+- 验证方式与结果：完成 core/、data/、ui/、docs/ 代码与脚本交叉检查；执行 res://docs/milestone_smoke_test.gd 得到 11 项通过、7 项失败；执行 res://docs/deck_import_smoke_test.gd 通过；尝试执行 res://docs/draw_phase_smoke_test.gd 时出现 Godot headless 进程崩溃，未形成有效业务结论。
+- 日期：2026-03-23
+- 类型：bugfix
+- 摘要：修正 docs/milestone_smoke_test.gd 中与当前实现不一致的旧断言与旧样例卡依赖，统一到现有 DRAW 阶段流程、临时测试卡样本与当前生命结算时机，并同步更新 mile_stone 文档中的验证结果。
+- 影响文件：docs/milestone_smoke_test.gd，docs/plan/mile_stone.md，docs/logs.md
+- 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 18 项通过、0 项失败；脚本退出时仍有 Godot 资源未清理警告，但未影响断言通过。
+- 日期：2026-03-23
+- 类型：bugfix
+- 摘要：修正回合开始时 AP 只增长槽位但不会重新恢复活跃的问题，使先攻玩家后续回合能按规则恢复并达到 3 点可用 AP；同时为抽牌阶段冒烟补充先攻下一轮 3 AP 断言。
+- 影响文件：core/zone_manager.gd，core/turn_manager.gd，docs/draw_phase_smoke_test.gd，docs/logs.md
+- 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 18 项通过、0 项失败；多次尝试执行 res://docs/draw_phase_smoke_test.gd 时仍出现 Godot headless 环境级崩溃，但该问题发生在脚本断言输出前，未见本次 AP 修复引入新的规则失败。

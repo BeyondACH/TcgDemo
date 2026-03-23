@@ -32,6 +32,7 @@ func begin_turn(state: GameState) -> Array[String]:
 	zone_manager.reset_turn_flags(state, state.active_player_id)
 	var ap_target: int = _ap_target_for_player(player, state.active_player_id)
 	zone_manager.add_ap(player, ap_target)
+	zone_manager.ready_ap(player)
 	logs.append("%s turn %d starts." % [state.active_player_id, player.turn_count])
 	logs.append("%s AP is now %d/%d." % [state.active_player_id, player.ap_active_count(), player.ap_total()])
 	state.phase = UATypes.Phase.DRAW
