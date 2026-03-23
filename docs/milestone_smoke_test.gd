@@ -13,6 +13,7 @@ func _init() -> void:
 	_run_test("对局初始化", _test_setup_game)
 	_run_test("开局换牌与待决策", _test_opening_mulligan_flow)
 	_run_test("阶段推进与换手", _test_phase_advance_and_turn_switch)
+	_run_test("结束阶段超手牌显式弃牌", _test_end_phase_hand_limit_discard)
 	_run_test("角色出牌与移动", _test_play_and_move_character)
 	_run_test("事件牌抽牌效果", _test_event_draw)
 	_run_test("攻击造成伤害", _test_attack_damage)
@@ -251,6 +252,66 @@ func _test_phase_advance_and_turn_switch() -> Dictionary:
 		return _fail("P2 首回合开始时 AP 应为 2/2")
 	if p2.hand.size() != 8:
 		return _fail("P2 首回合应抽 1 张，手牌应为 8")
+	return _ok()
+
+func _test_end_phase_hand_limit_discard() -> Dictionary:
+	var manager := _new_manager()
+	var p1 := _player(manager, UATypes.PLAYER_ONE)
+	manager.game_state.phase = UATypes.Phase.END
+	var outside_before := p1.outside.size()
+	var removed_before := p1.removed.size()
+	var extra_uids: Array[String] = []
+	for i in range(3):
+		var extra_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+			"id": "TMP_HAND_LIMIT_%d" % i,
+			"name": "超手牌测试牌%d" % i,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-HL-%d" % i,
+			"traits": ["测试角色"],
+			"cost_energy": {},
+			"cost_ap": 1,
+			"energy_provided": {"GREEN": 1},
+			"bp": 2000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.HAND, true)
+		if extra_uid == "":
+			return _fail("超手牌测试卡创建失败")
+		extra_uids.append(extra_uid)
+	if p1.hand.size() != UATypes.HAND_LIMIT + 2:
+		return _fail("测试前 P1 手牌应为上限加 2")
+	manager.advance_phase()
+	if manager.game_state.phase != UATypes.Phase.END:
+		return _fail("超手牌待决策出现时应仍停留在 END")
+	if manager.game_state.active_player_id != UATypes.PLAYER_ONE:
+		return _fail("超手牌未处理前不应切换行动方")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("超手牌时应进入 1 个弃牌待决策")
+	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	if str(first_decision.get("type", "")) != "HAND_LIMIT_DISCARD":
+		return _fail("超手牌待决策类型应为 HAND_LIMIT_DISCARD")
+	manager.resolve_pending_decision("HAND_LIMIT_DISCARD", {"choice": extra_uids[0]})
+	if p1.outside.size() != outside_before + 1:
+		return _fail("第一次超手牌弃牌后应进入场外")
+	if p1.removed.size() != removed_before:
+		return _fail("超手牌显式弃牌不应进入移除区")
+	if manager.game_state.active_player_id != UATypes.PLAYER_ONE or manager.game_state.phase != UATypes.Phase.END:
+		return _fail("仍超手牌时不应提前结束回合")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("仍超手牌时应继续保留下一次弃牌待决策")
+	manager.resolve_pending_decision("HAND_LIMIT_DISCARD", {"choice": extra_uids[1]})
+	if p1.outside.size() != outside_before + 2:
+		return _fail("第二次超手牌弃牌后场外数量应再增加 1")
+	if manager.game_state.active_player_id != UATypes.PLAYER_TWO:
+		return _fail("弃到合法手牌数后应切换到 P2")
+	if manager.game_state.phase != UATypes.Phase.DRAW:
+		return _fail("弃到合法手牌数并换手后应进入 P2 的 DRAW")
+	if p1.hand.size() != UATypes.HAND_LIMIT:
+		return _fail("完成超手牌弃牌后，P1 手牌应回到上限")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("弃到合法手牌数后不应残留超手牌待决策")
 	return _ok()
 
 func _test_play_and_move_character() -> Dictionary:
@@ -1259,11 +1320,22 @@ func _test_raid_stack_play() -> Dictionary:
 		return _fail("选择留在能量线时，上层卡不应进入前线")
 	if p1.energy_line.has(base_uid):
 		return _fail("RAID 后下层卡不应继续单独留在能量线")
+	var base_card = manager.game_state.get_card(base_uid)
+	if base_card == null:
+		return _fail("RAID 后未找到底牌实例")
+	if not bool(base_card.flags.get("is_stacked_under", false)):
+		return _fail("RAID 后底牌应显示标记为被叠放")
+	if str(base_card.flags.get("stack_parent_uid", "")) != raid_uid:
+		return _fail("RAID 后底牌应记录上层卡 UID")
 	manager.zone_manager.move_card(manager.game_state, raid_uid, UATypes.Zone.OUTSIDE, UATypes.PLAYER_ONE)
 	if not p1.outside.has(raid_uid):
 		return _fail("RAID 上层离场后应进入场外")
 	if not p1.outside.has(base_uid):
 		return _fail("RAID 下层卡在上层离场后应返回场外")
+	if bool(base_card.flags.get("is_stacked_under", false)):
+		return _fail("RAID 底牌离场后不应继续保留被叠放标记")
+	if str(base_card.flags.get("stack_parent_uid", "")) != "":
+		return _fail("RAID 底牌离场后应清空上层关联")
 
 	var manager_front := _new_manager()
 	manager_front.game_state.phase = UATypes.Phase.MAIN

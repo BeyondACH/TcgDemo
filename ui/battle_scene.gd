@@ -11,16 +11,16 @@ const PhaseIndicator = preload("res://ui/phase_indicator.gd")
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.png"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
-const COMPACT_HEIGHT_THRESHOLD := 880.0
-const SMALL_HEIGHT_THRESHOLD := 760.0
-const COMPACT_WIDTH_THRESHOLD := 1380.0
-const SMALL_WIDTH_THRESHOLD := 1180.0
+const COMPACT_HEIGHT_THRESHOLD := 1120.0
+const SMALL_HEIGHT_THRESHOLD := 940.0
+const COMPACT_WIDTH_THRESHOLD := 1820.0
+const SMALL_WIDTH_THRESHOLD := 1650.0
 const BOARD_BOTTOM_GAP := 28.0
 const BOARD_TOP_GAP := 18.0
 const BOTTOM_HUD_BOTTOM_MARGIN := 12.0
 const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
-const MIN_BOARD_VISIBLE_HEIGHT_COMPACT := 460.0
-const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 400.0
+const MIN_BOARD_VISIBLE_HEIGHT_COMPACT := 500.0
+const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 
 @onready var game_manager: GameManager = $GameManager
 @onready var background_texture_rect: TextureRect = $BackgroundLayer/Background
@@ -116,6 +116,7 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_update_responsive_layout)
 	_update_responsive_layout()
 	_on_state_changed(game_manager.get_snapshot())
+	call_deferred("_run_layout_probe_if_requested")
 
 func _setup_optional_art() -> void:
 	_assign_optional_texture(background_texture_rect, BATTLE_BG_PATH)
@@ -134,18 +135,20 @@ func _update_responsive_layout() -> void:
 	var viewport_height: float = viewport_size.y
 	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
 	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
-	var bottom_height: float = 196.0 if very_small else (216.0 if compact else 244.0)
+	var board_top_gap: float = 4.0 if very_small else BOARD_TOP_GAP
+	var board_bottom_gap: float = 8.0 if very_small else (20.0 if compact else BOARD_BOTTOM_GAP)
+	var bottom_height: float = 112.0 if very_small else (184.0 if compact else 228.0)
 	var top_hud_height: float = top_hud.get_combined_minimum_size().y if top_hud != null else 0.0
-	var board_core_gap: float = 12.0 if very_small else (16.0 if compact else 24.0)
+	var board_core_gap: float = 0.0 if very_small else (12.0 if compact else 24.0)
 	var min_board_visible_height: float = MIN_BOARD_VISIBLE_HEIGHT_SMALL if very_small else (MIN_BOARD_VISIBLE_HEIGHT_COMPACT if compact else MIN_BOARD_VISIBLE_HEIGHT_DEFAULT)
-	var max_bottom_height: float = viewport_height - top_hud_height - BOARD_TOP_GAP - BOARD_BOTTOM_GAP - BOTTOM_HUD_BOTTOM_MARGIN - min_board_visible_height
+	var max_bottom_height: float = viewport_height - top_hud_height - board_top_gap - board_bottom_gap - BOTTOM_HUD_BOTTOM_MARGIN - min_board_visible_height
 	if max_bottom_height > 0.0:
-		bottom_height = clamp(bottom_height, 176.0, max_bottom_height)
+		bottom_height = clamp(bottom_height, 104.0 if very_small else 156.0, max_bottom_height)
 
-	top_hud.offset_top = 12.0
-	board_margin.offset_top = top_hud.offset_top + top_hud_height + BOARD_TOP_GAP
-	board_margin.offset_bottom = -(bottom_height + BOARD_BOTTOM_GAP + BOTTOM_HUD_BOTTOM_MARGIN)
-	board_content.alignment = BoxContainer.ALIGNMENT_CENTER
+	top_hud.offset_top = 8.0 if very_small else 12.0
+	board_margin.offset_top = top_hud.offset_top + top_hud_height + board_top_gap
+	board_margin.offset_bottom = -(bottom_height + board_bottom_gap + BOTTOM_HUD_BOTTOM_MARGIN)
+	board_content.alignment = BoxContainer.ALIGNMENT_BEGIN if very_small else BoxContainer.ALIGNMENT_CENTER
 	board_content.add_theme_constant_override("separation", board_core_gap)
 	board_spacer.size_flags_vertical = 0
 	board_spacer.custom_minimum_size = Vector2(0, board_core_gap)
@@ -154,18 +157,18 @@ func _update_responsive_layout() -> void:
 	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
 	bottom_panel.custom_minimum_size = Vector2(0, bottom_height)
 	top_bar.alignment = FlowContainer.ALIGNMENT_CENTER
-	top_bar.add_theme_constant_override("h_separation", 8 if compact else 12)
-	top_bar.add_theme_constant_override("v_separation", 6)
-	action_bar.add_theme_constant_override("h_separation", 8 if compact else 10)
-	action_bar.add_theme_constant_override("v_separation", 6)
-	selected_card_label.custom_minimum_size = Vector2(180 if compact else 220, 0)
+	top_bar.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 12))
+	top_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
+	action_bar.add_theme_constant_override("h_separation", 4 if very_small else (8 if compact else 10))
+	action_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
+	selected_card_label.custom_minimum_size = Vector2(120 if very_small else (180 if compact else 220), 0)
 	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	log_panel.size_flags_vertical = 0
-	log_panel.custom_minimum_size = Vector2(0, 42 if very_small else (56 if compact else 72))
+	log_panel.custom_minimum_size = Vector2(0, 24 if very_small else (42 if compact else 72))
 
-	opponent_board.set_compact_mode(compact)
-	player_board.set_compact_mode(compact)
-	hand_view.set_compact_mode(compact)
+	opponent_board.set_compact_mode(compact, very_small)
+	player_board.set_compact_mode(compact, very_small)
+	hand_view.set_compact_mode(compact, very_small)
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
@@ -574,3 +577,65 @@ func _has_pending_decisions() -> bool:
 
 func _has_pending_gate() -> bool:
 	return _has_pending_life_triggers() or _has_pending_decisions()
+
+func _run_layout_probe_if_requested() -> void:
+	if not OS.get_cmdline_user_args().has("--layout-probe"):
+		return
+	if game_state_has_opening_probe_pending():
+		game_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+		game_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	_update_responsive_layout()
+	call_deferred("_finish_layout_probe")
+
+func _finish_layout_probe() -> void:
+	var label := "%dx%d" % [int(get_viewport_rect().size.x), int(get_viewport_rect().size.y)]
+	var player_board_rect := player_board.get_global_rect()
+	var board_margin_rect := board_margin.get_global_rect()
+	var hand_rect := hand_view.get_global_rect()
+	var visible_board_bottom := minf(
+		player_board_rect.position.y + player_board_rect.size.y,
+		board_margin_rect.position.y + board_margin_rect.size.y
+	)
+	var content_row: Control = player_board.get_child(2)
+	var error := ""
+	if content_row.get_child_count() != 3:
+		error = "玩家战场未保持三列布局"
+	else:
+		for child in content_row.get_children():
+			var column := child as Control
+			if column != null and column.size.x <= 0.0:
+				error = "三列布局存在宽度为 0 的区域"
+				break
+	if error == "" and visible_board_bottom > hand_rect.position.y + 1.0:
+		error = "玩家战场与手牌缩略图区域发生重叠 (visible_board_bottom=%.1f, raw_board_bottom=%.1f, hand_top=%.1f)" % [
+			visible_board_bottom,
+			player_board_rect.position.y + player_board_rect.size.y,
+			hand_rect.position.y,
+		]
+	if error == "" and hand_view.get_child_count() != 1:
+		error = "手牌容器仍存在额外标题或附加区块"
+	if error == "":
+		var hand_scroll := hand_view.get_child(0) as ScrollContainer
+		if hand_scroll == null or hand_scroll.get_child_count() == 0:
+			error = "手牌滚动区缺失"
+		else:
+			var hand_row := hand_scroll.get_child(0) as HBoxContainer
+			if hand_row == null or hand_row.get_child_count() == 0:
+				error = "手牌行没有任何缩略图卡牌"
+			else:
+				var first_card := hand_row.get_child(0) as Control
+				if first_card == null:
+					error = "首张手牌缩略图缺失"
+				else:
+					var expected_width: float = round((first_card.size.y - 8.0) * 5.0 / 7.0) + 8.0
+					if abs(first_card.size.x - expected_width) > 3.0:
+						error = "手牌卡宽度未保持纯缩略图比例"
+	if error == "":
+		print("[PASS] UI 布局 %s" % label)
+		get_tree().quit(0)
+		return
+	push_error("[FAIL] UI 布局 %s: %s" % [label, error])
+	get_tree().quit(1)
+
+func game_state_has_opening_probe_pending() -> bool:
+	return game_manager.game_state.pending_decisions.size() >= 1 and str((game_manager.game_state.pending_decisions[0] as Dictionary).get("type", "")) == "MULLIGAN_CHOICE"

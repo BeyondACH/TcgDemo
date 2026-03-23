@@ -21,9 +21,7 @@ var _card_data: Dictionary = {}
 
 var _content_root: Control
 var _fallback_label: Label
-var _hand_row: HBoxContainer
 var _hand_image: TextureRect
-var _hand_text: Label
 var _board_column: VBoxContainer
 var _board_image: TextureRect
 var _board_text: Label
@@ -69,31 +67,16 @@ func _ensure_ui() -> void:
 	_fallback_label.clip_text = true
 	_content_root.add_child(_fallback_label)
 
-	_hand_row = HBoxContainer.new()
-	_hand_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_hand_row.offset_left = HAND_PADDING
-	_hand_row.offset_top = HAND_PADDING
-	_hand_row.offset_right = -HAND_PADDING
-	_hand_row.offset_bottom = -HAND_PADDING
-	_hand_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hand_row.add_theme_constant_override("separation", 6)
-	_content_root.add_child(_hand_row)
-
 	_hand_image = TextureRect.new()
 	_hand_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hand_image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_hand_image.offset_left = HAND_PADDING
+	_hand_image.offset_top = HAND_PADDING
+	_hand_image.offset_right = -HAND_PADDING
+	_hand_image.offset_bottom = -HAND_PADDING
+	_hand_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_hand_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_hand_image.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_hand_row.add_child(_hand_image)
-
-	_hand_text = Label.new()
-	_hand_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hand_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_hand_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_hand_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_hand_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_hand_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_hand_text.clip_text = true
-	_hand_row.add_child(_hand_text)
+	_content_root.add_child(_hand_image)
 
 	_board_column = VBoxContainer.new()
 	_board_column.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -126,24 +109,21 @@ func _refresh_view() -> void:
 	if _content_root == null:
 		return
 	var font_size: int = 10 if _card_size.y <= 44 else (11 if _card_size.y <= 60 else (12 if _card_size.y <= 72 else 14))
-	var hand_font_size: int = maxi(9, font_size - 1)
 	var board_font_size: int = maxi(8, font_size - 1)
 	add_theme_font_size_override("font_size", font_size)
 	_fallback_label.add_theme_font_size_override("font_size", font_size)
-	_hand_text.add_theme_font_size_override("font_size", hand_font_size)
 	_board_text.add_theme_font_size_override("font_size", board_font_size)
 	_fallback_label.visible = true
-	_hand_row.visible = false
+	_hand_image.visible = false
 	_board_column.visible = false
 	if _display_mode == DISPLAY_MODE_HAND:
 		var hand_texture := _resolve_card_texture(_card_data)
 		if hand_texture != null:
 			_display_text = _build_hand_text(_card_data)
 			_fallback_label.visible = false
-			_hand_row.visible = true
+			_hand_image.visible = true
 			_hand_image.texture = hand_texture
 			_hand_image.custom_minimum_size = _hand_image_size()
-			_hand_text.text = _build_hand_thumbnail_text(_card_data)
 			return
 	elif _display_mode == DISPLAY_MODE_BOARD:
 		var board_texture := _resolve_card_texture(_card_data)
@@ -180,22 +160,6 @@ func _build_hand_text(card_data: Dictionary) -> String:
 		_format_energy_map(card_data.get("energy_provided", {})),
 	])
 	lines.append(str(card_data.get("state", "ACTIVE")))
-	return "\n".join(lines)
-
-func _build_hand_thumbnail_text(card_data: Dictionary) -> String:
-	var name := str(card_data.get("name", "Unknown"))
-	var ap_text := _format_number(card_data.get("cost_ap", 0))
-	var need_text := _format_energy_map(card_data.get("cost_energy", {}))
-	if _card_size.y <= 44:
-		return "%s\nAP:%s N:%s" % [_shorten(name, 8), ap_text, need_text]
-	var lines: Array[String] = [
-		_shorten(name, 12),
-		"AP:%s" % ap_text,
-		"Need:%s" % need_text,
-	]
-	var state := str(card_data.get("state", "ACTIVE"))
-	if _card_size.y >= 60 and state != "ACTIVE":
-		lines.append(state)
 	return "\n".join(lines)
 
 func _build_board_text(card_data: Dictionary) -> String:
@@ -371,10 +335,11 @@ func _format_number(value) -> String:
 func _get_drag_data(_at_position: Vector2):
 	if zone_name != "hand":
 		return null
-	var preview := Label.new()
-	preview.text = _display_text
+	var preview = TextureRect.new()
 	preview.custom_minimum_size = _card_size
-	preview.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.texture = _resolve_card_texture(_card_data)
 	set_drag_preview(preview)
 	return {
 		"kind": "hand_card",

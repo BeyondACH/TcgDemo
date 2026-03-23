@@ -50,6 +50,7 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 		to_array.append(card_uid)
 	card.zone = to_zone as UATypes.Zone
 	card.controller_player_id = target_player_id
+	card.clear_stacked_under_marker()
 
 func stack_card_on_target(state: GameState, top_card_uid: String, base_card_uid: String, target_zone: int) -> Dictionary:
 	var top_card: CardInstance = state.get_card(top_card_uid)
@@ -74,12 +75,15 @@ func stack_card_on_target(state: GameState, top_card_uid: String, base_card_uid:
 	top_card.zone = target_zone
 	top_card.controller_player_id = base_card.controller_player_id
 	top_card.owner_player_id = top_card.owner_player_id
+	top_card.clear_stacked_under_marker()
 	top_card.state = UATypes.CardState.ACTIVE if base_state == UATypes.CardState.RESTED else base_state
 	top_card.stacked_under.append(base_card_uid)
 	top_card.stacked_under.append_array(base_card.stacked_under)
+	for stacked_uid in top_card.stacked_under:
+		var stacked_card: CardInstance = state.get_card(str(stacked_uid))
+		if stacked_card != null:
+			_prepare_card_for_stacked_under(state, stacked_card, top_card_uid, target_zone, base_card.controller_player_id)
 	base_card.stacked_under.clear()
-	base_card.zone = target_zone
-	base_card.state = UATypes.CardState.RESTED
 	return {"ok": true, "target_zone": target_zone}
 
 func step_move_to_energy(state: GameState, step_card_uid: String, swap_uid := "") -> Dictionary:
@@ -184,3 +188,59 @@ func _release_stacked_under_if_leaving_field(state: GameState, card: CardInstanc
 	card.stacked_under.clear()
 	for stacked_uid in stacked_copy:
 		move_card(state, stacked_uid, UATypes.Zone.OUTSIDE, card.controller_player_id)
+
+func _prepare_card_for_stacked_under(state: GameState, card: CardInstance, parent_uid: String, target_zone: int, controller_player_id: String) -> void:
+	_clear_runtime_bindings_for_card(state, card.uid)
+	var card_def = state.get_card_def(card.def_id)
+	card.current_bp = card_def.bp if card_def != null else card.current_bp
+	card.controller_player_id = controller_player_id
+	card.zone = target_zone
+	card.state = UATypes.CardState.RESTED
+	card.mark_as_stacked_under(parent_uid)
+
+func _clear_runtime_bindings_for_card(state: GameState, card_uid: String) -> void:
+	var remaining_modifiers: Array = []
+	for modifier_variant in state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		var source_uid := str(modifier.get("source_card_uid", ""))
+		var target_uid := str(modifier.get("target_uid", ""))
+		if source_uid != card_uid and target_uid != card_uid:
+			remaining_modifiers.append(modifier)
+			continue
+		_revert_static_modifier(state, modifier)
+	state.static_modifiers = remaining_modifiers
+
+	var remaining_delayed: Array = []
+	for delayed_variant in state.delayed_effects:
+		var delayed: Dictionary = delayed_variant
+		if str(delayed.get("source_card_uid", "")) == card_uid:
+			continue
+		remaining_delayed.append(delayed)
+	state.delayed_effects = remaining_delayed
+
+func _revert_static_modifier(state: GameState, modifier: Dictionary) -> void:
+	var target_uid := str(modifier.get("target_uid", ""))
+	if target_uid == "":
+		return
+	var target_card: CardInstance = state.get_card(target_uid)
+	if target_card == null:
+		return
+	match str(modifier.get("modifier_type", "")):
+		"TEMP_BP":
+			target_card.current_bp -= int(modifier.get("value", 0))
+		"TEMP_KEYWORD":
+			_remove_runtime_keyword(target_card, str(modifier.get("keyword", "")))
+
+func _remove_runtime_keyword(card: CardInstance, keyword: String) -> void:
+	if keyword == "":
+		return
+	var temp_keywords: Array = card.flags.get("temp_keywords", [])
+	var temp_keyword_counts: Dictionary = card.flags.get("temp_keyword_counts", {})
+	var current_count := int(temp_keyword_counts.get(keyword, 0))
+	if current_count <= 1:
+		temp_keyword_counts.erase(keyword)
+		temp_keywords.erase(keyword)
+	else:
+		temp_keyword_counts[keyword] = current_count - 1
+	card.flags["temp_keywords"] = temp_keywords
+	card.flags["temp_keyword_counts"] = temp_keyword_counts

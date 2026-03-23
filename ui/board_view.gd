@@ -4,11 +4,13 @@ class_name BoardView
 const DropZone = preload("res://ui/drop_zone.gd")
 const CardView = preload("res://ui/card_view.gd")
 const LifeStackView = preload("res://ui/life_stack_view.gd")
+const ZoneStackSummaryView = preload("res://ui/zone_stack_summary_view.gd")
 
 const MAX_VISIBLE_SLOTS := 4
 const SLOT_PLATE_TEXTURE_PATH := "res://assets/battle/slots/slot_plate.png"
 const DEFAULT_CARD_SIZE := Vector2(108, 152)
 const COMPACT_CARD_SIZE := Vector2(92, 128)
+const VERY_SMALL_CARD_SIZE := Vector2(52, 72)
 
 signal front_card_pressed(player_id: String, card_uid: String)
 signal energy_card_pressed(player_id: String, card_uid: String)
@@ -18,8 +20,16 @@ var _player_id := ""
 var _name_label: Label
 var _stats_label: Label
 var _content_row: HBoxContainer
+var _left_column: VBoxContainer
 var _zones_column: VBoxContainer
+var _right_column: VBoxContainer
+var _life_section: VBoxContainer
+var _front_section: VBoxContainer
+var _energy_section: VBoxContainer
 var _life_stack: LifeStackView
+var _removed_stack: ZoneStackSummaryView
+var _deck_stack: ZoneStackSummaryView
+var _outside_stack: ZoneStackSummaryView
 var _front_drop_zone: DropZone
 var _energy_drop_zone: DropZone
 var _front_slot_backplates: HBoxContainer
@@ -28,6 +38,7 @@ var _slot_plate_texture: Texture2D
 var _current_card_size := DEFAULT_CARD_SIZE
 var _last_data: Dictionary = {}
 var _display_name := ""
+var _very_small_mode := false
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 8)
@@ -50,8 +61,16 @@ func _ready() -> void:
 	_content_row.add_theme_constant_override("separation", 12)
 	add_child(_content_row)
 
-	var life_section := _create_life_section()
-	_content_row.add_child(life_section)
+	_left_column = VBoxContainer.new()
+	_left_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	_left_column.add_theme_constant_override("separation", 10)
+	_content_row.add_child(_left_column)
+
+	_life_section = _create_life_section()
+	_left_column.add_child(_life_section)
+
+	_removed_stack = ZoneStackSummaryView.new()
+	_left_column.add_child(_removed_stack)
 
 	_zones_column = VBoxContainer.new()
 	_zones_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -59,14 +78,27 @@ func _ready() -> void:
 	_content_row.add_child(_zones_column)
 
 	var front_section := _create_zone_section("Front Line")
-	_zones_column.add_child(front_section.get("root"))
+	_front_section = front_section.get("root")
+	_zones_column.add_child(_front_section)
 	_front_drop_zone = front_section.get("drop_zone")
 	_front_slot_backplates = front_section.get("slot_backplates")
 
 	var energy_section := _create_zone_section("Energy Line")
-	_zones_column.add_child(energy_section.get("root"))
+	_energy_section = energy_section.get("root")
+	_zones_column.add_child(_energy_section)
 	_energy_drop_zone = energy_section.get("drop_zone")
 	_energy_slot_backplates = energy_section.get("slot_backplates")
+
+	_right_column = VBoxContainer.new()
+	_right_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	_right_column.add_theme_constant_override("separation", 10)
+	_content_row.add_child(_right_column)
+
+	_deck_stack = ZoneStackSummaryView.new()
+	_right_column.add_child(_deck_stack)
+
+	_outside_stack = ZoneStackSummaryView.new()
+	_right_column.add_child(_outside_stack)
 
 func set_board(player_id: String, display_name: String, data: Dictionary) -> void:
 	_player_id = player_id
@@ -74,30 +106,55 @@ func set_board(player_id: String, display_name: String, data: Dictionary) -> voi
 	_last_data = data.duplicate(true)
 	_apply_board_data()
 
-func set_compact_mode(compact: bool) -> void:
-	var target_size := COMPACT_CARD_SIZE if compact else DEFAULT_CARD_SIZE
+func set_compact_mode(compact: bool, very_small := false) -> void:
+	_very_small_mode = very_small
+	var target_size := VERY_SMALL_CARD_SIZE if very_small else (COMPACT_CARD_SIZE if compact else DEFAULT_CARD_SIZE)
 	if _current_card_size.is_equal_approx(target_size):
 		return
 	_current_card_size = target_size
 	if _life_stack != null:
-		_life_stack.set_compact_mode(compact)
+		_life_stack.set_compact_mode(compact or very_small)
+	if _removed_stack != null:
+		_removed_stack.set_compact_mode(compact or very_small)
+	if _deck_stack != null:
+		_deck_stack.set_compact_mode(compact or very_small)
+	if _outside_stack != null:
+		_outside_stack.set_compact_mode(compact or very_small)
+	if _name_label != null:
+		_name_label.add_theme_font_size_override("font_size", 14 if very_small else (16 if compact else 18))
+		_name_label.visible = not very_small
+	if _stats_label != null:
+		_stats_label.add_theme_font_size_override("font_size", 10 if very_small else 12)
+		_stats_label.visible = not very_small
+	_set_section_title_visibility(_life_section, not very_small)
+	_set_section_title_visibility(_front_section, not very_small)
+	_set_section_title_visibility(_energy_section, not very_small)
+	if _content_row != null:
+		_content_row.add_theme_constant_override("separation", 4 if very_small else (8 if compact else 12))
+	if _left_column != null:
+		_left_column.add_theme_constant_override("separation", 6 if very_small else (8 if compact else 10))
+	if _right_column != null:
+		_right_column.add_theme_constant_override("separation", 6 if very_small else (8 if compact else 10))
+	if _zones_column != null:
+		_zones_column.add_theme_constant_override("separation", 4 if very_small else (6 if compact else 8))
 	if not _last_data.is_empty():
 		_apply_board_data()
 
 func _apply_board_data() -> void:
 	_name_label.text = _display_name
-	_stats_label.text = "Life:%d  Deck:%d  Hand:%d  AP:%d/%d  Outside:%d  Energy:%s" % [
+	_stats_label.text = "Life:%d  Hand:%d  AP:%d/%d  Energy:%s" % [
 		int(_last_data.get("life_count", 0)),
-		int(_last_data.get("deck_count", 0)),
 		int(_last_data.get("hand_count", 0)),
 		int(_last_data.get("ap_active", 0)),
 		int(_last_data.get("ap_total", 0)),
-		int(_last_data.get("outside_count", 0)),
 		_format_energy_map(_last_data.get("available_energy", {})),
 	]
 	_front_drop_zone.setup(_player_id, "front_line", _current_card_size)
 	_energy_drop_zone.setup(_player_id, "energy_line", _current_card_size)
 	_life_stack.set_life_cards(_last_data.get("life", []))
+	_removed_stack.set_summary("Removed", int(_last_data.get("removed_count", 0)))
+	_deck_stack.set_summary("Deck", int(_last_data.get("deck_count", 0)))
+	_outside_stack.set_summary("Outside", int(_last_data.get("outside_count", 0)))
 	_rebuild_slot_backplates(_front_slot_backplates, _last_data.get("front_line", []), "front_line")
 	_rebuild_slot_backplates(_energy_slot_backplates, _last_data.get("energy_line", []), "energy_line")
 	_rebuild_row(_front_drop_zone.get_row_container(), _last_data.get("front_line", []), "front_line")
@@ -115,7 +172,7 @@ func _create_life_section() -> VBoxContainer:
 
 	_life_stack = LifeStackView.new()
 	_life_stack.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_life_stack.set_compact_mode(_current_card_size == COMPACT_CARD_SIZE)
+	_life_stack.set_compact_mode(_current_card_size != DEFAULT_CARD_SIZE)
 	section.add_child(_life_stack)
 	return section
 
@@ -139,7 +196,7 @@ func _create_zone_section(title_text: String) -> Dictionary:
 	slot_backplates.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot_backplates.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	slot_backplates.alignment = BoxContainer.ALIGNMENT_CENTER
-	slot_backplates.add_theme_constant_override("separation", 8)
+	slot_backplates.add_theme_constant_override("separation", 4 if _current_card_size.x <= VERY_SMALL_CARD_SIZE.x else (6 if _current_card_size.x <= COMPACT_CARD_SIZE.x else 8))
 	slot_backplates.set_anchors_preset(Control.PRESET_FULL_RECT)
 	overlay_root.add_child(slot_backplates)
 
@@ -153,6 +210,13 @@ func _create_zone_section(title_text: String) -> Dictionary:
 		"drop_zone": drop_zone,
 		"slot_backplates": slot_backplates,
 	}
+
+func _set_section_title_visibility(section: VBoxContainer, visible: bool) -> void:
+	if section == null or section.get_child_count() == 0:
+		return
+	var title := section.get_child(0) as Control
+	if title != null:
+		title.visible = visible
 
 func _rebuild_slot_backplates(row: HBoxContainer, cards: Array, zone_name: String) -> void:
 	if row.get_parent() is Control:

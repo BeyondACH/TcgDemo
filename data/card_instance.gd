@@ -18,6 +18,8 @@ var flags := {
 	"double_attack_consumed": false,
 	"double_block_consumed": false,
 	"entered_via_raid": false,
+	"is_stacked_under": false,
+	"stack_parent_uid": "",
 	"temp_keywords": [],
 	"temp_keyword_counts": {},
 }
@@ -30,3 +32,18 @@ func reset_turn_flags() -> void:
 	flags["activated_main_this_turn"] = false
 	flags["double_attack_consumed"] = false
 	flags["double_block_consumed"] = false
+
+func clear_runtime_effect_flags() -> void:
+	flags["entered_via_raid"] = false
+	flags["temp_keywords"] = []
+	flags["temp_keyword_counts"] = {}
+
+func mark_as_stacked_under(parent_uid: String) -> void:
+	flags["is_stacked_under"] = true
+	flags["stack_parent_uid"] = parent_uid
+	clear_runtime_effect_flags()
+	reset_turn_flags()
+
+func clear_stacked_under_marker() -> void:
+	flags["is_stacked_under"] = false
+	flags["stack_parent_uid"] = ""

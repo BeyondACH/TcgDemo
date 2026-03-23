@@ -2,32 +2,25 @@
 class_name HandView
 
 const CardView = preload("res://ui/card_view.gd")
-const DEFAULT_HAND_CARD_SIZE := Vector2(220, 168)
-const COMPACT_HAND_CARD_SIZE := Vector2(180, 140)
-const HAND_IMAGE_FILL_RATIO := 0.8
+const DEFAULT_HAND_CARD_SIZE := Vector2(124, 168)
+const COMPACT_HAND_CARD_SIZE := Vector2(102, 140)
+const VERY_SMALL_HAND_CARD_SIZE := Vector2(78, 108)
+const HAND_IMAGE_FILL_RATIO := 0.96
 const HAND_IMAGE_ASPECT_RATIO := 5.0 / 7.0
-const HAND_TEXT_WIDTH_DEFAULT := 92.0
-const HAND_TEXT_WIDTH_COMPACT := 76.0
 const HAND_PADDING_TOTAL := 8.0
-const HAND_CONTENT_GAP := 6.0
 
 signal hand_card_selected(card_uid: String)
 
-var _title: Label
 var _scroll: ScrollContainer
 var _row: HBoxContainer
 var _current_card_size := DEFAULT_HAND_CARD_SIZE
 var _compact_mode := false
+var _very_small_mode := false
 var _current_player_id := ""
 var _hand_cards: Array = []
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 4)
-	_title = Label.new()
-	_title.text = "Active Hand"
-	_title.add_theme_font_size_override("font_size", 12)
-	add_child(_title)
-
 	_scroll = ScrollContainer.new()
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -44,10 +37,9 @@ func _ready() -> void:
 	resized.connect(_on_resized)
 	call_deferred("_refresh_layout")
 
-func set_compact_mode(compact: bool) -> void:
+func set_compact_mode(compact: bool, very_small := false) -> void:
 	_compact_mode = compact
-	if _title != null:
-		_title.visible = not compact
+	_very_small_mode = very_small
 	_refresh_layout()
 
 func set_hand(player_id: String, hand_cards: Array) -> void:
@@ -62,28 +54,28 @@ func _refresh_layout() -> void:
 	var target_size := _measure_card_size()
 	_current_card_size = target_size
 	if _scroll != null:
-		_scroll.custom_minimum_size = Vector2(0, target_size.y + (14 if _compact_mode else 20))
+		_scroll.custom_minimum_size = Vector2(0, target_size.y + (4 if _very_small_mode else 8))
 	if _row != null:
-		_row.add_theme_constant_override("separation", 4 if _compact_mode else 6)
+		_row.add_theme_constant_override("separation", 2 if _very_small_mode else (4 if _compact_mode else 6))
 	if _row != null and is_inside_tree():
 		_rebuild_hand()
 
 func _measure_card_size() -> Vector2:
+	if _very_small_mode:
+		return VERY_SMALL_HAND_CARD_SIZE
+	if _compact_mode:
+		return COMPACT_HAND_CARD_SIZE
 	var available_height := _available_hand_height()
 	var image_height: float = max(96.0 if _compact_mode else 120.0, floor(available_height * HAND_IMAGE_FILL_RATIO))
 	var image_width: float = round(image_height * HAND_IMAGE_ASPECT_RATIO)
-	var text_width := HAND_TEXT_WIDTH_COMPACT if _compact_mode else HAND_TEXT_WIDTH_DEFAULT
-	var card_width: float = image_width + text_width + HAND_PADDING_TOTAL + HAND_CONTENT_GAP
+	var card_width: float = image_width + HAND_PADDING_TOTAL
 	var card_height: float = image_height + HAND_PADDING_TOTAL
 	return Vector2(card_width, card_height)
 
 func _available_hand_height() -> float:
 	if _scroll != null and _scroll.size.y > 0.0:
 		return _scroll.size.y
-	var title_height := 0.0
-	if _title != null and _title.visible:
-		title_height = _title.get_combined_minimum_size().y + 4.0
-	var fallback_height := size.y - title_height
+	var fallback_height := size.y
 	if fallback_height > 0.0:
 		return fallback_height
 	return COMPACT_HAND_CARD_SIZE.y if _compact_mode else DEFAULT_HAND_CARD_SIZE.y

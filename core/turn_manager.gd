@@ -99,7 +99,6 @@ func end_turn(state: GameState) -> Array[String]:
 	var logs: Array[String] = []
 	zone_manager.ready_field_cards(state, state.active_player_id)
 	logs.append("All front line and energy line cards become active.")
-	_apply_hand_limit(state, state.active_player_id, logs)
 	if state.active_player_id == UATypes.PLAYER_ONE:
 		state.active_player_id = UATypes.PLAYER_TWO
 	else:
@@ -117,17 +116,44 @@ func _ap_target_for_player(player: PlayerState, player_id: String) -> int:
 		return 2
 	return mini(UATypes.MAX_AP, player.turn_count + 1)
 
-func _apply_hand_limit(state: GameState, player_id: String, logs: Array[String]) -> void:
+func needs_hand_limit_discard(state: GameState, player_id: String) -> bool:
+	var player: PlayerState = state.get_player(player_id)
+	return player != null and player.hand.size() > UATypes.HAND_LIMIT
+
+func build_hand_limit_choices(state: GameState, player_id: String) -> Array[Dictionary]:
+	var choices: Array[Dictionary] = []
 	var player: PlayerState = state.get_player(player_id)
 	if player == null:
-		return
-	while player.hand.size() > UATypes.HAND_LIMIT:
-		var discarded_uid: String = player.hand.pop_back()
-		player.removed.append(discarded_uid)
-		var card: CardInstance = state.get_card(discarded_uid)
+		return choices
+	for card_uid in player.hand:
+		var card: CardInstance = state.get_card(card_uid)
+		var label := str(card_uid)
 		if card != null:
-			card.zone = UATypes.Zone.REMOVED
-		logs.append("%s is removed due to hand limit." % discarded_uid)
+			var card_def = state.get_card_def(card.def_id)
+			if card_def != null:
+				label = "%s [%s]" % [card_def.name, card_uid]
+		choices.append({
+			"label": label,
+			"value": card_uid,
+		})
+	return choices
+
+func discard_for_hand_limit(state: GameState, player_id: String, card_uid: String) -> Array[String]:
+	var logs: Array[String] = []
+	var player: PlayerState = state.get_player(player_id)
+	if player == null:
+		return ["Hand limit discard failed: missing player."]
+	if not player.hand.has(card_uid):
+		return ["Hand limit discard failed: card is not in hand."]
+	zone_manager.move_card(state, card_uid, UATypes.Zone.OUTSIDE, player_id)
+	var card: CardInstance = state.get_card(card_uid)
+	var card_name := card_uid
+	if card != null:
+		var card_def = state.get_card_def(card.def_id)
+		if card_def != null:
+			card_name = card_def.name
+	logs.append("%s discards %s to outside for hand limit." % [player_id, card_name])
+	return logs
 
 func _apply_victory(state: GameState, result: Dictionary) -> void:
 	state.winner_player_id = str(result.get("winner", ""))

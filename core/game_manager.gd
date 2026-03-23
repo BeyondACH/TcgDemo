@@ -53,6 +53,9 @@ func advance_phase() -> void:
 	if game_state.phase == UATypes.Phase.END:
 		effect_resolver.cleanup_turn_expirations(game_state, game_state.active_player_id)
 		game_state.battle_context = {}
+		if _enqueue_hand_limit_discard_if_needed(game_state.active_player_id):
+			emit_state_changed()
+			return
 	_apply_logs(turn_manager.advance_phase(game_state))
 	emit_state_changed()
 
@@ -261,6 +264,10 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 			return
 		"STEP_SWAP_CHOICE":
 			request_step_move(str(decision.get("source_card_uid", "")), {"swap_uid": str(payload.get("choice", ""))})
+			return
+		"HAND_LIMIT_DISCARD":
+			_apply_logs(_resolve_hand_limit_discard(decision, str(payload.get("choice", ""))))
+			emit_state_changed()
 			return
 		"ABILITY_TARGET_SELECTION":
 			_apply_logs(effect_resolver.resolve_target_selection_decision(
@@ -774,3 +781,34 @@ func _card_has_runtime_keyword(card: CardInstance, card_def: CardDef, keyword: S
 		return true
 	var temp_keywords: Array = card.flags.get("temp_keywords", [])
 	return temp_keywords.has(keyword)
+
+func _enqueue_hand_limit_discard_if_needed(player_id: String) -> bool:
+	if not turn_manager.needs_hand_limit_discard(game_state, player_id):
+		return false
+	var player: PlayerState = game_state.get_player(player_id)
+	if player == null:
+		return false
+	var excess := player.hand.size() - UATypes.HAND_LIMIT
+	_enqueue_pending_decision({
+		"type": "HAND_LIMIT_DISCARD",
+		"owner_player_id": player_id,
+		"source_card_uid": "",
+		"choices": turn_manager.build_hand_limit_choices(game_state, player_id),
+		"context": {
+			"remaining_discards": excess,
+		},
+	})
+	_apply_logs(["%s must discard %d card(s) to outside for hand limit." % [player_id, excess]])
+	return true
+
+func _resolve_hand_limit_discard(decision: Dictionary, chosen_card_uid: String) -> Array[String]:
+	var logs: Array[String] = []
+	var player_id := str(decision.get("owner_player_id", ""))
+	if player_id == "" or chosen_card_uid == "":
+		return ["Hand limit discard failed: missing player or choice."]
+	logs.append_array(turn_manager.discard_for_hand_limit(game_state, player_id, chosen_card_uid))
+	if turn_manager.needs_hand_limit_discard(game_state, player_id):
+		_enqueue_hand_limit_discard_if_needed(player_id)
+		return logs
+	logs.append_array(turn_manager.end_turn(game_state))
+	return logs

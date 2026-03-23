@@ -160,3 +160,33 @@
 - 摘要：实现标准 RAID 二选一文本的“仅生命触发”改造，将 `このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。` 编译为 `ON_LIFE_TRIGGER` 下的显式二选一决策，并把直接 RAID 的入口收紧为只可从该生命触发决策进入。
 - 影响文件或模块：tools/compile_cards_effects.py、core/effect_resolver.gd、core/rules_engine.gd、core/game_manager.gd、docs/milestone_smoke_test.gd、data/cards/cards_semantic.json、data/cards/cards_effects.json、docs/logs.md
 - 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，5 张标准 RAID 文本全部编译为 `LIFE_TRIGGER_RAID_CHOICE` 模板，支持能力提升为 54 个、未支持能力降为 20 个；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果为 20 项通过、0 项失败。Godot headless 退出时仍有既有资源泄漏警告，但未影响本轮生命触发 RAID 决策链验证通过。
+- 日期：2026-03-23
+- 类型：bugfix
+- 摘要：补齐 RAID 底牌的显式被叠放状态模型，叠放时清理底牌的临时状态与运行时修正，并确认上层 RAID 牌离场时底牌会一并进入场外。
+- 影响文件或模块：`data/card_instance.gd`、`core/zone_manager.gd`、`docs/milestone_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：补充并检查 RAID 冒烟断言，确认底牌会记录 `is_stacked_under/stack_parent_uid`，且在上层离场进入场外后同步清空叠放标记并一并进入场外。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：参照战场图示例补齐双方战场中的卡组区、场外区与除外区独立展示，改为左列生命/除外、中列前线/能量线、右列卡组/场外的三列布局，并保持仅展示区域标题与数量。
+- 影响文件或模块：`ui/board_view.gd`、`ui/zone_stack_summary_view.gd`、`docs/logs.md`
+- 验证方式与结果：代码检查确认继续复用现有 `deck_count`、`outside_count`、`removed_count` 快照字段，未改动规则入口、拖拽行为与公开快照契约；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出，未新增脚本解析错误。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：将底部手牌区改为纯缩略图展示，移除 `Active Hand` 标题与手牌卡右侧文字框，并把拖拽预览同步改为图片卡面。
+- 影响文件或模块：`ui/hand_view.gd`、`ui/card_view.gd`、`docs/logs.md`
+- 验证方式与结果：代码检查确认手牌尺寸改为按纯图片宽高计算，手牌模式仅保留卡面缩略图，战场牌面文字区不受影响；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出，未新增脚本解析错误。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：同步补充 `docs/plan/mile_stone.md` 当前项目里程碑盘点，更新战场三列布局、手牌纯缩略图展示、最新冒烟通过数与后续 UI 验收建议。
+- 影响文件或模块：`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：对照 `docs/logs.md` 最近记录与现有 `ui/`、`core/` 实现更新里程碑描述，确认 M6 UI 现状、20 项里程碑冒烟通过结论与已知风险保持一致；本次为文档同步，无新增脚本执行。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：将结束阶段超手牌处理从“直接移入移除区”改为显式弃牌决策流，要求玩家逐张选择手牌弃到场外，全部处理完成后才切换到下一回合。
+- 影响文件或模块：`core/turn_manager.gd`、`core/game_manager.gd`、`docs/milestone_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 21 项通过、0 项失败，新增“结束阶段超手牌显式弃牌”用例通过；随后执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出。Godot headless 退出时仍有既有资源未释放警告，但未影响本轮断言通过。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：完成战场三列区域与底部手牌纯缩略图的布局专项修正，收紧小屏与中屏下的战场卡尺寸、底部 HUD 高度与响应式阈值，并为 `battle_scene` 增加 `--layout-probe` 自检入口。
+- 影响文件或模块：`ui/battle_scene.gd`、`ui/board_view.gd`、`ui/hand_view.gd`、`ui/drop_zone.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：在沙盒外分别执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1280x720 --path D:\CodexWork\TcgDemo -- --layout-probe`、`--resolution 1366x768`、`--resolution 1600x900`、`--resolution 1920x1080`，四组窗口尺寸均输出 `[PASS] UI 布局 ...`；确认玩家战场可视底边未压入手牌缩略图区，且手牌仍为纯缩略图展示。另执行 `--headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出，未新增脚本解析错误。

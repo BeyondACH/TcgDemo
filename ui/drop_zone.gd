@@ -23,6 +23,8 @@ func setup(p_player_id: String, p_zone_name: String, card_size: Vector2 = Vector
 	player_id = p_player_id
 	zone_name = p_zone_name
 	custom_minimum_size = Vector2(0, card_size.y)
+	if _row != null:
+		_row.add_theme_constant_override("separation", 4 if card_size.x <= 84.0 else (6 if card_size.x <= 96.0 else 8))
 
 func get_row_container() -> HBoxContainer:
 	return _row
