@@ -296,6 +296,7 @@ func get_snapshot() -> Dictionary:
 		"can_bonus_draw": _can_active_player_bonus_draw(),
 		"winner_player_id": game_state.winner_player_id,
 		"battle_context": game_state.battle_context.duplicate(true),
+		"effect_queue_count": game_state.effect_queue.size(),
 		"pending_decisions": game_state.pending_decisions.duplicate(true),
 		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),
 		"players": {

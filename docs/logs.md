@@ -190,3 +190,23 @@
 - 摘要：完成战场三列区域与底部手牌纯缩略图的布局专项修正，收紧小屏与中屏下的战场卡尺寸、底部 HUD 高度与响应式阈值，并为 `battle_scene` 增加 `--layout-probe` 自检入口。
 - 影响文件或模块：`ui/battle_scene.gd`、`ui/board_view.gd`、`ui/hand_view.gd`、`ui/drop_zone.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
 - 验证方式与结果：在沙盒外分别执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1280x720 --path D:\CodexWork\TcgDemo -- --layout-probe`、`--resolution 1366x768`、`--resolution 1600x900`、`--resolution 1920x1080`，四组窗口尺寸均输出 `[PASS] UI 布局 ...`；确认玩家战场可视底边未压入手牌缩略图区，且手牌仍为纯缩略图展示。另执行 `--headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出，未新增脚本解析错误。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：补齐效果系统的统一队列消费链路，将 `resolve_effect`、`resolve_trigger`、`MAIN_ACTIVATE` 与手动目标续执行统一接入 `effect_queue`；同时打通 IR 层 `costs` 与 `target_specs` 的运行时消费，并在快照中补充 `effect_queue_count` 便于调试。
+- 影响文件或模块：`core/effect_resolver.gd`、`core/game_manager.gd`、`data/card_def.gd`、`docs/milestone_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败，新增覆盖 `QUEUE_EFFECT` 同轮消费、`target_specs` 显式选目标、`PAY_AP`/`REST_SOURCE` 费用结算与费用不足阻断；随后执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出。Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：在协作规范中补充 Godot 冒烟测试执行约定，明确当 Codex 沙箱内运行受限或结果不稳定时，可在获得批准后通过 `Godot_v4.6.1-stable_win64_console.exe` 走沙箱外执行，并要求主 agent 在交付中记录命令与验证结果。
+- 影响文件或模块：`AGENTS.md`、`docs/logs.md`
+- 验证方式与结果：代码检查确认新增说明落在 `AGENTS.md` 的 “Godot 特别注意事项” 小节，未改动规则语义、接口契约与现有测试要求；本次为协作规范补充，未新增 Godot 脚本执行。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：新增围绕 `cards_raw.json` 的最小样例对局脚本，使用正式 raw 卡定义覆盖 `ON_ENTER`、`MAIN_ACTIVATE`、`ON_PLAY` 与 `ON_LIFE_TRIGGER` 四类效果入口，并在生命触发样例中按当前正式实现验证目标进入触发方 `outside` 的实际落点，降低测试与正式数据脱节风险。
+- 影响文件或模块：`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 4 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；随后执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出。Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：同步更新项目里程碑盘点，修正效果系统阶段状态为“已接入统一队列消费链路”，补充 `cards_raw.json` 最小样例对局脚本与最新冒烟通过数，并将后续动作调整为继续扩展复杂条件、费用、目标与正式 raw 样例覆盖。
+- 影响文件或模块：`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：对照 `docs/logs.md` 最近功能记录、`docs/milestone_smoke_test.gd` 23 项通过结果与 `docs/cards_raw_minimal_duel_smoke_test.gd` 4 项通过结果，确认里程碑文档中的 M4 状态、风险项、验证结论与下一步动作已和当前实现保持一致；本次为文档同步，未新增脚本执行。

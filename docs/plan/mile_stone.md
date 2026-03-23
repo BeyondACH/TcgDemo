@@ -22,8 +22,9 @@
 - 已完成基础对局闭环：开局、抽牌、AP 成长、阶段推进、出牌、移动、攻击/阻挡、伤害、胜负判定、基础 UI 快照展示。
 - 已完成一批高价值规则能力：生命触发显式决策、`MAIN_ACTIVATE`、`STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID` 显式落点选择与叠放。
 - 已具备数据与工具能力：`cards_raw.json`/`base_cards.json` 双源加载、txt 卡组导入、导入冒烟脚本。
+- 已补齐一轮更贴近正式数据的验证资产：`cards_raw.json` 最小样例对局脚本已覆盖 `ON_ENTER`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 四类效果入口。
 - UI 已进一步贴近示例战场图：双方战场已补齐卡组区、场外区、除外区独立展示，底部手牌区已切为纯缩略图展示。
-- 仍有若干里程碑未闭环：`effect_queue` 已建模但尚未形成完整消费链路，更复杂的条件/费用/目标顺序扩展仍未完全闭环。
+- 仍有若干里程碑未闭环：效果系统虽已形成统一 `effect_queue` 入队与消费主链路，但更复杂的条件组合、多触发顺序与更多原子费用/目标模板仍未完全扩展到计划终态。
 
 ## 3. 里程碑状态
 
@@ -118,12 +119,15 @@
 - 已支持基础操作：抽牌、移动区域、休息、激活、对玩家造成伤害。
 - 已支持步骤式效果结构、目标选择集合、延迟效果注册、静态修正注册。
 - `preview_play_modifiers()` / `commit_play_modifiers()` 已具备出牌前 AP 修正与一次性消耗能力。
-- `GameState` 已预留 `effect_queue`、`delayed_effects`、`static_modifiers`、`battle_context`、`pending_decisions`。
+- `GameState` 已接入 `effect_queue`、`delayed_effects`、`static_modifiers`、`battle_context`、`pending_decisions` 等运行时容器。
+- `resolve_effect`、`resolve_trigger`、`MAIN_ACTIVATE` 与手动目标续执行已统一接入 `effect_queue`，并在遇到显式决策或生命触发阻塞点时暂停消费。
+- IR 层 `costs` 与 `target_specs` 已打通运行时消费，当前已覆盖显式目标选择、`PAY_AP`、`REST_SOURCE` 等最小费用链路。
+- `GameManager.get_snapshot()` 已补充 `effect_queue_count`，便于 UI 与调试面观察队列状态。
 
 尚未闭环部分：
 
-- `effect_queue` 当前已有入队结构，但未见统一消费执行流程，仍属于预留能力。
-- 更复杂的条件、费用、目标选择与多触发顺序仍未完全扩展到计划书目标范围。
+- 更复杂的条件组合、费用模板、目标筛选与多触发顺序仍未完全扩展到计划书目标范围。
+- 当前 `cards_raw.json` 最小样例脚本已覆盖 4 类正式 raw 效果入口，但尚未覆盖更多事件牌、离场触发与多目标结算组合。
 
 对应实现位置：
 
@@ -178,18 +182,22 @@
 
 ## 4. 当前已知差距与风险
 
-- `effect_queue` 仍偏预留结构，效果系统尚未达到完整的可扩展框架终态。
+- 效果系统虽然已经形成统一 `effect_queue` 消费链路，但复杂条件组合、多触发顺序与更丰富的费用/目标模板仍未完全闭环。
 - `docs/draw_phase_smoke_test.gd` 在本地环境下执行仍出现过 Godot headless 进程崩溃，当前不适合作为稳定验证依据。
 - `docs/milestone_smoke_test.gd` 已修正到与当前实现一致，但脚本退出时仍有 Godot 资源未清理警告，暂未影响断言结果。
+- `docs/cards_raw_minimal_duel_smoke_test.gd` 已降低测试与正式数据脱节风险，但覆盖面仍偏最小样例，尚不能替代完整规则回归。
 - UI 新布局已通过 GUI 布局专项验收，但若后续继续改底部 HUD 高度或战场列宽，仍建议补一次实际窗口目视确认。
 
 ## 5. 本次验证结果
 
 - 已执行 `docs/milestone_smoke_test.gd`
-  - 结果：21 项通过，0 项失败。
-  - 当前总冒烟脚本已与现实现状、阶段流转和临时测试卡样本同步。
+  - 结果：23 项通过，0 项失败。
+  - 当前总冒烟脚本已与现实现状、阶段流转、效果队列消费链路与费用/目标最小样本同步。
 - 已执行 `docs/deck_import_smoke_test.gd`
   - 结果：通过。
+- 已执行 `docs/cards_raw_minimal_duel_smoke_test.gd`
+  - 结果：4 项通过，0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。
+  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 四类效果入口。
 - 已尝试执行 `docs/draw_phase_smoke_test.gd`
   - 结果：Godot headless 进程崩溃，未获得可用业务验证结论。
 - 已执行 Godot headless 启动检查：`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit`
@@ -199,5 +207,5 @@
 
 ## 6. 建议的下一步里程碑动作
 
-- 继续推进效果系统的完整队列消费、条件/目标/费用扩展。
-- 在不改规则语义的前提下，补一轮围绕 `cards_raw.json` 的最小样例对局脚本，降低测试与正式数据脱节的风险。
+- 继续扩展效果系统的原子条件、目标筛选、费用模板与多触发顺序，向完整 DSL/IR 运行时收敛。
+- 以 `docs/cards_raw_minimal_duel_smoke_test.gd` 为基底，继续补齐更多正式 raw 卡样例，优先覆盖事件牌、离场触发、双目标/多步骤结算与更复杂费用组合。

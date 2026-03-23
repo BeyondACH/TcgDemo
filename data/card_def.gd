@@ -166,8 +166,10 @@ func _legacy_effect_from_ability(ability: Dictionary) -> Dictionary:
 	if ability.has("legacy_effect"):
 		return ability.get("legacy_effect", {}).duplicate(true)
 	return {
+		"id": str(ability.get("id", "")),
 		"trigger": str(ability.get("timing", {}).get("event", "")),
 		"requirements": ability.get("requirements", []).duplicate(true),
+		"costs": ability.get("costs", []).duplicate(true),
 		"target_specs": ability.get("target_specs", []).duplicate(true),
 		"steps": ability.get("steps", []).duplicate(true),
 		"once_per_turn": bool(ability.get("limits", {}).get("once_per_turn", false)),

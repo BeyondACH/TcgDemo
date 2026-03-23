@@ -21,21 +21,19 @@ func resolve_operations(state: GameState, source_card_uid: String, effect_list: 
 	return logs
 
 func resolve_effect(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary = {}) -> Array[String]:
+	state.effect_queue.append(_build_effect_queue_entry(source_card_uid, effect, context))
+	return consume_effect_queue(state)
+
+func consume_effect_queue(state: GameState) -> Array[String]:
 	var logs: Array[String] = []
-	var requirements: Array = effect.get("requirements", effect.get("condition", []))
-	if not _requirements_met(state, source_card_uid, requirements, context):
-		return logs
-	if effect.has("steps"):
-		var step_result := _execute_steps(state, source_card_uid, effect.get("steps", []), context.duplicate(true), effect)
-		logs.append_array(step_result.get("logs", []))
-		return logs
-	if effect.has("type"):
-		logs.append_array(_execute_operation(state, source_card_uid, effect, context))
-		return logs
-	var operations = effect.get("operations", effect.get("operation", []))
-	if operations is Dictionary:
-		operations = [operations]
-	logs.append_array(resolve_operations(state, source_card_uid, operations, context))
+	while not state.effect_queue.is_empty():
+		if not state.pending_decisions.is_empty() or not state.pending_life_triggers.is_empty():
+			break
+		var entry: Dictionary = state.effect_queue[0]
+		if str(entry.get("kind", "")) == "TARGET_SELECTION":
+			break
+		state.effect_queue.remove_at(0)
+		logs.append_array(_consume_queue_entry(state, entry))
 	return logs
 
 func resolve_trigger(source_card_uid: String, trigger_type: int, state: GameState, context: Dictionary = {}) -> Array[String]:
@@ -50,7 +48,8 @@ func resolve_trigger(source_card_uid: String, trigger_type: int, state: GameStat
 	trigger_context["source_player_id"] = source_card.controller_player_id
 	for effect in card_def.trigger_effects:
 		if _trigger_matches(effect, trigger_type) and _is_effect_enabled_for_card(source_card, effect):
-			logs.append_array(resolve_effect(state, source_card_uid, effect, trigger_context))
+			state.effect_queue.append(_build_effect_queue_entry(source_card_uid, effect, trigger_context))
+	logs.append_array(consume_effect_queue(state))
 	return logs
 
 func activate_main_effect(state: GameState, player_id: String, card_uid: String, effect_index := 0) -> Array[String]:
@@ -75,17 +74,26 @@ func activate_main_effect(state: GameState, player_id: String, card_uid: String,
 	if effect_index < 0 or effect_index >= main_effects.size():
 		return ["Main activate failed: effect index out of range."]
 	var selected_effect: Dictionary = main_effects[effect_index]
-	if bool(selected_effect.get("once_per_turn", false)) and bool(card.flags.get("activated_main_this_turn", false)):
-		return ["Main activate failed: once per turn already used."]
-	card.flags["activated_main_this_turn"] = bool(selected_effect.get("once_per_turn", false))
-	logs.append("%s activates a main effect." % card_def.name)
-	logs.append_array(resolve_effect(state, card_uid, selected_effect, {
+	var activate_context := {
 		"player_id": player_id,
+		"source_player_id": player_id,
 		"target_player_id": player_id,
 		"attacker_uid": str(state.battle_context.get("attacker_uid", "")),
 		"blocker_uid": str(state.battle_context.get("blocker_uid", "")),
 		"target_uid": str(state.battle_context.get("target_uid", "")),
-	}))
+	}
+	var requirements: Array = selected_effect.get("requirements", selected_effect.get("condition", []))
+	if not _requirements_met(state, card_uid, requirements, activate_context):
+		return ["Main activate failed: requirements not met."]
+	var cost_preview := _preview_effect_costs(state, card_uid, selected_effect.get("costs", []), activate_context)
+	if not bool(cost_preview.get("ok", true)):
+		return ["Main activate failed: %s" % str(cost_preview.get("reason", "cost_unavailable"))]
+	if bool(selected_effect.get("once_per_turn", false)) and bool(card.flags.get("activated_main_this_turn", false)):
+		return ["Main activate failed: once per turn already used."]
+	card.flags["activated_main_this_turn"] = bool(selected_effect.get("once_per_turn", false))
+	logs.append("%s activates a main effect." % card_def.name)
+	state.effect_queue.append(_build_effect_queue_entry(card_uid, selected_effect, activate_context))
+	logs.append_array(consume_effect_queue(state))
 	return logs
 
 func resolve_target_selection_decision(state: GameState, resolution_id: String, selected_values) -> Array[String]:
@@ -114,14 +122,19 @@ func resolve_target_selection_decision(state: GameState, resolution_id: String, 
 		context[target_var] = normalized[0] if not normalized.is_empty() else ""
 	else:
 		context[target_var] = normalized
-	var step_result := _execute_steps(
-		state,
-		str(queued_effect.get("source_card_uid", "")),
-		queued_effect.get("steps", []),
-		context,
-		queued_effect.get("effect", {})
-	)
-	logs.append_array(step_result.get("logs", []))
+	if bool(queued_effect.get("resume_as_effect", false)):
+		state.effect_queue.insert(0, _build_effect_queue_entry(
+			str(queued_effect.get("source_card_uid", "")),
+			queued_effect.get("effect", {}),
+			context
+		))
+	else:
+		state.effect_queue.insert(0, _build_effect_queue_entry(
+			str(queued_effect.get("source_card_uid", "")),
+			{"steps": queued_effect.get("steps", [])},
+			context
+		))
+	logs.append_array(consume_effect_queue(state))
 	return logs
 
 func preview_play_modifiers(state: GameState, player_id: String, card_uid: String, context: Dictionary = {}) -> Dictionary:
@@ -245,6 +258,42 @@ func resolve_life_trigger_decision(state: GameState, card_uid: String, activate:
 
 func finalize_pending_life_damage(state: GameState) -> Array[String]:
 	return _finalize_pending_life_damage(state)
+
+func _consume_queue_entry(state: GameState, entry: Dictionary) -> Array[String]:
+	if str(entry.get("kind", "")) != "RESOLVE_EFFECT":
+		return []
+	return _resolve_effect_now(
+		state,
+		str(entry.get("source_card_uid", "")),
+		entry.get("effect", {}),
+		entry.get("context", {}).duplicate(true)
+	)
+
+func _resolve_effect_now(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary = {}) -> Array[String]:
+	var logs: Array[String] = []
+	var requirements: Array = effect.get("requirements", effect.get("condition", []))
+	if not _requirements_met(state, source_card_uid, requirements, context):
+		return logs
+	var target_result := _prepare_effect_targets(state, source_card_uid, effect, context)
+	logs.append_array(target_result.get("logs", []))
+	if bool(target_result.get("paused", false)) or not bool(target_result.get("ok", true)):
+		return logs
+	var cost_result := _pay_effect_costs(state, source_card_uid, effect.get("costs", []), context)
+	logs.append_array(cost_result.get("logs", []))
+	if not bool(cost_result.get("ok", true)):
+		return logs
+	if effect.has("steps"):
+		var step_result := _execute_steps(state, source_card_uid, effect.get("steps", []), context, effect)
+		logs.append_array(step_result.get("logs", []))
+		return logs
+	if effect.has("type"):
+		logs.append_array(_execute_operation(state, source_card_uid, effect, context))
+		return logs
+	var operations = effect.get("operations", effect.get("operation", []))
+	if operations is Dictionary:
+		operations = [operations]
+	logs.append_array(resolve_operations(state, source_card_uid, operations, context))
+	return logs
 
 func _execute_steps(state: GameState, source_card_uid: String, steps: Array, context: Dictionary, effect: Dictionary = {}) -> Dictionary:
 	var logs: Array[String] = []
@@ -402,11 +451,14 @@ func _execute_operation(state: GameState, source_card_uid: String, effect: Dicti
 			logs.append("%s BP changes by %d." % [bp_uid, int(effect.get("value", 0))])
 		return logs
 	if effect_type == "QUEUE_EFFECT":
-		state.effect_queue.append({
-			"source_card_uid": source_card_uid,
-			"effect": effect.duplicate(true),
-			"context": context.duplicate(true),
-		})
+		var queued_effect: Dictionary = effect.get("queued_effect", effect.get("effect", {}))
+		if queued_effect.is_empty():
+			return logs
+		var queued_context := context.duplicate(true)
+		var context_patch = effect.get("context", {})
+		if context_patch is Dictionary:
+			queued_context.merge(context_patch, true)
+		state.effect_queue.append(_build_effect_queue_entry(source_card_uid, queued_effect, queued_context))
 		return logs
 	logs.append("Reserved unsupported effect type: %s" % effect_type)
 	return logs
@@ -576,6 +628,121 @@ func _enqueue_life_trigger_raid_choice(state: GameState, source_card_uid: String
 	})
 	logs.append("%s may add the card to hand or raid immediately." % owner_player_id)
 	return logs
+
+func _build_effect_queue_entry(source_card_uid: String, effect: Dictionary, context: Dictionary) -> Dictionary:
+	return {
+		"kind": "RESOLVE_EFFECT",
+		"source_card_uid": source_card_uid,
+		"effect": effect.duplicate(true),
+		"context": context.duplicate(true),
+	}
+
+func _prepare_effect_targets(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Dictionary:
+	var steps: Array = effect.get("steps", [])
+	for target_spec_variant in effect.get("target_specs", []):
+		var target_spec: Dictionary = target_spec_variant
+		var selected_var := str(target_spec.get("store_as", target_spec.get("id", "selected_target")))
+		if selected_var == "" or context.has(selected_var) or _steps_define_target_var(steps, selected_var):
+			continue
+		var target := _target_from_spec(target_spec)
+		var selected := _resolve_target_set(state, source_card_uid, target, context)
+		var min_count := int(target.get("min", 0))
+		var max_count := int(target.get("max", selected.size()))
+		if bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL":
+			if selected.is_empty() and min_count > 0:
+				return {"ok": false, "logs": ["Effect target selection failed: no legal targets."], "paused": false}
+			if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, [], true):
+				return {"ok": true, "logs": [], "paused": true}
+		if max_count == 1:
+			context[selected_var] = selected[0] if not selected.is_empty() else ""
+		else:
+			context[selected_var] = selected
+	return {"ok": true, "logs": [], "paused": false}
+
+func _target_from_spec(target_spec: Dictionary) -> Dictionary:
+	var candidate: Dictionary = target_spec.get("candidate", {})
+	var select: Dictionary = target_spec.get("select", {})
+	return {
+		"type": "CARD_SET",
+		"owner": str(candidate.get("owner", "SELF")),
+		"zones": candidate.get("zones", []),
+		"filters": candidate.get("filters", []).duplicate(true),
+		"requirements": candidate.get("requirements", []).duplicate(true),
+		"min": int(select.get("min", 0)),
+		"max": int(select.get("max", 1)),
+		"selection_mode": str(select.get("mode", "AUTO")),
+		"manual": str(select.get("mode", "AUTO")) == "MANUAL",
+	}
+
+func _steps_define_target_var(steps: Array, selected_var: String) -> bool:
+	for step_variant in steps:
+		var step: Dictionary = step_variant
+		if str(step.get("type", "")) == "SELECT_TARGETS" and str(step.get("var", "")) == selected_var:
+			return true
+	return false
+
+func _preview_effect_costs(state: GameState, source_card_uid: String, costs: Array, context: Dictionary) -> Dictionary:
+	for cost_variant in costs:
+		var cost: Dictionary = cost_variant
+		var cost_type := str(cost.get("type", ""))
+		if cost_type == "PAY_AP":
+			var ap_player_id := _cost_player_id(state, source_card_uid, context, cost)
+			var ap_player = state.get_player(ap_player_id)
+			var amount := int(cost.get("value", 1))
+			if ap_player == null or ap_player.ap_active_count() < amount:
+				return {"ok": false, "reason": "insufficient_ap"}
+		elif cost_type == "REST_SOURCE" or cost_type == "REST_SELF":
+			var source_card = state.get_card(source_card_uid)
+			if source_card == null or source_card.state != UATypes.CardState.ACTIVE:
+				return {"ok": false, "reason": "source_not_active"}
+	return {"ok": true}
+
+func _pay_effect_costs(state: GameState, source_card_uid: String, costs: Array, context: Dictionary) -> Dictionary:
+	var logs: Array[String] = []
+	var preview := _preview_effect_costs(state, source_card_uid, costs, context)
+	if not bool(preview.get("ok", true)):
+		logs.append("Effect cost failed: %s." % str(preview.get("reason", "cost_unavailable")))
+		return {"ok": false, "logs": logs}
+	for cost_variant in costs:
+		var cost: Dictionary = cost_variant
+		var cost_type := str(cost.get("type", ""))
+		if cost_type == "PAY_AP":
+			var ap_player_id := _cost_player_id(state, source_card_uid, context, cost)
+			var ap_player = state.get_player(ap_player_id)
+			var amount := int(cost.get("value", 1))
+			if ap_player != null and amount > 0:
+				zone_manager.spend_ap(ap_player, amount)
+				logs.append("%s pays %d AP." % [ap_player_id, amount])
+		elif cost_type == "REST_SOURCE" or cost_type == "REST_SELF":
+			var source_card = state.get_card(source_card_uid)
+			if source_card != null:
+				source_card.state = UATypes.CardState.RESTED
+				logs.append("%s is rested to pay a cost." % source_card_uid)
+		elif cost_type == "MOVE_SOURCE_TO_ZONE":
+			var source_zone := _parse_zone(cost.get("to_zone", cost.get("to", UATypes.Zone.OUTSIDE)))
+			if source_zone != -1:
+				zone_manager.move_card(state, source_card_uid, source_zone, _cost_player_id(state, source_card_uid, context, cost))
+				logs.append("Moved card %s to %s as a cost." % [source_card_uid, UATypes.zone_to_key(source_zone)])
+		elif cost_type == "MOVE_SELECTED_CARDS":
+			var selected_cards: Array = _ensure_array(context.get(str(cost.get("from_var", "")), []))
+			var target_zone := _parse_zone(cost.get("to_zone", cost.get("to", UATypes.Zone.OUTSIDE)))
+			var target_player_id := _cost_player_id(state, source_card_uid, context, cost)
+			for card_uid_variant in selected_cards:
+				var card_uid := str(card_uid_variant)
+				if card_uid == "":
+					continue
+				zone_manager.move_card(state, card_uid, target_zone, target_player_id)
+				logs.append("Moved card %s to %s as a cost." % [card_uid, UATypes.zone_to_key(target_zone)])
+	return {"ok": true, "logs": logs}
+
+func _cost_player_id(state: GameState, source_card_uid: String, context: Dictionary, cost: Dictionary) -> String:
+	var player_mode := str(cost.get("player", "SOURCE"))
+	var source_card = state.get_card(source_card_uid)
+	if player_mode == "TARGET":
+		return str(context.get("target_player_id", ""))
+	if player_mode == "ACTIVE":
+		return state.active_player_id
+	return source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
 
 func _resolve_target_set(state: GameState, source_card_uid: String, target: Dictionary, context: Dictionary) -> Array:
 	var result: Array = []
@@ -749,7 +916,7 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		return source_card != null and source_card.state == UATypes.CardState.ACTIVE
 	return _matches_filter(state, requirement, context, candidate_card_uid, source_card_uid)
 
-func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array) -> bool:
+func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false) -> bool:
 	var min_count := int(target.get("min", 0))
 	var max_count := int(target.get("max", 1))
 	if candidates.is_empty():
@@ -771,6 +938,7 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 				label = candidate_def.name
 		choices.append({"label": label, "value": candidate_uid})
 	state.effect_queue.append({
+		"kind": "TARGET_SELECTION",
 		"id": resolution_id,
 		"source_card_uid": source_card_uid,
 		"target_var": selected_var,
@@ -779,6 +947,7 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		"steps": remaining_steps.duplicate(true),
 		"context": context.duplicate(true),
 		"effect": effect.duplicate(true),
+		"resume_as_effect": resume_as_effect,
 	})
 	state.pending_decisions.append({
 		"type": "ABILITY_TARGET_SELECTION",
