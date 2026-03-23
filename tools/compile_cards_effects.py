@@ -130,6 +130,51 @@ def _manual_single_target(
     return [target_spec], steps
 
 
+def _manual_context_target(
+    source_var: str,
+    requirements: list[dict] | None = None,
+    filters: list[dict] | None = None,
+    min_count: int = 1,
+    max_count: int = 1,
+    store_as: str = "selected_target",
+    constraints: dict | None = None,
+) -> tuple[list[dict], list[dict]]:
+    target_spec = {
+        "id": store_as,
+        "scope": "CARD",
+        "candidate": {
+            "source_var": source_var,
+            "filters": filters or [],
+            "requirements": requirements or [],
+        },
+        "select": {
+            "min": min_count,
+            "max": max_count,
+            "mode": "MANUAL",
+            "constraints": constraints or {},
+        },
+        "store_as": store_as,
+    }
+    steps = [
+        {
+            "type": "SELECT_TARGETS",
+            "var": store_as,
+            "target": {
+                "type": "CONTEXT_CARD_SET",
+                "source_var": source_var,
+                "filters": filters or [],
+                "requirements": requirements or [],
+                "min": min_count,
+                "max": max_count,
+                "selection_mode": "MANUAL",
+                "manual": True,
+                "selection_constraints": constraints or {},
+            },
+        }
+    ]
+    return [target_spec], steps
+
+
 def _supported_ability(
     card: dict,
     event_name: str,
@@ -285,6 +330,40 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
         steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 500, "expires": "END_OF_TURN"})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
+    if text == "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。":
+        target_specs, select_steps = _manual_context_target(
+            "preview_cards",
+            requirements=[{"type": "CARD_HAS_TRAIT", "value": "魔法少女"}],
+            filters=[{"type": "NAME_NOT", "value": "鹿目 まどか"}],
+            min_count=0,
+            max_count=1,
+            store_as="selected_preview_cards",
+        )
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "selected_discard")
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs + discard_specs,
+            [
+                {"type": "PREVIEW_TOP_DECK", "count": 4, "var": "preview_cards"},
+            ]
+            + select_steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_preview_cards", "to": "HAND", "remove_from_var": "preview_cards"},
+                {"type": "REORDER_CONTEXT_CARDS", "from_var": "preview_cards", "var": "ordered_preview_cards"},
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "ordered_preview_cards", "to": "DECK"},
+            ]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_preview_cards"}])
+                for step in discard_steps
+            ]
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_discard", "to": "OUTSIDE", "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_preview_cards"}]}
+            ],
+        )
+
     semantic_entry = semantic_map.get(card["id"])
     if semantic_entry and not semantic_entry.get("can_be_expressed_by_dsl", True):
         reason = " / ".join(semantic_entry.get("missing_capabilities", []))
@@ -333,6 +412,33 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
         steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_life_card", "to": "HAND"})
         steps.append({"type": "DRAW", "value": 2})
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分の山札の上から5枚見る。その中から異なるカード名の［特徴：魔法少女］をそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。":
+        target_specs, steps = _manual_context_target(
+            "preview_cards",
+            requirements=[{"type": "CARD_HAS_TRAIT", "value": "魔法少女"}],
+            min_count=0,
+            max_count=3,
+            store_as="selected_preview_cards",
+            constraints={"distinct_by": "CARD_NAME"},
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            target_specs,
+            [
+                {"type": "PREVIEW_TOP_DECK", "count": 5, "var": "preview_cards"},
+            ]
+            + steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_preview_cards", "to": "HAND", "remove_from_var": "preview_cards"},
+                {"type": "REORDER_CONTEXT_CARDS", "from_var": "preview_cards", "var": "ordered_preview_cards"},
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "ordered_preview_cards", "to": "DECK"},
+            ],
+            "TRIGGERED",
+        )
 
     match = re.fullmatch(
         r"自分の場の〈(.+)〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。",

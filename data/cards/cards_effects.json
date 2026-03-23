@@ -3986,8 +3986,132 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "NAME_NOT",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          },
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 4,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "NAME_NOT",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3996,15 +4120,14 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -4418,8 +4541,76 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 3,
+              "mode": "MANUAL",
+              "constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 5,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ],
+              "min": 0,
+              "max": 3,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4428,8 +4619,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から5枚見る。その中から異なるカード名の［特徴：魔法少女］をそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -4437,7 +4627,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },

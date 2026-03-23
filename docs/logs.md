@@ -220,3 +220,15 @@
 - 摘要：继续沿 `cards_raw` 最小样例对局补齐正式 raw 卡覆盖，新增手牌中自减 AP、离场回手与“先支付角色退场代价、再按其 BP 选择目标并抽 2”的多步骤费用结算模板，并把最小 raw 冒烟扩展到 8 条正式样例。
 - 影响文件或模块：`core/effect_resolver.gd`、`tools/compile_cards_effects.py`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
 - 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 57 个已支持能力、16 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 8 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；随后在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败。两次 Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
+
+- 日期：2026-03-23
+- 类型：bugfix
+- 摘要：修复 `docs/milestone_smoke_test.gd` 中被错误转码写坏的测试文案，并同步修正 `core/effect_resolver.gd` 的 `PREVIEW_TOP_DECK` 玩家来源类型声明，恢复里程碑冒烟脚本可读性与可执行性。
+- 影响文件或模块：`docs/milestone_smoke_test.gd`、`core/effect_resolver.gd`、`docs/logs.md`
+- 验证方式与结果：重新执行 `python tools/compile_cards_effects.py`，结果为 59 个已支持能力、14 个未支持能力；随后在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败。Godot 退出时仍有既有资源泄漏告警，但未影响断言通过。
+
+- 日期：2026-03-23
+- 类型：功能更新
+- 摘要：完成 `docs/cards_raw_minimal_duel_smoke_test.gd` 的编码与可读性巡检，确认脚本本体无脏乱码；同时收口两条看牌堆顶正式 raw 样例，补齐“看牌堆顶、从上下文候选显式选牌、剩余按顺序回牌堆底、按卡名去重选择与基于已选结果继续结算”的统一 DSL/IR 链路。
+- 影响文件或模块：`tools/compile_cards_effects.py`、`core/effect_resolver.gd`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 59 个已支持能力、14 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 10 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；此前同步执行的 `docs/milestone_smoke_test.gd` 为 23 项通过、0 项失败。Godot 退出时仍有既有资源泄漏告警，但未影响断言通过。

@@ -519,11 +519,11 @@ func _run_effect_queue_and_ir_extension_checks() -> Dictionary:
 	_advance_to_turn_main(queue_manager, UATypes.PLAYER_ONE, 1)
 	var queue_uid := _spawn_temp_card(queue_manager, UATypes.PLAYER_ONE, {
 		"id": "TMP_QUEUE_EFFECT",
-		"name": "闃熷垪娑堣垂娴嬭瘯瑙掕壊",
+		"name": "Queue Effect Tester",
 		"card_type": "CHARACTER",
 		"title_code": "TMP",
 		"number": "TMP-Q-1",
-		"traits": ["娴嬭瘯瑙掕壊"],
+		"traits": ["Test Role"],
 		"cost_energy": {},
 		"cost_ap": 1,
 		"energy_provided": {"GREEN": 1},
@@ -547,24 +547,24 @@ func _run_effect_queue_and_ir_extension_checks() -> Dictionary:
 		]
 	}, UATypes.Zone.FRONT_LINE, true)
 	if queue_uid == "":
-		return _fail("鏁堟灉闃熷垪娑堣垂娴嬭瘯鍗″垱寤哄け璐?")
+		return _fail("Failed to create the queue effect test card.")
 	var queue_player := _player(queue_manager, UATypes.PLAYER_ONE)
 	var queue_hand_before := queue_player.hand.size()
 	queue_manager.request_main_activate(queue_uid)
 	if queue_player.hand.size() != queue_hand_before + 1:
-		return _fail("QUEUE_EFFECT 鍏ラ槦鍚庡簲鍦ㄥ悓娆℃秷璐规椂瀹屾垚鎶界墝")
+		return _fail("QUEUE_EFFECT should resolve the queued draw in the same consumption pass.")
 	if queue_manager.game_state.effect_queue.size() != 0:
-		return _fail("鏁堟灉闃熷垪娑堣垂瀹屾垚鍚庝笉搴旀畫鐣?effect_queue")
+		return _fail("effect_queue should be empty after queue consumption completes.")
 
 	var ir_manager := _new_manager()
 	_advance_to_turn_main(ir_manager, UATypes.PLAYER_ONE, 1)
 	var ir_uid := _spawn_temp_card(ir_manager, UATypes.PLAYER_ONE, {
 		"id": "TMP_IR_COST_TARGET",
-		"name": "IR 鐩爣璐圭敤娴嬭瘯瑙掕壊",
+		"name": "IR Target Cost Tester",
 		"card_type": "CHARACTER",
 		"title_code": "TMP",
 		"number": "TMP-IR-1",
-		"traits": ["娴嬭瘯瑙掕壊"],
+		"traits": ["Test Role"],
 		"cost_energy": {},
 		"cost_ap": 1,
 		"energy_provided": {"GREEN": 1},
@@ -604,11 +604,11 @@ func _run_effect_queue_and_ir_extension_checks() -> Dictionary:
 	}, UATypes.Zone.FRONT_LINE, true)
 	var ir_target_uid := _spawn_temp_card(ir_manager, UATypes.PLAYER_TWO, {
 		"id": "TMP_IR_COST_TARGET_DEF",
-		"name": "IR 鐩爣",
+		"name": "IR Target Defender",
 		"card_type": "CHARACTER",
 		"title_code": "TMP",
 		"number": "TMP-IR-2",
-		"traits": ["娴嬭瘯瑙掕壊"],
+		"traits": ["Test Role"],
 		"cost_energy": {},
 		"cost_ap": 1,
 		"energy_provided": {"GREEN": 1},
@@ -618,15 +618,15 @@ func _run_effect_queue_and_ir_extension_checks() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.FRONT_LINE, true)
 	if ir_uid == "" or ir_target_uid == "":
-		return _fail("IR 鐩爣/璐圭敤娴嬭瘯鍗″垱寤哄け璐?")
+		return _fail("Failed to create the IR target test cards.")
 	var ir_player := _player(ir_manager, UATypes.PLAYER_ONE)
 	var ir_ap_before := ir_player.ap_active_count()
 	ir_manager.request_main_activate(ir_uid)
 	if ir_manager.game_state.pending_decisions.size() != 1:
-		return _fail("target_specs 搴旇Е鍙戞樉寮忕洰鏍囬€夋嫨")
+		return _fail("target_specs should trigger an explicit target selection.")
 	var ir_decision: Dictionary = ir_manager.game_state.pending_decisions[0]
 	if str(ir_decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
-		return _fail("target_specs 鐢熸垚鐨勫喅绛栫被鍨嬪簲涓?ABILITY_TARGET_SELECTION")
+		return _fail("target_specs should generate an ABILITY_TARGET_SELECTION decision.")
 	ir_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(ir_decision.get("resolution_id", "")),
 		"choice": ir_target_uid,
@@ -634,21 +634,21 @@ func _run_effect_queue_and_ir_extension_checks() -> Dictionary:
 	var ir_card = ir_manager.game_state.get_card(ir_uid)
 	var ir_target = ir_manager.game_state.get_card(ir_target_uid)
 	if ir_player.ap_active_count() != ir_ap_before - 1:
-		return _fail("costs[PAY_AP] 搴斿湪鏁堟灉缁撶畻鏃舵墣闄?1 AP")
+		return _fail("costs[PAY_AP] should spend exactly 1 AP.")
 	if ir_card == null or ir_card.state != UATypes.CardState.RESTED:
-		return _fail("costs[REST_SOURCE] 搴斾娇婧愯鑹茶浆涓?RESTED")
+		return _fail("costs[REST_SOURCE] should rest the source card.")
 	if ir_target == null or ir_target.zone != UATypes.Zone.OUTSIDE:
-		return _fail("target_specs + steps 搴斿湪閫夋嫨鍚庡皢鐩爣绉诲埌鍦哄")
+		return _fail("target_specs + steps should move the chosen target to outside.")
 
 	var ir_fail_manager := _new_manager()
 	_advance_to_turn_main(ir_fail_manager, UATypes.PLAYER_ONE, 1)
 	var ir_fail_uid := _spawn_temp_card(ir_fail_manager, UATypes.PLAYER_ONE, {
 		"id": "TMP_IR_COST_FAIL",
-		"name": "IR 璐圭敤澶辫触娴嬭瘯瑙掕壊",
+		"name": "IR Insufficient Cost Tester",
 		"card_type": "CHARACTER",
 		"title_code": "TMP",
 		"number": "TMP-IR-3",
-		"traits": ["娴嬭瘯瑙掕壊"],
+		"traits": ["Test Role"],
 		"cost_energy": {},
 		"cost_ap": 1,
 		"energy_provided": {"GREEN": 1},
@@ -669,12 +669,12 @@ func _run_effect_queue_and_ir_extension_checks() -> Dictionary:
 		]
 	}, UATypes.Zone.FRONT_LINE, true)
 	if ir_fail_uid == "":
-		return _fail("IR 璐圭敤澶辫触娴嬭瘯鍗″垱寤哄け璐?")
+		return _fail("Failed to create the insufficient-cost IR test card.")
 	var ir_fail_player := _player(ir_fail_manager, UATypes.PLAYER_ONE)
 	var ir_fail_hand_before := ir_fail_player.hand.size()
 	ir_fail_manager.request_main_activate(ir_fail_uid)
 	if ir_fail_player.hand.size() != ir_fail_hand_before:
-		return _fail("璐圭敤涓嶈冻鏃朵笉搴旀墽琛屽悗缁晥鏋?")
+		return _fail("No follow-up draw should resolve when the cost cannot be paid.")
 	return _ok()
 
 func _test_effect_queue_consumption() -> Dictionary:

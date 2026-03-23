@@ -117,7 +117,12 @@ func resolve_target_selection_decision(state: GameState, resolution_id: String, 
 	var max_count := int(queued_effect.get("max", 1))
 	var normalized := _normalize_selection_payload(selected_values, max_count)
 	if normalized.size() < min_count:
+		state.effect_queue.insert(queued_index, queued_effect)
 		return ["Target selection failed: not enough targets."]
+	var validation_reason := _validate_selection_payload(state, normalized, queued_effect)
+	if validation_reason != "":
+		state.effect_queue.insert(queued_index, queued_effect)
+		return ["Target selection failed: %s." % validation_reason]
 	if max_count == 1:
 		context[target_var] = normalized[0] if not normalized.is_empty() else ""
 	else:
@@ -317,6 +322,30 @@ func _execute_steps(state: GameState, source_card_uid: String, steps: Array, con
 
 func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array = [], effect: Dictionary = {}) -> Dictionary:
 	var step_type := str(step.get("type", ""))
+	var step_requirements: Array = step.get("requirements", [])
+	if not step_requirements.is_empty() and not _requirements_met(state, source_card_uid, step_requirements, context):
+		return {"logs": [], "paused": false}
+	if step_type == "PREVIEW_TOP_DECK":
+		var preview_logs: Array[String] = []
+		var player_mode := str(step.get("player", "SOURCE"))
+		var source_card = state.get_card(source_card_uid)
+		var player_id: String = str(context.get("source_player_id", ""))
+		if source_card != null:
+			player_id = source_card.controller_player_id
+		if player_mode == "TARGET":
+			player_id = str(context.get("target_player_id", player_id))
+		elif player_mode == "ACTIVE":
+			player_id = state.active_player_id
+		var player = state.get_player(player_id)
+		var preview_var := str(step.get("var", "preview_cards"))
+		var count := int(step.get("count", 0))
+		var preview_cards: Array = []
+		if player != null and count > 0:
+			var preview_count := mini(count, player.deck.size())
+			preview_cards = player.deck.slice(0, preview_count)
+		context[preview_var] = preview_cards
+		preview_logs.append("%s previews %d card(s) from the top of the deck." % [player_id, preview_cards.size()])
+		return {"logs": preview_logs, "paused": false}
 	if step_type == "SELECT_TARGETS":
 		var target: Dictionary = step.get("target", {})
 		var selected := _resolve_target_set(state, source_card_uid, target, context)
@@ -342,7 +371,32 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 				continue
 			zone_manager.move_card(state, card_uid, to_zone, target_player_id)
 			move_logs.append("Moved card %s to %s." % [card_uid, UATypes.zone_to_key(to_zone)])
+		var remove_from_var := str(step.get("remove_from_var", ""))
+		if remove_from_var != "":
+			context[remove_from_var] = _array_without_values(_ensure_array(context.get(remove_from_var, [])), selected_cards)
 		return {"logs": move_logs, "paused": false}
+	if step_type == "REORDER_CONTEXT_CARDS":
+		var source_var := str(step.get("from_var", "preview_cards"))
+		var ordered_var := str(step.get("var", source_var))
+		var candidates: Array = _ensure_array(context.get(source_var, []))
+		if context.has(ordered_var):
+			return {"logs": [], "paused": false}
+		if candidates.is_empty():
+			context[ordered_var] = []
+			return {"logs": [], "paused": false}
+		var reorder_target := {
+			"type": "CONTEXT_CARD_SET",
+			"source_var": source_var,
+			"filters": step.get("filters", []).duplicate(true),
+			"requirements": step.get("requirements", []).duplicate(true),
+			"min": candidates.size(),
+			"max": candidates.size(),
+			"selection_mode": "MANUAL",
+			"manual": true,
+		}
+		if _enqueue_target_selection(state, source_card_uid, effect, ordered_var, reorder_target, candidates, context, remaining_steps, false):
+			return {"logs": [], "paused": true}
+		return {"logs": [], "paused": false}
 	if step_type == "MOVE_TOP_DECK_TO_LIFE":
 		var life_logs: Array[String] = []
 		var player_id := str(context.get("target_player_id", context.get("source_player_id", "")))
@@ -672,16 +726,21 @@ func _prepare_effect_targets(state: GameState, source_card_uid: String, effect: 
 func _target_from_spec(target_spec: Dictionary) -> Dictionary:
 	var candidate: Dictionary = target_spec.get("candidate", {})
 	var select: Dictionary = target_spec.get("select", {})
+	var target_type := "CARD_SET"
+	if str(candidate.get("source_var", "")) != "":
+		target_type = "CONTEXT_CARD_SET"
 	return {
-		"type": "CARD_SET",
+		"type": target_type,
 		"owner": str(candidate.get("owner", "SELF")),
 		"zones": candidate.get("zones", []),
+		"source_var": str(candidate.get("source_var", "")),
 		"filters": candidate.get("filters", []).duplicate(true),
 		"requirements": candidate.get("requirements", []).duplicate(true),
 		"min": int(select.get("min", 0)),
 		"max": int(select.get("max", 1)),
 		"selection_mode": str(select.get("mode", "AUTO")),
 		"manual": str(select.get("mode", "AUTO")) == "MANUAL",
+		"selection_constraints": select.get("constraints", {}).duplicate(true),
 	}
 
 func _steps_define_target_var(steps: Array, selected_var: String) -> bool:
@@ -756,7 +815,31 @@ func _cost_player_id(state: GameState, source_card_uid: String, context: Diction
 
 func _resolve_target_set(state: GameState, source_card_uid: String, target: Dictionary, context: Dictionary) -> Array:
 	var result: Array = []
-	if str(target.get("type", "")) != "CARD_SET":
+	var target_type := str(target.get("type", ""))
+	if target_type == "CONTEXT_CARD_SET":
+		var source_var := str(target.get("source_var", ""))
+		var context_candidates: Array = _ensure_array(context.get(source_var, []))
+		var filters: Array = target.get("filters", [])
+		var requirements: Array = target.get("requirements", [])
+		for candidate_uid_variant in context_candidates:
+			var candidate_uid := str(candidate_uid_variant)
+			if candidate_uid == "":
+				continue
+			if not _matches_filter_list(state, filters, context, candidate_uid, source_card_uid):
+				continue
+			if not _requirements_met(state, source_card_uid, requirements, context, candidate_uid):
+				continue
+			result.append(candidate_uid)
+		var min_count := int(target.get("min", 0))
+		if result.size() < min_count:
+			return []
+		var max_count := int(target.get("max", result.size()))
+		if (bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL"):
+			return result
+		if max_count >= 0 and result.size() > max_count:
+			return result.slice(0, max_count)
+		return result
+	if target_type != "CARD_SET":
 		return result
 	var source_card = state.get_card(source_card_uid)
 	if source_card == null:
@@ -934,6 +1017,18 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		return candidate_def != null and candidate_def.name == str(requirement.get("value", ""))
 	if requirement_type == "CARD_HAS_TRAIT":
 		return candidate_def != null and candidate_def.traits.has(str(requirement.get("value", "")))
+	if requirement_type == "CONTEXT_VAR_NON_EMPTY":
+		return not _ensure_array(context.get(str(requirement.get("var", "")), [])).is_empty()
+	if requirement_type == "CONTEXT_SELECTED_CARD_HAS_TRAIT":
+		var selected_uid := str(context.get(str(requirement.get("context_var", "")), ""))
+		var selected_card = state.get_card(selected_uid)
+		var selected_def = state.get_card_def(selected_card.def_id) if selected_card != null else null
+		return selected_def != null and selected_def.traits.has(str(requirement.get("value", "")))
+	if requirement_type == "CONTEXT_SELECTED_CARD_TYPE_IS":
+		var selected_uid_type := str(context.get(str(requirement.get("context_var", "")), ""))
+		var selected_card_type = state.get_card(selected_uid_type)
+		var selected_def_type = state.get_card_def(selected_card_type.def_id) if selected_card_type != null else null
+		return selected_def_type != null and UATypes.card_type_to_text(selected_def_type.card_type) == str(requirement.get("value", ""))
 	if requirement_type == "SOURCE_STATE_IS_ACTIVE":
 		return source_card != null and source_card.state == UATypes.CardState.ACTIVE
 	return _matches_filter(state, requirement, context, candidate_card_uid, source_card_uid)
@@ -950,6 +1045,7 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 	var owner_player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
 	var resolution_id := state.next_runtime_id("target_select")
 	var choices: Array[Dictionary] = []
+	var candidate_values: Array[String] = []
 	for candidate_uid_variant in candidates:
 		var candidate_uid := str(candidate_uid_variant)
 		var label := candidate_uid
@@ -959,6 +1055,7 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 			if candidate_def != null:
 				label = candidate_def.name
 		choices.append({"label": label, "value": candidate_uid})
+		candidate_values.append(candidate_uid)
 	state.effect_queue.append({
 		"kind": "TARGET_SELECTION",
 		"id": resolution_id,
@@ -970,6 +1067,8 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		"context": context.duplicate(true),
 		"effect": effect.duplicate(true),
 		"resume_as_effect": resume_as_effect,
+		"candidate_values": candidate_values,
+		"selection_constraints": target.get("selection_constraints", {}).duplicate(true),
 	})
 	state.pending_decisions.append({
 		"type": "ABILITY_TARGET_SELECTION",
@@ -996,6 +1095,41 @@ func _normalize_selection_payload(selected_values, max_count: int) -> Array:
 			result.append(single)
 	if max_count >= 0 and result.size() > max_count:
 		return result.slice(0, max_count)
+	return result
+
+func _validate_selection_payload(state: GameState, normalized: Array, queued_effect: Dictionary) -> String:
+	var candidate_values: Array = queued_effect.get("candidate_values", [])
+	for value_variant in normalized:
+		var value := str(value_variant)
+		if not candidate_values.has(value):
+			return "invalid_choice"
+	var constraints: Dictionary = queued_effect.get("selection_constraints", {})
+	if str(constraints.get("distinct_by", "")) == "CARD_NAME":
+		var seen_names: Dictionary = {}
+		for value_variant in normalized:
+			var value := str(value_variant)
+			var card = state.get_card(value)
+			var card_def = state.get_card_def(card.def_id) if card != null else null
+			var card_name: String = value
+			if card_def != null:
+				card_name = str(card_def.name)
+			if seen_names.has(card_name):
+				return "duplicate_card_name"
+			seen_names[card_name] = true
+	return ""
+
+func _array_without_values(source: Array, values_to_remove: Array) -> Array:
+	var result: Array = []
+	var remaining: Array = []
+	for value_variant in values_to_remove:
+		remaining.append(str(value_variant))
+	for source_variant in source:
+		var source_value := str(source_variant)
+		var remove_index := remaining.find(source_value)
+		if remove_index != -1:
+			remaining.remove_at(remove_index)
+			continue
+		result.append(source_variant)
 	return result
 
 func _ensure_array(value) -> Array:

@@ -197,8 +197,8 @@
 - 已执行 `docs/deck_import_smoke_test.gd`
   - 结果：通过。
 - 已执行 `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - 结果：8 项通过，0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。
-  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`ON_LEAVE`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 五类效果入口，并补齐 `DRAW_2`、手牌中自减 AP、离场回手与多步骤复杂费用结算样例。
+  - 结果：10 项通过，0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。
+  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`ON_LEAVE`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 五类效果入口，并补齐 `DRAW_2`、手牌中自减 AP、离场回手、多步骤复杂费用结算，以及“看牌堆顶后检索/回底”“不同卡名去重选择”两组正式 raw 样例。
 - 已尝试执行 `docs/draw_phase_smoke_test.gd`
   - 结果：Godot headless 进程崩溃，未获得可用业务验证结论。
 - 已执行 Godot headless 启动检查：`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit`
@@ -209,4 +209,4 @@
 ## 6. 建议的下一步里程碑动作
 
 - 继续扩展效果系统的原子条件、目标筛选、费用模板与多触发顺序，向完整 DSL/IR 运行时收敛。
-- 以 `docs/cards_raw_minimal_duel_smoke_test.gd` 为基底，继续补齐更多正式 raw 卡样例，优先覆盖看牌堆顶后的检索/回底、多目标并行结算、离场触发链与更复杂费用组合。
+- 以 `docs/cards_raw_minimal_duel_smoke_test.gd` 为基底，继续补齐更多正式 raw 卡样例，优先覆盖看牌堆顶后的条件追加结算、多目标并行结算、离场触发链与更复杂费用组合。

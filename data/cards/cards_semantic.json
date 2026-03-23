@@ -1075,22 +1075,20 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
         "id": "UA31ST_MMM_1_103_on_enter_930ab826c1",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31ST_MMM_1_105",
@@ -1187,7 +1185,7 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -1201,16 +1199,14 @@
       {
         "id": "UA31ST_MMM_1_109_on_play_3ded668e6e",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から5枚見る。その中から異なるカード名の［特徴：魔法少女］をそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA_CHAR_BASIC",
