@@ -6,9 +6,11 @@ const COMPACT_STACK_SIZE := Vector2(48, 68)
 const DEFAULT_Y_STEP := 8.0
 const COMPACT_Y_STEP := 6.0
 const MAX_VISIBLE_CARDS := 4
+const Y_STEP_RATIO := 0.1  # y_step as fraction of card height
 
 var _stack_size := DEFAULT_STACK_SIZE
 var _y_step := DEFAULT_Y_STEP
+var _custom_size_set := false
 var _title_label: Label
 var _count_label: Label
 var _stack_root: Control
@@ -42,8 +44,19 @@ func _ready() -> void:
 	_refresh()
 
 func set_compact_mode(compact: bool) -> void:
+	if _custom_size_set:
+		return
 	_stack_size = COMPACT_STACK_SIZE if compact else DEFAULT_STACK_SIZE
 	_y_step = COMPACT_Y_STEP if compact else DEFAULT_Y_STEP
+	_refresh()
+
+
+## Set stack card size dynamically based on zone rect.
+## card_size: Vector2 with width and height (5:7 aspect ratio expected).
+func set_stack_size(card_size: Vector2) -> void:
+	_stack_size = card_size
+	_y_step = maxf(4.0, card_size.y * Y_STEP_RATIO)
+	_custom_size_set = true
 	_refresh()
 
 func set_summary(title_text: String, count: int) -> void:

@@ -1,4 +1,16 @@
 
+- 日期：2026-03-25
+- 类型：UI优化
+- 摘要：将日志面板从底部HUD移至右侧浮动弹窗，默认隐藏，通过顶栏 Log 按钮切换展开/隐藏。释放底部空间给手牌和操作栏。
+- 影响文件：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`
+- 验证方式与结果：运行 milestone 冒烟测试 23/23 通过，cards_raw 冒烟测试 10/10 通过。
+
+- 日期：2026-03-25
+- 类型：UI优化
+- 摘要：卡组(Deck)、场外(Outside)、除外(Removed)、血区(Life)的展示尺寸改为根据战场背景区域动态计算，使其与背景匹配。添加 project.godot stretch 配置确保 1080p 自适应缩放。
+- 影响文件：`project.godot`、`ui/zone_stack_summary_view.gd`、`ui/life_stack_view.gd`、`ui/board_view.gd`
+- 验证方式与结果：运行 milestone 冒烟测试 23/23 通过，cards_raw 冒烟测试 10/10 通过。
+
 - 日期：2026-03-24
 - 类型：功能重构
 - 摘要：重构手牌区域布局，实现"底部固定、默认半收起、悬停上浮、独立预览"方案。新建 CardPreviewPanel 卡牌详情预览面板，重构 HandView 为自定义布局支持动态重叠与 hover 效果，增强 CardView 添加可打出状态视觉提示。
@@ -239,8 +251,3 @@
 - 影响文件或模块：`tools/compile_cards_effects.py`、`core/effect_resolver.gd`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
 - 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 59 个已支持能力、14 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 10 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；此前同步执行的 `docs/milestone_smoke_test.gd` 为 23 项通过、0 项失败。Godot 退出时仍有既有资源泄漏告警，但未影响断言通过。
 
-- ???2026-03-23
-- ???????
-- ????? AGENTS.md ???????????????? README.md???????????????????????????? raw ??????????????????????
-- ????????README.md?docs/logs.md
-- ???????????? AGENTS.md?docs/plan/mile_stone.md???????? README ??????????????? 59 ???????14 ????????? docs/milestone_smoke_test.gd 23 ????docs/cards_raw_minimal_duel_smoke_test.gd 10 ?????????????????????????

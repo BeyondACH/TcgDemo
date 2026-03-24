@@ -6,9 +6,11 @@ const COMPACT_CARD_SIZE := Vector2(42, 58)
 const DEFAULT_Y_STEP := 16.0
 const COMPACT_Y_STEP := 13.0
 const MAX_VISIBLE_LIFE := 7
+const Y_STEP_RATIO := 0.23  # y_step as fraction of card height
 
 var _card_size := DEFAULT_CARD_SIZE
 var _y_step := DEFAULT_Y_STEP
+var _custom_size_set := false
 var _life_cards: Array = []
 var _card_layer: Control
 
@@ -21,8 +23,19 @@ func _ready() -> void:
 	_refresh()
 
 func set_compact_mode(compact: bool) -> void:
+	if _custom_size_set:
+		return
 	_card_size = COMPACT_CARD_SIZE if compact else DEFAULT_CARD_SIZE
 	_y_step = COMPACT_Y_STEP if compact else DEFAULT_Y_STEP
+	_refresh()
+
+
+## Set card size dynamically based on life zone rect.
+## card_size: Vector2 with width and height (5:7 aspect ratio expected).
+func set_card_size(card_size: Vector2) -> void:
+	_card_size = card_size
+	_y_step = maxf(4.0, card_size.y * Y_STEP_RATIO)
+	_custom_size_set = true
 	_refresh()
 
 func set_life_cards(cards: Array) -> void:

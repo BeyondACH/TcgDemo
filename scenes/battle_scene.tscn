@@ -172,6 +172,10 @@ text = "No Block"
 layout_mode = 2
 text = "Winner: -"
 
+[node name="LogToggleButton" type="Button" parent="UILayer/TopHUD/TopBar"]
+layout_mode = 2
+text = "Log"
+
 [node name="BottomHUD" type="MarginContainer" parent="UILayer"]
 layout_mode = 1
 anchors_preset = 12
@@ -286,8 +290,19 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Resolve Pending Decision"
 
-[node name="LogPanel" type="PanelContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 64)
+[node name="LogPanel" type="PanelContainer" parent="UILayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = 40.0
+offset_bottom = -200.0
+grow_horizontal = 0
+grow_vertical = 2
+custom_minimum_size = Vector2(340, 200)
 script = ExtResource("5_log")
 

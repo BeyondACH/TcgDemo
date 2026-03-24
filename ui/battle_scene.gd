@@ -62,7 +62,8 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var pending_decision_picker: OptionButton = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/PendingDecisionPicker
 @onready var pending_decision_choice_picker: OptionButton = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/PendingDecisionChoicePicker
 @onready var resolve_pending_decision_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/ResolvePendingDecisionButton
-@onready var log_panel: LogPanel = $UILayer/BottomHUD/BottomPanel/BottomContent/LogPanel
+@onready var log_panel: LogPanel = $UILayer/LogPanel
+@onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/LogToggleButton
 
 var _snapshot: Dictionary = {}
 var _selected_hand_card_uid := ""
@@ -96,6 +97,7 @@ func _ready() -> void:
 	pending_decision_choice_picker.item_selected.connect(_on_pending_decision_choice_selected)
 	resolve_pending_decision_button.pressed.connect(_on_resolve_pending_decision_pressed)
 	cancel_selection_button.pressed.connect(_clear_selection)
+	log_toggle_button.pressed.connect(_on_log_toggle_pressed)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
 	hand_view.hand_card_hovered.connect(_on_hand_card_hovered)
 	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
@@ -163,8 +165,6 @@ func _update_responsive_layout() -> void:
 	action_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	selected_card_label.custom_minimum_size = Vector2(120 if very_small else (180 if compact else 220), 0)
 	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	log_panel.size_flags_vertical = 0
-	log_panel.custom_minimum_size = Vector2(0, 24 if very_small else (42 if compact else 72))
 
 	# Update board views with absolute positioning
 	opponent_board.update_layout(letterbox_offset, bg_scale_factor)
@@ -445,6 +445,10 @@ func _clear_pending_attack() -> void:
 	_pending_defender_player_id = ""
 	no_block_button.visible = false
 	bonus_draw_button.visible = false
+
+
+func _on_log_toggle_pressed() -> void:
+	log_panel.visible = not log_panel.visible
 
 func _selected_label_text(active_player_id: String) -> String:
 	if _has_pending_decisions():

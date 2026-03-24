@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(D:\\\\CodexWork\\\\TcgDemo\\\\Godot\\\\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\\\\CodexWork\\\\TcgDemo --script res://docs/milestone_smoke_test.gd 2>&1)",
+      "Bash(D:\\\\CodexWork\\\\TcgDemo\\\\Godot\\\\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\\\\CodexWork\\\\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd 2>&1)",
+      "Bash(/d/Godot_v4.6.1/Godot_v4.6.1-stable_win64_console.exe --headless --path /d/GodotWork/tcg-demo --script res://docs/milestone_smoke_test.gd 2>&1)"
+    ]
+  }
+}

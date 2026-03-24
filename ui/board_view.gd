@@ -145,6 +145,17 @@ func _reposition_zones() -> void:
 	var front_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "front_line", _bg_offset, _bg_scale)
 	_current_card_size = ZoneLayoutConfig.calculate_card_size_for_zone(front_rect, MAX_VISIBLE_SLOTS)
 
+	# Calculate dynamic sizes for stack zones based on their zone rects
+	var deck_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "deck", _bg_offset, _bg_scale)
+	var outside_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "outside_area", _bg_offset, _bg_scale)
+	var removed_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "remove_area", _bg_offset, _bg_scale)
+	var life_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "life_area", _bg_offset, _bg_scale)
+
+	_deck_stack.set_stack_size(_calc_stack_card_size(deck_rect))
+	_outside_stack.set_stack_size(_calc_stack_card_size(outside_rect))
+	_removed_stack.set_stack_size(_calc_stack_card_size(removed_rect))
+	_life_stack.set_card_size(_calc_life_card_size(life_rect))
+
 	# Update zone contents with new card sizes
 	_update_zone_contents()
 
@@ -339,6 +350,38 @@ func _on_card_pressed(owner_player_id: String, card_uid: String, zone_name: Stri
 
 func _on_zone_dropped(player_id: String, zone_name: String, card_uid: String) -> void:
 	emit_signal("zone_drop_requested", player_id, zone_name, card_uid)
+
+
+## Calculate a single card size for stack zones (deck, outside, removed).
+## Fits one card inside the zone rect while keeping 5:7 aspect ratio.
+func _calc_stack_card_size(zone_rect: Rect2) -> Vector2:
+	var aspect := 5.0 / 7.0
+	# Reserve space for title label (~18px) and count label (~18px) and padding
+	var available_height := zone_rect.size.y * 0.55
+	var available_width := zone_rect.size.x * 0.85
+	var card_height := minf(available_height, available_width / aspect)
+	var card_width := card_height * aspect
+	card_width = maxf(card_width, 36.0)
+	card_height = maxf(card_height, 50.0)
+	return Vector2(card_width, card_height)
+
+
+## Calculate a single card size for the life zone.
+## Needs to fit up to 7 stacked cards vertically.
+func _calc_life_card_size(zone_rect: Rect2) -> Vector2:
+	var aspect := 5.0 / 7.0
+	var y_step_ratio := 0.23
+	# Total height = card_h + y_step * 6, where y_step = card_h * y_step_ratio
+	# card_h * (1 + 6 * y_step_ratio) = zone_height * 0.95
+	var card_height := (zone_rect.size.y * 0.95) / (1.0 + 6.0 * y_step_ratio)
+	var card_width := card_height * aspect
+	# Also constrain by zone width
+	if card_width > zone_rect.size.x * 0.85:
+		card_width = zone_rect.size.x * 0.85
+		card_height = card_width / aspect
+	card_width = maxf(card_width, 30.0)
+	card_height = maxf(card_height, 42.0)
+	return Vector2(card_width, card_height)
 
 
 func _format_energy_map(energy_map: Dictionary) -> String:
