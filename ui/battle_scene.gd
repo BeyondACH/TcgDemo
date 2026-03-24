@@ -7,8 +7,9 @@ const BoardView = preload("res://ui/board_view.gd")
 const HandView = preload("res://ui/hand_view.gd")
 const LogPanel = preload("res://ui/log_panel.gd")
 const PhaseIndicator = preload("res://ui/phase_indicator.gd")
+const ZoneLayoutConfig = preload("res://data/zone_layout_config.gd")
 
-const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.png"
+const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
 const COMPACT_HEIGHT_THRESHOLD := 1120.0
@@ -26,9 +27,9 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var background_texture_rect: TextureRect = $BackgroundLayer/Background
 @onready var selection_highlight: TextureRect = $EffectLayer/SelectionHighlight
 @onready var slot_highlight: TextureRect = $EffectLayer/SlotHighlight
-@onready var board_margin: MarginContainer = $BoardLayer/BoardMargin
-@onready var board_content: VBoxContainer = $BoardLayer/BoardMargin/BoardContent
-@onready var board_spacer: Control = $BoardLayer/BoardMargin/BoardContent/BoardSpacer
+@onready var board_layer: Control = $BoardLayer
+@onready var opponent_board: BoardView = $BoardLayer/OpponentBoard
+@onready var player_board: BoardView = $BoardLayer/PlayerBoard
 @onready var top_hud: MarginContainer = $UILayer/TopHUD
 @onready var bottom_hud: MarginContainer = $UILayer/BottomHUD
 @onready var bottom_panel: PanelContainer = $UILayer/BottomHUD/BottomPanel
@@ -40,8 +41,6 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var bonus_draw_button: Button = $UILayer/TopHUD/TopBar/BonusDrawButton
 @onready var no_block_button: Button = $UILayer/TopHUD/TopBar/NoBlockButton
 @onready var winner_label: Label = $UILayer/TopHUD/TopBar/WinnerLabel
-@onready var opponent_board: BoardView = $BoardLayer/BoardMargin/BoardContent/OpponentBoard
-@onready var player_board: BoardView = $BoardLayer/BoardMargin/BoardContent/PlayerBoard
 @onready var hand_view: HandView = $UILayer/BottomHUD/BottomPanel/BottomContent/HandView
 @onready var action_bar: HFlowContainer = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar
 @onready var selected_card_label: Label = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SelectedCardLabel
@@ -133,29 +132,27 @@ func _update_responsive_layout() -> void:
 	var viewport_size := get_viewport_rect().size
 	var viewport_width: float = viewport_size.x
 	var viewport_height: float = viewport_size.y
+
+	# Calculate letterboxing for background image
+	var bg_transform := ZoneLayoutConfig.calculate_bg_transform(viewport_width, viewport_height)
+	var bg_scale_factor: float = bg_transform.scale_factor
+	var bg_display_width: float = bg_transform.display_width
+	var letterbox_offset: float = bg_transform.letterbox_offset
+
+	# Update background TextureRect to show letterboxing
+	background_texture_rect.position.x = letterbox_offset
+	background_texture_rect.size.x = bg_display_width
+	background_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	background_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+
 	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
 	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
-	var board_top_gap: float = 4.0 if very_small else BOARD_TOP_GAP
-	var board_bottom_gap: float = 8.0 if very_small else (20.0 if compact else BOARD_BOTTOM_GAP)
 	var bottom_height: float = 112.0 if very_small else (184.0 if compact else 228.0)
-	var top_hud_height: float = top_hud.get_combined_minimum_size().y if top_hud != null else 0.0
-	var board_core_gap: float = 0.0 if very_small else (12.0 if compact else 24.0)
-	var min_board_visible_height: float = MIN_BOARD_VISIBLE_HEIGHT_SMALL if very_small else (MIN_BOARD_VISIBLE_HEIGHT_COMPACT if compact else MIN_BOARD_VISIBLE_HEIGHT_DEFAULT)
-	var max_bottom_height: float = viewport_height - top_hud_height - board_top_gap - board_bottom_gap - BOTTOM_HUD_BOTTOM_MARGIN - min_board_visible_height
-	if max_bottom_height > 0.0:
-		bottom_height = clamp(bottom_height, 104.0 if very_small else 156.0, max_bottom_height)
 
 	top_hud.offset_top = 8.0 if very_small else 12.0
-	board_margin.offset_top = top_hud.offset_top + top_hud_height + board_top_gap
-	board_margin.offset_bottom = -(bottom_height + board_bottom_gap + BOTTOM_HUD_BOTTOM_MARGIN)
-	board_content.alignment = BoxContainer.ALIGNMENT_BEGIN if very_small else BoxContainer.ALIGNMENT_CENTER
-	board_content.add_theme_constant_override("separation", board_core_gap)
-	board_spacer.size_flags_vertical = 0
-	board_spacer.custom_minimum_size = Vector2(0, board_core_gap)
-	opponent_board.size_flags_vertical = 0
-	player_board.size_flags_vertical = 0
 	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
 	bottom_panel.custom_minimum_size = Vector2(0, bottom_height)
+
 	top_bar.alignment = FlowContainer.ALIGNMENT_CENTER
 	top_bar.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 12))
 	top_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
@@ -165,6 +162,10 @@ func _update_responsive_layout() -> void:
 	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	log_panel.size_flags_vertical = 0
 	log_panel.custom_minimum_size = Vector2(0, 24 if very_small else (42 if compact else 72))
+
+	# Update board views with absolute positioning
+	opponent_board.update_layout(letterbox_offset, bg_scale_factor)
+	player_board.update_layout(letterbox_offset, bg_scale_factor)
 
 	opponent_board.set_compact_mode(compact, very_small)
 	player_board.set_compact_mode(compact, very_small)
@@ -590,30 +591,20 @@ func _run_layout_probe_if_requested() -> void:
 func _finish_layout_probe() -> void:
 	var label := "%dx%d" % [int(get_viewport_rect().size.x), int(get_viewport_rect().size.y)]
 	var player_board_rect := player_board.get_global_rect()
-	var board_margin_rect := board_margin.get_global_rect()
 	var hand_rect := hand_view.get_global_rect()
-	var visible_board_bottom := minf(
-		player_board_rect.position.y + player_board_rect.size.y,
-		board_margin_rect.position.y + board_margin_rect.size.y
-	)
-	var content_row: Control = player_board.get_child(2)
 	var error := ""
-	if content_row.get_child_count() != 3:
-		error = "玩家战场未保持三列布局"
-	else:
-		for child in content_row.get_children():
-			var column := child as Control
-			if column != null and column.size.x <= 0.0:
-				error = "三列布局存在宽度为 0 的区域"
-				break
-	if error == "" and visible_board_bottom > hand_rect.position.y + 1.0:
-		error = "玩家战场与手牌缩略图区域发生重叠 (visible_board_bottom=%.1f, raw_board_bottom=%.1f, hand_top=%.1f)" % [
-			visible_board_bottom,
+
+	# Check board layer has expected zone wrappers
+	if player_board.get_child_count() < 6:
+		error = "玩家战场缺失区域容器 (expected >= 6 zones, got %d)" % player_board.get_child_count()
+	elif player_board_rect.position.y + player_board_rect.size.y > hand_rect.position.y + 1.0:
+		error = "玩家战场与手牌缩略图区域发生重叠 (board_bottom=%.1f, hand_top=%.1f)" % [
 			player_board_rect.position.y + player_board_rect.size.y,
 			hand_rect.position.y,
 		]
-	if error == "" and hand_view.get_child_count() != 1:
+	elif hand_view.get_child_count() != 1:
 		error = "手牌容器仍存在额外标题或附加区块"
+
 	if error == "":
 		var hand_scroll := hand_view.get_child(0) as ScrollContainer
 		if hand_scroll == null or hand_scroll.get_child_count() == 0:
@@ -630,6 +621,7 @@ func _finish_layout_probe() -> void:
 					var expected_width: float = round((first_card.size.y - 8.0) * 5.0 / 7.0) + 8.0
 					if abs(first_card.size.x - expected_width) > 3.0:
 						error = "手牌卡宽度未保持纯缩略图比例"
+
 	if error == "":
 		print("[PASS] UI 布局 %s" % label)
 		get_tree().quit(0)

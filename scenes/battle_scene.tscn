@@ -47,36 +47,22 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="BoardMargin" type="MarginContainer" parent="BoardLayer"]
+[node name="OpponentBoard" type="Control" parent="BoardLayer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 72.0
-offset_right = -24.0
-offset_bottom = -196.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="BoardContent" type="VBoxContainer" parent="BoardLayer/BoardMargin"]
-layout_mode = 2
-theme_override_constants/separation = 24
-size_flags_vertical = 3
-
-[node name="OpponentBoard" type="VBoxContainer" parent="BoardLayer/BoardMargin/BoardContent"]
-layout_mode = 2
-size_flags_horizontal = 3
 script = ExtResource("3_board")
 
-[node name="BoardSpacer" type="Control" parent="BoardLayer/BoardMargin/BoardContent"]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="PlayerBoard" type="VBoxContainer" parent="BoardLayer/BoardMargin/BoardContent"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="PlayerBoard" type="Control" parent="BoardLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("3_board")
 
 [node name="CardLayer" type="Control" parent="."]
