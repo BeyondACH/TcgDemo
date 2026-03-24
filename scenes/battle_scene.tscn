@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c7h4nlf3i3gx0"]
+[gd_scene load_steps=8 format=3 uid="uid://c7h4nlf3i3gx0"]
 
 [ext_resource type="Script" path="res://ui/battle_scene.gd" id="1_battle"]
 [ext_resource type="Script" path="res://core/game_manager.gd" id="2_game"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://ui/hand_view.gd" id="4_hand"]
 [ext_resource type="Script" path="res://ui/log_panel.gd" id="5_log"]
 [ext_resource type="Script" path="res://ui/phase_indicator.gd" id="6_phase"]
+[ext_resource type="Script" path="res://ui/card_preview_panel.gd" id="7_preview"]
 
 [node name="BattleScene" type="Control"]
 layout_mode = 3
@@ -252,10 +253,16 @@ text = "Skip Life"
 layout_mode = 2
 text = "Cancel"
 
-[node name="HandView" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
+[node name="HandView" type="Control" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("4_hand")
+
+[node name="CardPreviewPanel" type="PanelContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+script = ExtResource("7_preview")
 
 [node name="PendingDecisionPanel" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 visible = false

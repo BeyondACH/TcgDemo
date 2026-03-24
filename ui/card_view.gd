@@ -2,6 +2,7 @@ extends Button
 class_name CardView
 
 signal card_pressed(owner_player_id: String, card_uid: String, zone_name: String)
+signal card_hovered(card_uid: String, is_hovered: bool)
 
 const DEFAULT_CARD_SIZE := Vector2(120, 168)
 const DISPLAY_MODE_BOARD := "board"
@@ -10,6 +11,8 @@ const HAND_PADDING := 4
 const HAND_IMAGE_ASPECT_RATIO := 5.0 / 7.0
 const BOARD_PADDING := 4
 const BOARD_INFO_HEIGHT_RATIO := 0.28
+const PLAYABLE_BORDER_COLOR := Color(0.2, 0.8, 0.3, 0.9)
+const PLAYABLE_BORDER_WIDTH := 3.0
 
 var owner_player_id := ""
 var card_uid := ""
@@ -18,6 +21,8 @@ var _display_text := ""
 var _card_size := DEFAULT_CARD_SIZE
 var _display_mode := DISPLAY_MODE_BOARD
 var _card_data: Dictionary = {}
+var _is_hovered := false
+var _is_playable := false
 
 var _content_root: Control
 var _fallback_label: Label
@@ -352,6 +357,26 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_on_pressed()
 		accept_event()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_MOUSE_ENTER:
+		if zone_name == "hand" and not _is_hovered:
+			_is_hovered = true
+			emit_signal("card_hovered", card_uid, true)
+	elif what == NOTIFICATION_MOUSE_EXIT:
+		if _is_hovered:
+			_is_hovered = false
+			emit_signal("card_hovered", card_uid, false)
+
+func set_playable(playable: bool) -> void:
+	_is_playable = playable
+	queue_redraw()
+
+func _draw() -> void:
+	if _is_playable and zone_name == "hand":
+		# 绘制可打出状态边框
+		var rect := Rect2(Vector2.ZERO, size)
+		draw_rect(rect, PLAYABLE_BORDER_COLOR, false, PLAYABLE_BORDER_WIDTH)
 
 func _on_pressed() -> void:
 	emit_signal("card_pressed", owner_player_id, card_uid, zone_name)

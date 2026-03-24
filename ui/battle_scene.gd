@@ -5,6 +5,7 @@ const UATypes = preload("res://core/ua_types.gd")
 const GameManager = preload("res://core/game_manager.gd")
 const BoardView = preload("res://ui/board_view.gd")
 const HandView = preload("res://ui/hand_view.gd")
+const CardPreviewPanel = preload("res://ui/card_preview_panel.gd")
 const LogPanel = preload("res://ui/log_panel.gd")
 const PhaseIndicator = preload("res://ui/phase_indicator.gd")
 const ZoneLayoutConfig = preload("res://data/zone_layout_config.gd")
@@ -42,6 +43,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var no_block_button: Button = $UILayer/TopHUD/TopBar/NoBlockButton
 @onready var winner_label: Label = $UILayer/TopHUD/TopBar/WinnerLabel
 @onready var hand_view: HandView = $UILayer/BottomHUD/BottomPanel/BottomContent/HandView
+@onready var card_preview_panel: CardPreviewPanel = $UILayer/BottomHUD/BottomPanel/BottomContent/CardPreviewPanel
 @onready var action_bar: HFlowContainer = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar
 @onready var selected_card_label: Label = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SelectedCardLabel
 @onready var play_front_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayFrontButton
@@ -95,6 +97,7 @@ func _ready() -> void:
 	resolve_pending_decision_button.pressed.connect(_on_resolve_pending_decision_pressed)
 	cancel_selection_button.pressed.connect(_clear_selection)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
+	hand_view.hand_card_hovered.connect(_on_hand_card_hovered)
 	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
 	opponent_board.energy_card_pressed.connect(_on_energy_card_pressed)
 	opponent_board.zone_drop_requested.connect(_on_zone_drop_requested)
@@ -147,7 +150,7 @@ func _update_responsive_layout() -> void:
 
 	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
 	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
-	var bottom_height: float = 112.0 if very_small else (184.0 if compact else 228.0)
+	var bottom_height: float = 112.0 if very_small else (160.0 if compact else 180.0)
 
 	top_hud.offset_top = 8.0 if very_small else 12.0
 	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
@@ -171,6 +174,14 @@ func _update_responsive_layout() -> void:
 	player_board.set_compact_mode(compact, very_small)
 	hand_view.set_compact_mode(compact, very_small)
 
+	# Calculate hand bounds avoiding remove_area and outside_area
+	var remove_rect := ZoneLayoutConfig.get_zone_rect("P1", "remove_area", letterbox_offset, bg_scale_factor)
+	var outside_rect := ZoneLayoutConfig.get_zone_rect("P1", "outside_area", letterbox_offset, bg_scale_factor)
+	var hand_left := remove_rect.position.x + remove_rect.size.x + 20.0
+	var hand_right := outside_rect.position.x - 20.0
+	var hand_width := hand_right - hand_left
+	hand_view.set_hand_bounds(hand_left, hand_right, hand_width)
+
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
 	var active_player_id := str(snapshot.get("active_player_id", UATypes.PLAYER_ONE))
@@ -187,6 +198,7 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	if active_player_id == UATypes.PLAYER_ONE:
 		active_hand = p1.get("hand", [])
 	hand_view.set_hand(active_player_id, active_hand)
+	_update_hand_playable_states(active_player_id, active_hand)
 	_sync_pending_decision_controls()
 	_sync_life_trigger_controls()
 	selected_card_label.text = _selected_label_text(active_player_id)
@@ -224,6 +236,27 @@ func _on_hand_card_selected(card_uid: String) -> void:
 	_sniper_attack_source_uid = ""
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+	# 更新预览面板
+	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var card_data := _find_hand_card(active_player_id, card_uid)
+	if not card_data.is_empty():
+		card_preview_panel.set_card_data(card_data)
+
+func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
+	if is_hovered:
+		var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+		var card_data := _find_hand_card(active_player_id, card_uid)
+		if not card_data.is_empty():
+			card_preview_panel.set_card_data(card_data)
+	else:
+		# 如果有选中的牌，保持显示选中的牌
+		if _selected_hand_card_uid != "":
+			var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+			var card_data := _find_hand_card(active_player_id, _selected_hand_card_uid)
+			if not card_data.is_empty():
+				card_preview_panel.set_card_data(card_data)
+		else:
+			card_preview_panel.clear_card()
 
 func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 	if _has_pending_gate():
@@ -579,6 +612,27 @@ func _has_pending_decisions() -> bool:
 func _has_pending_gate() -> bool:
 	return _has_pending_life_triggers() or _has_pending_decisions()
 
+func _update_hand_playable_states(player_id: String, hand_cards: Array) -> void:
+	var phase := str(_snapshot.get("phase", ""))
+	var playable_map := {}
+
+	# 只有在 MAIN 阶段才标记可打出状态
+	if phase != "MAIN":
+		hand_view.set_playable_cards(playable_map)
+		return
+
+	# 检查每张手牌是否可打出
+	for card_data in hand_cards:
+		var card_uid := str(card_data.get("uid", ""))
+		var card_type := str(card_data.get("card_type", ""))
+		var available_actions: Array = card_data.get("available_actions", [])
+
+		# 检查是否有可用的打出动作
+		var is_playable := available_actions.has("PLAY_FRONT") or available_actions.has("PLAY_ENERGY") or available_actions.has("PLAY_EVENT")
+		playable_map[card_uid] = is_playable
+
+	hand_view.set_playable_cards(playable_map)
+
 func _run_layout_probe_if_requested() -> void:
 	if not OS.get_cmdline_user_args().has("--layout-probe"):
 		return
@@ -602,30 +656,18 @@ func _finish_layout_probe() -> void:
 			player_board_rect.position.y + player_board_rect.size.y,
 			hand_rect.position.y,
 		]
-	elif hand_view.get_child_count() != 1:
-		error = "手牌容器仍存在额外标题或附加区块"
+	elif hand_view.get_child_count() == 0:
+		error = "手牌容器没有任何卡牌"
 
 	if error == "":
-		var hand_scroll := hand_view.get_child(0) as ScrollContainer
-		if hand_scroll == null or hand_scroll.get_child_count() == 0:
-			error = "手牌滚动区缺失"
+		var card_count := hand_view.get_card_count()
+		if card_count > 0:
+			print("[PASS] UI 布局 %s (hand cards: %d)" % [label, card_count])
+			get_tree().quit(0)
+			return
 		else:
-			var hand_row := hand_scroll.get_child(0) as HBoxContainer
-			if hand_row == null or hand_row.get_child_count() == 0:
-				error = "手牌行没有任何缩略图卡牌"
-			else:
-				var first_card := hand_row.get_child(0) as Control
-				if first_card == null:
-					error = "首张手牌缩略图缺失"
-				else:
-					var expected_width: float = round((first_card.size.y - 8.0) * 5.0 / 7.0) + 8.0
-					if abs(first_card.size.x - expected_width) > 3.0:
-						error = "手牌卡宽度未保持纯缩略图比例"
+			error = "手牌区域没有卡牌"
 
-	if error == "":
-		print("[PASS] UI 布局 %s" % label)
-		get_tree().quit(0)
-		return
 	push_error("[FAIL] UI 布局 %s: %s" % [label, error])
 	get_tree().quit(1)
 

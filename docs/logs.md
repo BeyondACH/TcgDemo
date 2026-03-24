@@ -1,4 +1,10 @@
 
+- 日期：2026-03-24
+- 类型：功能重构
+- 摘要：重构手牌区域布局，实现"底部固定、默认半收起、悬停上浮、独立预览"方案。新建 CardPreviewPanel 卡牌详情预览面板，重构 HandView 为自定义布局支持动态重叠与 hover 效果，增强 CardView 添加可打出状态视觉提示。
+- 影响文件：`ui/card_preview_panel.gd`（新建）、`ui/hand_view.gd`（重构）、`ui/card_view.gd`（增强）、`ui/battle_scene.gd`（集成）、`scenes/battle_scene.tscn`（节点调整）
+- 验证方式与结果：运行 `res://docs/milestone_smoke_test.gd`，23 项测试全部通过。手牌区域高度降至 160-180px，避让 remove_area 与 outside_area，实现悬停上浮动画与可打出绿色描边提示。
+
 - 日期：2026-03-23
 - 类型：功能更新
 - 摘要：将 P2 卡组入口也切换为 `data/decks/starter_b.txt`，使双方都统一通过 txt 数量+编号格式构建卡组，并共同复用 `cards_raw.json` 的原始卡牌定义解析链路。

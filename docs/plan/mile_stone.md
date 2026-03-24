@@ -1,6 +1,6 @@
 # 当前项目里程碑盘点
 
-更新时间：2026-03-23
+更新时间：2026-03-24
 
 ## 1. 盘点依据
 
@@ -157,7 +157,7 @@
 
 ## 里程碑 M6：UI、交互与快照消费
 
-状态：部分实现
+状态：大部分已实现
 
 已确认能力：
 
@@ -167,6 +167,12 @@
 - UI 已接入生命触发选择器与待决策面板，可消费 `pending_life_triggers` 和 `pending_decisions`。
 - 底部手牌区已改为纯缩略图展示，移除了手牌标题与手牌卡右侧文字框，拖拽预览也已同步改为图片卡面。
 - UI 已具备一定的响应式布局调整逻辑，紧凑模式下会收缩侧列牌堆与手牌缩略图尺寸。
+- 手牌区域已重构为”底部固定、默认半收起、悬停上浮、独立预览”方案：
+  - 默认半收起显示 60% 高度，减少对战场遮挡。
+  - 悬停时卡片上浮 30px 并放大 12%，支持动态重叠计算（30%-70%）。
+  - 新增独立 `CardPreviewPanel` 预览面板，显示选中/悬停卡牌的详细信息。
+  - 可打出的手牌在 MAIN 阶段显示绿色描边视觉提示。
+  - 手牌区域正确避让 `remove_area` 与 `outside_area`，高度降至 160-180px。
 
 对应实现位置：
 
@@ -174,12 +180,13 @@
 - `ui/board_view.gd`
 - `ui/hand_view.gd`
 - `ui/card_view.gd`
+- `ui/card_preview_panel.gd`
 - `ui/log_panel.gd`
 - `scenes/battle_scene.tscn`
 
 备注：
 
-- 仓库历史记录表明曾多次调整“手牌区域不得遮挡战场区域”；当前已补一轮 GUI 布局专项验收，覆盖 1920x1080、1600x900、1366x768、1280x720 四组常见窗口尺寸，并确认三列战场与底部手牌纯缩略图未发生遮挡。
+- 仓库历史记录表明曾多次调整”手牌区域不得遮挡战场区域”；当前已补一轮 GUI 布局专项验收，覆盖 1920x1080、1600x900、1366x768、1280x720 四组常见窗口尺寸，并确认三列战场与底部手牌纯缩略图未发生遮挡。
 
 ## 4. 当前已知差距与风险
 
@@ -198,13 +205,17 @@
   - 结果：通过。
 - 已执行 `docs/cards_raw_minimal_duel_smoke_test.gd`
   - 结果：10 项通过，0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。
-  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`ON_LEAVE`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 五类效果入口，并补齐 `DRAW_2`、手牌中自减 AP、离场回手、多步骤复杂费用结算，以及“看牌堆顶后检索/回底”“不同卡名去重选择”两组正式 raw 样例。
+  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`ON_LEAVE`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 五类效果入口，并补齐 `DRAW_2`、手牌中自减 AP、离场回手、多步骤复杂费用结算，以及”看牌堆顶后检索/回底””不同卡名去重选择”两组正式 raw 样例。
 - 已尝试执行 `docs/draw_phase_smoke_test.gd`
   - 结果：Godot headless 进程崩溃，未获得可用业务验证结论。
 - 已执行 Godot headless 启动检查：`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit`
   - 结果：成功启动并正常退出，未新增战场布局与手牌纯缩略图相关脚本解析错误。
 - 已执行 `battle_scene --layout-probe` GUI 布局专项验收
   - 结果：在 1920x1080、1600x900、1366x768、1280x720 四组常见窗口尺寸下通过；三列战场区域宽度有效，玩家战场可视底边未压入手牌缩略图区，手牌容器保持纯缩略图结构。
+- 2026-03-24 手牌区域重构验证
+  - 结果：`docs/milestone_smoke_test.gd` 23 项全部通过。
+  - 手牌区域高度降至 160-180px（之前 184-228px），成功避让 `remove_area` 与 `outside_area`。
+  - 实现悬停上浮动画、可打出状态绿色描边、独立预览面板。
 
 ## 6. 建议的下一步里程碑动作
 
