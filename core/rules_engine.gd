@@ -244,7 +244,7 @@ func _validate_special_play_rule(state: GameState, player_id: String, card: Card
 		return {"ok": true, "mode": "NORMAL"}
 	if str(card_def.special_play_rule.get("type", "")) != "RAID":
 		return {"ok": true, "mode": "NORMAL"}
-	if bool(card_def.special_play_rule.get("life_trigger_only", false)) and not bool(options.get("allow_raid_play", false)):
+	if card.zone == UATypes.Zone.HAND and not bool(card_def.special_play_rule.get("allow_from_hand", false)) and not bool(options.get("allow_raid_play", false)):
 		return {"ok": true, "mode": "NORMAL"}
 	var raid_target_uid := str(options.get("raid_target_uid", ""))
 	if raid_target_uid == "":

@@ -137,44 +137,57 @@ offset_top = 12.0
 offset_right = -12.0
 grow_horizontal = 2
 
-[node name="TopBar" type="HFlowContainer" parent="UILayer/TopHUD"]
+[node name="TopBar" type="HBoxContainer" parent="UILayer/TopHUD"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="StatusRow" type="HFlowContainer" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 6
 
-[node name="TurnLabel" type="Label" parent="UILayer/TopHUD/TopBar"]
+[node name="TurnLabel" type="Label" parent="UILayer/TopHUD/TopBar/StatusRow"]
 layout_mode = 2
 text = "Turn 1"
 
-[node name="ActivePlayerLabel" type="Label" parent="UILayer/TopHUD/TopBar"]
+[node name="ActivePlayerLabel" type="Label" parent="UILayer/TopHUD/TopBar/StatusRow"]
 layout_mode = 2
 text = "Active: P1"
 
-[node name="PhaseIndicator" type="Label" parent="UILayer/TopHUD/TopBar"]
+[node name="PhaseIndicator" type="Label" parent="UILayer/TopHUD/TopBar/StatusRow"]
 layout_mode = 2
 script = ExtResource("6_phase")
 text = "Phase: START"
 
-[node name="NextPhaseButton" type="Button" parent="UILayer/TopHUD/TopBar"]
-layout_mode = 2
-text = "Next Phase"
-
-[node name="BonusDrawButton" type="Button" parent="UILayer/TopHUD/TopBar"]
-layout_mode = 2
-text = "Bonus Draw (1 AP)"
-
-[node name="NoBlockButton" type="Button" parent="UILayer/TopHUD/TopBar"]
-layout_mode = 2
-text = "No Block"
-
-[node name="WinnerLabel" type="Label" parent="UILayer/TopHUD/TopBar"]
+[node name="WinnerLabel" type="Label" parent="UILayer/TopHUD/TopBar/StatusRow"]
 layout_mode = 2
 text = "Winner: -"
 
-[node name="LogToggleButton" type="Button" parent="UILayer/TopHUD/TopBar"]
+[node name="Spacer" type="Control" parent="UILayer/TopHUD/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ActionRow" type="HBoxContainer" parent="UILayer/TopHUD/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BonusDrawButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow"]
+layout_mode = 2
+text = "Bonus Draw (1 AP)"
+
+[node name="NoBlockButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow"]
+layout_mode = 2
+text = "No Block"
+
+[node name="LogToggleButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow"]
 layout_mode = 2
 text = "Log"
+
+[node name="NextPhaseButton" type="Button" parent="UILayer/TopHUD/TopBar"]
+layout_mode = 2
+text = "Next Phase"
 
 [node name="BottomHUD" type="MarginContainer" parent="UILayer"]
 layout_mode = 1
@@ -292,7 +305,7 @@ size_flags_horizontal = 3
 
 [node name="ResolvePendingDecisionButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel"]
 layout_mode = 2
-text = "Resolve Pending Decision"
+text = "Confirm"
 
 [node name="LogPanel" type="PanelContainer" parent="UILayer"]
 visible = false
@@ -309,4 +322,3 @@ grow_horizontal = 0
 grow_vertical = 2
 custom_minimum_size = Vector2(340, 200)
 script = ExtResource("5_log")
-

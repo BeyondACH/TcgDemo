@@ -34,14 +34,16 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var top_hud: MarginContainer = $UILayer/TopHUD
 @onready var bottom_hud: MarginContainer = $UILayer/BottomHUD
 @onready var bottom_panel: PanelContainer = $UILayer/BottomHUD/BottomPanel
-@onready var top_bar: HFlowContainer = $UILayer/TopHUD/TopBar
-@onready var turn_label: Label = $UILayer/TopHUD/TopBar/TurnLabel
-@onready var active_player_label: Label = $UILayer/TopHUD/TopBar/ActivePlayerLabel
-@onready var phase_indicator: PhaseIndicator = $UILayer/TopHUD/TopBar/PhaseIndicator
+@onready var top_bar: HBoxContainer = $UILayer/TopHUD/TopBar
+@onready var status_row: HFlowContainer = $UILayer/TopHUD/TopBar/StatusRow
+@onready var action_row: HBoxContainer = $UILayer/TopHUD/TopBar/ActionRow
+@onready var turn_label: Label = $UILayer/TopHUD/TopBar/StatusRow/TurnLabel
+@onready var active_player_label: Label = $UILayer/TopHUD/TopBar/StatusRow/ActivePlayerLabel
+@onready var phase_indicator: PhaseIndicator = $UILayer/TopHUD/TopBar/StatusRow/PhaseIndicator
 @onready var next_phase_button: Button = $UILayer/TopHUD/TopBar/NextPhaseButton
-@onready var bonus_draw_button: Button = $UILayer/TopHUD/TopBar/BonusDrawButton
-@onready var no_block_button: Button = $UILayer/TopHUD/TopBar/NoBlockButton
-@onready var winner_label: Label = $UILayer/TopHUD/TopBar/WinnerLabel
+@onready var bonus_draw_button: Button = $UILayer/TopHUD/TopBar/ActionRow/BonusDrawButton
+@onready var no_block_button: Button = $UILayer/TopHUD/TopBar/ActionRow/NoBlockButton
+@onready var winner_label: Label = $UILayer/TopHUD/TopBar/StatusRow/WinnerLabel
 @onready var hand_view: HandView = $UILayer/BottomHUD/BottomPanel/BottomContent/HandView
 @onready var card_preview_panel: CardPreviewPanel = $UILayer/BottomHUD/BottomPanel/BottomContent/CardPreviewPanel
 @onready var action_bar: HFlowContainer = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar
@@ -64,7 +66,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var pending_decision_choice_picker: OptionButton = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/PendingDecisionChoicePicker
 @onready var resolve_pending_decision_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/ResolvePendingDecisionButton
 @onready var log_panel: LogPanel = $UILayer/LogPanel
-@onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/LogToggleButton
+@onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/ActionRow/LogToggleButton
 
 var _snapshot: Dictionary = {}
 var _selected_hand_card_uid := ""
@@ -163,9 +165,10 @@ func _update_responsive_layout() -> void:
 	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
 	bottom_panel.custom_minimum_size = Vector2(0, bottom_height)
 
-	top_bar.alignment = FlowContainer.ALIGNMENT_CENTER
-	top_bar.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 12))
-	top_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
+	top_bar.add_theme_constant_override("separation", 8 if compact else 12)
+	status_row.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 12))
+	status_row.add_theme_constant_override("v_separation", 4 if very_small else 6)
+	action_row.add_theme_constant_override("separation", 6 if very_small else (8 if compact else 12))
 	action_bar.add_theme_constant_override("h_separation", 4 if very_small else (8 if compact else 10))
 	action_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	selected_card_label.custom_minimum_size = Vector2(120 if very_small else (180 if compact else 220), 0)
@@ -700,13 +703,35 @@ func _run_layout_probe_if_requested() -> void:
 
 func _finish_layout_probe() -> void:
 	var label := "%dx%d" % [int(get_viewport_rect().size.x), int(get_viewport_rect().size.y)]
-	var player_board_rect := player_board.get_global_rect()
 	var hand_rect := hand_view.get_global_rect()
 	var error := ""
+	var wrapper_names := [
+		"LifeWrapper",
+		"RemovedWrapper",
+		"DeckWrapper",
+		"OutsideWrapper",
+		"FrontWrapper",
+		"EnergyWrapper",
+	]
+	var has_player_board_rect := false
+	var player_board_rect := Rect2()
+
+	for wrapper_name in wrapper_names:
+		var wrapper := player_board.get_node_or_null(wrapper_name) as Control
+		if wrapper == null:
+			continue
+		var rect := wrapper.get_global_rect()
+		if not has_player_board_rect:
+			player_board_rect = rect
+			has_player_board_rect = true
+		else:
+			player_board_rect = player_board_rect.merge(rect)
 
 	# Check board layer has expected zone wrappers
 	if player_board.get_child_count() < 6:
 		error = "玩家战场缺失区域容器 (expected >= 6 zones, got %d)" % player_board.get_child_count()
+	elif player_board_rect.size == Vector2.ZERO:
+		error = "鐜╁鎴樺満鍐呭鍖哄煙涓虹┖"
 	elif player_board_rect.position.y + player_board_rect.size.y > hand_rect.position.y + 1.0:
 		error = "玩家战场与手牌缩略图区域发生重叠 (board_bottom=%.1f, hand_top=%.1f)" % [
 			player_board_rect.position.y + player_board_rect.size.y,
@@ -726,6 +751,31 @@ func _finish_layout_probe() -> void:
 
 	push_error("[FAIL] UI 布局 %s: %s" % [label, error])
 	get_tree().quit(1)
+
+func _get_player_board_content_rect() -> Rect2:
+	var wrapper_names := [
+		"LifeWrapper",
+		"RemovedWrapper",
+		"DeckWrapper",
+		"OutsideWrapper",
+		"FrontWrapper",
+		"EnergyWrapper",
+	]
+	var has_rect := false
+	var combined_rect := Rect2()
+
+	for wrapper_name in wrapper_names:
+		var wrapper := player_board.get_node_or_null(wrapper_name) as Control
+		if wrapper == null:
+			continue
+		var rect := wrapper.get_global_rect()
+		if not has_rect:
+			combined_rect = rect
+			has_rect = true
+		else:
+			combined_rect = combined_rect.merge(rect)
+
+	return combined_rect if has_rect else Rect2()
 
 func game_state_has_opening_probe_pending() -> bool:
 	return game_manager.game_state.pending_decisions.size() >= 1 and str((game_manager.game_state.pending_decisions[0] as Dictionary).get("type", "")) == "MULLIGAN_CHOICE"

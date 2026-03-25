@@ -886,7 +886,14 @@ func _can_play_raid_from_hand(card: CardInstance, card_def: CardDef) -> bool:
 		return false
 	if str(card_def.special_play_rule.get("type", "")) != "RAID":
 		return false
-	if bool(card_def.special_play_rule.get("life_trigger_only", false)):
+	if not bool(card_def.special_play_rule.get("allow_from_hand", false)):
+		return false
+	var player: PlayerState = game_state.get_player(card.controller_player_id)
+	if player == null:
+		return false
+	if not _can_pay_ap_for_card(player, card_def):
+		return false
+	if not _has_required_energy_for_card(card_def):
 		return false
 	return _has_valid_raid_target(card, card_def)
 

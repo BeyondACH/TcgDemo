@@ -25,7 +25,7 @@ func _init() -> void:
 	_run_test("非 MAIN 阶段手牌无打出动作", _test_no_play_actions_outside_main)
 	_run_test("RAID 卡有有效目标时显示 RAID", _test_raid_available_with_valid_target)
 	_run_test("RAID 卡无有效目标时不显示 RAID", _test_raid_unavailable_no_valid_target)
-	_run_test("RAID 卡 life_trigger_only 不从手牌显示", _test_raid_life_trigger_only_not_from_hand)
+	_run_test("RAID 卡 life_trigger_only 仍可从手牌显示", _test_raid_life_trigger_only_still_available_from_hand)
 	_run_test("对手卡牌无 available_actions", _test_opponent_card_no_actions)
 	_run_test("能量不足时打出动作不可用", _test_play_unavailable_no_energy)
 	_print_summary()
@@ -547,8 +547,8 @@ func _test_raid_unavailable_no_valid_target() -> Dictionary:
 
 	return _ok()
 
-## 测试：RAID 卡 life_trigger_only=true 不从手牌显示 RAID
-func _test_raid_life_trigger_only_not_from_hand() -> Dictionary:
+## 测试：RAID 卡 life_trigger_only=true 且 allow_from_hand=true 时仍显示 RAID
+func _test_raid_life_trigger_only_still_available_from_hand() -> Dictionary:
 	var manager := _new_manager()
 	_advance_to_main(manager, UATypes.PLAYER_ONE)
 	var p1 := _player(manager, UATypes.PLAYER_ONE)
@@ -598,8 +598,8 @@ func _test_raid_life_trigger_only_not_from_hand() -> Dictionary:
 		return _fail("RAID生命触发测试卡牌创建失败")
 
 	var actions := _get_hand_card_actions(manager, UATypes.PLAYER_ONE, raid_uid)
-	if actions.has("RAID"):
-		return _fail("life_trigger_only=true 的 RAID 卡不应从手牌显示 RAID 动作，实际动作: %s" % str(actions))
+	if not actions.has("RAID"):
+		return _fail("life_trigger_only=true 且 allow_from_hand=true 的 RAID 卡应继续从手牌显示 RAID 动作，实际动作: %s" % str(actions))
 
 	return _ok()
 

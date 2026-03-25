@@ -263,3 +263,13 @@
 - 影响文件或模块：`tools/compile_cards_effects.py`、`core/effect_resolver.gd`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
 - 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 59 个已支持能力、14 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 10 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；此前同步执行的 `docs/milestone_smoke_test.gd` 为 23 项通过、0 项失败。Godot 退出时仍有既有资源泄漏告警，但未影响断言通过。
 
+- 日期：2026-03-25
+- 类型：bugfix
+- 摘要：调整 `battle_scene` 顶部 HUD 布局，将状态信息与操作按钮拆分为左右分区，并将 `Next Phase` 按钮固定在顶部右侧；同时修正 `layout-probe` 对玩家战场区域的判定口径，避免将全屏根节点误判为与手牌区重叠。
+- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：完成场景节点重组与脚本节点路径同步，静态检查确认 `StatusRow`、`ActionRow`、`NextPhaseButton` 等节点路径与容器类型全部对齐；首次沙箱外执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 时，发现探针把 `PlayerBoard` 全屏根节点误判为战场内容区，导致报告“玩家战场与手牌缩略图区域发生重叠”；修正探针后再次以同一命令执行，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认当前布局下手牌区未遮挡玩家战场。运行过程中仍出现既有的 Godot anchors 警告，但未阻塞本次布局验收通过。
+- 日期：2026-03-25
+- 类型：bugfix
+- 摘要：修复主阶段手牌 RAID 卡在满足 AP、能量与目标条件时未显示 RAID 按钮的问题；不再把 `life_trigger_only` 误当作“禁止手牌 RAID”的限制，同时补齐手牌 RAID 动作对 `allow_from_hand`、AP 与能量的校验。
+- 影响文件或模块：`core/game_manager.gd`、`core/rules_engine.gd`、`docs/hand_available_actions_smoke_test.gd`
+- 验证方式与结果：在沙箱内执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/hand_available_actions_smoke_test.gd` 时 Godot 崩溃；随后在沙箱外执行同一命令，`docs/hand_available_actions_smoke_test.gd` 14 项全部通过，确认 `life_trigger_only + allow_from_hand=true` 的 RAID 卡会在手牌正常显示 RAID 动作。Godot 退出时仍有既有 `ObjectDB`/resource 泄漏告警，但未影响断言通过。
