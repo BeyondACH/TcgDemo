@@ -387,8 +387,7 @@ func _calc_life_card_size(zone_rect: Rect2) -> Vector2:
 func _format_energy_map(energy_map: Dictionary) -> String:
 	if energy_map.is_empty():
 		return "0"
-	var parts: Array[String] = []
+	var total := 0
 	for color in energy_map.keys():
-		parts.append("%s:%s" % [str(color), str(energy_map.get(color, 0))])
-	parts.sort()
-	return ", ".join(parts)
+		total += int(energy_map.get(color, 0))
+	return str(total)
