@@ -268,6 +268,18 @@
 - 摘要：调整 `battle_scene` 顶部 HUD 布局，将状态信息与操作按钮拆分为左右分区，并将 `Next Phase` 按钮固定在顶部右侧；同时修正 `layout-probe` 对玩家战场区域的判定口径，避免将全屏根节点误判为与手牌区重叠。
 - 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
 - 验证方式与结果：完成场景节点重组与脚本节点路径同步，静态检查确认 `StatusRow`、`ActionRow`、`NextPhaseButton` 等节点路径与容器类型全部对齐；首次沙箱外执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 时，发现探针把 `PlayerBoard` 全屏根节点误判为战场内容区，导致报告“玩家战场与手牌缩略图区域发生重叠”；修正探针后再次以同一命令执行，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认当前布局下手牌区未遮挡玩家战场。运行过程中仍出现既有的 Godot anchors 警告，但未阻塞本次布局验收通过。
+
+- 日期：2026-03-25
+- 类型：功能更新
+- 摘要：将当前行动玩家的个人信息面板统一移动到顶部右侧，与 `Next Phase` 操作区对齐展示，新增回合阶段、手牌数、当前能量与 AP 摘要，并保持这些字段随快照实时更新。
+- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：完成顶部右侧 `PlayerInfoPanel` 场景节点接入与脚本绑定，确认阶段、手牌数、能量总数、`AP active/total` 均取自当前行动玩家快照；在沙箱外执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认个人信息面板上移后仍未遮挡战场与手牌区域。运行过程中仍有既有 Godot anchors 警告，但未影响本次布局验收通过。
+
+- 日期：2026-03-25
+- 类型：功能更新
+- 摘要：将顶部右侧区域进一步调整为双行布局，第一行保留操作按钮，第二行单独展示当前行动玩家的个人信息面板，使阶段、手牌数、能量与 AP 信息更集中且不与按钮混排。
+- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：完成 `ActionRow` 由横向容器调整为纵向容器，并新增 `ActionButtonRow` 承载按钮行；同时保留第二行 `PlayerInfoPanel` 的快照同步逻辑不变。在沙箱外执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认双行布局下战场与手牌区域仍未发生遮挡。运行过程中仍有既有 Godot anchors 警告，但未影响本次布局验收通过。
 - 日期：2026-03-25
 - 类型：bugfix
 - 摘要：修复主阶段手牌 RAID 卡在满足 AP、能量与目标条件时未显示 RAID 按钮的问题；不再把 `life_trigger_only` 误当作“禁止手牌 RAID”的限制，同时补齐手牌 RAID 动作对 `allow_from_hand`、AP 与能量的校验。

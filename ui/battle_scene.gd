@@ -36,13 +36,18 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var bottom_panel: PanelContainer = $UILayer/BottomHUD/BottomPanel
 @onready var top_bar: HBoxContainer = $UILayer/TopHUD/TopBar
 @onready var status_row: HFlowContainer = $UILayer/TopHUD/TopBar/StatusRow
-@onready var action_row: HBoxContainer = $UILayer/TopHUD/TopBar/ActionRow
+@onready var action_row: VBoxContainer = $UILayer/TopHUD/TopBar/ActionRow
+@onready var action_button_row: HBoxContainer = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow
 @onready var turn_label: Label = $UILayer/TopHUD/TopBar/StatusRow/TurnLabel
 @onready var active_player_label: Label = $UILayer/TopHUD/TopBar/StatusRow/ActivePlayerLabel
-@onready var phase_indicator: PhaseIndicator = $UILayer/TopHUD/TopBar/StatusRow/PhaseIndicator
+@onready var player_info_row: HFlowContainer = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow
+@onready var phase_indicator: PhaseIndicator = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow/PhaseIndicator
+@onready var hand_count_label: Label = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow/HandCountLabel
+@onready var energy_label: Label = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow/EnergyLabel
+@onready var ap_label: Label = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow/ApLabel
 @onready var next_phase_button: Button = $UILayer/TopHUD/TopBar/NextPhaseButton
-@onready var bonus_draw_button: Button = $UILayer/TopHUD/TopBar/ActionRow/BonusDrawButton
-@onready var no_block_button: Button = $UILayer/TopHUD/TopBar/ActionRow/NoBlockButton
+@onready var bonus_draw_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/BonusDrawButton
+@onready var no_block_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/NoBlockButton
 @onready var winner_label: Label = $UILayer/TopHUD/TopBar/StatusRow/WinnerLabel
 @onready var hand_view: HandView = $UILayer/BottomHUD/BottomPanel/BottomContent/HandView
 @onready var card_preview_panel: CardPreviewPanel = $UILayer/BottomHUD/BottomPanel/BottomContent/CardPreviewPanel
@@ -66,7 +71,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var pending_decision_choice_picker: OptionButton = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/PendingDecisionChoicePicker
 @onready var resolve_pending_decision_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/ResolvePendingDecisionButton
 @onready var log_panel: LogPanel = $UILayer/LogPanel
-@onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/ActionRow/LogToggleButton
+@onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/LogToggleButton
 
 var _snapshot: Dictionary = {}
 var _selected_hand_card_uid := ""
@@ -168,7 +173,10 @@ func _update_responsive_layout() -> void:
 	top_bar.add_theme_constant_override("separation", 8 if compact else 12)
 	status_row.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 12))
 	status_row.add_theme_constant_override("v_separation", 4 if very_small else 6)
-	action_row.add_theme_constant_override("separation", 6 if very_small else (8 if compact else 12))
+	action_row.add_theme_constant_override("separation", 4 if very_small else (6 if compact else 8))
+	action_button_row.add_theme_constant_override("separation", 6 if very_small else (8 if compact else 12))
+	player_info_row.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 10))
+	player_info_row.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	action_bar.add_theme_constant_override("h_separation", 4 if very_small else (8 if compact else 10))
 	action_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	selected_card_label.custom_minimum_size = Vector2(120 if very_small else (180 if compact else 220), 0)
@@ -196,9 +204,13 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	var players: Dictionary = snapshot.get("players", {})
 	var p1: Dictionary = players.get(UATypes.PLAYER_ONE, {})
 	var p2: Dictionary = players.get(UATypes.PLAYER_TWO, {})
+	var active_player_data: Dictionary = p1 if active_player_id == UATypes.PLAYER_ONE else p2
 	turn_label.text = "Turn %d" % int(snapshot.get("turn_number", 1))
 	active_player_label.text = "Active: %s" % active_player_id
 	phase_indicator.set_phase_text(str(snapshot.get("phase", "START")))
+	hand_count_label.text = "Hand: %d" % int(active_player_data.get("hand_count", 0))
+	energy_label.text = "Energy: %s" % _format_energy_total(active_player_data.get("available_energy", {}))
+	ap_label.text = "AP: %d/%d" % [int(active_player_data.get("ap_active", 0)), int(active_player_data.get("ap_total", 0))]
 	winner_label.text = "Winner: %s" % str(snapshot.get("winner_player_id", "-"))
 	opponent_board.set_board(UATypes.PLAYER_TWO, "Player 2", p2)
 	player_board.set_board(UATypes.PLAYER_ONE, "Player 1", p1)
@@ -776,6 +788,14 @@ func _get_player_board_content_rect() -> Rect2:
 			combined_rect = combined_rect.merge(rect)
 
 	return combined_rect if has_rect else Rect2()
+
+func _format_energy_total(energy_map: Dictionary) -> String:
+	if energy_map.is_empty():
+		return "0"
+	var total := 0
+	for color in energy_map.keys():
+		total += int(energy_map.get(color, 0))
+	return str(total)
 
 func game_state_has_opening_probe_pending() -> bool:
 	return game_manager.game_state.pending_decisions.size() >= 1 and str((game_manager.game_state.pending_decisions[0] as Dictionary).get("type", "")) == "MULLIGAN_CHOICE"

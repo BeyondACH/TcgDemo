@@ -156,11 +156,6 @@ text = "Turn 1"
 layout_mode = 2
 text = "Active: P1"
 
-[node name="PhaseIndicator" type="Label" parent="UILayer/TopHUD/TopBar/StatusRow"]
-layout_mode = 2
-script = ExtResource("6_phase")
-text = "Phase: START"
-
 [node name="WinnerLabel" type="Label" parent="UILayer/TopHUD/TopBar/StatusRow"]
 layout_mode = 2
 text = "Winner: -"
@@ -169,21 +164,54 @@ text = "Winner: -"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ActionRow" type="HBoxContainer" parent="UILayer/TopHUD/TopBar"]
+[node name="ActionRow" type="VBoxContainer" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="BonusDrawButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow"]
+[node name="ActionButtonRow" type="HBoxContainer" parent="UILayer/TopHUD/TopBar/ActionRow"]
+layout_mode = 2
+size_flags_horizontal = 8
+alignment = 2
+theme_override_constants/separation = 12
+
+[node name="BonusDrawButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow"]
 layout_mode = 2
 text = "Bonus Draw (1 AP)"
 
-[node name="NoBlockButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow"]
+[node name="NoBlockButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow"]
 layout_mode = 2
 text = "No Block"
 
-[node name="LogToggleButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow"]
+[node name="LogToggleButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow"]
 layout_mode = 2
 text = "Log"
+
+[node name="PlayerInfoPanel" type="PanelContainer" parent="UILayer/TopHUD/TopBar/ActionRow"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="PlayerInfoRow" type="HFlowContainer" parent="UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 4
+
+[node name="PhaseIndicator" type="Label" parent="UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow"]
+layout_mode = 2
+script = ExtResource("6_phase")
+text = "Phase: START"
+
+[node name="HandCountLabel" type="Label" parent="UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow"]
+layout_mode = 2
+text = "Hand: 0"
+
+[node name="EnergyLabel" type="Label" parent="UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow"]
+layout_mode = 2
+text = "Energy: 0"
+
+[node name="ApLabel" type="Label" parent="UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow"]
+layout_mode = 2
+text = "AP: 0/0"
 
 [node name="NextPhaseButton" type="Button" parent="UILayer/TopHUD/TopBar"]
 layout_mode = 2
