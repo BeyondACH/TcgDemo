@@ -1,5 +1,17 @@
 
 - 日期：2026-03-25
+- 类型：测试
+- 摘要：新增 `hand_available_actions_smoke_test.gd` 冒烟测试文件，覆盖手牌卡牌 available_actions 计算逻辑。测试内容包括：角色/场地/事件卡打出动作标识、AP/能量/区域容量条件检查、RAID 能力从手牌打出条件、非 MAIN 阶段限制、对手回合卡牌无动作等 14 个测试用例。
+- 影响文件：`docs/hand_available_actions_smoke_test.gd`（新增）
+- 验证方式与结果：运行手牌 available_actions 冒烟测试 14/14 通过。
+
+- 日期：2026-03-25
+- 类型：功能更新
+- 摘要：新增手牌RAID卡牌打出功能。选手牌中具有RAID能力的卡牌时显示"RAID"按钮，点击后进入目标选择模式，选择己方前线或能量线上的符合条件的角色作为底座进行RAID堆叠。手牌卡牌的available_actions现已包含RAID能力标识，支持`life_trigger_only=false`且`allow_from_hand=true`的RAID卡牌从手牌打出。
+- 影响文件：`core/game_manager.gd`（新增手牌available_actions计算、RAID能力检测函数）、`ui/battle_scene.gd`（新增RAID按钮、目标选择流程）、`scenes/battle_scene.tscn`（新增RaidButton节点）
+- 验证方式与结果：运行 milestone 冒烟测试 23/23 通过，包括"RAID 显式落点选择"、"RAID 生命触发二选一"、"RAID 突进叠放"、"RAID 框内效果门控"等RAID相关测试全部通过。
+
+- 日期：2026-03-25
 - 类型：UI优化
 - 摘要：将日志面板从底部HUD移至右侧浮动弹窗，默认隐藏，通过顶栏 Log 按钮切换展开/隐藏。释放底部空间给手牌和操作栏。
 - 影响文件：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`

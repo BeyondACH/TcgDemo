@@ -48,6 +48,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var selected_card_label: Label = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SelectedCardLabel
 @onready var play_front_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayFrontButton
 @onready var play_energy_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayEnergyButton
+@onready var raid_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/RaidButton
 @onready var use_event_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/UseEventButton
 @onready var main_activate_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/MainActivateButton
 @onready var step_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/StepButton
@@ -75,6 +76,8 @@ var _sniper_attack_source_uid := ""
 var _selected_life_trigger_uid := ""
 var _selected_pending_decision_index := -1
 var _selected_pending_decision_choice_index := 0
+var _raid_source_card_uid := ""
+var _raid_target_selection_mode := false
 
 func _ready() -> void:
 	_setup_optional_art()
@@ -85,6 +88,7 @@ func _ready() -> void:
 	no_block_button.pressed.connect(_on_no_block_pressed)
 	play_front_button.pressed.connect(_on_play_front_pressed)
 	play_energy_button.pressed.connect(_on_play_energy_pressed)
+	raid_button.pressed.connect(_on_raid_pressed)
 	use_event_button.pressed.connect(_on_use_event_pressed)
 	main_activate_button.pressed.connect(_on_main_activate_pressed)
 	step_button.pressed.connect(_on_step_pressed)
@@ -113,6 +117,7 @@ func _ready() -> void:
 	step_button.visible = false
 	move_front_button.visible = false
 	sniper_attack_button.visible = false
+	raid_button.visible = false
 	life_trigger_picker.visible = false
 	activate_life_button.visible = false
 	skip_life_button.visible = false
@@ -261,6 +266,11 @@ func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
 func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 	if _has_pending_gate():
 		return
+	# 处理RAID目标选择
+	if _raid_target_selection_mode:
+		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
+			_execute_raid_play(card_uid)
+		return
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var phase := str(_snapshot.get("phase", ""))
 	var card_data := _find_board_card(player_id, card_uid)
@@ -296,6 +306,11 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 
 func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
 	if _has_pending_gate():
+		return
+	# 处理RAID目标选择
+	if _raid_target_selection_mode:
+		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
+			_execute_raid_play(card_uid)
 		return
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "energy_line"
@@ -373,6 +388,29 @@ func _on_use_event_pressed() -> void:
 		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.OUTSIDE)
 		_clear_selection()
 
+func _on_raid_pressed() -> void:
+	if _has_pending_gate() or _selected_hand_card_uid == "":
+		return
+	_raid_source_card_uid = _selected_hand_card_uid
+	_raid_target_selection_mode = true
+	_update_action_buttons()
+	selected_card_label.text = "Choose a RAID target on your field"
+
+func _execute_raid_play(target_uid: String) -> void:
+	if _raid_source_card_uid == "":
+		return
+	var target_data := _find_board_card(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)), target_uid)
+	var target_zone_name := str(target_data.get("zone", "front_line"))
+	var target_zone := UATypes.Zone.FRONT_LINE if target_zone_name == "front_line" else UATypes.Zone.ENERGY_LINE
+
+	game_manager.play_card(_raid_source_card_uid, target_zone, {"raid_target_uid": target_uid})
+	_clear_raid_selection()
+	_clear_selection()
+
+func _clear_raid_selection() -> void:
+	_raid_source_card_uid = ""
+	_raid_target_selection_mode = false
+
 func _on_main_activate_pressed() -> void:
 	if _selected_board_card_uid == "" or _has_pending_gate():
 		return
@@ -437,6 +475,7 @@ func _clear_selection() -> void:
 	_selected_board_card_uid = ""
 	_selected_board_zone_name = ""
 	_sniper_attack_source_uid = ""
+	_clear_raid_selection()
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 
@@ -466,6 +505,8 @@ func _selected_label_text(active_player_id: String) -> String:
 			if str(entry.get("card_uid", "")) == _selected_life_trigger_uid:
 				return "Life trigger: %s chooses %s" % [owner_id, str(entry.get("card_name", "Unknown"))]
 		return "Resolve pending life triggers"
+	if _raid_target_selection_mode:
+		return "Choose a RAID target on your field"
 	if _sniper_attack_source_uid != "":
 		return "Choose an enemy front target for sniper attack"
 	if _pending_attack_uid != "":
@@ -502,20 +543,32 @@ func _update_action_buttons() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
 	var card_type := str(card_data.get("card_type", ""))
+	var available_actions: Array = card_data.get("available_actions", [])
 	var board_card_data: Dictionary = _find_board_card(active_player_id, _selected_board_card_uid)
-	var available_actions: Array = board_card_data.get("available_actions", [])
+	var board_actions: Array = board_card_data.get("available_actions", [])
 	play_front_button.disabled = card_type != "CHARACTER"
 	play_energy_button.disabled = card_type != "CHARACTER" and card_type != "FIELD"
 	use_event_button.disabled = card_type != "EVENT"
-	main_activate_button.visible = not board_card_data.is_empty() and available_actions.has("MAIN_ACTIVATE")
-	main_activate_button.disabled = not available_actions.has("MAIN_ACTIVATE")
-	step_button.visible = not board_card_data.is_empty() and available_actions.has("STEP_TO_ENERGY")
-	step_button.disabled = not available_actions.has("STEP_TO_ENERGY")
-	move_front_button.visible = not board_card_data.is_empty() and available_actions.has("MOVE_TO_FRONT")
-	move_front_button.disabled = not available_actions.has("MOVE_TO_FRONT")
-	sniper_attack_button.visible = not board_card_data.is_empty() and available_actions.has("SNIPER_ATTACK")
-	sniper_attack_button.disabled = not available_actions.has("SNIPER_ATTACK") or _sniper_attack_source_uid != ""
-	cancel_selection_button.disabled = _selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == ""
+
+	# RAID按钮
+	raid_button.visible = available_actions.has("RAID")
+	raid_button.disabled = not available_actions.has("RAID") or _raid_target_selection_mode
+
+	# RAID选择模式时禁用其他打出按钮
+	if _raid_target_selection_mode:
+		play_front_button.disabled = true
+		play_energy_button.disabled = true
+		use_event_button.disabled = true
+
+	main_activate_button.visible = not board_card_data.is_empty() and board_actions.has("MAIN_ACTIVATE")
+	main_activate_button.disabled = not board_actions.has("MAIN_ACTIVATE")
+	step_button.visible = not board_card_data.is_empty() and board_actions.has("STEP_TO_ENERGY")
+	step_button.disabled = not board_actions.has("STEP_TO_ENERGY")
+	move_front_button.visible = not board_card_data.is_empty() and board_actions.has("MOVE_TO_FRONT")
+	move_front_button.disabled = not board_actions.has("MOVE_TO_FRONT")
+	sniper_attack_button.visible = not board_card_data.is_empty() and board_actions.has("SNIPER_ATTACK")
+	sniper_attack_button.disabled = not board_actions.has("SNIPER_ATTACK") or _sniper_attack_source_uid != ""
+	cancel_selection_button.disabled = _selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == "" and _raid_source_card_uid == ""
 
 func _sync_life_trigger_controls() -> void:
 	var pending: Array = _snapshot.get("pending_life_triggers", [])
@@ -628,11 +681,10 @@ func _update_hand_playable_states(player_id: String, hand_cards: Array) -> void:
 	# 检查每张手牌是否可打出
 	for card_data in hand_cards:
 		var card_uid := str(card_data.get("uid", ""))
-		var card_type := str(card_data.get("card_type", ""))
 		var available_actions: Array = card_data.get("available_actions", [])
 
-		# 检查是否有可用的打出动作
-		var is_playable := available_actions.has("PLAY_FRONT") or available_actions.has("PLAY_ENERGY") or available_actions.has("PLAY_EVENT")
+		# 检查是否有可用的打出动作（包括RAID）
+		var is_playable := available_actions.has("PLAY_FRONT") or available_actions.has("PLAY_ENERGY") or available_actions.has("PLAY_EVENT") or available_actions.has("RAID")
 		playable_map[card_uid] = is_playable
 
 	hand_view.set_playable_cards(playable_map)

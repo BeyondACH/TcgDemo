@@ -218,6 +218,10 @@ text = "Play Front"
 layout_mode = 2
 text = "Play Energy"
 
+[node name="RaidButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
+layout_mode = 2
+text = "RAID"
+
 [node name="UseEventButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar"]
 layout_mode = 2
 text = "Use Event"

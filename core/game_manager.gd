@@ -622,6 +622,26 @@ func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array
 	var actions: Array[String] = []
 	if card.controller_player_id != game_state.active_player_id:
 		return actions
+
+	# 处理手牌
+	if card.zone == UATypes.Zone.HAND and game_state.phase == UATypes.Phase.MAIN:
+		match card_def.card_type:
+			UATypes.CardType.CHARACTER:
+				if _can_play_to_front_line(card, card_def):
+					actions.append("PLAY_FRONT")
+				if _can_play_to_energy_line(card, card_def):
+					actions.append("PLAY_ENERGY")
+			UATypes.CardType.FIELD:
+				if _can_play_to_energy_line(card, card_def):
+					actions.append("PLAY_ENERGY")
+			UATypes.CardType.EVENT:
+				actions.append("PLAY_EVENT")
+		# RAID打出检查
+		if _can_play_raid_from_hand(card, card_def):
+			actions.append("RAID")
+		return actions
+
+	# 处理场上卡牌
 	if card.zone == UATypes.Zone.FRONT_LINE and game_state.phase == UATypes.Phase.ATTACK:
 		var attack_result := rules_engine.can_attack(game_state, card.controller_player_id, card.uid)
 		if bool(attack_result.get("ok", false)):
@@ -813,3 +833,60 @@ func _resolve_hand_limit_discard(decision: Dictionary, chosen_card_uid: String) 
 		return logs
 	logs.append_array(turn_manager.end_turn(game_state))
 	return logs
+
+func _can_play_raid_from_hand(card: CardInstance, card_def: CardDef) -> bool:
+	if card_def.special_play_rule.is_empty():
+		return false
+	if str(card_def.special_play_rule.get("type", "")) != "RAID":
+		return false
+	if bool(card_def.special_play_rule.get("life_trigger_only", false)):
+		return false
+	return _has_valid_raid_target(card, card_def)
+
+func _has_valid_raid_target(card: CardInstance, card_def: CardDef) -> bool:
+	var player: PlayerState = game_state.get_player(card.controller_player_id)
+	if player == null:
+		return false
+	var required_name := str(card_def.special_play_rule.get("raid_target_name", ""))
+	for zone_cards in [player.front_line, player.energy_line]:
+		for candidate_uid in zone_cards:
+			var candidate = game_state.get_card(str(candidate_uid))
+			var candidate_def = game_state.get_card_def(candidate.def_id) if candidate != null else null
+			if candidate == null or candidate_def == null:
+				continue
+			if candidate_def.card_type != UATypes.CardType.CHARACTER:
+				continue
+			if required_name != "" and candidate_def.name != required_name:
+				continue
+			return true
+	return false
+
+func _can_play_to_front_line(card: CardInstance, card_def: CardDef) -> bool:
+	var player: PlayerState = game_state.get_player(card.controller_player_id)
+	if player == null:
+		return false
+	if player.front_line.size() >= UATypes.MAX_FRONT_LINE:
+		return false
+	if not _can_pay_ap_for_card(player, card_def):
+		return false
+	if not _has_required_energy_for_card(card_def):
+		return false
+	return true
+
+func _can_play_to_energy_line(card: CardInstance, card_def: CardDef) -> bool:
+	var player: PlayerState = game_state.get_player(card.controller_player_id)
+	if player == null:
+		return false
+	if player.energy_line.size() >= UATypes.MAX_ENERGY_LINE:
+		return false
+	if not _can_pay_ap_for_card(player, card_def):
+		return false
+	if not _has_required_energy_for_card(card_def):
+		return false
+	return true
+
+func _can_pay_ap_for_card(player: PlayerState, card_def: CardDef) -> bool:
+	return player.ap_active_count() >= card_def.cost_ap
+
+func _has_required_energy_for_card(card_def: CardDef) -> bool:
+	return rules_engine._has_required_energy(game_state, game_state.get_player(game_state.active_player_id), card_def.cost_energy)
