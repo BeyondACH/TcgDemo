@@ -605,6 +605,8 @@ func _register_static_modifier(state: GameState, source_card_uid: String, step: 
 		"owner": str(step.get("owner", "SELF")),
 		"filters": step.get("filters", []).duplicate(true),
 		"expires": str(step.get("expires", "")),
+		"color": str(step.get("color", "")),
+		"value": step.get("value", 0),
 	})
 
 func _apply_temporary_bp_modifier(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
@@ -1031,6 +1033,27 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		return selected_def_type != null and UATypes.card_type_to_text(selected_def_type.card_type) == str(requirement.get("value", ""))
 	if requirement_type == "SOURCE_STATE_IS_ACTIVE":
 		return source_card != null and source_card.state == UATypes.CardState.ACTIVE
+	if requirement_type == "CONTROLLER_TRAIT_NAME_COUNT_GTE":
+		if source_card == null:
+			return false
+		var player = state.get_player(source_card.controller_player_id)
+		if player == null:
+			return false
+		var trait_value := str(requirement.get("trait", ""))
+		var min_count := int(requirement.get("value", 0))
+		var unique_names: Dictionary = {}
+		for zone_cards in [player.front_line, player.energy_line]:
+			for card_uid_v in zone_cards:
+				var cuid := str(card_uid_v)
+				if cuid == source_card_uid:
+					continue
+				var c = state.get_card(cuid)
+				if c == null:
+					continue
+				var d = state.get_card_def(c.def_id)
+				if d != null and d.traits.has(trait_value):
+					unique_names[d.name] = true
+		return unique_names.size() >= min_count
 	return _matches_filter(state, requirement, context, candidate_card_uid, source_card_uid)
 
 func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false) -> bool:

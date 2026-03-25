@@ -594,7 +594,9 @@
         "RED": 2
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 1
+      },
       "bp": 2500,
       "keywords": [],
       "text": {
@@ -609,6 +611,39 @@
       "cost_modifiers": []
     },
     "abilities": [
+      {
+        "id": "UA31BT_MMM_1_077_on_enter_energy_bonus",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "while": [
+              {
+                "type": "CONTROLLER_TRAIT_NAME_COUNT_GTE",
+                "trait": "魔法少女",
+                "value": 3
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "赤",
+          "effect_box": "OUTER",
+          "text": "このカード以外の自分の場の［特徴：魔法少女］のカード名が3種類以上ある場合、このキャラの発生エナジー+。"
+        },
+        "status": "SUPPORTED"
+      },
       {
         "id": "UA31BT_MMM_1_077_on_life_trigger_a41bad1555",
         "kind": "TRIGGERED",

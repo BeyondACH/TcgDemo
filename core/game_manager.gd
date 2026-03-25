@@ -616,7 +616,54 @@ func _energy_pool_for_player(player: PlayerState) -> Dictionary:
 			continue
 		for color in card_def.energy_provided.keys():
 			pool[color] = int(pool.get(color, 0)) + int(card_def.energy_provided.get(color, 0))
+	for modifier_variant in game_state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		if str(modifier.get("modifier_type", "")) != "ENERGY_BONUS":
+			continue
+		if str(modifier.get("owner_player_id", "")) != player.player_id:
+			continue
+		var source_uid := str(modifier.get("source_card_uid", ""))
+		var source_card: CardInstance = game_state.get_card(source_uid)
+		if source_card == null or source_card.zone != UATypes.Zone.ENERGY_LINE:
+			continue
+		if not _check_energy_bonus_condition(modifier, source_uid):
+			continue
+		var color := str(modifier.get("color", ""))
+		var value := int(modifier.get("value", 0))
+		if color != "" and value != 0:
+			pool[color] = int(pool.get(color, 0)) + value
 	return pool
+
+func _check_energy_bonus_condition(modifier: Dictionary, source_uid: String) -> bool:
+	var while_reqs: Array = modifier.get("while", [])
+	if while_reqs.is_empty():
+		return true
+	var source_card: CardInstance = game_state.get_card(source_uid)
+	if source_card == null:
+		return false
+	var player = game_state.get_player(source_card.controller_player_id)
+	if player == null:
+		return false
+	for req_variant in while_reqs:
+		var req: Dictionary = req_variant
+		if str(req.get("type", "")) == "CONTROLLER_TRAIT_NAME_COUNT_GTE":
+			var trait_value := str(req.get("trait", ""))
+			var min_count := int(req.get("value", 0))
+			var unique_names: Dictionary = {}
+			for zone_cards in [player.front_line, player.energy_line]:
+				for cuid_v in zone_cards:
+					var cuid := str(cuid_v)
+					if cuid == source_uid:
+						continue
+					var c = game_state.get_card(cuid)
+					if c == null:
+						continue
+					var d = game_state.get_card_def(c.def_id)
+					if d != null and d.traits.has(trait_value):
+						unique_names[d.name] = true
+			if unique_names.size() < min_count:
+				return false
+	return true
 
 func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array[String]:
 	var actions: Array[String] = []
