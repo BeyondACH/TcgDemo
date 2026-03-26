@@ -18,12 +18,14 @@ const COMPACT_HEIGHT_THRESHOLD := 1120.0
 const SMALL_HEIGHT_THRESHOLD := 940.0
 const COMPACT_WIDTH_THRESHOLD := 1820.0
 const SMALL_WIDTH_THRESHOLD := 1650.0
-const BOARD_BOTTOM_GAP := 28.0
+const BOARD_BOTTOM_GAP := 18.0
 const BOARD_TOP_GAP := 18.0
 const BOTTOM_HUD_BOTTOM_MARGIN := 12.0
-const BOARD_LAYOUT_SCALE_DEFAULT := 0.88
-const BOARD_LAYOUT_SCALE_COMPACT := 0.84
-const BOARD_LAYOUT_SCALE_SMALL := 0.8
+const BOTTOM_HUD_SIDE_MARGIN := 12.0
+const HAND_STRIP_HEIGHT_DEFAULT := 176.0
+const HAND_STRIP_HEIGHT_COMPACT := 160.0
+const HAND_STRIP_HEIGHT_SMALL := 148.0
+const HAND_STRIP_INTERNAL_WIDTH_MARGIN := 24.0
 const PREVIEW_PANEL_LEFT_MARGIN := 12.0
 const PREVIEW_PANEL_TOP_GAP := 12.0
 const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
@@ -158,28 +160,10 @@ func _update_responsive_layout() -> void:
 	var viewport_width: float = viewport_size.x
 	var viewport_height: float = viewport_size.y
 
-	# Calculate letterboxing for background image
-	var bg_transform := ZoneLayoutConfig.calculate_bg_transform(viewport_width, viewport_height)
-	var bg_scale_factor: float = bg_transform.scale_factor
-	var bg_display_width: float = bg_transform.display_width
-	var letterbox_offset: float = bg_transform.letterbox_offset
-
-	# Update background TextureRect to show letterboxing
-	background_texture_rect.position.x = letterbox_offset
-	background_texture_rect.size.x = bg_display_width
-	background_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-
 	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
 	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
-	var bottom_height: float = 148.0 if very_small else (198.0 if compact else 220.0)
-	var board_layout_scale := BOARD_LAYOUT_SCALE_SMALL if very_small else (BOARD_LAYOUT_SCALE_COMPACT if compact else BOARD_LAYOUT_SCALE_DEFAULT)
-	var board_scale_factor := bg_scale_factor * board_layout_scale
 
 	top_hud.offset_top = 8.0 if very_small else 12.0
-	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
-	bottom_panel.custom_minimum_size = Vector2(0, bottom_height)
-
 	top_bar.add_theme_constant_override("separation", 8 if compact else 12)
 	status_row.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 12))
 	status_row.add_theme_constant_override("v_separation", 4 if very_small else 6)
@@ -187,26 +171,49 @@ func _update_responsive_layout() -> void:
 	action_button_row.add_theme_constant_override("separation", 6 if very_small else (8 if compact else 12))
 	player_info_row.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 10))
 	player_info_row.add_theme_constant_override("v_separation", 4 if very_small else 6)
+	bottom_panel.get_child(0).add_theme_constant_override("separation", 6 if very_small else (8 if compact else 10))
 	action_bar.add_theme_constant_override("h_separation", 4 if very_small else (8 if compact else 10))
 	action_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	selected_card_label.custom_minimum_size = Vector2(120 if very_small else (180 if compact else 220), 0)
+	action_bar.custom_minimum_size = Vector2(0, 36 if very_small else 40)
 	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var hand_strip_height := HAND_STRIP_HEIGHT_SMALL if very_small else (HAND_STRIP_HEIGHT_COMPACT if compact else HAND_STRIP_HEIGHT_DEFAULT)
+	var top_hud_height := maxf(top_hud.get_combined_minimum_size().y, 48.0)
+	top_hud.offset_bottom = top_hud.offset_top + top_hud_height
+
+	var background_top := top_hud.offset_bottom + BOARD_TOP_GAP
+	var available_battle_height := viewport_height - background_top - hand_strip_height - BOARD_BOTTOM_GAP - BOTTOM_HUD_BOTTOM_MARGIN
+	var minimum_board_height := MIN_BOARD_VISIBLE_HEIGHT_SMALL if very_small else (MIN_BOARD_VISIBLE_HEIGHT_COMPACT if compact else MIN_BOARD_VISIBLE_HEIGHT_DEFAULT)
+	var battle_height := minf(maxf(minimum_board_height, available_battle_height), viewport_height - background_top)
+	var bg_transform := ZoneLayoutConfig.calculate_bg_transform(viewport_width, battle_height, background_top)
+	var bg_scale_factor: float = bg_transform.scale_factor
+	var bg_display_width: float = bg_transform.display_width
+	var bg_display_height: float = bg_transform.display_height
+	var letterbox_offset: float = bg_transform.letterbox_offset
+	var bg_top_offset: float = bg_transform.top_offset
+
+	background_texture_rect.position = Vector2(letterbox_offset, bg_top_offset)
+	background_texture_rect.size = Vector2(bg_display_width, bg_display_height)
+	background_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	background_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+
+	var bottom_strip_top := bg_top_offset + bg_display_height + BOARD_BOTTOM_GAP
+	bottom_hud.offset_left = BOTTOM_HUD_SIDE_MARGIN
+	bottom_hud.offset_right = -BOTTOM_HUD_SIDE_MARGIN
+	bottom_hud.offset_top = bottom_strip_top
+	bottom_hud.offset_bottom = bottom_strip_top + hand_strip_height
+	bottom_panel.custom_minimum_size = Vector2(0, hand_strip_height)
 
 	# Update board views with absolute positioning
-	opponent_board.update_layout(letterbox_offset, board_scale_factor)
-	player_board.update_layout(letterbox_offset, board_scale_factor)
+	opponent_board.update_layout(letterbox_offset, bg_scale_factor, bg_top_offset)
+	player_board.update_layout(letterbox_offset, bg_scale_factor, bg_top_offset)
 
 	opponent_board.set_compact_mode(compact, very_small)
 	player_board.set_compact_mode(compact, very_small)
 	hand_view.set_compact_mode(compact, very_small)
 
-	# Calculate hand bounds avoiding remove_area and outside_area
-	var remove_rect := ZoneLayoutConfig.get_zone_rect("P1", "remove_area", letterbox_offset, board_scale_factor)
-	var outside_rect := ZoneLayoutConfig.get_zone_rect("P1", "outside_area", letterbox_offset, board_scale_factor)
-	var hand_left := remove_rect.position.x + remove_rect.size.x + 20.0
-	var hand_right := outside_rect.position.x - 20.0
-	var hand_width := hand_right - hand_left
-	hand_view.set_hand_bounds(hand_left, hand_right, hand_width)
+	var hand_width := maxf(320.0, viewport_width - BOTTOM_HUD_SIDE_MARGIN * 2.0 - HAND_STRIP_INTERNAL_WIDTH_MARGIN)
+	hand_view.set_hand_bounds(0.0, hand_width, hand_width)
 	_update_preview_panel_layout()
 
 func _update_preview_panel_layout() -> void:
@@ -788,34 +795,23 @@ func _run_layout_probe_if_requested() -> void:
 func _finish_layout_probe() -> void:
 	var label := "%dx%d" % [int(get_viewport_rect().size.x), int(get_viewport_rect().size.y)]
 	var hand_rect := hand_view.get_global_rect()
+	var background_rect := background_texture_rect.get_global_rect()
 	var error := ""
-	var wrapper_names := [
-		"LifeWrapper",
-		"RemovedWrapper",
-		"DeckWrapper",
-		"OutsideWrapper",
-		"FrontWrapper",
-		"EnergyWrapper",
-	]
-	var has_player_board_rect := false
-	var player_board_rect := Rect2()
-
-	for wrapper_name in wrapper_names:
-		var wrapper := player_board.get_node_or_null(wrapper_name) as Control
-		if wrapper == null:
-			continue
-		var rect := wrapper.get_global_rect()
-		if not has_player_board_rect:
-			player_board_rect = rect
-			has_player_board_rect = true
-		else:
-			player_board_rect = player_board_rect.merge(rect)
+	var player_board_rect := _get_player_board_content_rect()
 
 	# Check board layer has expected zone wrappers
 	if player_board.get_child_count() < 6:
 		error = "玩家战场缺失区域容器 (expected >= 6 zones, got %d)" % player_board.get_child_count()
 	elif player_board_rect.size == Vector2.ZERO:
 		error = "玩家战场内容区域为空"
+	elif player_board_rect.position.x < background_rect.position.x - 1.0 or player_board_rect.position.y < background_rect.position.y - 1.0:
+		error = "Board content exceeds the background top-left bounds."
+	elif player_board_rect.position.x + player_board_rect.size.x > background_rect.position.x + background_rect.size.x + 1.0 or player_board_rect.position.y + player_board_rect.size.y > background_rect.position.y + background_rect.size.y + 1.0:
+		error = "Board content exceeds the background bottom-right bounds."
+	elif not _zone_stack_rect_within_background(player_board, "OutsideStack", background_rect) or not _zone_stack_rect_within_background(player_board, "RemovedStack", background_rect) or not _zone_stack_rect_within_background(opponent_board, "OutsideStack", background_rect) or not _zone_stack_rect_within_background(opponent_board, "RemovedStack", background_rect):
+		error = "Outside/Removed stack content exceeds the battlefield background."
+	elif hand_rect.position.y < background_rect.position.y + background_rect.size.y + BOARD_BOTTOM_GAP - 1.0:
+		error = "Hand strip is not separated from the battlefield background."
 	elif player_board_rect.position.y + player_board_rect.size.y > hand_rect.position.y + 1.0:
 		error = "玩家战场与手牌缩略图区域发生重叠 (board_bottom=%.1f, hand_top=%.1f)" % [
 			player_board_rect.position.y + player_board_rect.size.y,
@@ -860,6 +856,16 @@ func _get_player_board_content_rect() -> Rect2:
 			combined_rect = combined_rect.merge(rect)
 
 	return combined_rect if has_rect else Rect2()
+
+func _zone_stack_rect_within_background(board: BoardView, node_name: String, background_rect: Rect2) -> bool:
+	var node := board.get_node_or_null("%sWrapper/%s" % [node_name.replace("Stack", ""), node_name]) as Control
+	if node == null:
+		return false
+	var rect := node.get_global_rect()
+	return rect.position.x >= background_rect.position.x - 1.0 \
+		and rect.position.y >= background_rect.position.y - 1.0 \
+		and rect.position.x + rect.size.x <= background_rect.position.x + background_rect.size.x + 1.0 \
+		and rect.position.y + rect.size.y <= background_rect.position.y + background_rect.size.y + 1.0
 
 func _format_energy_total(energy_map: Dictionary) -> String:
 	if energy_map.is_empty():

@@ -9,34 +9,37 @@ const BG_IMAGE_HEIGHT := 1024.0
 # Opponent zones (top half of the board)
 const OPPONENT_ZONES := {
 	life_area = {"left": 0.794, "top": 0.197, "width": 0.157, "height": 0.305},
-	remove_area = {"left": 0.843, "top": 0.030, "width": 0.119, "height": 0.167},
+	remove_area = {"left": 0.760, "top": 0.000, "width": 0.238, "height": 0.334},
 	front_line = {"left": 0.264, "top": 0.322, "width": 0.488, "height": 0.166},
 	energy_line = {"left": 0.264, "top": 0.195, "width": 0.488, "height": 0.126},
 	deck = {"left": 0.043, "top": 0.312, "width": 0.121, "height": 0.159},
-	outside_area = {"left": 0.035, "top": 0.031, "width": 0.122, "height": 0.168},
+	outside_area = {"left": 0.000, "top": 0.000, "width": 0.244, "height": 0.336},
 }
 
 # Player zones (bottom half of the board)
 const PLAYER_ZONES := {
 	life_area = {"left": 0.035, "top": 0.513, "width": 0.175, "height": 0.270},
-	remove_area = {"left": 0.030, "top": 0.800, "width": 0.120, "height": 0.167},
-	front_line = {"left": 0.212, "top": 0.508, "width": 0.561, "height": 0.143},
-	energy_line = {"left": 0.212, "top": 0.642, "width": 0.561, "height": 0.153},
+	remove_area = {"left": 0.000, "top": 0.666, "width": 0.240, "height": 0.334},
+	front_line = {"left": 0.248, "top": 0.512, "width": 0.488, "height": 0.166},
+	energy_line = {"left": 0.248, "top": 0.679, "width": 0.488, "height": 0.126},
 	deck = {"left": 0.812, "top": 0.517, "width": 0.126, "height": 0.151},
-	outside_area = {"left": 0.849, "top": 0.798, "width": 0.110, "height": 0.165},
+	outside_area = {"left": 0.780, "top": 0.670, "width": 0.220, "height": 0.330},
 }
 
 
 ## Calculate background display parameters for letterboxing
-## Returns: {scale_factor: float, display_width: float, letterbox_offset: float}
-static func calculate_bg_transform(viewport_width: float, viewport_height: float) -> Dictionary:
+## Returns: {scale_factor: float, display_width: float, display_height: float, letterbox_offset: float, top_offset: float}
+static func calculate_bg_transform(viewport_width: float, viewport_height: float, top_offset: float = 0.0) -> Dictionary:
 	var scale_factor := viewport_height / BG_IMAGE_HEIGHT
 	var display_width := BG_IMAGE_WIDTH * scale_factor
+	var display_height := BG_IMAGE_HEIGHT * scale_factor
 	var letterbox_offset := (viewport_width - display_width) / 2.0
 	return {
 		scale_factor = scale_factor,
 		display_width = display_width,
+		display_height = display_height,
 		letterbox_offset = letterbox_offset,
+		top_offset = top_offset,
 	}
 
 
@@ -44,14 +47,15 @@ static func calculate_bg_transform(viewport_width: float, viewport_height: float
 ## zone_data: {"left": float, "top": float, "width": float, "height": float}
 ## bg_offset: letterbox offset X
 ## bg_scale: scale factor
-static func zone_to_rect(zone_data: Dictionary, bg_offset: float, bg_scale: float) -> Rect2:
+## bg_top_offset: background display rect top offset
+static func zone_to_rect(zone_data: Dictionary, bg_offset: float, bg_scale: float, bg_top_offset: float = 0.0) -> Rect2:
 	var left: float = zone_data.get("left", 0.0)
 	var top: float = zone_data.get("top", 0.0)
 	var width: float = zone_data.get("width", 0.0)
 	var height: float = zone_data.get("height", 0.0)
 
 	var x := bg_offset + left * BG_IMAGE_WIDTH * bg_scale
-	var y := top * BG_IMAGE_HEIGHT * bg_scale
+	var y := bg_top_offset + top * BG_IMAGE_HEIGHT * bg_scale
 	var w := width * BG_IMAGE_WIDTH * bg_scale
 	var h := height * BG_IMAGE_HEIGHT * bg_scale
 
@@ -61,7 +65,7 @@ static func zone_to_rect(zone_data: Dictionary, bg_offset: float, bg_scale: floa
 ## Get zone rect for a player
 ## player_id: "P1" or "P2"
 ## zone_name: "life_area", "front_line", etc.
-static func get_zone_rect(player_id: String, zone_name: String, bg_offset: float, bg_scale: float) -> Rect2:
+static func get_zone_rect(player_id: String, zone_name: String, bg_offset: float, bg_scale: float, bg_top_offset: float = 0.0) -> Rect2:
 	var zones: Dictionary
 	if player_id == "P1":
 		zones = PLAYER_ZONES
@@ -72,7 +76,7 @@ static func get_zone_rect(player_id: String, zone_name: String, bg_offset: float
 	if zone_data.is_empty():
 		return Rect2(0, 0, 100, 100)
 
-	return zone_to_rect(zone_data, bg_offset, bg_scale)
+	return zone_to_rect(zone_data, bg_offset, bg_scale, bg_top_offset)
 
 
 ## Calculate card size to fit within a zone

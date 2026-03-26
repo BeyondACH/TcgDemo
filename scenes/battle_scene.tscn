@@ -230,14 +230,12 @@ text = "Next Phase"
 
 [node name="BottomHUD" type="MarginContainer" parent="UILayer"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
 offset_left = 12.0
-offset_top = -232.0
+offset_top = 864.0
 offset_right = -12.0
-offset_bottom = -12.0
+offset_bottom = 1068.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -313,11 +311,6 @@ text = "Skip Life"
 layout_mode = 2
 text = "Cancel"
 
-[node name="HandView" type="Control" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
-layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("4_hand")
-
 [node name="PendingDecisionPanel" type="VBoxContainer" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
 visible = false
 layout_mode = 2
@@ -339,6 +332,11 @@ size_flags_horizontal = 3
 [node name="ResolvePendingDecisionButton" type="Button" parent="UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel"]
 layout_mode = 2
 text = "Confirm"
+
+[node name="HandView" type="Control" parent="UILayer/BottomHUD/BottomPanel/BottomContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("4_hand")
 
 [node name="PreviewSelectionModal" type="Control" parent="UILayer"]
 visible = false

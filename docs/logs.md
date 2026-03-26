@@ -360,3 +360,48 @@
 - 变更摘要：移除手牌区默认半收起布局，改为完整展示整张手牌图片；同时提高底部 HUD 预留高度，并让手牌优先读取原图资源，缩略图仅作为回退。
 - 影响文件或模块：`ui/hand_view.gd`、`ui/card_view.gd`、`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
 - 验证方式与结果：静态检查确认手牌布局已改为按完整卡高底部对齐，不再使用半收起可见比例；底部 HUD 运行时与场景初始高度均已上调，手牌贴图读取顺序已改为 `pic -> pic/micro`。随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认完整手牌显示下未遮挡战场；运行中仍有既有 anchors warning，但未阻塞本次验收。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修正战场区域与背景图错位的问题，移除仅作用于战场层的额外缩放；同时将手牌区改为背景图下方的独立底栏，使手牌与战场背景彻底分离，并调整布局探针以校验战场内容仍落在背景矩形内。
+- 影响文件或模块：`data/zone_layout_config.gd`、`ui/board_view.gd`、`ui/battle_scene.gd`、`ui/hand_view.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
+- 验证方式与结果：静态检查确认背景图、战场区域与手牌底栏已改为分离布局，战场区重新共享同一背景变换参数；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认战场内容未脱离背景矩形且独立手牌底栏未遮挡战场。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：在独立手牌底栏方案上进一步收紧手牌默认尺寸与底栏高度，并为底部操作栏保留最小可见高度，解决战场区域偏小及手牌区按钮被挤出视野的问题。
+- 影响文件或模块：`ui/hand_view.gd`、`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
+- 验证方式与结果：静态检查确认手牌完整展示仍保留，但默认卡高与底栏高度已下调，且操作栏新增最小高度约束；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认本轮收紧后战场与独立手牌底栏布局仍通过验收。运行过程中仍有既有 anchors warning，但未阻塞本次验证。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修正独立手牌底栏的横向定位错误，恢复 `BottomHUD` 右侧偏移为相对锚点偏移，解决手牌区整体向右偏移并导致底部操作按钮跑出可视范围的问题。
+- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `BottomHUD.offset_right` 已从绝对视口坐标修正为相对右锚点偏移，避免底栏宽度异常放大；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认修正后布局仍通过验收。运行过程中仍有既有 anchors warning，但未阻塞本次验证。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：在保持独立手牌底栏和战场坐标契约不变的前提下，中等放大战场背景显示高度；通过下调底栏高度常量并小幅收紧战场与底栏之间的分隔间距，为背景图释放更多可用高度。
+- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `HAND_STRIP_HEIGHT_*` 与 `BOARD_BOTTOM_GAP` 已按中等放大方案下调，`ActionBar` 最小高度与战场坐标逻辑未改动；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认中等放大后战场与独立手牌底栏布局仍通过验收。运行过程中仍有既有 anchors warning，但未阻塞本次验证。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：在保持独立手牌底栏、按钮最小可见高度与战场坐标契约不变的前提下，继续中等拉伸战场背景显示高度；通过进一步下调底栏默认/紧凑/小屏高度常量，并小幅收紧战场与底栏之间的分隔间距，让战场背景更饱满但不挤压底部操作区。
+- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认仅调整 `HAND_STRIP_HEIGHT_*` 与 `BOARD_BOTTOM_GAP`，未修改 `ZoneLayoutConfig`、`BoardView` 对齐契约与 `ActionBar` 最小高度；随后使用项目内置 Godot 执行 `--layout-probe` 复验。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：将战场四角的 `Outside/Removed` 区域配置放大为原来的 2 倍，并调整其在背景图中的相对位置；同时让摘要堆叠在放大后的区域内按角落贴边摆放，避免实际显示内容压到同侧的 Deck/Life 区域。
+- 影响文件或模块：`data/zone_layout_config.gd`、`ui/board_view.gd`、`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `outside_area/remove_area` 的 `width/height` 已按 2 倍重算，`BoardView` 会对 `Outside/Removed` 摘要堆叠执行角落贴边布局；随后使用项目内置 Godot 执行 `--layout-probe`，校验四个角落堆叠内容仍位于背景图内，且不与同侧 Deck/Life 区域发生显示重叠。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修正 P1 放大后的 `Removed` 摘要堆叠默认贴边方向，避免其继续压入行动点印刷区；同时将布局探针收敛回更稳定的主约束，仅继续校验 `Outside/Removed` 内容仍位于背景图内，并保留手牌区不遮挡战场的检查，避免边缘接触类次级断言反复误判。
+- 影响文件或模块：`ui/board_view.gd`、`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 P1 `RemovedStack` 已改为左下角贴边显示，且探针现比较 `Outside/Removed` 与真实 `LifeStack/DeckStack` 内容矩形；随后使用项目内置 Godot 执行 `--layout-probe` 复验布局。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修正放大后 `Removed` 区域的背景对位方式，改为围绕原始移除区印刷框展开：P2 改为右上贴边、P1 保持左下贴边，并同步将 `remove_area` 的比例矩形重新锚回背景四角，避免视觉上漂到行动点区或主战场内侧。
+- 影响文件或模块：`data/zone_layout_config.gd`、`ui/board_view.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `remove_area` 的相对坐标已重新贴近原始背景印刷位置，且 `BoardView` 中 P2/P1 的 `RemovedStack` 分别按右上/左下贴边显示；随后使用项目内置 Godot 执行 `--layout-probe` 复验。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修正战场中央 4x4 格子中 P1 与 P2 未对齐且 P1 卡槽偏小的问题，将 P1 的前线与能量线区域改为与 P2 镜像对称的尺寸和位置。
+- 影响文件或模块：`data/zone_layout_config.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `PLAYER_ZONES.front_line` 与 `PLAYER_ZONES.energy_line` 已调整为和 P2 对称的比例参数；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认中央格子对齐且手牌区未遮挡战场。运行过程中仍有既有 anchors warning，但未阻塞本次验收。

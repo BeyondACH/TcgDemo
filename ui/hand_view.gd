@@ -4,9 +4,9 @@ class_name HandView
 # 手牌视图，保持整张卡图完整展示并按可用宽度动态重叠。
 const CardView = preload("res://ui/card_view.gd")
 
-const DEFAULT_CARD_SIZE := Vector2(100, 140)
-const COMPACT_CARD_SIZE := Vector2(88, 124)
-const VERY_SMALL_CARD_SIZE := Vector2(72, 100)
+const DEFAULT_CARD_SIZE := Vector2(92, 128)
+const COMPACT_CARD_SIZE := Vector2(84, 118)
+const VERY_SMALL_CARD_SIZE := Vector2(68, 96)
 const MIN_OVERLAP_RATIO := 0.3
 const MAX_OVERLAP_RATIO := 0.7
 const ANIMATION_DURATION := 0.15
@@ -152,3 +152,6 @@ func get_card_uid_at(index: int) -> String:
 
 func get_card_count() -> int:
 	return _card_views.size()
+
+func get_preferred_height() -> float:
+	return _current_card_size.y + HAND_TOP_PADDING + HAND_BOTTOM_PADDING

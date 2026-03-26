@@ -46,6 +46,7 @@ var _stats_label: Label
 # Layout state
 var _bg_offset: float = 0.0
 var _bg_scale: float = 1.0
+var _bg_top_offset: float = 0.0
 
 func _ready() -> void:
 	_slot_plate_texture = _load_optional_texture(SLOT_PLATE_TEXTURE_PATH)
@@ -85,22 +86,26 @@ func _ready() -> void:
 
 	# Create Life stack
 	_life_stack = LifeStackView.new()
+	_life_stack.name = "LifeStack"
 	_life_stack.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_life_stack.set_compact_mode(false)
 	_life_wrapper.add_child(_life_stack)
 
 	# Create Removed stack
 	_removed_stack = ZoneStackSummaryView.new()
+	_removed_stack.name = "RemovedStack"
 	_removed_stack.set_compact_mode(false)
 	_removed_wrapper.add_child(_removed_stack)
 
 	# Create Deck stack
 	_deck_stack = ZoneStackSummaryView.new()
+	_deck_stack.name = "DeckStack"
 	_deck_stack.set_compact_mode(false)
 	_deck_wrapper.add_child(_deck_stack)
 
 	# Create Outside stack
 	_outside_stack = ZoneStackSummaryView.new()
+	_outside_stack.name = "OutsideStack"
 	_outside_stack.set_compact_mode(false)
 	_outside_wrapper.add_child(_outside_stack)
 
@@ -117,9 +122,10 @@ func _ready() -> void:
 	_energy_slot_backplates = energy_section.slot_backplates
 
 
-func update_layout(bg_offset: float, bg_scale: float) -> void:
+func update_layout(bg_offset: float, bg_scale: float, bg_top_offset: float = 0.0) -> void:
 	_bg_offset = bg_offset
 	_bg_scale = bg_scale
+	_bg_top_offset = bg_top_offset
 	_reposition_zones()
 
 
@@ -137,37 +143,40 @@ func _reposition_zones() -> void:
 
 	# Position stats label at top center of player's area
 	var top_zone := "life_area" if _player_id == "P1" else "remove_area"
-	var top_rect := ZoneLayoutConfig.get_zone_rect(_player_id, top_zone, _bg_offset, _bg_scale)
+	var top_rect := ZoneLayoutConfig.get_zone_rect(_player_id, top_zone, _bg_offset, _bg_scale, _bg_top_offset)
 	_stats_label.position = Vector2(top_rect.position.x, top_rect.position.y - 20)
 	_stats_label.size = Vector2(top_rect.size.x, 18)
 
 	# Calculate card sizes based on zone dimensions
-	var front_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "front_line", _bg_offset, _bg_scale)
+	var front_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "front_line", _bg_offset, _bg_scale, _bg_top_offset)
 	_current_card_size = ZoneLayoutConfig.calculate_card_size_for_zone(front_rect, MAX_VISIBLE_SLOTS)
 
 	# Calculate dynamic sizes for stack zones based on their zone rects
-	var deck_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "deck", _bg_offset, _bg_scale)
-	var outside_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "outside_area", _bg_offset, _bg_scale)
-	var removed_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "remove_area", _bg_offset, _bg_scale)
-	var life_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "life_area", _bg_offset, _bg_scale)
+	var deck_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "deck", _bg_offset, _bg_scale, _bg_top_offset)
+	var outside_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "outside_area", _bg_offset, _bg_scale, _bg_top_offset)
+	var removed_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "remove_area", _bg_offset, _bg_scale, _bg_top_offset)
+	var life_rect := ZoneLayoutConfig.get_zone_rect(_player_id, "life_area", _bg_offset, _bg_scale, _bg_top_offset)
 
 	_deck_stack.set_stack_size(_calc_stack_card_size(deck_rect))
 	_outside_stack.set_stack_size(_calc_stack_card_size(outside_rect))
 	_removed_stack.set_stack_size(_calc_stack_card_size(removed_rect))
 	_life_stack.set_card_size(_calc_life_card_size(life_rect))
+	_layout_stack_summaries()
 
 	# Update zone contents with new card sizes
 	_update_zone_contents()
 
 
 func _position_zone_wrapper(wrapper: Control, zone_name: String) -> void:
-	var zone_rect := ZoneLayoutConfig.get_zone_rect(_player_id, zone_name, _bg_offset, _bg_scale)
+	var zone_rect := ZoneLayoutConfig.get_zone_rect(_player_id, zone_name, _bg_offset, _bg_scale, _bg_top_offset)
 	wrapper.position = zone_rect.position
 	wrapper.size = zone_rect.size
 
 	# Set anchors for children to fill
 	for child in wrapper.get_children():
 		if child is Control:
+			if child == _removed_stack or child == _outside_stack or child == _deck_stack:
+				continue
 			child.set_anchors_preset(Control.PRESET_FULL_RECT)
 			child.position = Vector2.ZERO
 			child.size = zone_rect.size
@@ -235,6 +244,7 @@ func _apply_board_data() -> void:
 	_removed_stack.set_summary("Removed", int(_last_data.get("removed_count", 0)))
 	_deck_stack.set_summary("Deck", int(_last_data.get("deck_count", 0)))
 	_outside_stack.set_summary("Outside", int(_last_data.get("outside_count", 0)))
+	_layout_stack_summaries()
 
 	_rebuild_slot_backplates(_front_slot_backplates, _last_data.get("front_line", []), "front_line")
 	_rebuild_slot_backplates(_energy_slot_backplates, _last_data.get("energy_line", []), "energy_line")
@@ -364,6 +374,41 @@ func _calc_stack_card_size(zone_rect: Rect2) -> Vector2:
 	card_width = maxf(card_width, 36.0)
 	card_height = maxf(card_height, 50.0)
 	return Vector2(card_width, card_height)
+
+
+func _layout_stack_summaries() -> void:
+	if _deck_stack != null and _deck_wrapper != null:
+		_position_stack_summary(_deck_stack, _deck_wrapper, "center", "center")
+	if _outside_stack != null and _outside_wrapper != null:
+		if _player_id == "P1":
+			_position_stack_summary(_outside_stack, _outside_wrapper, "right", "bottom")
+		else:
+			_position_stack_summary(_outside_stack, _outside_wrapper, "left", "top")
+	if _removed_stack != null and _removed_wrapper != null:
+		if _player_id == "P1":
+			_position_stack_summary(_removed_stack, _removed_wrapper, "left", "bottom")
+		else:
+			_position_stack_summary(_removed_stack, _removed_wrapper, "right", "top")
+
+
+func _position_stack_summary(stack_view: Control, wrapper: Control, h_align: String, v_align: String) -> void:
+	var min_size := stack_view.get_combined_minimum_size()
+	stack_view.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	stack_view.size = min_size
+
+	var x := 0.0
+	if h_align == "right":
+		x = maxf(0.0, wrapper.size.x - min_size.x)
+	elif h_align == "center":
+		x = maxf(0.0, (wrapper.size.x - min_size.x) / 2.0)
+
+	var y := 0.0
+	if v_align == "bottom":
+		y = maxf(0.0, wrapper.size.y - min_size.y)
+	elif v_align == "center":
+		y = maxf(0.0, (wrapper.size.y - min_size.y) / 2.0)
+
+	stack_view.position = Vector2(x, y)
 
 
 ## Calculate a single card size for the life zone.
