@@ -1,8 +1,7 @@
 extends Control
 class_name HandView
 
-# 手牌视图 - 支持半收起、悬停上浮、动态重叠
-
+# 手牌视图 - 支持半收起、底部固定、动态重叠
 const CardView = preload("res://ui/card_view.gd")
 
 # 布局常量
@@ -12,8 +11,6 @@ const VERY_SMALL_CARD_SIZE := Vector2(72, 100)
 const COLLAPSED_VISIBLE_RATIO := 0.6  # 半收起时显示 60%
 const MIN_OVERLAP_RATIO := 0.3        # 最小重叠 30%
 const MAX_OVERLAP_RATIO := 0.7        # 最大重叠 70%
-const HOVER_LIFT := 30.0              # 悬停上浮距离
-const HOVER_SCALE := 1.12             # 悬停放大比例
 const ANIMATION_DURATION := 0.15      # 动画时长(秒)
 const CARD_SPACING := 4.0             # 卡牌最小间距
 
@@ -21,8 +18,6 @@ signal hand_card_selected(card_uid: String)
 signal hand_card_hovered(card_uid: String, is_hovered: bool)
 
 var _card_views: Array[CardView] = []
-var _hovered_index: int = -1
-var _selected_index: int = -1
 var _current_player_id := ""
 var _hand_cards: Array = []
 var _current_card_size := DEFAULT_CARD_SIZE
@@ -63,14 +58,12 @@ func _update_card_size() -> void:
 		_current_card_size = DEFAULT_CARD_SIZE
 
 func _rebuild_hand() -> void:
-	# 清理旧卡片
+	# 清理旧卡牌
 	for card in _card_views:
 		card.queue_free()
 	_card_views.clear()
-	_hovered_index = -1
-	_selected_index = -1
 
-	# 创建新卡片
+	# 创建新卡牌
 	for card_data in _hand_cards:
 		var card := CardView.new()
 		card.setup(card_data, _current_player_id, "hand", _current_card_size, CardView.DISPLAY_MODE_HAND)
@@ -116,22 +109,10 @@ func _recalculate_hand_positions() -> void:
 		var card := _card_views[i]
 		var x := start_x + i * step
 		var y := base_y
-		var scale := 1.0
 		var z := i
 
-		# 应用 hover 效果
-		if _hovered_index == i:
-			y -= HOVER_LIFT
-			scale = HOVER_SCALE
-			z = 100
-
-		# 应用选中效果
-		if _selected_index == i:
-			y -= HOVER_LIFT * 0.5
-			z = 99
-
-		# 平滑动画
-		_animate_card_to(card, x, y, scale, z)
+		# 手牌始终保持统一基线，只在数据或布局变化时重排。
+		_animate_card_to(card, x, y, z)
 
 func _calculate_overlap(count: int, card_width: float, available_width: float) -> float:
 	if count <= 1:
@@ -152,9 +133,9 @@ func _calculate_overlap(count: int, card_width: float, available_width: float) -
 
 	return clamp(overlap, MIN_OVERLAP_RATIO, MAX_OVERLAP_RATIO)
 
-func _animate_card_to(card: CardView, x: float, y: float, scale: float, z: int) -> void:
+func _animate_card_to(card: CardView, x: float, y: float, z: int) -> void:
 	var target_pos := Vector2(x, y)
-	var target_scale := Vector2(scale, scale)
+	var target_scale := Vector2.ONE
 
 	# 检查是否需要动画
 	if card.position.distance_to(target_pos) < 1.0 and card.scale.distance_to(target_scale) < 0.01:
@@ -170,27 +151,9 @@ func _animate_card_to(card: CardView, x: float, y: float, scale: float, z: int) 
 	card.z_index = z
 
 func _on_card_pressed(_owner_player_id: String, card_uid: String, _zone_name: String) -> void:
-	# 更新选中状态
-	for i in range(_card_views.size()):
-		if _card_views[i].card_uid == card_uid:
-			_selected_index = i
-			break
 	emit_signal("hand_card_selected", card_uid)
-	_recalculate_hand_positions()
 
 func _on_card_hovered(card_uid: String, is_hovered: bool) -> void:
-	# 更新悬停状态
-	var new_hovered := -1
-	if is_hovered:
-		for i in range(_card_views.size()):
-			if _card_views[i].card_uid == card_uid:
-				new_hovered = i
-				break
-
-	if _hovered_index != new_hovered:
-		_hovered_index = new_hovered
-		_recalculate_hand_positions()
-
 	emit_signal("hand_card_hovered", card_uid, is_hovered)
 
 func get_card_uid_at(index: int) -> String:

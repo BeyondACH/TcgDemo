@@ -1,4 +1,10 @@
 
+- 日期：2026-03-26
+- 类型：bugfix
+- 摘要：收敛手牌区域交互，移除 03-24 手牌重构中引入的悬停上浮与选中抬升表现，保留底部固定、默认半收起、动态重叠和独立预览；鼠标悬停仅更新预览面板，不再触发卡面上浮、放大或重排。
+- 影响文件：`ui/hand_view.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `ui/hand_view.gd` 已不再基于 hover/selected 调整 `position.y` 或 `scale`；后续执行 Godot headless 启动与 `--layout-probe` 验证，确认脚本可正常加载且手牌区域未遮挡战场。
+
 - 日期：2026-03-25
 - 类型：测试
 - 摘要：新增 `hand_available_actions_smoke_test.gd` 冒烟测试文件，覆盖手牌卡牌 available_actions 计算逻辑。测试内容包括：角色/场地/事件卡打出动作标识、AP/能量/区域容量条件检查、RAID 能力从手牌打出条件、非 MAIN 阶段限制、对手回合卡牌无动作等 14 个测试用例。
