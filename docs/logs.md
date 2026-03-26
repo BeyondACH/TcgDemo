@@ -318,3 +318,18 @@
 - 摘要：补充协作规范，明确 Godot 相关命令默认只在沙箱外执行，避免因沙箱内 `user://logs` 写入失败导致的启动异常与误判。
 - 影响文件或模块：`AGENTS.md`、`docs/logs.md`
 - 验证方式与结果：静态检查 `AGENTS.md` 的“Godot 特别注意事项”段落，已新增“默认只在沙箱外运行 Godot”的明确约束，并与本轮实际冒烟执行方式保持一致。
+- 日期：2026-03-26
+- 类型：功能更新
+- 摘要：将“看牌堆顶”相关的人类玩家待决策改为专用临时弹窗，展示已查看的全部卡牌缩略图并支持点选确认；若后续需要把剩余卡按顺序回到底部，则自动切换为第二个排序弹窗继续处理，普通非预览类待决策仍保留底部通用面板。
+- 影响文件或模块：`core/effect_resolver.gd`、`core/game_manager.gd`、`ui/preview_selection_modal.gd`、`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
+- 验证方式与结果：在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并加载新弹窗脚本；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 10 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`，确认预览选牌、回底排序与后续弃牌链路的业务结果保持不变；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\CodexWork\TcgDemo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认新增模态层后手牌区域仍未遮挡战场。运行过程中仍有既有 anchors 警告与资源未释放告警，但未阻塞本轮断言通过。
+- 日期：2026-03-26
+- 类型：bugfix
+- 摘要：修复手牌悬停时底部预览面板被显示并撑高 Bottom HUD 的问题，改为悬停仅保留事件语义，只有点击选中手牌时才更新预览，避免手牌区域在 hover 时整体上抬。
+- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `_on_hand_card_hovered()` 不再在 hover enter 或 hover exit 时调用 `card_preview_panel.set_card_data()`、`clear_card()` 来改变预览面板显隐；当前底部预览仅由手牌选中流程驱动，可避免悬停时 `BottomContent` 高度突增。
+- 日期：2026-03-26
+- 类型：功能更新
+- 摘要：将卡牌预览面板从底部操作区移出，改为固定显示在战场顶部左侧的独立浮层，并在响应式布局更新时根据顶部 HUD 底边重新定位，避免预览面板继续参与底部手牌区排版。
+- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `CardPreviewPanel` 已从 `UILayer/BottomHUD/BottomPanel/BottomContent` 迁移到 `UILayer` 直属节点，`ui/battle_scene.gd` 的 `@onready` 路径与 `_update_preview_panel_layout()` 已同步指向顶部左侧浮层定位逻辑。

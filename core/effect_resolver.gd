@@ -344,6 +344,11 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 			var preview_count := mini(count, player.deck.size())
 			preview_cards = player.deck.slice(0, preview_count)
 		context[preview_var] = preview_cards
+		_register_preview_ui_meta(context, preview_var, {
+			"title": str(step.get("title", "查看牌堆顶")),
+			"player_id": player_id,
+			"count": count,
+		})
 		preview_logs.append("%s previews %d card(s) from the top of the deck." % [player_id, preview_cards.size()])
 		return {"logs": preview_logs, "paused": false}
 	if step_type == "SELECT_TARGETS":
@@ -353,7 +358,7 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 		if bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL":
 			if context.has(selected_var):
 				return {"logs": [], "paused": false}
-			if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, remaining_steps):
+			if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, remaining_steps, false, _build_preview_pick_ui_meta(target, context)):
 				return {"logs": [], "paused": true}
 		if int(target.get("max", selected.size())) == 1:
 			context[selected_var] = selected[0] if not selected.is_empty() else ""
@@ -394,7 +399,7 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 			"selection_mode": "MANUAL",
 			"manual": true,
 		}
-		if _enqueue_target_selection(state, source_card_uid, effect, ordered_var, reorder_target, candidates, context, remaining_steps, false):
+		if _enqueue_target_selection(state, source_card_uid, effect, ordered_var, reorder_target, candidates, context, remaining_steps, false, _build_preview_reorder_ui_meta(source_var, candidates, context)):
 			return {"logs": [], "paused": true}
 		return {"logs": [], "paused": false}
 	if step_type == "MOVE_TOP_DECK_TO_LIFE":
@@ -717,7 +722,7 @@ func _prepare_effect_targets(state: GameState, source_card_uid: String, effect: 
 		if bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL":
 			if selected.is_empty() and min_count > 0:
 				return {"ok": false, "logs": ["Effect target selection failed: no legal targets."], "paused": false}
-			if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, [], true):
+			if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, [], true, _build_preview_pick_ui_meta(target, context)):
 				return {"ok": true, "logs": [], "paused": true}
 		if max_count == 1:
 			context[selected_var] = selected[0] if not selected.is_empty() else ""
@@ -1056,7 +1061,7 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		return unique_names.size() >= min_count
 	return _matches_filter(state, requirement, context, candidate_card_uid, source_card_uid)
 
-func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false) -> bool:
+func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false, ui_meta: Dictionary = {}) -> bool:
 	var min_count := int(target.get("min", 0))
 	var max_count := int(target.get("max", 1))
 	if candidates.is_empty():
@@ -1102,8 +1107,51 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		"choices": choices,
 		"min": min_count,
 		"max": max_count,
+		"selection_constraints": target.get("selection_constraints", {}).duplicate(true),
+		"ui_mode": str(ui_meta.get("ui_mode", "")),
+		"preview_card_uids": _ensure_array(ui_meta.get("preview_card_uids", [])).duplicate(),
+		"title": str(ui_meta.get("title", "")),
 	})
 	return true
+
+func _register_preview_ui_meta(context: Dictionary, preview_var: String, meta: Dictionary) -> void:
+	var preview_ui_meta: Dictionary = context.get("_preview_ui_meta", {})
+	preview_ui_meta = preview_ui_meta.duplicate(true)
+	preview_ui_meta[preview_var] = meta.duplicate(true)
+	context["_preview_ui_meta"] = preview_ui_meta
+
+func _get_preview_ui_meta(context: Dictionary, preview_var: String) -> Dictionary:
+	var preview_ui_meta: Dictionary = context.get("_preview_ui_meta", {})
+	if not preview_ui_meta.has(preview_var):
+		return {}
+	return (preview_ui_meta.get(preview_var, {}) as Dictionary).duplicate(true)
+
+func _build_preview_pick_ui_meta(target: Dictionary, context: Dictionary) -> Dictionary:
+	if str(target.get("type", "")) != "CONTEXT_CARD_SET":
+		return {}
+	var source_var := str(target.get("source_var", ""))
+	if source_var == "":
+		return {}
+	var preview_meta := _get_preview_ui_meta(context, source_var)
+	if preview_meta.is_empty():
+		return {}
+	return {
+		"ui_mode": "PREVIEW_PICK",
+		"preview_card_uids": _ensure_array(context.get(source_var, [])).duplicate(),
+		"title": str(preview_meta.get("title", "查看牌堆顶")),
+	}
+
+func _build_preview_reorder_ui_meta(source_var: String, candidates: Array, context: Dictionary) -> Dictionary:
+	if source_var == "":
+		return {}
+	var preview_meta := _get_preview_ui_meta(context, source_var)
+	if preview_meta.is_empty():
+		return {}
+	return {
+		"ui_mode": "PREVIEW_REORDER",
+		"preview_card_uids": candidates.duplicate(),
+		"title": "调整剩余卡牌回到底部的顺序",
+	}
 
 func _normalize_selection_payload(selected_values, max_count: int) -> Array:
 	var result: Array = []

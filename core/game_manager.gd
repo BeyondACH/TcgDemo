@@ -408,7 +408,7 @@ func get_snapshot() -> Dictionary:
 		"winner_player_id": game_state.winner_player_id,
 		"battle_context": game_state.battle_context.duplicate(true),
 		"effect_queue_count": game_state.effect_queue.size(),
-		"pending_decisions": game_state.pending_decisions.duplicate(true),
+		"pending_decisions": _serialize_pending_decisions(action_player_id),
 		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),
 		"controller_types": {
 			UATypes.PLAYER_ONE: get_controller_type(UATypes.PLAYER_ONE),
@@ -576,30 +576,55 @@ func _serialize_player(player_id: String, action_player_id: String) -> Dictionar
 func _serialize_cards(card_uids: Array[String], action_player_id: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for card_uid in card_uids:
-		var card: CardInstance = game_state.get_card(card_uid)
-		var card_def: CardDef = null
-		if card != null:
-			card_def = game_state.get_card_def(card.def_id)
-		if card == null or card_def == null:
-			continue
-		result.append({
-			"uid": card.uid,
-			"name": card_def.name,
-			"card_type": UATypes.card_type_to_text(card_def.card_type),
-			"number": card_def.number,
-			"source_image": card_def.source_image,
-			"zone": UATypes.zone_to_key(card.zone),
-			"state": UATypes.state_to_text(card.state),
-			"bp": card.current_bp,
-			"cost_ap": card_def.cost_ap,
-			"cost_energy": card_def.cost_energy.duplicate(true),
-			"energy_provided": card_def.energy_provided.duplicate(true),
-			"keywords": _runtime_keywords_for(card, card_def),
-			"stacked_under": card.stacked_under.duplicate(),
-			"flags": card.flags.duplicate(true),
-			"available_actions": rules_engine.get_card_available_actions(game_state, action_player_id, card.uid),
-		})
+		var serialized := _serialize_card(card_uid, action_player_id, true)
+		if not serialized.is_empty():
+			result.append(serialized)
 	return result
+
+func _serialize_pending_decisions(action_player_id: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for pending_variant in game_state.pending_decisions:
+		var pending: Dictionary = (pending_variant as Dictionary).duplicate(true)
+		var preview_card_uids: Array = pending.get("preview_card_uids", [])
+		if not preview_card_uids.is_empty():
+			pending["preview_cards"] = _serialize_card_list_for_ui(preview_card_uids, action_player_id)
+		result.append(pending)
+	return result
+
+func _serialize_card_list_for_ui(card_uids: Array, action_player_id: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for card_uid_variant in card_uids:
+		var serialized := _serialize_card(str(card_uid_variant), action_player_id, false)
+		if not serialized.is_empty():
+			result.append(serialized)
+	return result
+
+func _serialize_card(card_uid: String, action_player_id: String, include_actions: bool) -> Dictionary:
+	var card: CardInstance = game_state.get_card(card_uid)
+	var card_def: CardDef = null
+	if card != null:
+		card_def = game_state.get_card_def(card.def_id)
+	if card == null or card_def == null:
+		return {}
+	var serialized := {
+		"uid": card.uid,
+		"name": card_def.name,
+		"card_type": UATypes.card_type_to_text(card_def.card_type),
+		"number": card_def.number,
+		"source_image": card_def.source_image,
+		"zone": UATypes.zone_to_key(card.zone),
+		"state": UATypes.state_to_text(card.state),
+		"bp": card.current_bp,
+		"cost_ap": card_def.cost_ap,
+		"cost_energy": card_def.cost_energy.duplicate(true),
+		"energy_provided": card_def.energy_provided.duplicate(true),
+		"keywords": _runtime_keywords_for(card, card_def),
+		"stacked_under": card.stacked_under.duplicate(),
+		"flags": card.flags.duplicate(true),
+	}
+	if include_actions:
+		serialized["available_actions"] = rules_engine.get_card_available_actions(game_state, action_player_id, card.uid)
+	return serialized
 
 func _serialize_life_cards(card_uids: Array[String]) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []

@@ -8,6 +8,7 @@ const HandView = preload("res://ui/hand_view.gd")
 const CardPreviewPanel = preload("res://ui/card_preview_panel.gd")
 const LogPanel = preload("res://ui/log_panel.gd")
 const PhaseIndicator = preload("res://ui/phase_indicator.gd")
+const PreviewSelectionModal = preload("res://ui/preview_selection_modal.gd")
 const ZoneLayoutConfig = preload("res://data/zone_layout_config.gd")
 
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
@@ -20,6 +21,8 @@ const SMALL_WIDTH_THRESHOLD := 1650.0
 const BOARD_BOTTOM_GAP := 28.0
 const BOARD_TOP_GAP := 18.0
 const BOTTOM_HUD_BOTTOM_MARGIN := 12.0
+const PREVIEW_PANEL_LEFT_MARGIN := 12.0
+const PREVIEW_PANEL_TOP_GAP := 12.0
 const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
 const MIN_BOARD_VISIBLE_HEIGHT_COMPACT := 500.0
 const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
@@ -50,7 +53,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var no_block_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/NoBlockButton
 @onready var winner_label: Label = $UILayer/TopHUD/TopBar/StatusRow/WinnerLabel
 @onready var hand_view: HandView = $UILayer/BottomHUD/BottomPanel/BottomContent/HandView
-@onready var card_preview_panel: CardPreviewPanel = $UILayer/BottomHUD/BottomPanel/BottomContent/CardPreviewPanel
+@onready var card_preview_panel: CardPreviewPanel = $UILayer/CardPreviewPanel
 @onready var action_bar: HFlowContainer = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar
 @onready var selected_card_label: Label = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/SelectedCardLabel
 @onready var play_front_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/ActionBar/PlayFrontButton
@@ -71,6 +74,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var pending_decision_choice_picker: OptionButton = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/PendingDecisionChoicePicker
 @onready var resolve_pending_decision_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/ResolvePendingDecisionButton
 @onready var log_panel: LogPanel = $UILayer/LogPanel
+@onready var preview_selection_modal: PreviewSelectionModal = $UILayer/PreviewSelectionModal
 @onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/LogToggleButton
 
 var _snapshot: Dictionary = {}
@@ -107,6 +111,7 @@ func _ready() -> void:
 	pending_decision_picker.item_selected.connect(_on_pending_decision_selected)
 	pending_decision_choice_picker.item_selected.connect(_on_pending_decision_choice_selected)
 	resolve_pending_decision_button.pressed.connect(_on_resolve_pending_decision_pressed)
+	preview_selection_modal.submitted.connect(_on_preview_modal_submitted)
 	cancel_selection_button.pressed.connect(_clear_selection)
 	log_toggle_button.pressed.connect(_on_log_toggle_pressed)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
@@ -197,6 +202,14 @@ func _update_responsive_layout() -> void:
 	var hand_right := outside_rect.position.x - 20.0
 	var hand_width := hand_right - hand_left
 	hand_view.set_hand_bounds(hand_left, hand_right, hand_width)
+	_update_preview_panel_layout()
+
+func _update_preview_panel_layout() -> void:
+	var top_hud_rect := top_hud.get_global_rect()
+	card_preview_panel.position = Vector2(
+		PREVIEW_PANEL_LEFT_MARGIN,
+		top_hud_rect.position.y + top_hud_rect.size.y + PREVIEW_PANEL_TOP_GAP
+	)
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
@@ -223,6 +236,7 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	hand_view.set_hand(active_player_id, active_hand)
 	_update_hand_playable_states(active_player_id, active_hand)
 	_sync_pending_decision_controls()
+	_sync_preview_selection_modal()
 	_sync_life_trigger_controls()
 	selected_card_label.text = _selected_label_text(active_player_id)
 	_update_action_buttons()
@@ -249,6 +263,8 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	activate_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == "" or not human_input_enabled
 	skip_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == "" or not human_input_enabled
 	pending_decision_panel.visible = has_pending_decisions
+	if _is_preview_pending_decision(_current_pending_decision()):
+		pending_decision_panel.visible = false
 	resolve_pending_decision_button.disabled = has_winner or not has_pending_decisions or _selected_pending_decision_index < 0 or not human_input_enabled
 
 func _on_hand_card_selected(card_uid: String) -> void:
@@ -267,20 +283,14 @@ func _on_hand_card_selected(card_uid: String) -> void:
 		card_preview_panel.set_card_data(card_data)
 
 func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
-	if is_hovered:
+	# 悬停不再驱动底部预览面板显隐，避免 BottomContent 因新增预览面板高度而整体上抬。
+	if _selected_hand_card_uid == "":
+		return
+	if not is_hovered and card_uid == _selected_hand_card_uid:
 		var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-		var card_data := _find_hand_card(active_player_id, card_uid)
+		var card_data := _find_hand_card(active_player_id, _selected_hand_card_uid)
 		if not card_data.is_empty():
 			card_preview_panel.set_card_data(card_data)
-	else:
-		# 如果有选中的牌，保持显示选中的牌
-		if _selected_hand_card_uid != "":
-			var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-			var card_data := _find_hand_card(active_player_id, _selected_hand_card_uid)
-			if not card_data.is_empty():
-				card_preview_panel.set_card_data(card_data)
-		else:
-			card_preview_panel.clear_card()
 
 func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
@@ -516,11 +526,11 @@ func _on_log_toggle_pressed() -> void:
 
 func _selected_label_text(active_player_id: String) -> String:
 	if _has_pending_decisions():
-		if _selected_pending_decision_index >= 0:
-			var pending_decisions: Array = _snapshot.get("pending_decisions", [])
-			if _selected_pending_decision_index < pending_decisions.size():
-				var decision: Dictionary = pending_decisions[_selected_pending_decision_index]
-				return "Pending: %s (%s)" % [str(decision.get("type", "decision")), str(decision.get("source_card_uid", ""))]
+		var decision := _current_pending_decision()
+		if not decision.is_empty():
+			if _is_preview_pending_decision(decision):
+				return str(decision.get("title", "处理看牌堆顶"))
+			return "Pending: %s (%s)" % [str(decision.get("type", "decision")), str(decision.get("source_card_uid", ""))]
 		return "Resolve pending decision"
 	if _has_pending_life_triggers():
 		var owner_id := ""
@@ -639,16 +649,19 @@ func _sync_pending_decision_controls() -> void:
 		pending_decision_picker.set_item_metadata(i, i)
 	if _selected_pending_decision_index < 0 or _selected_pending_decision_index >= pending.size():
 		_selected_pending_decision_index = 0
+	var decision: Dictionary = pending[_selected_pending_decision_index]
+	if _is_preview_pending_decision(decision):
+		pending_decision_panel.visible = false
+		return
 	pending_decision_picker.select(_selected_pending_decision_index)
 	_rebuild_pending_decision_choices()
 	pending_decision_panel.visible = true
 
 func _rebuild_pending_decision_choices() -> void:
 	pending_decision_choice_picker.clear()
-	var pending: Array = _snapshot.get("pending_decisions", [])
-	if _selected_pending_decision_index < 0 or _selected_pending_decision_index >= pending.size():
+	var decision := _current_pending_decision()
+	if decision.is_empty() or _is_preview_pending_decision(decision):
 		return
-	var decision: Dictionary = pending[_selected_pending_decision_index]
 	var owner_text := str(decision.get("owner_player_id", ""))
 	if owner_text == "":
 		pending_decision_label.text = "Pending Decision: %s" % str(decision.get("type", "Decision"))
@@ -670,6 +683,7 @@ func _on_pending_decision_selected(index: int) -> void:
 	_selected_pending_decision_index = index
 	_selected_pending_decision_choice_index = 0
 	_rebuild_pending_decision_choices()
+	_sync_preview_selection_modal()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 
 func _on_pending_decision_choice_selected(index: int) -> void:
@@ -688,6 +702,22 @@ func _on_resolve_pending_decision_pressed() -> void:
 		"choice": choice_value,
 	})
 
+func _on_preview_modal_submitted(selected_values: Array) -> void:
+	if not _human_input_enabled():
+		return
+	var decision := _current_pending_decision()
+	if decision.is_empty():
+		return
+	var payload := {
+		"source_card_uid": str(decision.get("source_card_uid", "")),
+		"resolution_id": str(decision.get("resolution_id", "")),
+	}
+	if int(decision.get("max", 1)) == 1:
+		payload["choice"] = str(selected_values[0]) if not selected_values.is_empty() else ""
+	else:
+		payload["choices"] = selected_values.duplicate()
+	game_manager.resolve_pending_decision(str(decision.get("type", "")), payload)
+
 func _has_pending_life_triggers() -> bool:
 	return not (_snapshot.get("pending_life_triggers", []) as Array).is_empty()
 
@@ -696,6 +726,24 @@ func _has_pending_decisions() -> bool:
 
 func _has_pending_gate() -> bool:
 	return _has_pending_life_triggers() or _has_pending_decisions()
+
+func _current_pending_decision() -> Dictionary:
+	var pending: Array = _snapshot.get("pending_decisions", [])
+	if pending.is_empty():
+		return {}
+	if _selected_pending_decision_index < 0 or _selected_pending_decision_index >= pending.size():
+		_selected_pending_decision_index = 0
+	return pending[_selected_pending_decision_index]
+
+func _is_preview_pending_decision(decision: Dictionary) -> bool:
+	return str(decision.get("ui_mode", "")) == "PREVIEW_PICK" or str(decision.get("ui_mode", "")) == "PREVIEW_REORDER"
+
+func _sync_preview_selection_modal() -> void:
+	var decision := _current_pending_decision()
+	if not _human_input_enabled() or decision.is_empty() or not _is_preview_pending_decision(decision):
+		preview_selection_modal.hide_modal()
+		return
+	preview_selection_modal.show_decision(decision)
 
 func _update_hand_playable_states(player_id: String, hand_cards: Array) -> void:
 	var phase := str(_snapshot.get("phase", ""))
