@@ -26,7 +26,7 @@ const STARTER_A_PATH := "res://data/decks/starter_a.txt"
 const STARTER_B_PATH := "res://data/decks/starter_b.txt"
 
 @export_enum("HUMAN", "AI_SIMPLE") var player_one_controller_type := PlayerController.CONTROLLER_HUMAN
-@export_enum("HUMAN", "AI_SIMPLE") var player_two_controller_type := PlayerController.CONTROLLER_HUMAN
+@export_enum("HUMAN", "AI_SIMPLE") var player_two_controller_type := PlayerController.CONTROLLER_AI_SIMPLE
 
 var game_state := GameState.new()
 var zone_manager := ZoneManager.new()
