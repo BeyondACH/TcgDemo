@@ -10,6 +10,7 @@ const DISPLAY_MODE_HAND := "hand"
 const HAND_PADDING := 2
 const HAND_IMAGE_ASPECT_RATIO := 5.0 / 7.0
 const BOARD_PADDING := 4
+const RESTED_ROTATION_DEGREES := -90.0
 const PLAYABLE_BORDER_COLOR := Color(0.2, 0.8, 0.3, 0.9)
 const PLAYABLE_BORDER_WIDTH := 3.0
 
@@ -115,9 +116,11 @@ func _refresh_view() -> void:
 	var font_size: int = 10 if _card_size.y <= 44 else (11 if _card_size.y <= 60 else (12 if _card_size.y <= 72 else 14))
 	add_theme_font_size_override("font_size", font_size)
 	_fallback_label.add_theme_font_size_override("font_size", font_size)
+	_reset_board_orientation()
 	_fallback_label.visible = true
 	_hand_image.visible = false
 	_board_column.visible = false
+	_board_text.visible = false
 	if _display_mode == DISPLAY_MODE_HAND:
 		var hand_texture := _resolve_card_texture(_card_data, true)
 		if hand_texture != null:
@@ -134,9 +137,12 @@ func _refresh_view() -> void:
 			_fallback_label.visible = false
 			_board_column.visible = true
 			_board_image.texture = board_texture
-			_board_image.custom_minimum_size = _board_image_size()
+			_board_image.custom_minimum_size = _board_content_size(_is_rested_state())
+			_apply_board_orientation()
 			return
-	_fallback_label.text = _build_text(_card_data)
+	_fallback_label.text = _build_board_thumbnail_text(_card_data) if _display_mode == DISPLAY_MODE_BOARD else _build_text(_card_data)
+	if _display_mode == DISPLAY_MODE_BOARD:
+		_apply_board_orientation()
 
 func _build_text(card_data: Dictionary) -> String:
 	if _display_mode == DISPLAY_MODE_HAND:
@@ -256,6 +262,51 @@ func _board_image_size() -> Vector2:
 	var image_height: float = maxi(48.0, _card_size.y - float(BOARD_PADDING * 2))
 	var image_width: float = round(image_height * HAND_IMAGE_ASPECT_RATIO)
 	return Vector2(minf(_card_size.x - float(BOARD_PADDING * 2), image_width), image_height)
+
+func _board_content_size(rested: bool) -> Vector2:
+	var available_width := maxf(24.0, _card_size.x - float(BOARD_PADDING * 2))
+	var available_height := maxf(24.0, _card_size.y - float(BOARD_PADDING * 2))
+	if rested:
+		var portrait_width := minf(available_height, available_width * HAND_IMAGE_ASPECT_RATIO)
+		var portrait_height := portrait_width / HAND_IMAGE_ASPECT_RATIO
+		return Vector2(portrait_width, portrait_height)
+	var portrait_height := minf(available_height, available_width / HAND_IMAGE_ASPECT_RATIO)
+	var portrait_width := portrait_height * HAND_IMAGE_ASPECT_RATIO
+	return Vector2(portrait_width, portrait_height)
+
+func _apply_board_orientation() -> void:
+	if _display_mode != DISPLAY_MODE_BOARD:
+		return
+	var rested := _is_rested_state()
+	var target: Control = _board_column if _board_column.visible else _fallback_label
+	var content_size := _board_content_size(rested)
+	target.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	target.size = content_size
+	target.position = (_card_size - content_size) * 0.5
+	target.pivot_offset = content_size * 0.5
+	target.rotation_degrees = RESTED_ROTATION_DEGREES if rested else 0.0
+
+func _is_rested_state() -> bool:
+	var state_text := str(_card_data.get("state", "ACTIVE")).to_upper()
+	return state_text == "REST" or state_text == "RESTED"
+
+func _reset_board_orientation() -> void:
+	if _fallback_label != null:
+		_fallback_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_fallback_label.offset_left = HAND_PADDING
+		_fallback_label.offset_top = HAND_PADDING
+		_fallback_label.offset_right = -HAND_PADDING
+		_fallback_label.offset_bottom = -HAND_PADDING
+		_fallback_label.pivot_offset = Vector2.ZERO
+		_fallback_label.rotation_degrees = 0.0
+	if _board_column != null:
+		_board_column.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_board_column.offset_left = BOARD_PADDING
+		_board_column.offset_top = BOARD_PADDING
+		_board_column.offset_right = -BOARD_PADDING
+		_board_column.offset_bottom = -BOARD_PADDING
+		_board_column.pivot_offset = Vector2.ZERO
+		_board_column.rotation_degrees = 0.0
 
 func _compact_hint(card_data: Dictionary) -> String:
 	var actions := _format_string_list(card_data.get("available_actions", []))

@@ -28,6 +28,13 @@ const HAND_STRIP_HEIGHT_SMALL := 148.0
 const HAND_STRIP_INTERNAL_WIDTH_MARGIN := 24.0
 const PREVIEW_PANEL_LEFT_MARGIN := 12.0
 const PREVIEW_PANEL_TOP_GAP := 12.0
+const LOG_PANEL_TOP_GAP := 10.0
+const LOG_PANEL_RIGHT_MARGIN := 12.0
+const LOG_PANEL_DEFAULT_WIDTH := 340.0
+const LOG_PANEL_COMPACT_WIDTH := 300.0
+const LOG_PANEL_SMALL_WIDTH := 280.0
+const LOG_PANEL_MIN_HEIGHT := 180.0
+const LOG_PANEL_BOTTOM_CLEARANCE := 16.0
 const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
 const MIN_BOARD_VISIBLE_HEIGHT_COMPACT := 500.0
 const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
@@ -46,6 +53,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var status_row: HFlowContainer = $UILayer/TopHUD/TopBar/StatusRow
 @onready var action_row: VBoxContainer = $UILayer/TopHUD/TopBar/ActionRow
 @onready var action_button_row: HBoxContainer = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow
+@onready var phase_controls: VBoxContainer = $UILayer/TopHUD/TopBar/PhaseControls
 @onready var turn_label: Label = $UILayer/TopHUD/TopBar/StatusRow/TurnLabel
 @onready var active_player_label: Label = $UILayer/TopHUD/TopBar/StatusRow/ActivePlayerLabel
 @onready var player_info_row: HFlowContainer = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow
@@ -53,7 +61,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var hand_count_label: Label = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow/HandCountLabel
 @onready var energy_label: Label = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow/EnergyLabel
 @onready var ap_label: Label = $UILayer/TopHUD/TopBar/ActionRow/PlayerInfoPanel/PlayerInfoRow/ApLabel
-@onready var next_phase_button: Button = $UILayer/TopHUD/TopBar/NextPhaseButton
+@onready var next_phase_button: Button = $UILayer/TopHUD/TopBar/PhaseControls/NextPhaseButton
 @onready var bonus_draw_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/BonusDrawButton
 @onready var no_block_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/NoBlockButton
 @onready var winner_label: Label = $UILayer/TopHUD/TopBar/StatusRow/WinnerLabel
@@ -80,7 +88,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var resolve_pending_decision_button: Button = $UILayer/BottomHUD/BottomPanel/BottomContent/PendingDecisionPanel/ResolvePendingDecisionButton
 @onready var log_panel: LogPanel = $UILayer/LogPanel
 @onready var preview_selection_modal: PreviewSelectionModal = $UILayer/PreviewSelectionModal
-@onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow/LogToggleButton
+@onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/PhaseControls/LogToggleButton
 
 var _snapshot: Dictionary = {}
 var _selected_hand_card_uid := ""
@@ -169,6 +177,7 @@ func _update_responsive_layout() -> void:
 	status_row.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	action_row.add_theme_constant_override("separation", 4 if very_small else (6 if compact else 8))
 	action_button_row.add_theme_constant_override("separation", 6 if very_small else (8 if compact else 12))
+	phase_controls.add_theme_constant_override("separation", 4 if very_small else 6)
 	player_info_row.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 10))
 	player_info_row.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	bottom_panel.get_child(0).add_theme_constant_override("separation", 6 if very_small else (8 if compact else 10))
@@ -215,6 +224,7 @@ func _update_responsive_layout() -> void:
 	var hand_width := maxf(320.0, viewport_width - BOTTOM_HUD_SIDE_MARGIN * 2.0 - HAND_STRIP_INTERNAL_WIDTH_MARGIN)
 	hand_view.set_hand_bounds(0.0, hand_width, hand_width)
 	_update_preview_panel_layout()
+	_update_log_panel_layout(compact, very_small, viewport_height)
 
 func _update_preview_panel_layout() -> void:
 	var top_hud_rect := top_hud.get_global_rect()
@@ -222,6 +232,20 @@ func _update_preview_panel_layout() -> void:
 		PREVIEW_PANEL_LEFT_MARGIN,
 		top_hud_rect.position.y + top_hud_rect.size.y + PREVIEW_PANEL_TOP_GAP
 	)
+
+func _update_log_panel_layout(compact: bool, very_small: bool, viewport_height: float) -> void:
+	var toggle_rect := log_toggle_button.get_global_rect()
+	var bottom_hud_rect := bottom_hud.get_global_rect()
+	var panel_width := LOG_PANEL_SMALL_WIDTH if very_small else (LOG_PANEL_COMPACT_WIDTH if compact else LOG_PANEL_DEFAULT_WIDTH)
+	var panel_top := toggle_rect.position.y + toggle_rect.size.y + LOG_PANEL_TOP_GAP
+	var panel_height := maxf(LOG_PANEL_MIN_HEIGHT, bottom_hud_rect.position.y - panel_top - LOG_PANEL_BOTTOM_CLEARANCE)
+	var panel_left := minf(
+		get_viewport_rect().size.x - panel_width - LOG_PANEL_RIGHT_MARGIN,
+		toggle_rect.position.x + toggle_rect.size.x - panel_width
+	)
+	log_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	log_panel.position = Vector2(maxf(12.0, panel_left), panel_top)
+	log_panel.size = Vector2(panel_width, minf(panel_height, viewport_height - panel_top - LOG_PANEL_BOTTOM_CLEARANCE))
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot

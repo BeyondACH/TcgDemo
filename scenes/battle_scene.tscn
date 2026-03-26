@@ -193,10 +193,6 @@ text = "Bonus Draw (1 AP)"
 layout_mode = 2
 text = "No Block"
 
-[node name="LogToggleButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow"]
-layout_mode = 2
-text = "Log"
-
 [node name="PlayerInfoPanel" type="PanelContainer" parent="UILayer/TopHUD/TopBar/ActionRow"]
 layout_mode = 2
 size_flags_horizontal = 8
@@ -224,9 +220,18 @@ text = "Energy: 0"
 layout_mode = 2
 text = "AP: 0/0"
 
-[node name="NextPhaseButton" type="Button" parent="UILayer/TopHUD/TopBar"]
+[node name="PhaseControls" type="VBoxContainer" parent="UILayer/TopHUD/TopBar"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/separation = 6
+
+[node name="NextPhaseButton" type="Button" parent="UILayer/TopHUD/TopBar/PhaseControls"]
 layout_mode = 2
 text = "Next Phase"
+
+[node name="LogToggleButton" type="Button" parent="UILayer/TopHUD/TopBar/PhaseControls"]
+layout_mode = 2
+text = "Log"
 
 [node name="BottomHUD" type="MarginContainer" parent="UILayer"]
 layout_mode = 1
@@ -352,15 +357,10 @@ script = ExtResource("8_preview_modal")
 [node name="LogPanel" type="PanelContainer" parent="UILayer"]
 visible = false
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -360.0
-offset_top = 40.0
-offset_bottom = -200.0
-grow_horizontal = 0
-grow_vertical = 2
+anchors_preset = 0
+offset_left = 1068.0
+offset_top = 82.0
+offset_right = 1408.0
+offset_bottom = 542.0
 custom_minimum_size = Vector2(340, 200)
 script = ExtResource("5_log")

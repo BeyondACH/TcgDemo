@@ -445,3 +445,23 @@
 - 变更摘要：将 `CardPreviewPanel` 在当前基础上整体放大一倍，同步提升预览卡图目标尺寸与场景初始外框大小，使完整原图在预览面板中以更大的比例显示。
 - 影响文件或模块：`ui/card_preview_panel.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
 - 验证方式与结果：静态检查确认 `PREVIEW_CARD_SIZE` 已从 `220x308` 调整为 `440x616`，场景中的 `CardPreviewPanel` 初始矩形也已按对应外边距放大；随后使用项目内置 Godot 执行 `--layout-probe` 复验。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：战场上的角色与场地卡改为根据运行时 `state` 自动切换朝向，`RESTED` 横置显示、`ACTIVE` 竖立显示，并在重复刷新时重置旋转与锚点，避免状态切换后出现朝向残留。
+- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认仅战场模式读取快照中的 `state` 控制朝向，手牌模式保持不变；`_reset_board_orientation()` 会在每次刷新前恢复锚点与旋转，`_apply_board_orientation()` 再按 `RESTED/ACTIVE` 重新布局，覆盖前线与能量线两类战场卡位。随后在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit` 成功启动项目；执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认手牌区域仍未遮挡战场。运行过程中仍有既有 anchors warning，但未出现本轮新增脚本错误。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修正战场卡牌横置判断与快照状态文本不一致的问题，`ui/card_view.gd` 现同时兼容 `REST` 与 `RESTED`，确保新打出的休息状态卡牌会立即横置显示。
+- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `GameManager` 快照通过 `UATypes.state_to_text()` 输出的休息状态文本为 `REST`，战场朝向逻辑已改为兼容 `REST/RESTED` 两种文本；布局逻辑其余部分未改动。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：将战场休息状态卡牌的横置方向由原先方向调整为向左横置，使视觉方向符合当前对局展示预期。
+- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `RESTED`/`REST` 状态对应的旋转角度已由 `90` 调整为 `-90`；随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认布局未受影响。运行过程中仍有既有 anchors warning，但未出现本轮新增脚本错误。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：将顶部 HUD 的 `Log` 按钮改为放在 `Next Phase` 下方单独一行，并让日志面板从该按钮下方展开，避免遮挡顶部其它操作按钮。
+- 影响文件或模块：`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `TopBar` 右侧已改为 `PhaseControls` 竖排容器，`Next Phase` 与 `Log` 按钮上下排列；`_update_log_panel_layout()` 会按 `Log` 按钮位置将日志面板布置到其下方，并在底部 HUD 之上收口高度，避免覆盖其它顶部按钮。随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认手牌区域仍未遮挡战场且顶部 HUD 布局未被破坏。运行过程中仍有既有 anchors warning，但未出现本轮新增脚本错误。

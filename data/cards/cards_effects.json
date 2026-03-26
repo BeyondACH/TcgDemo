@@ -592,7 +592,9 @@
         "RED": 2
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 1
+      },
       "bp": 2500,
       "keywords": [],
       "text": {
