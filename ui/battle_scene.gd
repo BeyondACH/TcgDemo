@@ -201,12 +201,15 @@ func _update_responsive_layout() -> void:
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
 	var active_player_id := str(snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var priority_player_id := str(snapshot.get("priority_player_id", active_player_id))
+	var controller_types: Dictionary = snapshot.get("controller_types", {})
 	var players: Dictionary = snapshot.get("players", {})
 	var p1: Dictionary = players.get(UATypes.PLAYER_ONE, {})
 	var p2: Dictionary = players.get(UATypes.PLAYER_TWO, {})
 	var active_player_data: Dictionary = p1 if active_player_id == UATypes.PLAYER_ONE else p2
+	var action_controller_type := str(controller_types.get(priority_player_id, snapshot.get("action_player_controller", "HUMAN")))
 	turn_label.text = "Turn %d" % int(snapshot.get("turn_number", 1))
-	active_player_label.text = "Active: %s" % active_player_id
+	active_player_label.text = "Action: %s (%s)" % [priority_player_id, action_controller_type]
 	phase_indicator.set_phase_text(str(snapshot.get("phase", "START")))
 	hand_count_label.text = "Hand: %d" % int(active_player_data.get("hand_count", 0))
 	energy_label.text = "Energy: %s" % _format_energy_total(active_player_data.get("available_energy", {}))
@@ -230,9 +233,10 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	var has_pending_gate := has_pending_life or has_pending_decisions
 	var phase := str(snapshot.get("phase", "START"))
 	var can_bonus_draw := bool(snapshot.get("can_bonus_draw", false))
+	var human_input_enabled := _human_input_enabled()
 	bonus_draw_button.visible = phase == "DRAW"
-	bonus_draw_button.disabled = has_winner or has_pending_gate or not can_bonus_draw
-	next_phase_button.disabled = has_winner or has_pending_gate
+	bonus_draw_button.disabled = has_winner or has_pending_gate or not can_bonus_draw or not human_input_enabled
+	next_phase_button.disabled = has_winner or has_pending_gate or not human_input_enabled
 	play_front_button.disabled = play_front_button.disabled or has_winner or has_pending_gate
 	play_energy_button.disabled = play_energy_button.disabled or has_winner or has_pending_gate
 	use_event_button.disabled = use_event_button.disabled or has_winner or has_pending_gate
@@ -240,15 +244,15 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	step_button.disabled = step_button.disabled or has_winner or has_pending_gate
 	move_front_button.disabled = move_front_button.disabled or has_winner or has_pending_gate
 	sniper_attack_button.disabled = sniper_attack_button.disabled or has_winner or has_pending_gate
-	no_block_button.disabled = has_winner or has_pending_gate
-	cancel_selection_button.disabled = cancel_selection_button.disabled or has_winner or has_pending_gate
-	activate_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == ""
-	skip_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == ""
+	no_block_button.disabled = has_winner or has_pending_gate or not human_input_enabled
+	cancel_selection_button.disabled = cancel_selection_button.disabled or has_winner or has_pending_gate or not human_input_enabled
+	activate_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == "" or not human_input_enabled
+	skip_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == "" or not human_input_enabled
 	pending_decision_panel.visible = has_pending_decisions
-	resolve_pending_decision_button.disabled = has_winner or not has_pending_decisions or _selected_pending_decision_index < 0
+	resolve_pending_decision_button.disabled = has_winner or not has_pending_decisions or _selected_pending_decision_index < 0 or not human_input_enabled
 
 func _on_hand_card_selected(card_uid: String) -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	_selected_hand_card_uid = card_uid
 	_selected_board_card_uid = ""
@@ -279,7 +283,7 @@ func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
 			card_preview_panel.clear_card()
 
 func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
 	if _raid_target_selection_mode:
@@ -320,7 +324,7 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 			return
 
 func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
 	if _raid_target_selection_mode:
@@ -341,7 +345,7 @@ func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
 	game_manager.append_ui_log("Select energy card: %s | owner=%s | active=%s | phase=%s | actions=%s" % [card_name, player_id, active_player_id, str(_snapshot.get("phase", "")), action_text])
 
 func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	if str(_snapshot.get("phase", "")) != "MAIN":
 		return
@@ -354,23 +358,27 @@ func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: Str
 	_clear_selection()
 
 func _on_blockers_requested(request: Dictionary) -> void:
+	var controller_types: Dictionary = _snapshot.get("controller_types", {})
+	var defender_player_id := str(request.get("defender_player_id", ""))
+	if str(controller_types.get(defender_player_id, "HUMAN")) != "HUMAN":
+		return
 	var blockers: Array = request.get("blockers", [])
 	if blockers.is_empty():
 		game_manager.resolve_attack(str(request.get("attacker_uid", "")))
 		return
 	_pending_attack_uid = str(request.get("attacker_uid", ""))
-	_pending_defender_player_id = str(request.get("defender_player_id", ""))
+	_pending_defender_player_id = defender_player_id
 	no_block_button.visible = true
 	selected_card_label.text = "Choose a blocker or click No Block"
 
 func _on_next_phase_pressed() -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	_clear_pending_attack()
 	game_manager.advance_phase()
 
 func _on_no_block_pressed() -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	if _pending_attack_uid == "":
 		return
@@ -378,33 +386,33 @@ func _on_no_block_pressed() -> void:
 	_clear_pending_attack()
 
 func _on_bonus_draw_pressed() -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	game_manager.request_bonus_draw()
 
 func _on_play_front_pressed() -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	if _selected_hand_card_uid != "":
 		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.FRONT_LINE)
 		_clear_selection()
 
 func _on_play_energy_pressed() -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	if _selected_hand_card_uid != "":
 		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.ENERGY_LINE)
 		_clear_selection()
 
 func _on_use_event_pressed() -> void:
-	if _has_pending_gate():
+	if _has_pending_gate() or not _human_input_enabled():
 		return
 	if _selected_hand_card_uid != "":
 		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.OUTSIDE)
 		_clear_selection()
 
 func _on_raid_pressed() -> void:
-	if _has_pending_gate() or _selected_hand_card_uid == "":
+	if _has_pending_gate() or _selected_hand_card_uid == "" or not _human_input_enabled():
 		return
 	_raid_source_card_uid = _selected_hand_card_uid
 	_raid_target_selection_mode = true
@@ -427,16 +435,18 @@ func _clear_raid_selection() -> void:
 	_raid_target_selection_mode = false
 
 func _on_main_activate_pressed() -> void:
-	if _selected_board_card_uid == "" or _has_pending_gate():
+	if _selected_board_card_uid == "" or _has_pending_gate() or not _human_input_enabled():
 		return
 	game_manager.request_main_activate(_selected_board_card_uid)
 
 func _on_step_pressed() -> void:
-	if _selected_board_card_uid == "" or _has_pending_gate():
+	if _selected_board_card_uid == "" or _has_pending_gate() or not _human_input_enabled():
 		return
 	game_manager.request_step_move(_selected_board_card_uid)
 
 func _on_move_front_pressed() -> void:
+	if not _human_input_enabled():
+		return
 	if _selected_board_card_uid == "":
 		game_manager.append_ui_log("Move Front ignored: no selected board card.")
 		return
@@ -458,7 +468,7 @@ func _on_move_front_pressed() -> void:
 	game_manager.move_energy_to_front(_selected_board_card_uid)
 
 func _on_sniper_attack_pressed() -> void:
-	if _selected_board_card_uid == "" or _has_pending_gate():
+	if _selected_board_card_uid == "" or _has_pending_gate() or not _human_input_enabled():
 		return
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var card_data := _find_board_card(active_player_id, _selected_board_card_uid)
@@ -468,12 +478,12 @@ func _on_sniper_attack_pressed() -> void:
 	selected_card_label.text = "Choose an enemy front target for sniper attack"
 
 func _on_activate_life_pressed() -> void:
-	if _selected_life_trigger_uid == "":
+	if _selected_life_trigger_uid == "" or not _human_input_enabled():
 		return
 	game_manager.resolve_life_trigger_decision(_selected_life_trigger_uid, true)
 
 func _on_skip_life_pressed() -> void:
-	if _selected_life_trigger_uid == "":
+	if _selected_life_trigger_uid == "" or not _human_input_enabled():
 		return
 	game_manager.resolve_life_trigger_decision(_selected_life_trigger_uid, false)
 
@@ -556,18 +566,19 @@ func _find_board_card(player_id: String, card_uid: String) -> Dictionary:
 
 func _update_action_buttons() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var input_enabled := _human_input_enabled()
 	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
 	var card_type := str(card_data.get("card_type", ""))
 	var available_actions: Array = card_data.get("available_actions", [])
 	var board_card_data: Dictionary = _find_board_card(active_player_id, _selected_board_card_uid)
 	var board_actions: Array = board_card_data.get("available_actions", [])
-	play_front_button.disabled = card_type != "CHARACTER"
-	play_energy_button.disabled = card_type != "CHARACTER" and card_type != "FIELD"
-	use_event_button.disabled = card_type != "EVENT"
+	play_front_button.disabled = card_type != "CHARACTER" or not input_enabled
+	play_energy_button.disabled = (card_type != "CHARACTER" and card_type != "FIELD") or not input_enabled
+	use_event_button.disabled = card_type != "EVENT" or not input_enabled
 
 	# RAID按钮
 	raid_button.visible = available_actions.has("RAID")
-	raid_button.disabled = not available_actions.has("RAID") or _raid_target_selection_mode
+	raid_button.disabled = not available_actions.has("RAID") or _raid_target_selection_mode or not input_enabled
 
 	# RAID选择模式时禁用其他打出按钮
 	if _raid_target_selection_mode:
@@ -576,14 +587,14 @@ func _update_action_buttons() -> void:
 		use_event_button.disabled = true
 
 	main_activate_button.visible = not board_card_data.is_empty() and board_actions.has("MAIN_ACTIVATE")
-	main_activate_button.disabled = not board_actions.has("MAIN_ACTIVATE")
+	main_activate_button.disabled = not board_actions.has("MAIN_ACTIVATE") or not input_enabled
 	step_button.visible = not board_card_data.is_empty() and board_actions.has("STEP_TO_ENERGY")
-	step_button.disabled = not board_actions.has("STEP_TO_ENERGY")
+	step_button.disabled = not board_actions.has("STEP_TO_ENERGY") or not input_enabled
 	move_front_button.visible = not board_card_data.is_empty() and board_actions.has("MOVE_TO_FRONT")
-	move_front_button.disabled = not board_actions.has("MOVE_TO_FRONT")
+	move_front_button.disabled = not board_actions.has("MOVE_TO_FRONT") or not input_enabled
 	sniper_attack_button.visible = not board_card_data.is_empty() and board_actions.has("SNIPER_ATTACK")
-	sniper_attack_button.disabled = not board_actions.has("SNIPER_ATTACK") or _sniper_attack_source_uid != ""
-	cancel_selection_button.disabled = _selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == "" and _raid_source_card_uid == ""
+	sniper_attack_button.disabled = not board_actions.has("SNIPER_ATTACK") or _sniper_attack_source_uid != "" or not input_enabled
+	cancel_selection_button.disabled = (_selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == "" and _raid_source_card_uid == "") or not input_enabled
 
 func _sync_life_trigger_controls() -> void:
 	var pending: Array = _snapshot.get("pending_life_triggers", [])
@@ -665,6 +676,8 @@ func _on_pending_decision_choice_selected(index: int) -> void:
 	_selected_pending_decision_choice_index = index
 
 func _on_resolve_pending_decision_pressed() -> void:
+	if not _human_input_enabled():
+		return
 	var pending: Array = _snapshot.get("pending_decisions", [])
 	if _selected_pending_decision_index < 0 or _selected_pending_decision_index >= pending.size():
 		return
@@ -687,6 +700,9 @@ func _has_pending_gate() -> bool:
 func _update_hand_playable_states(player_id: String, hand_cards: Array) -> void:
 	var phase := str(_snapshot.get("phase", ""))
 	var playable_map := {}
+	if phase != "MAIN" or not _human_input_enabled():
+		hand_view.set_playable_cards(playable_map)
+		return
 
 	# 只有在 MAIN 阶段才标记可打出状态
 	if phase != "MAIN":
@@ -703,6 +719,9 @@ func _update_hand_playable_states(player_id: String, hand_cards: Array) -> void:
 		playable_map[card_uid] = is_playable
 
 	hand_view.set_playable_cards(playable_map)
+
+func _human_input_enabled() -> bool:
+	return bool(_snapshot.get("human_input_enabled", true))
 
 func _run_layout_probe_if_requested() -> void:
 	if not OS.get_cmdline_user_args().has("--layout-probe"):

@@ -308,3 +308,13 @@
 - 摘要：修复回合开始 AP 增长按玩家个人回合数计算时的偏差，使双方自己的第 2 回合保持 2 张 AP，并从第 3 回合起稳定为 3 张。
 - 影响文件或模块：`core/turn_manager.gd`、`docs/draw_phase_smoke_test.gd`、`docs/logs.md`
 - 验证方式与结果：静态检查 `_ap_target_for_player()` 已调整为“首回合特判、第 2 回合返回 2、之后返回 3”；同步更新 `draw_phase_smoke_test.gd`，断言 P1 与 P2 自己的第 2 回合均为 2/2 AP。
+- 日期：2026-03-26
+- 类型：功能更新
+- 摘要：接入简单人机基础框架，新增统一 Action 模型、`RulesEngine.get_legal_actions()`、`GameManager.execute_action()`、玩家控制器与 `SimpleAI`，并补齐 `Human vs AI`、`AI vs AI` 与合法动作冒烟脚本。
+- 影响文件或模块：`core/actions/`、`core/controllers/`、`core/ai/simple_ai.gd`、`core/rules_engine.gd`、`core/game_manager.gd`、`ui/battle_scene.gd`、`docs/legal_actions_smoke_test.gd`、`docs/vs_ai_smoke_test.gd`
+- 验证方式与结果：在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/legal_actions_smoke_test.gd`，4 项通过、0 项失败；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/vs_ai_smoke_test.gd`，2 项通过、0 项失败；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/hand_available_actions_smoke_test.gd`，14 项通过、0 项失败。三次运行结束时仍有既有的 ObjectDB/资源未释放告警，但未阻塞断言通过。
+- 日期：2026-03-26
+- 类型：bugfix
+- 摘要：补充协作规范，明确 Godot 相关命令默认只在沙箱外执行，避免因沙箱内 `user://logs` 写入失败导致的启动异常与误判。
+- 影响文件或模块：`AGENTS.md`、`docs/logs.md`
+- 验证方式与结果：静态检查 `AGENTS.md` 的“Godot 特别注意事项”段落，已新增“默认只在沙箱外运行 Godot”的明确约束，并与本轮实际冒烟执行方式保持一致。

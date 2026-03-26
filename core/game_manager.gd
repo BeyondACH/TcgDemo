@@ -12,6 +12,10 @@ const TurnManager = preload("res://core/turn_manager.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
+const ActionTypes = preload("res://core/actions/action_types.gd")
+const PlayerController = preload("res://core/controllers/player_controller.gd")
+const HumanController = preload("res://core/controllers/human_controller.gd")
+const AIController = preload("res://core/controllers/ai_controller.gd")
 
 signal state_changed(snapshot: Dictionary)
 signal blockers_requested(request: Dictionary)
@@ -21,6 +25,9 @@ const CARD_DATA_PATH := "res://data/cards/cards_effects.json"
 const STARTER_A_PATH := "res://data/decks/starter_a.txt"
 const STARTER_B_PATH := "res://data/decks/starter_b.txt"
 
+@export_enum("HUMAN", "AI_SIMPLE") var player_one_controller_type := PlayerController.CONTROLLER_HUMAN
+@export_enum("HUMAN", "AI_SIMPLE") var player_two_controller_type := PlayerController.CONTROLLER_HUMAN
+
 var game_state := GameState.new()
 var zone_manager := ZoneManager.new()
 var victory_checker := VictoryChecker.new()
@@ -29,14 +36,19 @@ var effect_resolver := EffectResolver.new(zone_manager, victory_checker)
 var battle_resolver := BattleResolver.new(rules_engine, zone_manager, effect_resolver)
 var turn_manager := TurnManager.new(zone_manager, victory_checker)
 var _deck_card_lookup := {}
+var _controller_config := {}
+var _controllers := {}
+var _controller_drive_pending := false
+var _controller_drive_in_progress := false
 
 func _ready() -> void:
 	randomize()
 	setup_game()
 
 # Initialize a fresh game state, decks, starting hands, and opening turn.
-func setup_game() -> void:
+func setup_game(controller_config: Dictionary = {}) -> void:
 	game_state = GameState.new()
+	_reset_controller_state(controller_config)
 	_load_card_defs()
 	var starter_a: Array = _load_deck_list(STARTER_A_PATH)
 	var starter_b: Array = _load_deck_list(STARTER_B_PATH)
@@ -47,35 +59,72 @@ func setup_game() -> void:
 	_enqueue_mulligan_decision(UATypes.PLAYER_ONE)
 	emit_state_changed()
 
-func advance_phase() -> void:
+func set_controller_config(controller_config: Dictionary) -> void:
+	_reset_controller_state(controller_config)
+
+func get_controller_type(player_id: String) -> String:
+	var controller: PlayerController = _controllers.get(player_id)
+	if controller == null:
+		return PlayerController.CONTROLLER_HUMAN
+	return controller.controller_type
+
+func _reset_controller_state(controller_config: Dictionary = {}) -> void:
+	_controller_config = {
+		UATypes.PLAYER_ONE: {"controller": player_one_controller_type},
+		UATypes.PLAYER_TWO: {"controller": player_two_controller_type},
+	}
+	for player_id in controller_config.keys():
+		_controller_config[player_id] = (controller_config[player_id] as Dictionary).duplicate(true)
+	_controllers.clear()
+	_controllers[UATypes.PLAYER_ONE] = _build_controller_for(UATypes.PLAYER_ONE)
+	_controllers[UATypes.PLAYER_TWO] = _build_controller_for(UATypes.PLAYER_TWO)
+	_controller_drive_pending = false
+	_controller_drive_in_progress = false
+
+func _build_controller_for(player_id: String) -> PlayerController:
+	var config: Dictionary = _controller_config.get(player_id, {})
+	var controller_type := str(config.get("controller", PlayerController.CONTROLLER_HUMAN))
+	match controller_type:
+		PlayerController.CONTROLLER_AI_SIMPLE:
+			var ai_controller := AIController.new()
+			ai_controller.controller_type = PlayerController.CONTROLLER_AI_SIMPLE
+			return ai_controller
+		_:
+			var human_controller := HumanController.new()
+			human_controller.controller_type = PlayerController.CONTROLLER_HUMAN
+			return human_controller
+
+func advance_phase() -> Dictionary:
 	if _has_winner() or _has_pending_gate():
-		return
+		return {"ok": false, "reason": "blocked"}
 	if game_state.phase == UATypes.Phase.END:
 		effect_resolver.cleanup_turn_expirations(game_state, game_state.active_player_id)
 		game_state.battle_context = {}
 		if _enqueue_hand_limit_discard_if_needed(game_state.active_player_id):
 			emit_state_changed()
-			return
+			return {"ok": true, "pending_gate": true}
 	_apply_logs(turn_manager.advance_phase(game_state))
 	emit_state_changed()
+	return {"ok": true}
 
-func request_bonus_draw() -> void:
+func request_bonus_draw() -> Dictionary:
 	if _has_winner() or _has_pending_gate():
-		return
+		return {"ok": false, "reason": "blocked"}
 	_apply_logs(turn_manager.request_bonus_draw(game_state))
 	emit_state_changed()
+	return {"ok": true}
 
 # Unified card-play entry point used by the UI.
-func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> void:
+func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> Dictionary:
 	if _has_winner() or (_has_pending_gate() and not bool(options.get("ignore_pending_gate", false))):
-		return
+		return {"ok": false, "reason": "blocked"}
 	var acting_player_id := str(options.get("player_id", game_state.active_player_id))
 	var card: CardInstance = game_state.get_card(card_uid)
 	if card == null:
-		return
+		return {"ok": false, "reason": "missing_card"}
 	var card_def: CardDef = game_state.get_card_def(card.def_id)
 	if card_def == null:
-		return
+		return {"ok": false, "reason": "missing_def"}
 	var play_options := options.duplicate(true)
 	if str(play_options.get("raid_target_uid", "")) != "":
 		var raid_target: CardInstance = game_state.get_card(str(play_options.get("raid_target_uid", "")))
@@ -95,7 +144,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 			})
 			_apply_logs(["Choose raid destination for %s." % card_def.name])
 			emit_state_changed()
-			return
+			return {"ok": true, "pending_gate": true}
 		if raid_target != null and raid_target.zone == UATypes.Zone.ENERGY_LINE and not play_options.has("raid_target_zone_choice"):
 			play_options["raid_target_zone_choice"] = target_zone
 	var play_modifiers := effect_resolver.preview_play_modifiers(game_state, acting_player_id, card_uid, {
@@ -108,7 +157,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 	if not bool(validation.get("ok", false)):
 		_apply_logs(["Cannot play card: %s" % validation.get("reason", "unknown")])
 		emit_state_changed()
-		return
+		return validation
 	var player: PlayerState = game_state.get_player(acting_player_id)
 	var effective_cost_ap := int(validation.get("cost_ap", play_modifiers.get("cost_ap", card_def.cost_ap)))
 	zone_manager.spend_ap(player, effective_cost_ap)
@@ -122,7 +171,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 				if not bool(raid_result.get("ok", false)):
 					_apply_logs(["Cannot play card: %s" % str(raid_result.get("reason", "raid_failed"))])
 					emit_state_changed()
-					return
+					return raid_result
 				card.flags["entered_via_raid"] = true
 				_apply_logs(["%s raids onto %s and stays in %s." % [card_def.name, raid_target_uid, UATypes.zone_to_key(raid_target_zone)]])
 			else:
@@ -138,15 +187,16 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 			zone_manager.move_card(game_state, card_uid, UATypes.Zone.OUTSIDE)
 	effect_resolver.commit_play_modifiers(game_state, play_modifiers)
 	emit_state_changed()
+	return {"ok": true}
 
-func move_energy_to_front(card_uid: String) -> void:
+func move_energy_to_front(card_uid: String) -> Dictionary:
 	if _has_winner() or _has_pending_gate():
-		return
+		return {"ok": false, "reason": "blocked"}
 	var validation: Dictionary = rules_engine.can_move_energy_to_front(game_state, game_state.active_player_id, card_uid)
 	if not bool(validation.get("ok", false)):
 		_apply_logs(["Cannot move card: %s" % validation.get("reason", "unknown")])
 		emit_state_changed()
-		return
+		return validation
 	zone_manager.move_card(game_state, card_uid, UATypes.Zone.FRONT_LINE)
 	var card: CardInstance = game_state.get_card(card_uid)
 	var card_def: CardDef = null
@@ -155,32 +205,37 @@ func move_energy_to_front(card_uid: String) -> void:
 	if card_def != null:
 		_apply_logs(["%s moves %s from energy to front line." % [game_state.active_player_id, card_def.name]])
 	emit_state_changed()
+	return {"ok": true}
 
-func request_attack(attacker_uid: String, options: Dictionary = {}) -> void:
+func request_attack(attacker_uid: String, options: Dictionary = {}) -> Dictionary:
 	if _has_winner() or _has_pending_gate():
-		return
+		return {"ok": false, "reason": "blocked"}
 	var result: Dictionary = battle_resolver.declare_attack(game_state, attacker_uid, options)
 	if not bool(result.get("ok", false)):
 		_apply_logs(["Cannot attack: %s" % result.get("reason", "unknown")])
 		emit_state_changed()
-		return
+		return result
 	emit_signal("blockers_requested", result)
+	_queue_controller_drive()
+	return result
 
-func resolve_attack(attacker_uid: String, blocker_uid := "") -> void:
+func resolve_attack(attacker_uid: String, blocker_uid := "") -> Dictionary:
 	if _has_winner() or _has_pending_gate():
-		return
+		return {"ok": false, "reason": "blocked"}
 	_apply_logs(battle_resolver.resolve_attack(game_state, attacker_uid, blocker_uid))
 	emit_state_changed()
+	return {"ok": true}
 
-func request_main_activate(card_uid: String, effect_index := 0) -> void:
+func request_main_activate(card_uid: String, effect_index := 0) -> Dictionary:
 	if _has_winner() or _has_pending_gate():
-		return
+		return {"ok": false, "reason": "blocked"}
 	_apply_logs(effect_resolver.activate_main_effect(game_state, game_state.active_player_id, card_uid, effect_index))
 	emit_state_changed()
+	return {"ok": true}
 
-func request_step_move(card_uid: String, options: Dictionary = {}) -> void:
+func request_step_move(card_uid: String, options: Dictionary = {}) -> Dictionary:
 	if _has_winner() or _has_pending_gate():
-		return
+		return {"ok": false, "reason": "blocked"}
 	var swap_uid := str(options.get("swap_uid", ""))
 	var validation := rules_engine.can_step_move_to_energy(game_state, game_state.active_player_id, card_uid, swap_uid)
 	if not bool(validation.get("ok", false)):
@@ -206,10 +261,10 @@ func request_step_move(card_uid: String, options: Dictionary = {}) -> void:
 				})
 				_apply_logs(["Choose an energy character to swap with STEP."])
 				emit_state_changed()
-				return
+				return {"ok": true, "pending_gate": true}
 		_apply_logs(["Cannot step move: %s" % validation.get("reason", "unknown")])
 		emit_state_changed()
-		return
+		return validation
 	var result := zone_manager.step_move_to_energy(game_state, card_uid, swap_uid)
 	if not bool(result.get("ok", false)):
 		_apply_logs(["Cannot step move: %s" % result.get("reason", "unknown")])
@@ -226,19 +281,71 @@ func request_step_move(card_uid: String, options: Dictionary = {}) -> void:
 		else:
 			_apply_logs(["%s steps back to energy." % [card_def.name if card_def != null else card_uid]])
 	emit_state_changed()
+	return {"ok": true}
 
-func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -> void:
+func execute_action(action: Dictionary) -> Dictionary:
+	var action_type := str(action.get("type", ""))
+	var params: Dictionary = action.get("params", {})
+	match action_type:
+		ActionTypes.PLAY_CARD:
+			var play_options := {}
+			for key in ["raid_target_uid", "raid_target_zone_choice", "allow_raid_play", "force_allow_current_zone", "ignore_pending_gate", "ignore_play_timing"]:
+				if params.has(key):
+					play_options[key] = params.get(key)
+			play_options["player_id"] = str(action.get("player_id", game_state.active_player_id))
+			return play_card(str(action.get("source_card_uid", "")), int(params.get("target_zone", UATypes.Zone.OUTSIDE)), play_options)
+		ActionTypes.MOVE_CARD:
+			var mode := str(params.get("mode", ""))
+			if mode == ActionTypes.MOVE_ENERGY_TO_FRONT:
+				return move_energy_to_front(str(action.get("source_card_uid", "")))
+			if mode == ActionTypes.MOVE_STEP_TO_ENERGY:
+				var step_options := {}
+				if params.has("swap_uid"):
+					step_options["swap_uid"] = str(params.get("swap_uid", ""))
+				return request_step_move(str(action.get("source_card_uid", "")), step_options)
+			return {"ok": false, "reason": "unsupported_move_mode"}
+		ActionTypes.ATTACK:
+			var attack_options := {}
+			for key in ["target_kind", "target_uid"]:
+				if params.has(key):
+					attack_options[key] = params.get(key)
+			return request_attack(str(action.get("source_card_uid", "")), attack_options)
+		ActionTypes.BLOCK:
+			return resolve_attack(str(params.get("attacker_uid", "")), str(params.get("blocker_uid", "")))
+		ActionTypes.NO_BLOCK:
+			return resolve_attack(str(params.get("attacker_uid", "")), "")
+		ActionTypes.ACTIVATE_EFFECT:
+			return request_main_activate(str(action.get("source_card_uid", "")), int(params.get("effect_index", 0)))
+		ActionTypes.RESOLVE_PENDING_DECISION:
+			var payload := {
+				"source_card_uid": str(params.get("source_card_uid", "")),
+				"choice": params.get("choice"),
+			}
+			if str(params.get("resolution_id", "")) != "":
+				payload["resolution_id"] = str(params.get("resolution_id", ""))
+			return resolve_pending_decision(str(params.get("decision_type", "")), payload)
+		ActionTypes.RESOLVE_LIFE_TRIGGER:
+			return resolve_life_trigger_decision(str(params.get("card_uid", "")), bool(params.get("activate", false)))
+		ActionTypes.ADVANCE_PHASE:
+			return advance_phase()
+		ActionTypes.END_TURN:
+			return advance_phase()
+		ActionTypes.BONUS_DRAW:
+			return request_bonus_draw()
+	return {"ok": false, "reason": "unsupported_action_type"}
+
+func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -> Dictionary:
 	if _has_winner():
-		return
+		return {"ok": false, "reason": "winner_exists"}
 	var decision := _take_pending_decision(decision_type, payload)
 	if decision.is_empty():
 		_apply_logs(["Pending decision not found: %s" % decision_type])
 		emit_state_changed()
-		return
+		return {"ok": false, "reason": "pending_decision_not_found"}
 	match decision_type:
 		"MULLIGAN_CHOICE":
 			_resolve_mulligan_decision(decision, payload)
-			return
+			return {"ok": true}
 		"RAID_ZONE_CHOICE":
 			var play_options := {
 				"raid_target_uid": str(decision.get("context", {}).get("raid_target_uid", "")),
@@ -253,22 +360,21 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 			if bool(decision.get("context", {}).get("finalize_life_damage", false)) and game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty():
 				_apply_logs(effect_resolver.finalize_pending_life_damage(game_state))
 				emit_state_changed()
-			return
+			return {"ok": true}
 		"LIFE_TRIGGER_RAID_CHOICE":
 			_apply_logs(_resolve_life_trigger_raid_choice(decision, str(payload.get("choice", "ADD_TO_HAND"))))
 			emit_state_changed()
-			return
+			return {"ok": true}
 		"LIFE_TRIGGER_RAID_TARGET":
 			_apply_logs(_resolve_life_trigger_raid_target(decision, str(payload.get("choice", ""))))
 			emit_state_changed()
-			return
+			return {"ok": true}
 		"STEP_SWAP_CHOICE":
-			request_step_move(str(decision.get("source_card_uid", "")), {"swap_uid": str(payload.get("choice", ""))})
-			return
+			return request_step_move(str(decision.get("source_card_uid", "")), {"swap_uid": str(payload.get("choice", ""))})
 		"HAND_LIMIT_DISCARD":
 			_apply_logs(_resolve_hand_limit_discard(decision, str(payload.get("choice", ""))))
 			emit_state_changed()
-			return
+			return {"ok": true}
 		"ABILITY_TARGET_SELECTION":
 			_apply_logs(effect_resolver.resolve_target_selection_decision(
 				game_state,
@@ -276,21 +382,26 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 				payload.get("choice", payload.get("choices", []))
 			))
 			emit_state_changed()
-			return
+			return {"ok": true}
 	_apply_logs(["Unsupported decision type: %s" % decision_type])
 	emit_state_changed()
+	return {"ok": false, "reason": "unsupported_decision_type"}
 
-func resolve_life_trigger_decision(card_uid: String, activate: bool) -> void:
+func resolve_life_trigger_decision(card_uid: String, activate: bool) -> Dictionary:
 	if _has_winner():
-		return
+		return {"ok": false, "reason": "winner_exists"}
 	_apply_logs(effect_resolver.resolve_life_trigger_decision(game_state, card_uid, activate))
 	emit_state_changed()
+	return {"ok": true}
 
 func get_snapshot() -> Dictionary:
 	# Return a UI-facing snapshot instead of exposing raw runtime state.
+	var action_player_id := _current_priority_player_id()
+	var legal_actions := rules_engine.get_legal_actions(game_state, action_player_id)
 	return {
 		"turn_number": game_state.turn_number,
 		"active_player_id": game_state.active_player_id,
+		"priority_player_id": action_player_id,
 		"phase": UATypes.phase_to_text(game_state.phase),
 		"opening_complete": game_state.opening_complete,
 		"can_bonus_draw": _can_active_player_bonus_draw(),
@@ -299,15 +410,23 @@ func get_snapshot() -> Dictionary:
 		"effect_queue_count": game_state.effect_queue.size(),
 		"pending_decisions": game_state.pending_decisions.duplicate(true),
 		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),
+		"controller_types": {
+			UATypes.PLAYER_ONE: get_controller_type(UATypes.PLAYER_ONE),
+			UATypes.PLAYER_TWO: get_controller_type(UATypes.PLAYER_TWO),
+		},
+		"action_player_controller": get_controller_type(action_player_id),
+		"human_input_enabled": get_controller_type(action_player_id) == PlayerController.CONTROLLER_HUMAN,
+		"legal_actions": legal_actions.duplicate(true),
 		"players": {
-			UATypes.PLAYER_ONE: _serialize_player(UATypes.PLAYER_ONE),
-			UATypes.PLAYER_TWO: _serialize_player(UATypes.PLAYER_TWO)
+			UATypes.PLAYER_ONE: _serialize_player(UATypes.PLAYER_ONE, action_player_id),
+			UATypes.PLAYER_TWO: _serialize_player(UATypes.PLAYER_TWO, action_player_id)
 		},
 		"logs": game_state.logs.duplicate(),
 	}
 
 func emit_state_changed() -> void:
 	emit_signal("state_changed", get_snapshot())
+	_queue_controller_drive()
 
 func append_ui_log(text: String) -> void:
 	_apply_logs([text])
@@ -432,12 +551,13 @@ func _place_starting_life(player_id: String) -> Array[String]:
 	logs.append("%s starts with %d hand and %d life." % [player_id, player.hand.size(), player.life.size()])
 	return logs
 
-func _serialize_player(player_id: String) -> Dictionary:
+func _serialize_player(player_id: String, action_player_id: String) -> Dictionary:
 	var player: PlayerState = game_state.get_player(player_id)
 	if player == null:
 		return {}
 	return {
 		"player_id": player.player_id,
+		"controller_type": get_controller_type(player_id),
 		"deck_count": player.deck.size(),
 		"hand_count": player.hand.size(),
 		"life_count": player.life.size(),
@@ -445,15 +565,15 @@ func _serialize_player(player_id: String) -> Dictionary:
 		"ap_active": player.ap_active_count(),
 		"used_bonus_draw": player.used_bonus_draw,
 		"available_energy": _energy_pool_for_player(player),
-		"hand": _serialize_cards(player.hand),
+		"hand": _serialize_cards(player.hand, action_player_id),
 		"life": _serialize_life_cards(player.life),
-		"front_line": _serialize_cards(player.front_line),
-		"energy_line": _serialize_cards(player.energy_line),
+		"front_line": _serialize_cards(player.front_line, action_player_id),
+		"energy_line": _serialize_cards(player.energy_line, action_player_id),
 		"outside_count": player.outside.size(),
 		"removed_count": player.removed.size(),
 	}
 
-func _serialize_cards(card_uids: Array[String]) -> Array[Dictionary]:
+func _serialize_cards(card_uids: Array[String], action_player_id: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for card_uid in card_uids:
 		var card: CardInstance = game_state.get_card(card_uid)
@@ -477,7 +597,7 @@ func _serialize_cards(card_uids: Array[String]) -> Array[Dictionary]:
 			"keywords": _runtime_keywords_for(card, card_def),
 			"stacked_under": card.stacked_under.duplicate(),
 			"flags": card.flags.duplicate(true),
-			"available_actions": _available_actions_for_card(card, card_def),
+			"available_actions": rules_engine.get_card_available_actions(game_state, action_player_id, card.uid),
 		})
 	return result
 
@@ -580,6 +700,68 @@ func _has_pending_decisions() -> bool:
 
 func _has_pending_gate() -> bool:
 	return _has_pending_life_triggers() or _has_pending_decisions()
+
+func _current_priority_player_id() -> String:
+	if not game_state.pending_decisions.is_empty():
+		return str((game_state.pending_decisions[0] as Dictionary).get("owner_player_id", game_state.active_player_id))
+	if not game_state.pending_life_triggers.is_empty():
+		return str((game_state.pending_life_triggers[0] as Dictionary).get("player_id", game_state.active_player_id))
+	if not game_state.battle_context.is_empty():
+		var battle_context: Dictionary = game_state.battle_context
+		if str(battle_context.get("target_kind", "PLAYER")) == "PLAYER" and not bool(battle_context.get("is_sniper_attack", false)):
+			return str(battle_context.get("defender_player_id", game_state.active_player_id))
+	return game_state.active_player_id
+
+func _queue_controller_drive() -> void:
+	if _controller_drive_in_progress or _controller_drive_pending:
+		return
+	_controller_drive_pending = true
+	call_deferred("_process_controller_drive")
+
+func drive_controllers(max_steps := 64) -> void:
+	_drive_controllers(max_steps)
+
+func _process_controller_drive() -> void:
+	if _controller_drive_in_progress:
+		return
+	_controller_drive_pending = false
+	_drive_controllers(64)
+
+func _drive_controllers(max_steps: int) -> void:
+	_controller_drive_in_progress = true
+	var safety := max_steps
+	while safety > 0:
+		if _has_winner():
+			break
+		var player_id := _current_priority_player_id()
+		var controller: PlayerController = _controllers.get(player_id)
+		if controller == null or controller.is_human():
+			break
+		var legal_actions := rules_engine.get_legal_actions(game_state, player_id)
+		if legal_actions.is_empty():
+			break
+		var snapshot := get_snapshot()
+		var chosen_action := {}
+		if _has_pending_gate() or not game_state.battle_context.is_empty():
+			chosen_action = controller.request_pending_decision(game_state, snapshot, _current_pending_context(), legal_actions)
+		else:
+			chosen_action = controller.request_action(game_state, snapshot, legal_actions)
+		if chosen_action.is_empty():
+			break
+		execute_action(chosen_action)
+		safety -= 1
+	_controller_drive_in_progress = false
+	if _controller_drive_pending and not _has_winner():
+		call_deferred("_process_controller_drive")
+
+func _current_pending_context() -> Dictionary:
+	if not game_state.pending_decisions.is_empty():
+		return (game_state.pending_decisions[0] as Dictionary).duplicate(true)
+	if not game_state.pending_life_triggers.is_empty():
+		return (game_state.pending_life_triggers[0] as Dictionary).duplicate(true)
+	if not game_state.battle_context.is_empty():
+		return game_state.battle_context.duplicate(true)
+	return {}
 
 func _can_active_player_bonus_draw() -> bool:
 	if game_state.phase != UATypes.Phase.DRAW:
