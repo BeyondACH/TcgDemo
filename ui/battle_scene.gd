@@ -9,6 +9,7 @@ const CardPreviewPanel = preload("res://ui/card_preview_panel.gd")
 const LogPanel = preload("res://ui/log_panel.gd")
 const PhaseIndicator = preload("res://ui/phase_indicator.gd")
 const PreviewSelectionModal = preload("res://ui/preview_selection_modal.gd")
+const LifeRevealModal = preload("res://ui/life_reveal_modal.gd")
 const ZoneLayoutConfig = preload("res://data/zone_layout_config.gd")
 
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
@@ -91,6 +92,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/PhaseControls/LogToggleButton
 
 var _snapshot: Dictionary = {}
+var _life_reveal_modal: LifeRevealModal
 var _selected_hand_card_uid := ""
 var _selected_board_card_uid := ""
 var _selected_board_zone_name := ""
@@ -102,6 +104,7 @@ var _selected_pending_decision_index := -1
 var _selected_pending_decision_choice_index := 0
 var _raid_source_card_uid := ""
 var _raid_target_selection_mode := false
+var _auto_ack_life_reveal_uid := ""
 
 func _ready() -> void:
 	_setup_optional_art()
@@ -125,6 +128,12 @@ func _ready() -> void:
 	pending_decision_choice_picker.item_selected.connect(_on_pending_decision_choice_selected)
 	resolve_pending_decision_button.pressed.connect(_on_resolve_pending_decision_pressed)
 	preview_selection_modal.submitted.connect(_on_preview_modal_submitted)
+	_life_reveal_modal = LifeRevealModal.new()
+	_life_reveal_modal.name = "LifeRevealModal"
+	$UILayer.add_child(_life_reveal_modal)
+	_life_reveal_modal.activate_requested.connect(_on_life_reveal_activate_requested)
+	_life_reveal_modal.skip_requested.connect(_on_life_reveal_skip_requested)
+	_life_reveal_modal.acknowledge_requested.connect(_on_life_reveal_acknowledge_requested)
 	cancel_selection_button.pressed.connect(_clear_selection)
 	log_toggle_button.pressed.connect(_on_log_toggle_pressed)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
@@ -273,14 +282,16 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	_update_hand_playable_states(active_player_id, active_hand)
 	_sync_pending_decision_controls()
 	_sync_preview_selection_modal()
+	_sync_life_reveal_modal()
 	_sync_life_trigger_controls()
 	selected_card_label.text = _selected_label_text(active_player_id)
 	_update_action_buttons()
 	log_panel.set_logs(snapshot.get("logs", []))
 	var has_winner := str(snapshot.get("winner_player_id", "")) != ""
 	var has_pending_life := _has_pending_life_triggers()
+	var has_pending_life_reveal := _has_pending_life_reveal()
 	var has_pending_decisions := _has_pending_decisions()
-	var has_pending_gate := has_pending_life or has_pending_decisions
+	var has_pending_gate := has_pending_life or has_pending_life_reveal or has_pending_decisions
 	var phase := str(snapshot.get("phase", "START"))
 	var can_bonus_draw := bool(snapshot.get("can_bonus_draw", false))
 	var human_input_enabled := _human_input_enabled()
@@ -296,8 +307,8 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	sniper_attack_button.disabled = sniper_attack_button.disabled or has_winner or has_pending_gate
 	no_block_button.disabled = has_winner or has_pending_gate or not human_input_enabled
 	cancel_selection_button.disabled = cancel_selection_button.disabled or has_winner or has_pending_gate or not human_input_enabled
-	activate_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == "" or not human_input_enabled
-	skip_life_button.disabled = has_winner or not has_pending_life or _selected_life_trigger_uid == "" or not human_input_enabled
+	activate_life_button.disabled = true
+	skip_life_button.disabled = true
 	pending_decision_panel.visible = has_pending_decisions
 	if _is_preview_pending_decision(_current_pending_decision()):
 		pending_decision_panel.visible = false
@@ -565,6 +576,16 @@ func _on_log_toggle_pressed() -> void:
 	log_panel.visible = not log_panel.visible
 
 func _selected_label_text(active_player_id: String) -> String:
+	var life_reveal_modal: Dictionary = _current_life_reveal_modal()
+	if bool(life_reveal_modal.get("visible", false)):
+		var current_card_uid := str(life_reveal_modal.get("current_card_uid", ""))
+		if current_card_uid == "":
+			return "Life reveal complete"
+		for card_variant in life_reveal_modal.get("revealed_cards", []):
+			var card_data: Dictionary = card_variant
+			if str(card_data.get("uid", "")) == current_card_uid:
+				return "Life reveal: %s" % str(card_data.get("name", current_card_uid))
+		return "Life reveal in progress"
 	if _has_pending_decisions():
 		var decision := _current_pending_decision()
 		if not decision.is_empty():
@@ -647,29 +668,11 @@ func _update_action_buttons() -> void:
 	cancel_selection_button.disabled = (_selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == "" and _raid_source_card_uid == "") or not input_enabled
 
 func _sync_life_trigger_controls() -> void:
-	var pending: Array = _snapshot.get("pending_life_triggers", [])
+	_selected_life_trigger_uid = ""
 	life_trigger_picker.clear()
-	if pending.is_empty():
-		_selected_life_trigger_uid = ""
-		life_trigger_picker.visible = false
-		activate_life_button.visible = false
-		skip_life_button.visible = false
-		return
-	var selected_index := 0
-	for i in range(pending.size()):
-		var entry: Dictionary = pending[i]
-		var card_uid := str(entry.get("card_uid", ""))
-		var label := "%s: %s" % [str(entry.get("player_id", "")), str(entry.get("card_name", card_uid))]
-		life_trigger_picker.add_item(label)
-		if card_uid == _selected_life_trigger_uid:
-			selected_index = i
-	if _selected_life_trigger_uid == "":
-		_selected_life_trigger_uid = str((pending[0] as Dictionary).get("card_uid", ""))
-	life_trigger_picker.select(selected_index)
-	_selected_life_trigger_uid = str((pending[selected_index] as Dictionary).get("card_uid", ""))
-	life_trigger_picker.visible = true
-	activate_life_button.visible = true
-	skip_life_button.visible = true
+	life_trigger_picker.visible = false
+	activate_life_button.visible = false
+	skip_life_button.visible = false
 
 func _sync_pending_decision_controls() -> void:
 	var pending: Array = _snapshot.get("pending_decisions", [])
@@ -761,11 +764,17 @@ func _on_preview_modal_submitted(selected_values: Array) -> void:
 func _has_pending_life_triggers() -> bool:
 	return not (_snapshot.get("pending_life_triggers", []) as Array).is_empty()
 
+func _has_pending_life_reveal() -> bool:
+	return bool((_snapshot.get("life_reveal_modal", {}) as Dictionary).get("visible", false))
+
 func _has_pending_decisions() -> bool:
 	return not (_snapshot.get("pending_decisions", []) as Array).is_empty()
 
 func _has_pending_gate() -> bool:
-	return _has_pending_life_triggers() or _has_pending_decisions()
+	return _has_pending_life_triggers() or _has_pending_life_reveal() or _has_pending_decisions()
+
+func _current_life_reveal_modal() -> Dictionary:
+	return _snapshot.get("life_reveal_modal", {})
 
 func _current_pending_decision() -> Dictionary:
 	var pending: Array = _snapshot.get("pending_decisions", [])
@@ -784,6 +793,52 @@ func _sync_preview_selection_modal() -> void:
 		preview_selection_modal.hide_modal()
 		return
 	preview_selection_modal.show_decision(decision)
+
+func _sync_life_reveal_modal() -> void:
+	var modal_data := _current_life_reveal_modal()
+	if not _human_input_enabled() or not bool(modal_data.get("visible", false)) or _has_pending_decisions():
+		_auto_ack_life_reveal_uid = ""
+		if _life_reveal_modal != null:
+			_life_reveal_modal.hide_modal()
+		return
+	if _life_reveal_modal != null:
+		_life_reveal_modal.show_modal(modal_data)
+	var current_card_uid := str(modal_data.get("current_card_uid", ""))
+	if bool(modal_data.get("can_acknowledge", false)) and current_card_uid != "":
+		if _auto_ack_life_reveal_uid != current_card_uid:
+			_auto_ack_life_reveal_uid = current_card_uid
+			call_deferred("_auto_acknowledge_life_reveal", current_card_uid)
+	else:
+		_auto_ack_life_reveal_uid = ""
+
+func _auto_acknowledge_life_reveal(card_uid: String) -> void:
+	if card_uid == "":
+		return
+	var modal_data := _current_life_reveal_modal()
+	if not bool(modal_data.get("visible", false)):
+		return
+	if str(modal_data.get("current_card_uid", "")) != card_uid:
+		return
+	if not bool(modal_data.get("can_acknowledge", false)):
+		return
+	if not _human_input_enabled():
+		return
+	game_manager.acknowledge_life_reveal(card_uid)
+
+func _on_life_reveal_activate_requested(card_uid: String) -> void:
+	if not _human_input_enabled():
+		return
+	game_manager.resolve_life_trigger_decision(card_uid, true)
+
+func _on_life_reveal_skip_requested(card_uid: String) -> void:
+	if not _human_input_enabled():
+		return
+	game_manager.resolve_life_trigger_decision(card_uid, false)
+
+func _on_life_reveal_acknowledge_requested(card_uid: String) -> void:
+	if not _human_input_enabled():
+		return
+	game_manager.acknowledge_life_reveal(card_uid)
 
 func _update_hand_playable_states(player_id: String, hand_cards: Array) -> void:
 	var phase := str(_snapshot.get("phase", ""))

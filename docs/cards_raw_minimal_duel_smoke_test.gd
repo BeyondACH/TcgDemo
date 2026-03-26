@@ -523,8 +523,8 @@ func _test_raw_life_trigger_target_selection() -> Dictionary:
 	var target_card := manager.game_state.get_card(target_uid)
 	if target_card == null or target_card.zone != UATypes.Zone.OUTSIDE:
 		return _fail("Raw life trigger should move the selected enemy to outside.")
-	if defender.outside.size() != defender_outside_before + 1:
-		return _fail("Raw life trigger should append the removed target into the resolver player's outside zone.")
+	if defender.outside.size() != defender_outside_before + 2:
+		return _fail("Raw life trigger should finalize both the removed target and the damaged life card into the resolver player's outside zone.")
 	if target_card.controller_player_id != defender_id:
 		return _fail("Raw life trigger should keep the removed target under the resolver player's outside controller.")
 	if defender.life.has(life_uid):

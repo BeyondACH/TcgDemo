@@ -459,6 +459,7 @@ func _test_life_trigger_requires_decision() -> Dictionary:
 	if manager.game_state.pending_life_triggers.size() != 1:
 		return _fail("应存在 1 个待决策生命触发")
 	manager.resolve_life_trigger_decision(trigger_uid, true)
+	manager.acknowledge_life_reveal(basic_uid)
 	if p2.hand.size() != hand_before + 1:
 		return _fail("选择发动生命触发后应抽 1 张牌")
 	if p2.deck.size() != deck_before - 1:
@@ -1449,6 +1450,11 @@ func _test_life_zero_victory() -> Dictionary:
 		if life_uid == "":
 			return _fail("生命归零测试卡创建失败")
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 7)
+	while not manager.game_state.pending_life_reveal.is_empty():
+		var current_card_uid := str(manager.game_state.pending_life_reveal.get("current_card_uid", ""))
+		if current_card_uid == "":
+			break
+		manager.acknowledge_life_reveal(current_card_uid)
 	if manager.game_state.winner_player_id != UATypes.PLAYER_ONE:
 		return _fail("P2 生命归零后应判定 P1 获胜")
 	return _ok()

@@ -1,477 +1,249 @@
 
-- 日期：2026-03-26
-- 类型：bugfix
-- 摘要：收敛手牌区域交互，移除 03-24 手牌重构中引入的悬停上浮与选中抬升表现，保留底部固定、默认半收起、动态重叠和独立预览；鼠标悬停仅更新预览面板，不再触发卡面上浮、放大或重排。
-- 影响文件：`ui/hand_view.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `ui/hand_view.gd` 已不再基于 hover/selected 调整 `position.y` 或 `scale`；后续执行 Godot headless 启动与 `--layout-probe` 验证，确认脚本可正常加载且手牌区域未遮挡战场。
+- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘暪閺佹稒澧滈悧灞藉隘閸╃喍姘︽禍鎺炵礉缁夊娅?03-24 閹靛澧濋柌宥嗙€稉顓炵穿閸忋儳娈戦幃顒€浠犳稉濠冭癁娑撳酣鈧鑵戦幎顒€宕岀悰銊у箛閿涘奔绻氶悾娆忕俺闁劌娴愮€规哎鈧線绮拋銈呭磹閺€鎯版崳閵嗕礁濮╅幀渚€鍣搁崣鐘叉嫲閻欘剛鐝涙０鍕潔閿涙盯绱堕弽鍥ㄥ亾閸嬫粈绮庨弴瀛樻煀妫板嫯顫嶉棃銏℃緲閿涘奔绗夐崘宥埿曢崣鎴濆幢闂堫澀绗傚ù顔衡偓浣规杹婢堆勫灗闁插秵甯撻妴?- 瑜板崬鎼烽弬鍥︽閿涙瓪ui/hand_view.gd`閵嗕梗docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`ui/hand_view.gd` 瀹歌弓绗夐崘宥呯唨娴?hover/selected 鐠嬪啯鏆?`position.y` 閹?`scale`閿涙稑鎮楃紒顓熷⒔鐞?Godot headless 閸氼垰濮╂稉?`--layout-probe` 妤犲矁鐦夐敍宀€鈥樼拋銈堝壖閺堫剙褰插锝呯埗閸旂姾娴囨稉鏃€澧滈悧灞藉隘閸╃喐婀柆顔藉皡閹存ê婧€閵?
+- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姘ゴ鐠?- 閹芥顩﹂敍姘煀婢?`hand_available_actions_smoke_test.gd` 閸愭帞鍎ù瀣槸閺傚洣娆㈤敍宀冾洬閻╂牗澧滈悧灞藉幢閻?available_actions 鐠侊紕鐣婚柅鏄忕帆閵嗗倹绁寸拠鏇炲敶鐎圭懓瀵橀幏顒婄窗鐟欐帟澹?閸﹀搫婀?娴滃娆㈤崡鈩冨ⅵ閸戝搫濮╂担婊勭垼鐠囧棎鈧竸P/閼充粙鍣?閸栧搫鐓欑€瑰綊鍣洪弶鈥叉濡偓閺屻儯鈧阜AID 閼宠棄濮忔禒搴㈠閻楀本澧﹂崙鐑樻蒋娴犺翰鈧線娼?MAIN 闂冭埖顔岄梽鎰煑閵嗕礁顕幍瀣礀閸氬牆宕遍悧灞炬￥閸斻劋缍旂粵?14 娑擃亝绁寸拠鏇犳暏娓氬鈧?- 瑜板崬鎼烽弬鍥︽閿涙瓪docs/hand_available_actions_smoke_test.gd`閿涘牊鏌婃晶鐑囩礆
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鏉╂劘顢戦幍瀣 available_actions 閸愭帞鍎ù瀣槸 14/14 闁俺绻冮妴?
+- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘煀婢х偞澧滈悧瀛疉ID閸楋紕澧濋幍鎾冲毉閸旂喕鍏橀妴鍌炩偓澶嬪閻楀奔鑵戦崗閿嬫箒RAID閼宠棄濮忛惃鍕幢閻楀本妞傞弰鍓с仛"RAID"閹稿鎸抽敍宀€鍋ｉ崙璇叉倵鏉╂稑鍙嗛惄顔界垼闁瀚ㄥΟ鈥崇础閿涘矂鈧瀚ㄥ杈ㄦ煙閸撳秶鍤庨幋鏍厴闁插繒鍤庢稉濠勬畱缁楋箑鎮庨弶鈥叉閻ㄥ嫯顫楅懝韫稊娑撳搫绨虫惔褑绻樼悰瀛疉ID閸棗褰旈妴鍌涘閻楀苯宕遍悧宀€娈慳vailable_actions閻滄澘鍑￠崠鍛儓RAID閼宠棄濮忛弽鍥槕閿涘本鏁幐涔ife_trigger_only=false`娑撴摽allow_from_hand=true`閻ㄥ嚧AID閸楋紕澧濇禒搴㈠閻楀本澧﹂崙鎭掆偓?- 瑜板崬鎼烽弬鍥︽閿涙瓪core/game_manager.gd`閿涘牊鏌婃晶鐐村閻楀畮vailable_actions鐠侊紕鐣婚妴涓稟ID閼宠棄濮忓Λ鈧ù瀣毐閺佸府绱氶妴涔i/battle_scene.gd`閿涘牊鏌婃晶婵篈ID閹稿鎸抽妴浣烘窗閺嶅洭鈧瀚ㄥù浣衡柤閿涘鈧梗scenes/battle_scene.tscn`閿涘牊鏌婃晶婵篴idButton閼哄倻鍋ｉ敍?- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鏉╂劘顢?milestone 閸愭帞鍎ù瀣槸 23/23 闁俺绻冮敍灞藉瘶閹?RAID 閺勬儳绱￠拃鐣屽仯闁瀚?閵?RAID 閻㈢喎鎳＄憴锕€褰傛禍宀勨偓澶夌"閵?RAID 缁愪浇绻橀崣鐘虫杹"閵?RAID 濡楀棗鍞撮弫鍫熺亯闂傘劍甯?缁涘AID閻╃鍙уù瀣槸閸忋劑鍎撮柅姘崇箖閵?
+- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姝嶪娴兼ê瀵?- 閹芥顩﹂敍姘殺閺冦儱绻旈棃銏℃緲娴犲骸绨抽柈鈩塙D缁夋槒鍤﹂崣鍏呮櫠濞搭喖濮╁鍦崶閿涘矂绮拋銈夋閽樺骏绱濋柅姘崇箖妞よ埖鐖?Log 閹稿鎸抽崚鍥ㄥ床鐏炴洖绱?闂呮劘妫岄妴鍌炲櫞閺€鎯х俺闁劎鈹栭梻瀵哥舶閹靛澧濋崪灞炬惙娴ｆ粍鐖妴?- 瑜板崬鎼烽弬鍥︽閿涙瓪scenes/battle_scene.tscn`閵嗕梗ui/battle_scene.gd`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鏉╂劘顢?milestone 閸愭帞鍎ù瀣槸 23/23 闁俺绻冮敍瀹慳rds_raw 閸愭帞鍎ù瀣槸 10/10 闁俺绻冮妴?
+- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姝嶪娴兼ê瀵?- 閹芥顩﹂敍姘幢缂?Deck)閵嗕礁婧€婢?Outside)閵嗕線娅庢径?Removed)閵嗕浇顢呴崠?Life)閻ㄥ嫬鐫嶇粈鍝勬槀鐎靛憡鏁兼稉鐑樼壌閹诡喗鍨崷楦垮剹閺咁垰灏崺鐔峰З閹浇顓哥粻妤嬬礉娴ｅ灝鍙炬稉搴ゅ剹閺咁垰灏柊宥冣偓鍌涘潑閸?project.godot stretch 闁板秶鐤嗙涵顔荤箽 1080p 閼奉亪鈧倸绨茬紓鈺傛杹閵?- 瑜板崬鎼烽弬鍥︽閿涙瓪project.godot`閵嗕梗ui/zone_stack_summary_view.gd`閵嗕梗ui/life_stack_view.gd`閵嗕梗ui/board_view.gd`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鏉╂劘顢?milestone 閸愭帞鍎ù瀣槸 23/23 闁俺绻冮敍瀹慳rds_raw 閸愭帞鍎ù瀣槸 10/10 闁俺绻冮妴?
+- 閺冦儲婀￠敍?026-03-24
+- 缁鐎烽敍姘閼充粙鍣搁弸?- 閹芥顩﹂敍姘跺櫢閺嬪嫭澧滈悧灞藉隘閸╃喎绔风仦鈧敍灞界杽閻?鎼存洟鍎撮崶鍝勭暰閵嗕線绮拋銈呭磹閺€鎯版崳閵嗕焦鍋撻崑婊€绗傚ù顔衡偓浣哄缁斿顣╃憴?閺傝顢嶉妴鍌涙煀瀵?CardPreviewPanel 閸楋紕澧濈拠锔藉剰妫板嫯顫嶉棃銏℃緲閿涘矂鍣搁弸?HandView 娑撻缚鍤滅€规矮绠熺敮鍐ㄧ湰閺€顖涘瘮閸斻劍鈧線鍣搁崣鐘辩瑢 hover 閺佸牊鐏夐敍灞筋杻瀵?CardView 濞ｈ濮為崣顖涘ⅵ閸戣櫣濮搁幀浣筋潒鐟欏褰佺粈鎭掆偓?- 瑜板崬鎼烽弬鍥︽閿涙瓪ui/card_preview_panel.gd`閿涘牊鏌婂鐚寸礆閵嗕梗ui/hand_view.gd`閿涘牓鍣搁弸鍕剁礆閵嗕梗ui/card_view.gd`閿涘牆顤冨鐚寸礆閵嗕梗ui/battle_scene.gd`閿涘牓娉﹂幋鎰剁礆閵嗕梗scenes/battle_scene.tscn`閿涘牐濡悙纭呯殶閺佽揪绱?- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鏉╂劘顢?`res://docs/milestone_smoke_test.gd`閿?3 妞よ绁寸拠鏇炲弿闁劑鈧俺绻冮妴鍌涘閻楀苯灏崺鐔肩彯鎼达箓妾烽懛?160-180px閿涘矂浼╃拋?remove_area 娑?outside_area閿涘苯鐤勯悳鐗堝亾閸嬫粈绗傚ù顔煎З閻㈣绗岄崣顖涘ⅵ閸戣櫣璞㈤懝鍙夊伎鏉堣褰佺粈鎭掆偓?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺 P2 閸楋紕绮嶉崗銉ュ經娑旂喎鍨忛幑顫礋 `data/decks/starter_b.txt`閿涘奔濞囬崣灞炬煙闁晫绮烘稉鈧柅姘崇箖 txt 閺佷即鍣?缂傛牕褰块弽鐓庣础閺嬪嫬缂撻崡锛勭矋閿涘苯鑻熼崗鍗炴倱婢跺秶鏁?`cards_raw.json` 閻ㄥ嫬甯慨瀣幢閻楀苯鐣炬稊澶幮掗弸鎰版懠鐠侯垬鈧?- 瑜板崬鎼烽弬鍥︽閿涙瓪core/game_manager.gd`閵嗕梗docs/starter_a_txt_raw_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴ｈ法鏁?Godot headless 鏉╂劘顢?`res://docs/starter_a_txt_raw_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?`STARTER_TXT_RAW_SMOKE_OK`閵?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘辩級鐏忓繑澧滈悧灞藉幢閸ュ彞绗岄崡锛勫鐏忓搫顕敍灞借嫙娑撳﹨鐨熸惔鏇㈠劥閹靛澧濋崠鍝勭厵妤傛ê瀹抽敍灞煎▏閹靛澧濋弰鍓с仛閺囧瓨甯存潻鎴犵級閻ｃ儱娴樻稉鏃€绁荤憴鍫⑩敄闂傚瓨娲块崗鍛板喕閵?- 瑜板崬鎼烽弬鍥︽閿涙i/card_view.gd閿涘瘈i/hand_view.gd閿涘cenes/battle_scene.tscn閿涘畳ocs/logs.md
+- 妤犲矁鐦夌紒鎾寸亯閿涙矮鍞惍浣诡梾閺屻儳鈥樼拋銈嗗閻楀瞼缂夐悾銉ユ禈濮ｆ柧绶ラ梽宥勭秵娑撴柨绨抽柈銊﹀閻楀苯灏崺鐔肩彯鎼达箑顤冩径褋鈧?
 
-- 日期：2026-03-25
-- 类型：测试
-- 摘要：新增 `hand_available_actions_smoke_test.gd` 冒烟测试文件，覆盖手牌卡牌 available_actions 计算逻辑。测试内容包括：角色/场地/事件卡打出动作标识、AP/能量/区域容量条件检查、RAID 能力从手牌打出条件、非 MAIN 阶段限制、对手回合卡牌无动作等 14 个测试用例。
-- 影响文件：`docs/hand_available_actions_smoke_test.gd`（新增）
-- 验证方式与结果：运行手牌 available_actions 冒烟测试 14/14 通过。
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘崇殶閺佺绻嶇悰灞炬鎼存洟鍎寸敮鍐ㄧ湰閸欏倹鏆熼敍灞筋杻妤傛ɑ澧滈悧灞藉隘閸╃喎鑻熼崢瀣級閺冦儱绻旈棃銏℃緲妤傛ê瀹抽敍宀冃掗崘铏閻楀瞼缂夐悾銉ユ禈鐞氼偄绨抽柈銊╂桨閺夊潡浼勯幐锛勬畱闂傤噣顣介妴?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘瘈i/hand_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夌紒鎾寸亯閿涙矮鍞惍浣诡梾閺屻儳鈥樼拋銈堢箥鐞涘本妞傛惔鏇㈠劥妤傛ê瀹虫稉搴㈠閻楀本绮撮崝銊ュ隘閸╃喐娓剁亸蹇涚彯鎼达箑娼庡鍙夊絹閸楀洢鈧?
 
-- 日期：2026-03-25
-- 类型：功能更新
-- 摘要：新增手牌RAID卡牌打出功能。选手牌中具有RAID能力的卡牌时显示"RAID"按钮，点击后进入目标选择模式，选择己方前线或能量线上的符合条件的角色作为底座进行RAID堆叠。手牌卡牌的available_actions现已包含RAID能力标识，支持`life_trigger_only=false`且`allow_from_hand=true`的RAID卡牌从手牌打出。
-- 影响文件：`core/game_manager.gd`（新增手牌available_actions计算、RAID能力检测函数）、`ui/battle_scene.gd`（新增RAID按钮、目标选择流程）、`scenes/battle_scene.tscn`（新增RaidButton节点）
-- 验证方式与结果：运行 milestone 冒烟测试 23/23 通过，包括"RAID 显式落点选择"、"RAID 生命触发二选一"、"RAID 突进叠放"、"RAID 框内效果门控"等RAID相关测试全部通过。
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘煀婢х偞妫╄箛妤€灏幎妯哄綌瀵偓閸忕绱濋崣顖氭躬鎼存洟鍎撮幙宥勭稊閸栬櫣娲块幒銉︽暪鐠ч攱鍨ㄧ仦鏇炵磻閺冦儱绻旈棃銏℃緲閿涘苯鑻熼崷銊︽暪鐠ч攱妞傞幎濠勨敄闂傛挳鍣撮弨鍓х舶閹靛澧濋崠鍝勭厵閵?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夌紒鎾寸亯閿涙矮鍞惍浣诡梾閺屻儳鈥樼拋銈嗘）韫囨瀵滈柦顔衡偓浣稿讲鐟欎焦鈧冨瀼閹诡澀绗屾惔鏇㈠劥妤傛ê瀹抽懕鏂垮З瀹稿弶甯撮崗銉ｂ偓?
 
-- 日期：2026-03-25
-- 类型：UI优化
-- 摘要：将日志面板从底部HUD移至右侧浮动弹窗，默认隐藏，通过顶栏 Log 按钮切换展开/隐藏。释放底部空间给手牌和操作栏。
-- 影响文件：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`
-- 验证方式与结果：运行 milestone 冒烟测试 23/23 通过，cards_raw 冒烟测试 10/10 通过。
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘跺櫢閺嬪嫭鍨崷铏规棻閸氭垵绔风仦鈧敍灞藉竾缂傗晝甯虹€规湹淇婇幁顖氬隘楠炶泛鐨㈤崣灞炬煙閹存ê婧€閺嶇绺鹃崠铏骨旂€规艾鐪虫稉顓ㄧ礉閸氬本妞傛稉鍝勭俺闁劍澧滈悧灞藉隘閸╃喖顣╅悾娆忔祼鐎规岸鐝惔锔衡偓?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘瘈i/board_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夌紒鎾寸亯閿涙俺绻嶇悰?Godot headless 閸愭帞鍎懘姘拱绾喛顓婚張顏呮煀婢?UI 閼存碍婀扮憴锝嗙€介柨娆掝嚖閿涙稑绔风仦鈧崣鍌涙殶瀹稿弶鏁兼稉鐑樺灛閸︾儤鐗宠箛鍐ㄥ隘娴兼ê鍘涢妴?
 
-- 日期：2026-03-25
-- 类型：UI优化
-- 摘要：卡组(Deck)、场外(Outside)、除外(Removed)、血区(Life)的展示尺寸改为根据战场背景区域动态计算，使其与背景匹配。添加 project.godot stretch 配置确保 1080p 自适应缩放。
-- 影响文件：`project.godot`、`ui/zone_stack_summary_view.gd`、`ui/life_stack_view.gd`、`ui/board_view.gd`
-- 验证方式与结果：运行 milestone 冒烟测试 23/23 通过，cards_raw 冒烟测试 10/10 通过。
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘舵嫛鐎?2K 閸掑棜椴搁悳鍥т簳鐠嬪啯鍨崷杞扮瑢閹靛澧濈敮鍐ㄧ湰閸欏倹鏆熼敍灞炬暪缁毖勫灛閸︾儤鐗宠箛鍐？鐠烘縿鈧礁顤冮崝鐘冲閻楀苯灏妯哄楠炴儼绻樻稉鈧銉ュ竾缂傗晛鐫嶅鈧弮銉ョ箶妤傛ê瀹抽妴?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘瘈i/hand_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夌紒鎾寸亯閿涙矮鍞惍浣诡梾閺屻儳鈥樼拋?2K 濡楋絼绱版担璺ㄦ暏閺囨潙銇囬惃鍕閻楀苯灏妴浣规纯鐏忓繒娈戦幋妯烘簚闂傛挳娈ф稉搴㈡纯缁毖冨櫨閻ㄥ嫭妫╄箛妤呯彯鎼达负鈧?
 
-- 日期：2026-03-24
-- 类型：功能重构
-- 摘要：重构手牌区域布局，实现"底部固定、默认半收起、悬停上浮、独立预览"方案。新建 CardPreviewPanel 卡牌详情预览面板，重构 HandView 为自定义布局支持动态重叠与 hover 效果，增强 CardView 添加可打出状态视觉提示。
-- 影响文件：`ui/card_preview_panel.gd`（新建）、`ui/hand_view.gd`（重构）、`ui/card_view.gd`（增强）、`ui/battle_scene.gd`（集成）、`scenes/battle_scene.tscn`（节点调整）
-- 验证方式与结果：运行 `res://docs/milestone_smoke_test.gd`，23 项测试全部通过。手牌区域高度降至 160-180px，避让 remove_area 与 outside_area，实现悬停上浮动画与可打出绿色描边提示。
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：将 P2 卡组入口也切换为 `data/decks/starter_b.txt`，使双方都统一通过 txt 数量+编号格式构建卡组，并共同复用 `cards_raw.json` 的原始卡牌定义解析链路。
-- 影响文件：`core/game_manager.gd`、`docs/starter_a_txt_raw_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：使用 Godot headless 运行 `res://docs/starter_a_txt_raw_smoke_test.gd`，结果为 `STARTER_TXT_RAW_SMOKE_OK`。
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：缩小手牌卡图与卡片尺寸，并上调底部手牌区域高度，使手牌显示更接近缩略图且浏览空间更充足。
-- 影响文件：ui/card_view.gd，ui/hand_view.gd，scenes/battle_scene.tscn，docs/logs.md
-- 验证结果：代码检查确认手牌缩略图比例降低且底部手牌区域高度增大。
-
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：调整运行时底部布局参数，增高手牌区域并压缩日志面板高度，解决手牌缩略图被底部面板遮挡的问题。
-- 影响文件：ui/battle_scene.gd，ui/hand_view.gd，docs/logs.md
-- 验证结果：代码检查确认运行时底部高度与手牌滚动区域最小高度均已提升。
-
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：新增日志区折叠开关，可在底部操作区直接收起或展开日志面板，并在收起时把空间释放给手牌区域。
-- 影响文件：ui/battle_scene.gd，docs/logs.md
-- 验证结果：代码检查确认日志按钮、可见性切换与底部高度联动已接入。
-
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：重构战场纵向布局，压缩玩家信息区并将双方战场核心区稳定居中，同时为底部手牌区域预留固定高度。
-- 影响文件：ui/battle_scene.gd，ui/board_view.gd，docs/logs.md
-- 验证结果：运行 Godot headless 冒烟脚本确认未新增 UI 脚本解析错误；布局参数已改为战场核心区优先。
-
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：针对 2K 分辨率微调战场与手牌布局参数，收紧战场核心间距、增加手牌区高度并进一步压缩展开日志高度。
-- 影响文件：ui/battle_scene.gd，ui/hand_view.gd，docs/logs.md
-- 验证结果：代码检查确认 2K 档会使用更大的手牌区、更小的战场间隔与更紧凑的日志高度。
-
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：修正日志折叠后的空间分配逻辑，使隐藏日志时手牌区域会获得额外高度并实际纵向扩展。
-- 影响文件：ui/battle_scene.gd，docs/logs.md
-- 验证结果：代码检查确认日志收起时底部总高度增加，且 HandView 已设置为纵向扩展。
-
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：修正日志栏折叠后未把释放空间分配给手牌区的问题，隐藏日志时会额外抬高手牌区域并让 HandView 纵向扩展。
-- 影响文件：ui/battle_scene.gd，docs/logs.md
-- 验证方式与结果：代码检查确认折叠日志后会增加手牌区目标高度，并同步收起日志面板最小高度；待界面运行进一步目视确认。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：调整手牌缩略图尺寸策略，改为按手牌区可用高度动态计算，确保卡图高度至少占手牌区约 80%，并固定图片框为 7:5 比例。
-- 影响文件：ui/hand_view.gd，ui/card_view.gd，docs/logs.md
-- 验证方式与结果：代码检查确认手牌卡片会随区域高度放大，图片框尺寸由可用高度推导并保持 7:5 比例；待界面运行进一步目视确认。
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：为手牌展示新增 pic/micro 缩略图资源生成脚本，并让手牌优先读取 micro 缩略图后回退原图。
-- 影响文件：tools/generate_micro_card_images.ps1，ui/card_view.gd，docs/logs.md
-- 验证方式与结果：运行缩略图脚本生成 51 张 48px 高 PNG；静态检查确认手牌取图顺序为 pic/micro 优先、pic 回退；执行 Godot headless 冒烟测试，未出现新增资源路径或脚本解析错误，现有 7 项失败为仓库既有冒烟问题。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：继续微调战场与手牌布局，限制手牌区最大高度并修正底部 HUD 预留计算，避免手牌面板遮挡战场区域。
-- 影响文件：ui/battle_scene.gd，docs/logs.md
-- 验证方式与结果：代码检查确认战场底部预留现在包含底部边距，且手牌区高度会受最小战场可视高度约束；随后执行 Godot headless 冒烟，未新增布局脚本解析错误。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：提高手牌 micro 缩略图输出像素，将缩略图目标高度从 48px 提升到 72px，减少手牌展示时的模糊感。
-- 影响文件：tools/generate_micro_card_images.ps1，pic/micro，docs/logs.md
-- 验证方式与结果：重跑缩略图生成脚本并覆盖输出 51 张 micro 图片；抽查样本尺寸已提升为 52x72，文件名与原图保持一致。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：继续提升手牌 micro 缩略图输出像素，将缩略图目标高度从 72px 提升到 84px，进一步改善手牌卡图清晰度。
-- 影响文件：tools/generate_micro_card_images.ps1，pic/micro，docs/logs.md
-- 验证方式与结果：重跑缩略图生成脚本并覆盖输出 51 张 micro 图片；抽查样本尺寸已提升为 60x84，文件名与原图保持一致。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：调整战场卡槽为与卡牌一致的竖版比例，并让打到战场上的角色牌回显缩略图与关键数值信息。
-- 影响文件：ui/board_view.gd，ui/drop_zone.gd，ui/card_view.gd，docs/logs.md
-- 验证方式与结果：代码检查确认战场格子与占位尺寸改为竖版比例，战场 CardView 会优先读取卡图并以缩略图样式展示；随后执行 Godot headless 冒烟验证脚本解析正常。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：在 AGENTS 协作规范中补充手牌区域不得遮挡战场的强制校验要求，并要求每次相关 UI/布局改动后都记录该项验证。
-- 影响文件：AGENTS.md，docs/logs.md
-- 验证方式与结果：代码检查确认新规则已写入测试要求与 Godot 特别注意事项，后续相关改动需按该规范执行验证。
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：收紧手牌区高度并同步缩小战场竖版卡槽尺寸，避免下方战场被手牌区域遮挡。
-- 影响文件：ui/battle_scene.gd，ui/board_view.gd，ui/drop_zone.gd，ui/card_view.gd，docs/logs.md
-- 验证方式与结果：代码检查确认手牌区默认高度与日志收起奖励已下调，战场最小可视高度与战场卡槽尺寸已上调/收紧；随后执行 Godot headless 冒烟，未新增 UI 脚本解析错误。
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：将 battle_scene 脚本与场景文件回滚到上一个版本，撤销本轮针对底部手牌区与战场预留的布局调整。
-- 影响文件：ui/battle_scene.gd，scenes/battle_scene.tscn，docs/logs.md
-- 验证方式与结果：使用 git 回滚 battle_scene 相关文件到上一个提交版本；随后执行 Godot headless 冒烟，确认未新增 battle_scene 脚本解析错误。
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：修正 battle_scene 顶部与底部布局预留，避免顶部状态文字与战场标题重叠，并让底部手牌区不再压住下方战场。
-- 影响文件：ui/battle_scene.gd，docs/logs.md
-- 验证方式与结果：代码检查确认战场顶部改为避让 TopHUD 实际高度，底部按手牌面板真实预留计算；随后执行 Godot headless 冒烟，未新增 battle_scene 解析错误。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：将战场核心区改为随窗口伸展保持 4x4 居中分布，并同步把玩家标题、统计与分区标题对齐到战场核心区域。
-- 影响文件：ui/battle_scene.gd，ui/board_view.gd，docs/logs.md
-- 验证方式与结果：代码检查确认 BoardContent 改为居中分布，BoardSpacer 不再吞掉剩余高度，上下双方战场核心区会围绕窗口中部布局；随后执行 Godot headless 冒烟，未新增布局脚本解析错误。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：继续补齐战场视觉中轴，将顶部状态栏改为围绕战场核心居中排列，避免窗口拉伸后顶部控件整体偏左。
-- 影响文件：ui/battle_scene.gd，docs/logs.md
-- 验证方式与结果：代码检查确认 TopBar 改为居中对齐；随后执行 Godot headless 冒烟，未新增布局脚本解析错误。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：读取当前项目协作规范、规则文档、开发计划与核心实现，新增 docs/plan/mile_stone.md 对已实现功能、已达成里程碑、未闭环能力与当前验证结果进行统一盘点。
-- 影响文件：docs/plan/mile_stone.md，docs/logs.md
-- 验证方式与结果：完成 core/、data/、ui/、docs/ 代码与脚本交叉检查；执行 res://docs/milestone_smoke_test.gd 得到 11 项通过、7 项失败；执行 res://docs/deck_import_smoke_test.gd 通过；尝试执行 res://docs/draw_phase_smoke_test.gd 时出现 Godot headless 进程崩溃，未形成有效业务结论。
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：修正 docs/milestone_smoke_test.gd 中与当前实现不一致的旧断言与旧样例卡依赖，统一到现有 DRAW 阶段流程、临时测试卡样本与当前生命结算时机，并同步更新 mile_stone 文档中的验证结果。
-- 影响文件：docs/milestone_smoke_test.gd，docs/plan/mile_stone.md，docs/logs.md
-- 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 18 项通过、0 项失败；脚本退出时仍有 Godot 资源未清理警告，但未影响断言通过。
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：修正回合开始时 AP 只增长槽位但不会重新恢复活跃的问题，使先攻玩家后续回合能按规则恢复并达到 3 点可用 AP；同时为抽牌阶段冒烟补充先攻下一轮 3 AP 断言。
-- 影响文件：core/zone_manager.gd，core/turn_manager.gd，docs/draw_phase_smoke_test.gd，docs/logs.md
-- 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 18 项通过、0 项失败；多次尝试执行 res://docs/draw_phase_smoke_test.gd 时仍出现 Godot headless 环境级崩溃，但该问题发生在脚本断言输出前，未见本次 AP 修复引入新的规则失败。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：补齐开局一次换牌决策流程，并在战场左侧新增生命区 7 张盖牌展示；双方需依次完成起手换牌后才会放置生命区并进入首回合。
-- 影响文件或模块：data/game_state.gd、core/game_manager.gd、ui/board_view.gd、ui/life_stack_view.gd、ui/battle_scene.gd、docs/milestone_smoke_test.gd、docs/starter_a_txt_raw_smoke_test.gd、docs/plan/project_development_plan.md
-- 验证方式与结果：执行 res://docs/milestone_smoke_test.gd，结果为 19 项通过、0 项失败，新增覆盖开局待决策、不换牌生命区顺序与换牌重抽流程；在沙箱外执行 Godot headless --quit 未出现新增脚本解析错误；在沙箱外执行 res://docs/starter_a_txt_raw_smoke_test.gd 输出 STARTER_TXT_RAW_SMOKE_OK。代码检查确认生命区已位于战场左侧，且本次新增生命区为战场内部左侧列，不会把底部手牌区抬高到遮挡战场。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：在 AGENTS 协作规范中新增卡牌 DSL/IR 设计原则，明确按原子能力建模、要求与步骤分离、固定格式、统一 IR 运行时与主 agent 验收检查要求。
-- 影响文件或模块：AGENTS.md、docs/logs.md
-- 验证方式与结果：代码检查确认新小节位于“项目事实与权威来源”之后、“多 Agent 协作原则”之前，且同步补充了 DSL/IR 契约冻结要求、主 agent 集成检查项与推荐串行/并行场景约束；新增日志记录为中文。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：落地卡牌 DSL/IR 三层数据链路，改为由 `cards_raw.json` 编译生成 `cards_semantic.json` 与统一运行时 `cards_effects.json`，并让运行时与卡组导入只消费最终 DSL；同时补齐显式目标选择待决策、原子步骤执行与旧样例卡兼容接入。
-- 影响文件或模块：tools/compile_cards_effects.py、data/cards/cards_semantic.json、data/cards/cards_effects.json、data/card_def.gd、core/effect_resolver.gd、core/game_manager.gd、docs/deck_importer.gd、docs/logs.md
-- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 成功生成 67 张卡的最终 DSL，统计结果为 33 个已支持能力、41 个未支持能力；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果为 19 项通过、0 项失败。两次 Godot headless 退出时仍有既有资源泄漏警告，但未影响本轮规则与数据链路验证通过。
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：继续扩充卡牌 DSL 编译模板，新增抽1弃1、生命区回手后二次结算、可选单体退场、事件牌 AP 区域重置等固定格式能力映射，并重写 `compile_cards_effects.py` 为干净 UTF-8 版本以消除历史编码噪声。
-- 影响文件或模块：tools/compile_cards_effects.py、core/effect_resolver.gd、data/cards/cards_semantic.json、data/cards/cards_effects.json、docs/logs.md
-- 验证方式与结果：再次执行 `python tools/compile_cards_effects.py`，最终统计提升为 41 个已支持能力、33 个未支持能力；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果仍为 19 项通过、0 项失败。Godot headless 退出时仍有既有资源泄漏警告，但未引入新的规则回归。
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：优先补齐“本回合临时增益/临时能力”原子能力链，新增 `ADD_TEMP_BP_MODIFIER` 与 `ADD_TEMP_KEYWORD` 原子步骤、回合结束自动回滚、运行时关键词读取与临时效果快照输出，并接入常见的本回合 BP 增益模板。
-- 影响文件或模块：core/effect_resolver.gd、core/rules_engine.gd、core/battle_resolver.gd、core/game_manager.gd、data/card_instance.gd、tools/compile_cards_effects.py、data/cards/cards_semantic.json、data/cards/cards_effects.json、docs/logs.md
-- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后支持能力提升为 49 个、未支持能力降为 25 个；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果保持 19 项通过、0 项失败。Godot headless 退出时仍有既有资源泄漏警告，但未影响本轮临时效果链路验证。
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：实现标准 RAID 二选一文本的“仅生命触发”改造，将 `このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。` 编译为 `ON_LIFE_TRIGGER` 下的显式二选一决策，并把直接 RAID 的入口收紧为只可从该生命触发决策进入。
-- 影响文件或模块：tools/compile_cards_effects.py、core/effect_resolver.gd、core/rules_engine.gd、core/game_manager.gd、docs/milestone_smoke_test.gd、data/cards/cards_semantic.json、data/cards/cards_effects.json、docs/logs.md
-- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，5 张标准 RAID 文本全部编译为 `LIFE_TRIGGER_RAID_CHOICE` 模板，支持能力提升为 54 个、未支持能力降为 20 个；执行 `res://docs/starter_a_txt_raw_smoke_test.gd` 输出 `STARTER_TXT_RAW_SMOKE_OK`；执行 `res://docs/milestone_smoke_test.gd` 结果为 20 项通过、0 项失败。Godot headless 退出时仍有既有资源泄漏警告，但未影响本轮生命触发 RAID 决策链验证通过。
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：补齐 RAID 底牌的显式被叠放状态模型，叠放时清理底牌的临时状态与运行时修正，并确认上层 RAID 牌离场时底牌会一并进入场外。
-- 影响文件或模块：`data/card_instance.gd`、`core/zone_manager.gd`、`docs/milestone_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：补充并检查 RAID 冒烟断言，确认底牌会记录 `is_stacked_under/stack_parent_uid`，且在上层离场进入场外后同步清空叠放标记并一并进入场外。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：参照战场图示例补齐双方战场中的卡组区、场外区与除外区独立展示，改为左列生命/除外、中列前线/能量线、右列卡组/场外的三列布局，并保持仅展示区域标题与数量。
-- 影响文件或模块：`ui/board_view.gd`、`ui/zone_stack_summary_view.gd`、`docs/logs.md`
-- 验证方式与结果：代码检查确认继续复用现有 `deck_count`、`outside_count`、`removed_count` 快照字段，未改动规则入口、拖拽行为与公开快照契约；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出，未新增脚本解析错误。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：将底部手牌区改为纯缩略图展示，移除 `Active Hand` 标题与手牌卡右侧文字框，并把拖拽预览同步改为图片卡面。
-- 影响文件或模块：`ui/hand_view.gd`、`ui/card_view.gd`、`docs/logs.md`
-- 验证方式与结果：代码检查确认手牌尺寸改为按纯图片宽高计算，手牌模式仅保留卡面缩略图，战场牌面文字区不受影响；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出，未新增脚本解析错误。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：同步补充 `docs/plan/mile_stone.md` 当前项目里程碑盘点，更新战场三列布局、手牌纯缩略图展示、最新冒烟通过数与后续 UI 验收建议。
-- 影响文件或模块：`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：对照 `docs/logs.md` 最近记录与现有 `ui/`、`core/` 实现更新里程碑描述，确认 M6 UI 现状、20 项里程碑冒烟通过结论与已知风险保持一致；本次为文档同步，无新增脚本执行。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：将结束阶段超手牌处理从“直接移入移除区”改为显式弃牌决策流，要求玩家逐张选择手牌弃到场外，全部处理完成后才切换到下一回合。
-- 影响文件或模块：`core/turn_manager.gd`、`core/game_manager.gd`、`docs/milestone_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 21 项通过、0 项失败，新增“结束阶段超手牌显式弃牌”用例通过；随后执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出。Godot headless 退出时仍有既有资源未释放警告，但未影响本轮断言通过。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：完成战场三列区域与底部手牌纯缩略图的布局专项修正，收紧小屏与中屏下的战场卡尺寸、底部 HUD 高度与响应式阈值，并为 `battle_scene` 增加 `--layout-probe` 自检入口。
-- 影响文件或模块：`ui/battle_scene.gd`、`ui/board_view.gd`、`ui/hand_view.gd`、`ui/drop_zone.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：在沙盒外分别执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1280x720 --path D:\CodexWork\TcgDemo -- --layout-probe`、`--resolution 1366x768`、`--resolution 1600x900`、`--resolution 1920x1080`，四组窗口尺寸均输出 `[PASS] UI 布局 ...`；确认玩家战场可视底边未压入手牌缩略图区，且手牌仍为纯缩略图展示。另执行 `--headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出，未新增脚本解析错误。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：补齐效果系统的统一队列消费链路，将 `resolve_effect`、`resolve_trigger`、`MAIN_ACTIVATE` 与手动目标续执行统一接入 `effect_queue`；同时打通 IR 层 `costs` 与 `target_specs` 的运行时消费，并在快照中补充 `effect_queue_count` 便于调试。
-- 影响文件或模块：`core/effect_resolver.gd`、`core/game_manager.gd`、`data/card_def.gd`、`docs/milestone_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败，新增覆盖 `QUEUE_EFFECT` 同轮消费、`target_specs` 显式选目标、`PAY_AP`/`REST_SOURCE` 费用结算与费用不足阻断；随后执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出。Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：在协作规范中补充 Godot 冒烟测试执行约定，明确当 Codex 沙箱内运行受限或结果不稳定时，可在获得批准后通过 `Godot_v4.6.1-stable_win64_console.exe` 走沙箱外执行，并要求主 agent 在交付中记录命令与验证结果。
-- 影响文件或模块：`AGENTS.md`、`docs/logs.md`
-- 验证方式与结果：代码检查确认新增说明落在 `AGENTS.md` 的 “Godot 特别注意事项” 小节，未改动规则语义、接口契约与现有测试要求；本次为协作规范补充，未新增 Godot 脚本执行。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：新增围绕 `cards_raw.json` 的最小样例对局脚本，使用正式 raw 卡定义覆盖 `ON_ENTER`、`MAIN_ACTIVATE`、`ON_PLAY` 与 `ON_LIFE_TRIGGER` 四类效果入口，并在生命触发样例中按当前正式实现验证目标进入触发方 `outside` 的实际落点，降低测试与正式数据脱节风险。
-- 影响文件或模块：`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 4 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；随后执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并正常退出。Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：同步更新项目里程碑盘点，修正效果系统阶段状态为“已接入统一队列消费链路”，补充 `cards_raw.json` 最小样例对局脚本与最新冒烟通过数，并将后续动作调整为继续扩展复杂条件、费用、目标与正式 raw 样例覆盖。
-- 影响文件或模块：`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：对照 `docs/logs.md` 最近功能记录、`docs/milestone_smoke_test.gd` 23 项通过结果与 `docs/cards_raw_minimal_duel_smoke_test.gd` 4 项通过结果，确认里程碑文档中的 M4 状态、风险项、验证结论与下一步动作已和当前实现保持一致；本次为文档同步，未新增脚本执行。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：继续推进 M4 效果系统与正式 raw 样例覆盖，新增 `DRAW_2` 与“生命区取 1 到手后再抽 2”两类 DSL 编译模板，并把 `cards_raw` 最小对局冒烟补到 5 条正式样例。
-- 影响文件或模块：`tools/compile_cards_effects.py`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 56 个已支持能力、18 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 5 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；随后在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败。两次 Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：继续沿 `cards_raw` 最小样例对局补齐正式 raw 卡覆盖，新增手牌中自减 AP、离场回手与“先支付角色退场代价、再按其 BP 选择目标并抽 2”的多步骤费用结算模板，并把最小 raw 冒烟扩展到 8 条正式样例。
-- 影响文件或模块：`core/effect_resolver.gd`、`tools/compile_cards_effects.py`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 57 个已支持能力、16 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 8 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；随后在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败。两次 Godot 退出时仍有既有资源泄漏告警，但未影响本轮断言通过。
-
-- 日期：2026-03-23
-- 类型：bugfix
-- 摘要：修复 `docs/milestone_smoke_test.gd` 中被错误转码写坏的测试文案，并同步修正 `core/effect_resolver.gd` 的 `PREVIEW_TOP_DECK` 玩家来源类型声明，恢复里程碑冒烟脚本可读性与可执行性。
-- 影响文件或模块：`docs/milestone_smoke_test.gd`、`core/effect_resolver.gd`、`docs/logs.md`
-- 验证方式与结果：重新执行 `python tools/compile_cards_effects.py`，结果为 59 个已支持能力、14 个未支持能力；随后在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`，结果为 23 项通过、0 项失败。Godot 退出时仍有既有资源泄漏告警，但未影响断言通过。
-
-- 日期：2026-03-23
-- 类型：功能更新
-- 摘要：完成 `docs/cards_raw_minimal_duel_smoke_test.gd` 的编码与可读性巡检，确认脚本本体无脏乱码；同时收口两条看牌堆顶正式 raw 样例，补齐“看牌堆顶、从上下文候选显式选牌、剩余按顺序回牌堆底、按卡名去重选择与基于已选结果继续结算”的统一 DSL/IR 链路。
-- 影响文件或模块：`tools/compile_cards_effects.py`、`core/effect_resolver.gd`、`data/cards/cards_effects.json`、`data/cards/cards_semantic.json`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/plan/mile_stone.md`、`docs/logs.md`
-- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 后，统一 DSL 编译结果更新为 59 个已支持能力、14 个未支持能力；在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 10 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`；此前同步执行的 `docs/milestone_smoke_test.gd` 为 23 项通过、0 项失败。Godot 退出时仍有既有资源泄漏告警，但未影响断言通过。
-
-- 日期：2026-03-25
-- 类型：bugfix
-- 摘要：调整 `battle_scene` 顶部 HUD 布局，将状态信息与操作按钮拆分为左右分区，并将 `Next Phase` 按钮固定在顶部右侧；同时修正 `layout-probe` 对玩家战场区域的判定口径，避免将全屏根节点误判为与手牌区重叠。
-- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：完成场景节点重组与脚本节点路径同步，静态检查确认 `StatusRow`、`ActionRow`、`NextPhaseButton` 等节点路径与容器类型全部对齐；首次沙箱外执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 时，发现探针把 `PlayerBoard` 全屏根节点误判为战场内容区，导致报告“玩家战场与手牌缩略图区域发生重叠”；修正探针后再次以同一命令执行，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认当前布局下手牌区未遮挡玩家战场。运行过程中仍出现既有的 Godot anchors 警告，但未阻塞本次布局验收通过。
-
-- 日期：2026-03-25
-- 类型：功能更新
-- 摘要：将当前行动玩家的个人信息面板统一移动到顶部右侧，与 `Next Phase` 操作区对齐展示，新增回合阶段、手牌数、当前能量与 AP 摘要，并保持这些字段随快照实时更新。
-- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：完成顶部右侧 `PlayerInfoPanel` 场景节点接入与脚本绑定，确认阶段、手牌数、能量总数、`AP active/total` 均取自当前行动玩家快照；在沙箱外执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认个人信息面板上移后仍未遮挡战场与手牌区域。运行过程中仍有既有 Godot anchors 警告，但未影响本次布局验收通过。
-
-- 日期：2026-03-25
-- 类型：功能更新
-- 摘要：将顶部右侧区域进一步调整为双行布局，第一行保留操作按钮，第二行单独展示当前行动玩家的个人信息面板，使阶段、手牌数、能量与 AP 信息更集中且不与按钮混排。
-- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：完成 `ActionRow` 由横向容器调整为纵向容器，并新增 `ActionButtonRow` 承载按钮行；同时保留第二行 `PlayerInfoPanel` 的快照同步逻辑不变。在沙箱外执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认双行布局下战场与手牌区域仍未发生遮挡。运行过程中仍有既有 Godot anchors 警告，但未影响本次布局验收通过。
-- 日期：2026-03-25
-- 类型：bugfix
-- 摘要：修复主阶段手牌 RAID 卡在满足 AP、能量与目标条件时未显示 RAID 按钮的问题；不再把 `life_trigger_only` 误当作“禁止手牌 RAID”的限制，同时补齐手牌 RAID 动作对 `allow_from_hand`、AP 与能量的校验。
-- 影响文件或模块：`core/game_manager.gd`、`core/rules_engine.gd`、`docs/hand_available_actions_smoke_test.gd`
-- 验证方式与结果：在沙箱内执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/hand_available_actions_smoke_test.gd` 时 Godot 崩溃；随后在沙箱外执行同一命令，`docs/hand_available_actions_smoke_test.gd` 14 项全部通过，确认 `life_trigger_only + allow_from_hand=true` 的 RAID 卡会在手牌正常显示 RAID 动作。Godot 退出时仍有既有 `ObjectDB`/resource 泄漏告警，但未影响断言通过。
-
-- 日期：2026-03-26
-- 类型：bugfix
-- 摘要：修复 `battle_scene` 布局探针报错文案在 `ui/battle_scene.gd` 第 746 行出现的中文乱码，恢复为正常中文提示。
-- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认第 746 行乱码字符串已替换为“玩家战场内容区域为空”，脚本其余逻辑未改动。
-- 日期：2026-03-26
-- 类型：bugfix
-- 摘要：修正官网抓取卡 `UA31ST_MMM_1_105` 的 `energy_provided`，将其从空对象改为 `{"RED": 1}`，并同步重新生成运行时 `cards_effects.json`。
-- 影响文件或模块：`data/cards/cards_raw.json`、`data/cards/cards_effects.json`、`docs/logs.md`
-- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 成功生成 67 张卡的 `cards_effects.json`，统计结果为 59 个已支持能力、14 个未支持能力；静态检查确认 `UA31ST_MMM_1_105` 在 `cards_raw.json` 与 `cards_effects.json` 中的 `energy_provided` 均为 `{"RED": 1}`。
-
-- 日期：2026-03-26
-- 类型：bugfix
-- 摘要：修复回合开始 AP 增长按玩家个人回合数计算时的偏差，使双方自己的第 2 回合保持 2 张 AP，并从第 3 回合起稳定为 3 张。
-- 影响文件或模块：`core/turn_manager.gd`、`docs/draw_phase_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查 `_ap_target_for_player()` 已调整为“首回合特判、第 2 回合返回 2、之后返回 3”；同步更新 `draw_phase_smoke_test.gd`，断言 P1 与 P2 自己的第 2 回合均为 2/2 AP。
-- 日期：2026-03-26
-- 类型：功能更新
-- 摘要：接入简单人机基础框架，新增统一 Action 模型、`RulesEngine.get_legal_actions()`、`GameManager.execute_action()`、玩家控制器与 `SimpleAI`，并补齐 `Human vs AI`、`AI vs AI` 与合法动作冒烟脚本。
-- 影响文件或模块：`core/actions/`、`core/controllers/`、`core/ai/simple_ai.gd`、`core/rules_engine.gd`、`core/game_manager.gd`、`ui/battle_scene.gd`、`docs/legal_actions_smoke_test.gd`、`docs/vs_ai_smoke_test.gd`
-- 验证方式与结果：在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/legal_actions_smoke_test.gd`，4 项通过、0 项失败；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/vs_ai_smoke_test.gd`，2 项通过、0 项失败；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/hand_available_actions_smoke_test.gd`，14 项通过、0 项失败。三次运行结束时仍有既有的 ObjectDB/资源未释放告警，但未阻塞断言通过。
-- 日期：2026-03-26
-- 类型：bugfix
-- 摘要：补充协作规范，明确 Godot 相关命令默认只在沙箱外执行，避免因沙箱内 `user://logs` 写入失败导致的启动异常与误判。
-- 影响文件或模块：`AGENTS.md`、`docs/logs.md`
-- 验证方式与结果：静态检查 `AGENTS.md` 的“Godot 特别注意事项”段落，已新增“默认只在沙箱外运行 Godot”的明确约束，并与本轮实际冒烟执行方式保持一致。
-
-- 日期：2026-03-26
-- 类型：功能更新
-- 摘要：调整默认开局控制器配置，改为 `P1=HUMAN`、`P2=AI_SIMPLE`，使战斗场景直接进入简单人机模式。
-- 影响文件或模块：`core/game_manager.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查 `GameManager` 导出配置，确认 `player_one_controller_type` 保持 `HUMAN`，`player_two_controller_type` 默认值已改为 `AI_SIMPLE`；场景文件未对该导出属性做额外覆写，因此默认开局会生效。
-- 日期：2026-03-26
-- 类型：功能更新
-- 摘要：将“看牌堆顶”相关的人类玩家待决策改为专用临时弹窗，展示已查看的全部卡牌缩略图并支持点选确认；若后续需要把剩余卡按顺序回到底部，则自动切换为第二个排序弹窗继续处理，普通非预览类待决策仍保留底部通用面板。
-- 影响文件或模块：`core/effect_resolver.gd`、`core/game_manager.gd`、`ui/preview_selection_modal.gd`、`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
-- 验证方式与结果：在沙箱外执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 成功启动并加载新弹窗脚本；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，结果为 10 项通过、0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`，确认预览选牌、回底排序与后续弃牌链路的业务结果保持不变；执行 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\CodexWork\TcgDemo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认新增模态层后手牌区域仍未遮挡战场。运行过程中仍有既有 anchors 警告与资源未释放告警，但未阻塞本轮断言通过。
-- 日期：2026-03-26
-- 类型：bugfix
-- 摘要：修复手牌悬停时底部预览面板被显示并撑高 Bottom HUD 的问题，改为悬停仅保留事件语义，只有点击选中手牌时才更新预览，避免手牌区域在 hover 时整体上抬。
-- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `_on_hand_card_hovered()` 不再在 hover enter 或 hover exit 时调用 `card_preview_panel.set_card_data()`、`clear_card()` 来改变预览面板显隐；当前底部预览仅由手牌选中流程驱动，可避免悬停时 `BottomContent` 高度突增。
-- 日期：2026-03-26
-- 类型：功能更新
-- 摘要：将卡牌预览面板从底部操作区移出，改为固定显示在战场顶部左侧的独立浮层，并在响应式布局更新时根据顶部 HUD 底边重新定位，避免预览面板继续参与底部手牌区排版。
-- 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `CardPreviewPanel` 已从 `UILayer/BottomHUD/BottomPanel/BottomContent` 迁移到 `UILayer` 直属节点，`ui/battle_scene.gd` 的 `@onready` 路径与 `_update_preview_panel_layout()` 已同步指向顶部左侧浮层定位逻辑。
-
-- 日期：2026-03-26
-- 类型：功能更新
-- 摘要：梳理 `cards_effects.json` 中 14 条未实现能力，按“通用步骤模板、原子 requirement、控制流语义、特殊出牌规则”归并为中文待办清单，并补充到 `docs/plan/tolist.md` 作为后续 Effect DSL/IR 扩展入口。
-- 影响文件或模块：`docs/plan/tolist.md`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `docs/plan/tolist.md` 已写入围绕未实现原子能力的分组待办、卡牌映射、实施顺序与冻结项；本轮未修改运行时代码，未执行 Godot 冒烟测试。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：将 `CardPreviewPanel` 的卡牌预览改为优先展示 `res://pic/` 下的原始整卡图，只有原图缺失时才回退到文字详情；同时同步调整预览面板尺寸以适配完整卡图比例。
-- 影响文件或模块：`ui/card_preview_panel.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
-- 验证方式与结果：静态检查确认预览面板已改为原图优先加载顺序 `pic -> pic/micro`，且场景面板尺寸已放宽以容纳完整卡图；Godot 布局探针验证待执行。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：为 `CardPreviewPanel` 补充卡牌临时状态展示，预览面板现可显示当前状态（如 `ACTIVE/RESTED`）、当前 BP 相对原始 BP 的增减变化、临时关键词以及通过 RAID 登场等运行时状态。
-- 影响文件或模块：`core/game_manager.gd`、`ui/card_preview_panel.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认卡牌快照新增 `base_bp` 字段，预览面板已基于 `state`、`bp/base_bp` 与 `flags.temp_keywords` 生成“临时状态”文本；Godot 冒烟验证待执行。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：移除手牌区默认半收起布局，改为完整展示整张手牌图片；同时提高底部 HUD 预留高度，并让手牌优先读取原图资源，缩略图仅作为回退。
-- 影响文件或模块：`ui/hand_view.gd`、`ui/card_view.gd`、`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
-- 验证方式与结果：静态检查确认手牌布局已改为按完整卡高底部对齐，不再使用半收起可见比例；底部 HUD 运行时与场景初始高度均已上调，手牌贴图读取顺序已改为 `pic -> pic/micro`。随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认完整手牌显示下未遮挡战场；运行中仍有既有 anchors warning，但未阻塞本次验收。
-- 日期：2026-03-26
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘叏濮濓絾妫╄箛妤佸閸欑姴鎮楅惃鍕敄闂傛潙鍨庨柊宥夆偓鏄忕帆閿涘奔濞囬梾鎰閺冦儱绻旈弮鑸靛閻楀苯灏崺鐔剁窗閼惧嘲绶辨０婵嗩樆妤傛ê瀹抽獮璺虹杽闂勫懐鏃遍崥鎴炲⒖鐏炴洏鈧?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夌紒鎾寸亯閿涙矮鍞惍浣诡梾閺屻儳鈥樼拋銈嗘）韫囨鏁圭挧閿嬫鎼存洟鍎撮幀濠氱彯鎼达箑顤冮崝鐙呯礉娑?HandView 瀹歌尪顔曠純顔昏礋缁鹃潧鎮滈幍鈺佺潔閵?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏濮濓絾妫╄箛妤佺埉閹舵ê褰旈崥搴㈡弓閹跺﹪鍣撮弨鍓р敄闂傛潙鍨庨柊宥囩舶閹靛澧濋崠铏规畱闂傤噣顣介敍宀勬閽樺繑妫╄箛妤佹娴兼岸顤傛径鏍ㄥМ妤傛ɑ澧滈悧灞藉隘閸╃喎鑻熺拋?HandView 缁鹃潧鎮滈幍鈺佺潔閵?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗗閸欑姵妫╄箛妤€鎮楁导姘杻閸旂姵澧滈悧灞藉隘閻╊喗鐖ｆ妯哄閿涘苯鑻熼崥灞绢劄閺€鎯版崳閺冦儱绻旈棃銏℃緲閺堚偓鐏忓繘鐝惔锔肩幢瀵板懐鏅棃銏ｇ箥鐞涘矁绻樻稉鈧銉ф窗鐟欏棛鈥樼拋銈冣偓?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘崇殶閺佸瓨澧滈悧宀€缂夐悾銉ユ禈鐏忓搫顕粵鏍殣閿涘本鏁兼稉鐑樺瘻閹靛澧濋崠鍝勫讲閻劑鐝惔锕€濮╅幀浣筋吀缁犳绱濈涵顔荤箽閸椻€虫禈妤傛ê瀹抽懛鍐茬毌閸楃姵澧滈悧灞藉隘缁?80%閿涘苯鑻熼崶鍝勭暰閸ュ墽澧栧鍡曡礋 7:5 濮ｆ柧绶ラ妴?- 瑜板崬鎼烽弬鍥︽閿涙i/hand_view.gd閿涘瘈i/card_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗗閻楀苯宕遍悧鍥︾窗闂呭繐灏崺鐔肩彯鎼达附鏂佹径褝绱濋崶鍓у濡楀棗鏄傜€靛摜鏁遍崣顖滄暏妤傛ê瀹抽幒銊ヮ嚤楠炴湹绻氶幐?7:5 濮ｆ柧绶ラ敍娑樼窡閻ｅ矂娼版潻鎰攽鏉╂稐绔村銉ф窗鐟欏棛鈥樼拋銈冣偓?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘礋閹靛澧濈仦鏇犮仛閺傛澘顤?pic/micro 缂傗晝鏆愰崶鎹愮カ濠ф劗鏁撻幋鎰壖閺堫剨绱濋獮鎯邦唨閹靛澧濇导妯哄帥鐠囪褰?micro 缂傗晝鏆愰崶鎯ф倵閸ョ偤鈧偓閸樼喎娴橀妴?- 瑜板崬鎼烽弬鍥︽閿涙ools/generate_micro_card_images.ps1閿涘瘈i/card_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鏉╂劘顢戠紓鈺冩殣閸ユ崘鍓奸張顒傛晸閹?51 瀵?48px 妤?PNG閿涙盯娼ら幀浣诡梾閺屻儳鈥樼拋銈嗗閻楀苯褰囬崶楣冦€庢惔蹇庤礋 pic/micro 娴兼ê鍘涢妴涔竔c 閸ョ偤鈧偓閿涙稒澧界悰?Godot headless 閸愭帞鍎ù瀣槸閿涘本婀崙铏瑰箛閺傛澘顤冪挧鍕爱鐠侯垰绶為幋鏍壖閺堫剝袙閺嬫劙鏁婄拠顖ょ礉閻滅増婀?7 妞ょ懓銇戠拹銉よ礋娴犳挸绨遍弮銏℃箒閸愭帞鍎梻顕€顣介妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘辨埛缂侇厼浜曠拫鍐╁灛閸﹁桨绗岄幍瀣鐢啫鐪敍宀勬閸掕埖澧滈悧灞藉隘閺堚偓婢堆囩彯鎼达箑鑻熸穱顔筋劀鎼存洟鍎?HUD 妫板嫮鏆€鐠侊紕鐣婚敍宀勪缉閸忓秵澧滈悧宀勬桨閺夊潡浼勯幐鈩冨灛閸﹀搫灏崺鐔粹偓?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗗灛閸﹀搫绨抽柈銊╊暕閻ｆ瑧骞囬崷銊ュ瘶閸氼偄绨抽柈銊ㄧ珶鐠烘繐绱濇稉鏃€澧滈悧灞藉隘妤傛ê瀹虫导姘綀閺堚偓鐏忓繑鍨崷鍝勫讲鐟欏棝鐝惔锔惧閺夌噦绱遍梾蹇撴倵閹笛嗩攽 Godot headless 閸愭帞鍎敍灞炬弓閺傛澘顤冪敮鍐ㄧ湰閼存碍婀扮憴锝嗙€介柨娆掝嚖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘絹妤傛ɑ澧滈悧?micro 缂傗晝鏆愰崶鎹愮翻閸戝搫鍎氱槐鐙呯礉鐏忓棛缂夐悾銉ユ禈閻╊喗鐖ｆ妯哄娴?48px 閹绘劕宕岄崚?72px閿涘苯鍣虹亸鎴炲閻楀苯鐫嶇粈鐑樻閻ㄥ嫭膩缁﹥鍔呴妴?- 瑜板崬鎼烽弬鍥︽閿涙ools/generate_micro_card_images.ps1閿涘ic/micro閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闁插秷绐囩紓鈺冩殣閸ュ墽鏁撻幋鎰壖閺堫剙鑻熺憰鍡欐磰鏉堟挸鍤?51 瀵?micro 閸ュ墽澧栭敍娑欏▕閺屻儲鐗遍張顒€鏄傜€电鍑￠幓鎰磳娑?52x72閿涘本鏋冩禒璺烘倳娑撳骸甯崶鍙ョ箽閹镐椒绔撮懛娣偓?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘辨埛缂侇厽褰侀崡鍥ㄥ閻?micro 缂傗晝鏆愰崶鎹愮翻閸戝搫鍎氱槐鐙呯礉鐏忓棛缂夐悾銉ユ禈閻╊喗鐖ｆ妯哄娴?72px 閹绘劕宕岄崚?84px閿涘矁绻樻稉鈧銉︽暭閸犲嫭澧滈悧灞藉幢閸ョ偓绔婚弲鏉垮閵?- 瑜板崬鎼烽弬鍥︽閿涙ools/generate_micro_card_images.ps1閿涘ic/micro閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闁插秷绐囩紓鈺冩殣閸ュ墽鏁撻幋鎰壖閺堫剙鑻熺憰鍡欐磰鏉堟挸鍤?51 瀵?micro 閸ュ墽澧栭敍娑欏▕閺屻儲鐗遍張顒€鏄傜€电鍑￠幓鎰磳娑?60x84閿涘本鏋冩禒璺烘倳娑撳骸甯崶鍙ョ箽閹镐椒绔撮懛娣偓?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘崇殶閺佸瓨鍨崷鍝勫幢濡叉垝璐熸稉搴″幢閻楀奔绔撮懛瀵告畱缁旀牜澧楀В鏂剧伐閿涘苯鑻熺拋鈺傚ⅵ閸掔増鍨崷杞扮瑐閻ㄥ嫯顫楅懝鑼閸ョ偞妯夌紓鈺冩殣閸ュ彞绗岄崗鎶芥暛閺佹澘鈧棿淇婇幁顖樷偓?- 瑜板崬鎼烽弬鍥︽閿涙i/board_view.gd閿涘瘈i/drop_zone.gd閿涘瘈i/card_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗗灛閸︾儤鐗哥€涙劒绗岄崡鐘辩秴鐏忓搫顕弨閫涜礋缁旀牜澧楀В鏂剧伐閿涘本鍨崷?CardView 娴兼矮绱崗鍫ｎ嚢閸欐牕宕遍崶鎯ц嫙娴犮儳缂夐悾銉ユ禈閺嶅嘲绱＄仦鏇犮仛閿涙盯娈㈤崥搴㈠⒔鐞?Godot headless 閸愭帞鍎宀冪槈閼存碍婀扮憴锝嗙€藉锝呯埗閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘躬 AGENTS 閸楀繋缍旂憴鍕瘱娑擃叀藟閸忓懏澧滈悧灞藉隘閸╃喍绗夊妤呬紕閹糕剝鍨崷铏规畱瀵搫鍩楅弽锟犵崣鐟曚焦鐪伴敍灞借嫙鐟曚焦鐪板В蹇旑偧閻╃鍙?UI/鐢啫鐪弨鐟板З閸氬酣鍏樼拋鏉跨秿鐠囥儵銆嶆宀冪槈閵?- 瑜板崬鎼烽弬鍥︽閿涙GENTS.md閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗘煀鐟欏嫬鍨鎻掑晸閸忋儲绁寸拠鏇☆洣濮瑰倷绗?Godot 閻楃懓鍩嗗▔銊﹀壈娴滃銆嶉敍灞芥倵缂侇厾娴夐崗铏暭閸斻劑娓堕幐澶庮嚉鐟欏嫯瀵栭幍褑顢戞宀冪槈閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘暪缁毖勫閻楀苯灏妯哄楠炶泛鎮撳銉х級鐏忓繑鍨崷铏圭彨閻楀牆宕卞Σ钘夋槀鐎甸潻绱濋柆鍨帳娑撳鏌熼幋妯烘簚鐞氼偅澧滈悧灞藉隘閸╃喖浼勯幐掳鈧?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘瘈i/board_view.gd閿涘瘈i/drop_zone.gd閿涘瘈i/card_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗗閻楀苯灏妯款吇妤傛ê瀹虫稉搴㈡）韫囨鏁圭挧宄邦殯閸斿崬鍑℃稉瀣殶閿涘本鍨崷鐑樻付鐏忓繐褰茬憴鍡涚彯鎼达缚绗岄幋妯烘簚閸椻剝蝎鐏忓搫顕韫瑐鐠?閺€鍓佹彛閿涙盯娈㈤崥搴㈠⒔鐞?Godot headless 閸愭帞鍎敍灞炬弓閺傛澘顤?UI 閼存碍婀扮憴锝嗙€介柨娆掝嚖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘殺 battle_scene 閼存碍婀版稉搴℃簚閺咁垱鏋冩禒璺烘礀濠婃艾鍩屾稉濠佺娑擃亞澧楅張顒婄礉閹俱倝鏀㈤張顒冪枂闁藉牆顕惔鏇㈠劥閹靛澧濋崠杞扮瑢閹存ê婧€妫板嫮鏆€閻ㄥ嫬绔风仦鈧拫鍐╂殻閵?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘cenes/battle_scene.tscn閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴ｈ法鏁?git 閸ョ偞绮?battle_scene 閻╃鍙ч弬鍥︽閸掗绗傛稉鈧稉顏呭絹娴溿倗澧楅張顒婄幢闂呭繐鎮楅幍褑顢?Godot headless 閸愭帞鍎敍宀€鈥樼拋銈嗘弓閺傛澘顤?battle_scene 閼存碍婀扮憴锝嗙€介柨娆掝嚖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏濮?battle_scene 妞ゅ爼鍎存稉搴＄俺闁劌绔风仦鈧０鍕殌閿涘矂浼╅崗宥夈€婇柈銊уЦ閹焦鏋冪€涙ぞ绗岄幋妯烘簚閺嶅洭顣介柌宥呭綌閿涘苯鑻熺拋鈺佺俺闁劍澧滈悧灞藉隘娑撳秴鍟€閸樺缍囨稉瀣煙閹存ê婧€閵?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗗灛閸︽椽銆婇柈銊︽暭娑撴椽浼╃拋?TopHUD 鐎圭偤妾妯哄閿涘苯绨抽柈銊﹀瘻閹靛澧濋棃銏℃緲閻喎鐤勬０鍕殌鐠侊紕鐣婚敍娑㈡閸氬孩澧界悰?Godot headless 閸愭帞鍎敍灞炬弓閺傛澘顤?battle_scene 鐟欙絾鐎介柨娆掝嚖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺閹存ê婧€閺嶇绺鹃崠鐑樻暭娑撴椽娈㈢粣妤€褰涙导绋跨潔娣囨繃瀵?4x4 鐏炲懍鑵戦崚鍡楃閿涘苯鑻熼崥灞绢劄閹跺﹦甯虹€硅埖鐖ｆ０妯糕偓浣虹埠鐠佲€茬瑢閸掑棗灏弽鍥暯鐎靛綊缍堥崚鐗堝灛閸︾儤鐗宠箛鍐ㄥ隘閸╃喆鈧?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘瘈i/board_view.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋?BoardContent 閺€閫涜礋鐏炲懍鑵戦崚鍡楃閿涘瓓oardSpacer 娑撳秴鍟€閸氱偞甯€閸撯晙缍戞妯哄閿涘奔绗傛稉瀣蓟閺傝鍨崷鐑樼壋韫囧啫灏导姘纯缂佹洜鐛ラ崣锝勮厬闁劌绔风仦鈧敍娑㈡閸氬孩澧界悰?Godot headless 閸愭帞鍎敍灞炬弓閺傛澘顤冪敮鍐ㄧ湰閼存碍婀扮憴锝嗙€介柨娆掝嚖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘辨埛缂侇叀藟姒绘劖鍨崷楦款潒鐟欏鑵戞潪杈剧礉鐏忓棝銆婇柈銊уЦ閹焦鐖弨閫涜礋閸ュ绮幋妯烘簚閺嶇绺剧仦鍛厬閹烘帒鍨敍宀勪缉閸忓秶鐛ラ崣锝嗗娴肩鎮楁い鍫曞劥閹貉傛閺佺繝缍嬮崑蹇撲箯閵?- 瑜板崬鎼烽弬鍥︽閿涙i/battle_scene.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋?TopBar 閺€閫涜礋鐏炲懍鑵戠€靛綊缍堥敍娑㈡閸氬孩澧界悰?Godot headless 閸愭帞鍎敍灞炬弓閺傛澘顤冪敮鍐ㄧ湰閼存碍婀扮憴锝嗙€介柨娆掝嚖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘愁嚢閸欐牕缍嬮崜宥夈€嶉惄顔煎礂娴ｆ粏顫夐懠鍐︹偓浣筋潐閸掓瑦鏋冨锝冣偓浣哥磻閸欐垼顓搁崚鎺嶇瑢閺嶇绺剧€圭偟骞囬敍灞炬煀婢?docs/plan/mile_stone.md 鐎电懓鍑＄€圭偟骞囬崝鐔诲厴閵嗕礁鍑℃潏鐐灇闁插瞼鈻肩喊鎴欌偓浣规弓闂傤厾骞嗛懗钘夊娑撳骸缍嬮崜宥夌崣鐠囦胶绮ㄩ弸婊嗙箻鐞涘瞼绮烘稉鈧惄妯煎仯閵?- 瑜板崬鎼烽弬鍥︽閿涙瓰ocs/plan/mile_stone.md閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐎瑰本鍨?core/閵嗕龚ata/閵嗕菇i/閵嗕龚ocs/ 娴狅絿鐖滄稉搴ゅ壖閺堫兛姘﹂崣澶嬵梾閺屻儻绱遍幍褑顢?res://docs/milestone_smoke_test.gd 瀵版鍩?11 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉幢閹笛嗩攽 res://docs/deck_import_smoke_test.gd 闁俺绻冮敍娑樼毦鐠囨洘澧界悰?res://docs/draw_phase_smoke_test.gd 閺冭泛鍤悳?Godot headless 鏉╂稓鈻煎畷鈺傜皾閿涘本婀ぐ銏″灇閺堝鏅ユ稉姘缂佹捁顔戦妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏濮?docs/milestone_smoke_test.gd 娑擃厺绗岃ぐ鎾冲鐎圭偟骞囨稉宥勭閼峰娈戦弮褎鏌囩懛鈧稉搴㈡＋閺嶈渹绶ラ崡鈥茬贩鐠ф牭绱濈紒鐔剁閸掓壆骞囬張?DRAW 闂冭埖顔屽ù浣衡柤閵嗕椒澶嶉弮鑸电ゴ鐠囨洖宕遍弽閿嬫拱娑撳骸缍嬮崜宥囨晸閸涚晫绮ㄧ粻妤佹閺堢尨绱濋獮璺烘倱濮濄儲娲块弬?mile_stone 閺傚洦銆傛稉顓犳畱妤犲矁鐦夌紒鎾寸亯閵?- 瑜板崬鎼烽弬鍥︽閿涙瓰ocs/milestone_smoke_test.gd閿涘畳ocs/plan/mile_stone.md閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 res://docs/milestone_smoke_test.gd閿涘瞼绮ㄩ弸婊€璐?18 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉幢閼存碍婀伴柅鈧崙鐑樻娴犲秵婀?Godot 鐠у嫭绨張顏呯閻炲棜顒熼崨濠忕礉娴ｅ棙婀ぐ鍗炴惙閺傤叀鈻堥柅姘崇箖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏濮濓絽娲栭崥鍫濈磻婵妞?AP 閸欘亜顤冮梹鎸幮担宥勭稻娑撳秳绱伴柌宥嗘煀閹垹顦插ú鏄忕┈閻ㄥ嫰妫舵０姗堢礉娴ｅ灝鍘涢弨鑽ゅ负鐎硅泛鎮楃紒顓炴礀閸氬牐鍏橀幐澶庮潐閸掓瑦浠径宥呰嫙鏉堟儳鍩?3 閻愮懓褰查悽?AP閿涙稑鎮撻弮鏈佃礋閹剁晫澧濋梼鑸殿唽閸愭帞鍎悰銉ュ帠閸忓牊鏁炬稉瀣╃鏉?3 AP 閺傤叀鈻堥妴?- 瑜板崬鎼烽弬鍥︽閿涙瓭ore/zone_manager.gd閿涘畱ore/turn_manager.gd閿涘畳ocs/draw_phase_smoke_test.gd閿涘畳ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 res://docs/milestone_smoke_test.gd閿涘瞼绮ㄩ弸婊€璐?18 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉幢婢舵碍顐肩亸婵婄槸閹笛嗩攽 res://docs/draw_phase_smoke_test.gd 閺冩湹绮涢崙铏瑰箛 Godot headless 閻滎垰顣ㄧ痪褍绌垮┃鍐跨礉娴ｅ棜顕氶梻顕€顣介崣鎴犳晸閸︺劏鍓奸張顒佹焽鐟封偓鏉堟挸鍤崜宥忕礉閺堫亣顫嗛張顒侇偧 AP 娣囶喖顦插鏇炲弳閺傛壆娈戠憴鍕灟婢惰精瑙﹂妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘乘夋鎰磻鐏炩偓娑撯偓濞嗏剝宕查悧灞藉枀缁涙牗绁︾粙瀣剁礉楠炶泛婀幋妯烘簚瀹革缚鏅堕弬鏉款杻閻㈢喎鎳￠崠?7 瀵姷娲婇悧灞界潔缁€鐚寸幢閸欏本鏌熼棁鈧笟婵囶偧鐎瑰本鍨氱挧閿嬪閹广垻澧濋崥搴㈠娴兼碍鏂佺純顔炬晸閸涜棄灏獮鎯扮箻閸忋儵顩婚崶鐐叉値閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癲ata/game_state.gd閵嗕恭ore/game_manager.gd閵嗕菇i/board_view.gd閵嗕菇i/life_stack_view.gd閵嗕菇i/battle_scene.gd閵嗕龚ocs/milestone_smoke_test.gd閵嗕龚ocs/starter_a_txt_raw_smoke_test.gd閵嗕龚ocs/plan/project_development_plan.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 res://docs/milestone_smoke_test.gd閿涘瞼绮ㄩ弸婊€璐?19 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉閺傛澘顤冪憰鍡欐磰瀵偓鐏炩偓瀵板懎鍠呯粵鏍モ偓浣风瑝閹广垻澧濋悽鐔锋嚒閸栨椽銆庢惔蹇庣瑢閹广垻澧濋柌宥嗗▕濞翠胶鈻奸敍娑樻躬濞屾瑧顔堟径鏍ㄥ⒔鐞?Godot headless --quit 閺堫亜鍤悳鐗堟煀婢х偠鍓奸張顒冃掗弸鎰版晩鐠囶垽绱遍崷銊︾煓缁犲崬顦婚幍褑顢?res://docs/starter_a_txt_raw_smoke_test.gd 鏉堟挸鍤?STARTER_TXT_RAW_SMOKE_OK閵嗗倷鍞惍浣诡梾閺屻儳鈥樼拋銈囨晸閸涜棄灏韫秴娴滃孩鍨崷鍝勪箯娓氀嶇礉娑撴梹婀板▎鈩冩煀婢х偟鏁撻崨钘夊隘娑撶儤鍨崷鍝勫敶闁劌涔忔笟褍鍨敍灞肩瑝娴兼碍濡告惔鏇㈠劥閹靛澧濋崠鐑樺М妤傛ê鍩岄柆顔藉皡閹存ê婧€閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘躬 AGENTS 閸楀繋缍旂憴鍕瘱娑擃厽鏌婃晶鐐插幢閻?DSL/IR 鐠佹崘顓搁崢鐔峰灟閿涘本妲戠涵顔藉瘻閸樼喎鐡欓懗钘夊瀵ょ儤膩閵嗕浇顩﹀Ч鍌欑瑢濮濄儵顎冮崚鍡欘瀲閵嗕礁娴愮€规碍鐗稿蹇嬧偓浣虹埠娑撯偓 IR 鏉╂劘顢戦弮鏈电瑢娑?agent 妤犲本鏁瑰Λ鈧弻銉洣濮瑰倶鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癆GENTS.md閵嗕龚ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗘煀鐏忓繗濡担宥勭艾閳ユ粓銆嶉惄顔荤皑鐎圭偘绗岄弶鍐ㄢ枆閺夈儲绨垾婵呯閸氬簺鈧讲鈧粌顦?Agent 閸楀繋缍旈崢鐔峰灟閳ユ繀绠ｉ崜宥忕礉娑撴柨鎮撳銉ㄋ夐崗鍛啊 DSL/IR 婵傛垹瀹抽崘鑽ょ波鐟曚焦鐪伴妴浣峰瘜 agent 闂嗗棙鍨氬Λ鈧弻銉┿€嶆稉搴㈠腹閼芥劒瑕嗙悰?楠炴儼顢戦崷鐑樻珯缁撅附娼敍娑欐煀婢х偞妫╄箛妤勵唶瑜版洑璐熸稉顓熸瀮閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘虫儰閸︽澘宕遍悧?DSL/IR 娑撳鐪伴弫鐗堝祦闁炬崘鐭鹃敍灞炬暭娑撹櫣鏁?`cards_raw.json` 缂傛牞鐦ч悽鐔稿灇 `cards_semantic.json` 娑撳海绮烘稉鈧潻鎰攽閺?`cards_effects.json`閿涘苯鑻熺拋鈺勭箥鐞涘本妞傛稉搴″幢缂佸嫬顕遍崗銉ュ涧濞戝牐鍨傞張鈧紒?DSL閿涙稑鎮撻弮鎯八夋鎰▔瀵繒娲伴弽鍥偓澶嬪瀵板懎鍠呯粵鏍モ偓浣稿斧鐎涙劖顒炴銈嗗⒔鐞涘奔绗岄弮褎鐗辨笟瀣幢閸忕厧顔愰幒銉ュ弳閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱皌ools/compile_cards_effects.py閵嗕龚ata/cards/cards_semantic.json閵嗕龚ata/cards/cards_effects.json閵嗕龚ata/card_def.gd閵嗕恭ore/effect_resolver.gd閵嗕恭ore/game_manager.gd閵嗕龚ocs/deck_importer.gd閵嗕龚ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `python tools/compile_cards_effects.py` 閹存劕濮涢悽鐔稿灇 67 瀵姴宕遍惃鍕付缂?DSL閿涘瞼绮虹拋锛勭波閺嬫粈璐?33 娑擃亜鍑￠弨顖涘瘮閼宠棄濮忛妴?1 娑擃亝婀弨顖涘瘮閼宠棄濮忛敍娑欏⒔鐞?`res://docs/starter_a_txt_raw_smoke_test.gd` 鏉堟挸鍤?`STARTER_TXT_RAW_SMOKE_OK`閿涙稒澧界悰?`res://docs/milestone_smoke_test.gd` 缂佹挻鐏夋稉?19 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓鍌欒⒈濞?Godot headless 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱＄拃锕€鎲￠敍灞肩稻閺堫亜濂栭崫宥嗘拱鏉烆喛顫夐崚娆庣瑢閺佺増宓侀柧鎹愮熅妤犲矁鐦夐柅姘崇箖閵?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘辨埛缂侇厽澧块崗鍛幢閻?DSL 缂傛牞鐦уΟ鈩冩緲閿涘本鏌婃晶鐐村▕1瀵?閵嗕胶鏁撻崨钘夊隘閸ョ偞澧滈崥搴濈癌濞嗭紕绮ㄧ粻妞尖偓浣稿讲闁宕熸担鎾烩偓鈧崷鎭掆偓浣风皑娴犲墎澧?AP 閸栧搫鐓欓柌宥囩枂缁涘娴愮€规碍鐗稿蹇氬厴閸旀稒妲х亸鍕剁礉楠炲爼鍣搁崘?`compile_cards_effects.py` 娑撳搫鍏遍崙鈧?UTF-8 閻楀牊婀版禒銉︾Х闂勩倕宸婚崣鑼椽閻礁娅旀竟鑸偓?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱皌ools/compile_cards_effects.py閵嗕恭ore/effect_resolver.gd閵嗕龚ata/cards/cards_semantic.json閵嗕龚ata/cards/cards_effects.json閵嗕龚ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閸愬秵顐奸幍褑顢?`python tools/compile_cards_effects.py`閿涘本娓剁紒鍫㈢埠鐠佲剝褰侀崡鍥﹁礋 41 娑擃亜鍑￠弨顖涘瘮閼宠棄濮忛妴?3 娑擃亝婀弨顖涘瘮閼宠棄濮忛敍娑欏⒔鐞?`res://docs/starter_a_txt_raw_smoke_test.gd` 鏉堟挸鍤?`STARTER_TXT_RAW_SMOKE_OK`閿涙稒澧界悰?`res://docs/milestone_smoke_test.gd` 缂佹挻鐏夋禒宥勮礋 19 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓渚磑dot headless 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱＄拃锕€鎲￠敍灞肩稻閺堫亜绱╅崗銉︽煀閻ㄥ嫯顫夐崚娆忔礀瑜版帇鈧?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘喘閸忓牐藟姒绘劏鈧粍婀伴崶鐐叉値娑撳瓨妞傛晶鐐垫抄/娑撳瓨妞傞懗钘夊閳ユ繂甯€涙劘鍏橀崝娑㈡懠閿涘本鏌婃晶?`ADD_TEMP_BP_MODIFIER` 娑?`ADD_TEMP_KEYWORD` 閸樼喎鐡欏銉╊€冮妴浣告礀閸氬牏绮ㄩ弶鐔诲殰閸斻劌娲栧姘モ偓浣界箥鐞涘本妞傞崗鎶芥暛鐠囧秷顕伴崣鏍︾瑢娑撳瓨妞傞弫鍫熺亯韫囶偆鍙庢潏鎾冲毉閿涘苯鑻熼幒銉ュ弳鐢瓕顫嗛惃鍕拱閸ョ偛鎮?BP 婢х偟娉Ο鈩冩緲閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癱ore/effect_resolver.gd閵嗕恭ore/rules_engine.gd閵嗕恭ore/battle_resolver.gd閵嗕恭ore/game_manager.gd閵嗕龚ata/card_instance.gd閵嗕辜ools/compile_cards_effects.py閵嗕龚ata/cards/cards_semantic.json閵嗕龚ata/cards/cards_effects.json閵嗕龚ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `python tools/compile_cards_effects.py` 閸氬孩鏁幐浣藉厴閸旀稒褰侀崡鍥﹁礋 49 娑擃亗鈧焦婀弨顖涘瘮閼宠棄濮忛梽宥勮礋 25 娑擃亷绱遍幍褑顢?`res://docs/starter_a_txt_raw_smoke_test.gd` 鏉堟挸鍤?`STARTER_TXT_RAW_SMOKE_OK`閿涙稒澧界悰?`res://docs/milestone_smoke_test.gd` 缂佹挻鐏夋穱婵囧瘮 19 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓渚磑dot headless 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱＄拃锕€鎲￠敍灞肩稻閺堫亜濂栭崫宥嗘拱鏉烆喕澶嶉弮鑸垫櫏閺嬫粓鎽肩捄顖炵崣鐠囦降鈧?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘杽閻滅増鐖ｉ崙?RAID 娴滃矂鈧绔撮弬鍥ㄦ拱閻ㄥ嫧鈧粈绮庨悽鐔锋嚒鐟欙箑褰傞垾婵囨暭闁媴绱濈亸?`閵囨挶浼勯妶顐犲厳閵夊鍊伴幍瀣贡閵囶偄濮為妵鍫涘€犻妵瀣ㄢ偓浣哥箑鐟曚降鍋嶉妷濞垮仮閵夌鍊板┃鈧妵鐔翠粣閵囷负浜滈妶瀣壃閸氬牄鈧降鍎搁妶銈冨剶閵囨洏浠滈妶瀣ㄢ偓淇?缂傛牞鐦ф稉?`ON_LIFE_TRIGGER` 娑撳娈戦弰鎯х础娴滃矂鈧绔撮崘宕囩摜閿涘苯鑻熼幎濠勬纯閹?RAID 閻ㄥ嫬鍙嗛崣锝嗘暪缁毖傝礋閸欘亜褰叉禒搴ゎ嚉閻㈢喎鎳＄憴锕€褰傞崘宕囩摜鏉╂稑鍙嗛妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱皌ools/compile_cards_effects.py閵嗕恭ore/effect_resolver.gd閵嗕恭ore/rules_engine.gd閵嗕恭ore/game_manager.gd閵嗕龚ocs/milestone_smoke_test.gd閵嗕龚ata/cards/cards_semantic.json閵嗕龚ata/cards/cards_effects.json閵嗕龚ocs/logs.md
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `python tools/compile_cards_effects.py` 閸氬函绱? 瀵姵鐖ｉ崙?RAID 閺傚洦婀伴崗銊╁劥缂傛牞鐦ф稉?`LIFE_TRIGGER_RAID_CHOICE` 濡剝婢橀敍灞炬暜閹镐浇鍏橀崝娑欏絹閸楀洣璐?54 娑擃亗鈧焦婀弨顖涘瘮閼宠棄濮忛梽宥勮礋 20 娑擃亷绱遍幍褑顢?`res://docs/starter_a_txt_raw_smoke_test.gd` 鏉堟挸鍤?`STARTER_TXT_RAW_SMOKE_OK`閿涙稒澧界悰?`res://docs/milestone_smoke_test.gd` 缂佹挻鐏夋稉?20 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓渚磑dot headless 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱＄拃锕€鎲￠敍灞肩稻閺堫亜濂栭崫宥嗘拱鏉烆喚鏁撻崨鍊熜曢崣?RAID 閸愬磭鐡ラ柧楣冪崣鐠囦線鈧俺绻冮妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘乘夋?RAID 鎼存洜澧濋惃鍕▔瀵繗顫﹂崣鐘虫杹閻樿埖鈧焦膩閸ㄥ绱濋崣鐘虫杹閺冭埖绔婚悶鍡楃俺閻楀瞼娈戞稉瀛樻閻樿埖鈧椒绗屾潻鎰攽閺冩湹鎱ㄥ锝忕礉楠炲墎鈥樼拋銈勭瑐鐏?RAID 閻楀瞼顬囬崷鐑樻鎼存洜澧濇导姘楠炴儼绻橀崗銉ユ簚婢舵牓鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/card_instance.gd`閵嗕梗core/zone_manager.gd`閵嗕梗docs/milestone_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐞涖儱鍘栭獮鑸殿梾閺?RAID 閸愭帞鍎弬顓♀枅閿涘瞼鈥樼拋銈呯俺閻楀奔绱扮拋鏉跨秿 `is_stacked_under/stack_parent_uid`閿涘奔绗栭崷銊ょ瑐鐏炲倻顬囬崷楦跨箻閸忋儱婧€婢舵牕鎮楅崥灞绢劄濞撳懐鈹栭崣鐘虫杹閺嶅洩顔囬獮鏈电楠炴儼绻橀崗銉ユ簚婢舵牓鈧?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘棘閻撗勫灛閸﹀搫娴樼粈杞扮伐鐞涖儵缍堥崣灞炬煙閹存ê婧€娑擃厾娈戦崡锛勭矋閸栨亽鈧礁婧€婢舵牕灏稉搴ㄦ珟婢舵牕灏悪顒傜彌鐏炴洜銇氶敍灞炬暭娑撳搫涔忛崚妤冩晸閸?闂勩倕顦婚妴浣疯厬閸掓澧犵痪?閼充粙鍣虹痪瑁も偓浣稿礁閸掓宕辩紒?閸﹀搫顦婚惃鍕瑏閸掓绔风仦鈧敍灞借嫙娣囨繃瀵旀禒鍛潔缁€鍝勫隘閸╃喐鐖ｆ０妯圭瑢閺佷即鍣洪妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/board_view.gd`閵嗕梗ui/zone_stack_summary_view.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈囨埛缂侇厼顦查悽銊у箛閺?`deck_count`閵嗕梗outside_count`閵嗕梗removed_count` 韫囶偆鍙庣€涙顔岄敍灞炬弓閺€鐟板З鐟欏嫬鍨崗銉ュ經閵嗕焦瀚嬮幏鍊燁攽娑撹桨绗岄崗顒€绱戣箛顐ゅ弾婵傛垹瀹抽敍娑欏⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 閹存劕濮涢崥顖氬З楠炶埖顒滅敮鎼佲偓鈧崙鐚寸礉閺堫亝鏌婃晶鐐跺壖閺堫剝袙閺嬫劙鏁婄拠顖樷偓?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺鎼存洟鍎撮幍瀣閸栫儤鏁兼稉铏瑰嚱缂傗晝鏆愰崶鎯х潔缁€鐚寸礉缁夊娅?`Active Hand` 閺嶅洭顣芥稉搴㈠閻楀苯宕遍崣鍏呮櫠閺傚洤鐡у鍡礉楠炶埖濡搁幏鏍ㄥ妫板嫯顫嶉崥灞绢劄閺€閫涜礋閸ュ墽澧栭崡锟犳桨閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/hand_view.gd`閵嗕梗ui/card_view.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗗閻楀苯鏄傜€靛憡鏁兼稉鐑樺瘻缁绢垰娴橀悧鍥ь啍妤傛顓哥粻妤嬬礉閹靛澧濆Ο鈥崇础娴犲懍绻氶悾娆忓幢闂堛垻缂夐悾銉ユ禈閿涘本鍨崷铏瑰闂堛垺鏋冪€涙灏稉宥呭綀瑜板崬鎼烽敍娑欏⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 閹存劕濮涢崥顖氬З楠炶埖顒滅敮鎼佲偓鈧崙鐚寸礉閺堫亝鏌婃晶鐐跺壖閺堫剝袙閺嬫劙鏁婄拠顖樷偓?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘倱濮濄儴藟閸?`docs/plan/mile_stone.md` 瑜版挸澧犳い鍦窗闁插瞼鈻肩喊鎴犳磸閻愮櫢绱濋弴瀛樻煀閹存ê婧€娑撳鍨敮鍐ㄧ湰閵嗕焦澧滈悧宀€鍑界紓鈺冩殣閸ユ儳鐫嶇粈鎭掆偓浣规付閺傛澘鍟嬮悜鐔尖偓姘崇箖閺侀绗岄崥搴ｇ敾 UI 妤犲本鏁瑰楦款唴閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐎靛湱鍙?`docs/logs.md` 閺堚偓鏉╂垼顔囪ぐ鏇氱瑢閻滅増婀?`ui/`閵嗕梗core/` 鐎圭偟骞囬弴瀛樻煀闁插瞼鈻肩喊鎴炲伎鏉╁府绱濈涵顔款吇 M6 UI 閻滄壆濮搁妴?0 妞ゅ綊鍣风粙瀣暥閸愭帞鍎柅姘崇箖缂佹捁顔戞稉搴″嚒閻儵顥撻梽鈺€绻氶幐浣风閼疯揪绱遍張顒侇偧娑撶儤鏋冨锝呮倱濮濄儻绱濋弮鐘虫煀婢х偠鍓奸張顒佸⒔鐞涘被鈧?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺缂佹挻娼梼鑸殿唽鐡掑懏澧滈悧灞筋槱閻炲棔绮犻垾婊呮纯閹恒儳些閸忋儳些闂勩倕灏垾婵囨暭娑撶儤妯夊蹇撶磾閻楀苯鍠呯粵鏍ㄧウ閿涘矁顩﹀Ч鍌滃负鐎瑰爼鈧劕绱堕柅澶嬪閹靛澧濆鍐ㄥ煂閸﹀搫顦婚敍灞藉弿闁劌顦╅悶鍡楃暚閹存劕鎮楅幍宥呭瀼閹广垹鍩屾稉瀣╃閸ョ偛鎮庨妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/turn_manager.gd`閵嗕梗core/game_manager.gd`閵嗕梗docs/milestone_smoke_test.gd`閵嗕梗docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?21 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉閺傛澘顤冮垾婊呯波閺夌喖妯佸▓浣冪Т閹靛澧濋弰鎯х础瀵啰澧濋垾婵堟暏娓氬鈧俺绻冮敍娑㈡閸氬孩澧界悰?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 閹存劕濮涢崥顖氬З楠炶埖顒滅敮鎼佲偓鈧崙鎭掆偓渚磑dot headless 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱閺堫亪鍣撮弨鎹愵劅閸涘绱濇担鍡樻弓瑜板崬鎼烽張顒冪枂閺傤叀鈻堥柅姘崇箖閵?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘暚閹存劖鍨崷杞扮瑏閸掓灏崺鐔剁瑢鎼存洟鍎撮幍瀣缁绢垳缂夐悾銉ユ禈閻ㄥ嫬绔风仦鈧稉鎾汇€嶆穱顔筋劀閿涘本鏁圭槐褍鐨仦蹇庣瑢娑擃厼鐫嗘稉瀣畱閹存ê婧€閸椻€虫槀鐎垫悶鈧礁绨抽柈?HUD 妤傛ê瀹虫稉搴℃惙鎼存柨绱￠梼鍫濃偓纭风礉楠炴湹璐?`battle_scene` 婢х偛濮?`--layout-probe` 閼奉亝顥呴崗銉ュ經閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗ui/board_view.gd`閵嗕梗ui/hand_view.gd`閵嗕梗ui/drop_zone.gd`閵嗕梗docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閸︺劍鐭欓惄鎺戭樆閸掑棗鍩嗛幍褑顢?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1280x720 --path D:\CodexWork\TcgDemo -- --layout-probe`閵嗕梗--resolution 1366x768`閵嗕梗--resolution 1600x900`閵嗕梗--resolution 1920x1080`閿涘苯娲撶紒鍕崶閸欙絽鏄傜€电娼庢潏鎾冲毉 `[PASS] UI 鐢啫鐪?...`閿涙稓鈥樼拋銈囧负鐎硅埖鍨崷鍝勫讲鐟欏棗绨虫潏瑙勬弓閸樺鍙嗛幍瀣缂傗晝鏆愰崶鎯у隘閿涘奔绗栭幍瀣娴犲秳璐熺痪顖滅級閻ｃ儱娴樼仦鏇犮仛閵嗗倸褰熼幍褑顢?`--headless --path D:\CodexWork\TcgDemo --quit` 閹存劕濮涢崥顖氬З楠炶埖顒滅敮鎼佲偓鈧崙鐚寸礉閺堫亝鏌婃晶鐐跺壖閺堫剝袙閺嬫劙鏁婄拠顖樷偓?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘乘夋鎰櫏閺嬫粎閮寸紒鐔烘畱缂佺喍绔撮梼鐔峰灙濞戝牐鍨傞柧鎹愮熅閿涘苯鐨?`resolve_effect`閵嗕梗resolve_trigger`閵嗕梗MAIN_ACTIVATE` 娑撳孩澧滈崝銊ф窗閺嶅洨鐢婚幍褑顢戠紒鐔剁閹恒儱鍙?`effect_queue`閿涙稑鎮撻弮鑸靛ⅵ闁?IR 鐏?`costs` 娑?`target_specs` 閻ㄥ嫯绻嶇悰灞炬濞戝牐鍨傞敍灞借嫙閸︺劌鎻╅悡褌鑵戠悰銉ュ帠 `effect_queue_count` 娓氬じ绨拫鍐槸閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/effect_resolver.gd`閵嗕梗core/game_manager.gd`閵嗕梗data/card_def.gd`閵嗕梗docs/milestone_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?23 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉閺傛澘顤冪憰鍡欐磰 `QUEUE_EFFECT` 閸氬矁鐤嗗☉鍫ｅ瀭閵嗕梗target_specs` 閺勬儳绱￠柅澶屾窗閺嶅洢鈧梗PAY_AP`/`REST_SOURCE` 鐠愬湱鏁ょ紒鎾剁暬娑撳氦鍨傞悽銊ょ瑝鐡掓娊妯嗛弬顓ㄧ幢闂呭繐鎮楅幍褑顢?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 閹存劕濮涢崥顖氬З楠炶埖顒滅敮鎼佲偓鈧崙鎭掆偓渚磑dot 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱￠崨濠咁劅閿涘奔绲鹃張顏勫閸濆秵婀版潪顔芥焽鐟封偓闁俺绻冮妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘躬閸楀繋缍旂憴鍕瘱娑擃叀藟閸?Godot 閸愭帞鍎ù瀣槸閹笛嗩攽缁撅箑鐣鹃敍灞炬绾喖缍?Codex 濞屾瑧顔堥崘鍛扮箥鐞涘苯褰堥梽鎰灗缂佹挻鐏夋稉宥嚽旂€规碍妞傞敍灞藉讲閸︺劏骞忓妤佸閸戝棗鎮楅柅姘崇箖 `Godot_v4.6.1-stable_win64_console.exe` 鐠х増鐭欑粻鍗烆樆閹笛嗩攽閿涘苯鑻熺憰浣圭湴娑?agent 閸︺劋姘︽禒妯硅厬鐠佹澘缍嶉崨鎴掓姢娑撳酣鐛欑拠浣虹波閺嬫嚎鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭AGENTS.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗娴狅絿鐖滃Λ鈧弻銉р€樼拋銈嗘煀婢х偠顕╅弰搴ゆ儰閸?`AGENTS.md` 閻?閳ユ窌odot 閻楃懓鍩嗗▔銊﹀壈娴滃銆嶉垾?鐏忓繗濡敍灞炬弓閺€鐟板З鐟欏嫬鍨拠顓濈疅閵嗕焦甯撮崣锝咁殩缁撅缚绗岄悳鐗堟箒濞村鐦憰浣圭湴閿涙稒婀板▎鈥茶礋閸楀繋缍旂憴鍕瘱鐞涖儱鍘栭敍灞炬弓閺傛澘顤?Godot 閼存碍婀伴幍褑顢戦妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘煀婢х偛娲跨紒?`cards_raw.json` 閻ㄥ嫭娓剁亸蹇旂壉娓氬顕仦鈧懘姘拱閿涘奔濞囬悽銊︻劀瀵?raw 閸椻€崇暰娑斿顩惄?`ON_ENTER`閵嗕梗MAIN_ACTIVATE`閵嗕梗ON_PLAY` 娑?`ON_LIFE_TRIGGER` 閸ユ稓琚弫鍫熺亯閸忋儱褰涢敍灞借嫙閸︺劎鏁撻崨鍊熜曢崣鎴炵壉娓氬鑵戦幐澶婄秼閸撳秵顒滃蹇撶杽閻滀即鐛欑拠浣烘窗閺嶅洩绻橀崗銉ㄐ曢崣鎴炴煙 `outside` 閻ㄥ嫬鐤勯梽鍛版儰閻愮櫢绱濋梽宥勭秵濞村鐦稉搴㈩劀瀵繑鏆熼幑顔垮姎閼哄倿顥撻梽鈹库偓?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭docs/cards_raw_minimal_duel_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閸︺劍鐭欑粻鍗烆樆閹笛嗩攽 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?4 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉鏉堟挸鍤?`CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`閿涙盯娈㈤崥搴㈠⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 閹存劕濮涢崥顖氬З楠炶埖顒滅敮鎼佲偓鈧崙鎭掆偓渚磑dot 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱￠崨濠咁劅閿涘奔绲鹃張顏勫閸濆秵婀版潪顔芥焽鐟封偓闁俺绻冮妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘倱濮濄儲娲块弬浼淬€嶉惄顕€鍣风粙瀣暥閻╂鍋ｉ敍灞兼叏濮濓絾鏅ラ弸婊呴兇缂佺喖妯佸▓鐢靛Ц閹椒璐熼垾婊冨嚒閹恒儱鍙嗙紒鐔剁闂冪喎鍨☉鍫ｅ瀭闁炬崘鐭鹃垾婵撶礉鐞涖儱鍘?`cards_raw.json` 閺堚偓鐏忓繑鐗辨笟瀣嚠鐏炩偓閼存碍婀版稉搴㈡付閺傛澘鍟嬮悜鐔尖偓姘崇箖閺佸府绱濋獮璺虹殺閸氬海鐢婚崝銊ょ稊鐠嬪啯鏆ｆ稉铏规埛缂侇厽澧跨仦鏇烆槻閺夊倹娼禒韬测偓浣藉瀭閻劊鈧胶娲伴弽鍥︾瑢濮濓絽绱?raw 閺嶈渹绶ョ憰鍡欐磰閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐎靛湱鍙?`docs/logs.md` 閺堚偓鏉╂垵濮涢懗鍊燁唶瑜版洏鈧梗docs/milestone_smoke_test.gd` 23 妞ゅ綊鈧俺绻冪紒鎾寸亯娑?`docs/cards_raw_minimal_duel_smoke_test.gd` 4 妞ゅ綊鈧俺绻冪紒鎾寸亯閿涘瞼鈥樼拋銈夊櫡缁嬪顣堕弬鍥ㄣ€傛稉顓犳畱 M4 閻樿埖鈧降鈧線顥撻梽鈺呫€嶉妴渚€鐛欑拠浣虹波鐠佽桨绗屾稉瀣╃濮濄儱濮╂担婊冨嚒閸滃苯缍嬮崜宥呯杽閻滈绻氶幐浣风閼疯揪绱遍張顒侇偧娑撶儤鏋冨锝呮倱濮濄儻绱濋張顏呮煀婢х偠鍓奸張顒佸⒔鐞涘被鈧?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘辨埛缂侇厽甯规潻?M4 閺佸牊鐏夌化鑽ょ埠娑撳孩顒滃?raw 閺嶈渹绶ョ憰鍡欐磰閿涘本鏌婃晶?`DRAW_2` 娑撳簶鈧粎鏁撻崨钘夊隘閸?1 閸掔増澧滈崥搴″晙閹?2閳ユ繀琚辩猾?DSL 缂傛牞鐦уΟ鈩冩緲閿涘苯鑻熼幎?`cards_raw` 閺堚偓鐏忓繐顕仦鈧崘鎺斿劔鐞涖儱鍩?5 閺夆剝顒滃蹇旂壉娓氬鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭tools/compile_cards_effects.py`閵嗕梗data/cards/cards_effects.json`閵嗕梗data/cards/cards_semantic.json`閵嗕梗docs/cards_raw_minimal_duel_smoke_test.gd`閵嗕梗docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `python tools/compile_cards_effects.py` 閸氬函绱濈紒鐔剁 DSL 缂傛牞鐦х紒鎾寸亯閺囧瓨鏌婃稉?56 娑擃亜鍑￠弨顖涘瘮閼宠棄濮忛妴?8 娑擃亝婀弨顖涘瘮閼宠棄濮忛敍娑樻躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?5 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉鏉堟挸鍤?`CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`閿涙盯娈㈤崥搴℃躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?23 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓鍌欒⒈濞?Godot 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱￠崨濠咁劅閿涘奔绲鹃張顏勫閸濆秵婀版潪顔芥焽鐟封偓闁俺绻冮妴?- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘辨埛缂侇厽閮?`cards_raw` 閺堚偓鐏忓繑鐗辨笟瀣嚠鐏炩偓鐞涖儵缍堝锝呯础 raw 閸椔ゎ洬閻╂牭绱濋弬鏉款杻閹靛澧濇稉顓″殰閸?AP閵嗕胶顬囬崷鍝勬礀閹靛绗岄垾婊冨帥閺€顖欑帛鐟欐帟澹婇柅鈧崷杞板敩娴犳灚鈧礁鍟€閹稿鍙?BP 闁瀚ㄩ惄顔界垼楠炶埖濞?2閳ユ繄娈戞径姘劄妤犮倛鍨傞悽銊х波缁犳膩閺夊尅绱濋獮鑸靛Ω閺堚偓鐏?raw 閸愭帞鍎幍鈺佺潔閸?8 閺夆剝顒滃蹇旂壉娓氬鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/effect_resolver.gd`閵嗕梗tools/compile_cards_effects.py`閵嗕梗data/cards/cards_effects.json`閵嗕梗data/cards/cards_semantic.json`閵嗕梗docs/cards_raw_minimal_duel_smoke_test.gd`閵嗕梗docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `python tools/compile_cards_effects.py` 閸氬函绱濈紒鐔剁 DSL 缂傛牞鐦х紒鎾寸亯閺囧瓨鏌婃稉?57 娑擃亜鍑￠弨顖涘瘮閼宠棄濮忛妴?6 娑擃亝婀弨顖涘瘮閼宠棄濮忛敍娑樻躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?8 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉鏉堟挸鍤?`CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`閿涙盯娈㈤崥搴℃躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?23 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓鍌欒⒈濞?Godot 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱￠崨濠咁劅閿涘奔绲鹃張顏勫閸濆秵婀版潪顔芥焽鐟封偓闁俺绻冮妴?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏婢?`docs/milestone_smoke_test.gd` 娑擃叀顫﹂柨娆掝嚖鏉烆剛鐖滈崘娆忔綎閻ㄥ嫭绁寸拠鏇熸瀮濡楀牞绱濋獮璺烘倱濮濄儰鎱ㄥ?`core/effect_resolver.gd` 閻?`PREVIEW_TOP_DECK` 閻溾晛顔嶉弶銉︾爱缁鐎锋竟鐗堟閿涘本浠径宥夊櫡缁嬪顣堕崘鎺斿劔閼存碍婀伴崣顖濐嚢閹傜瑢閸欘垱澧界悰灞锯偓褋鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭docs/milestone_smoke_test.gd`閵嗕梗core/effect_resolver.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闁插秵鏌婇幍褑顢?`python tools/compile_cards_effects.py`閿涘瞼绮ㄩ弸婊€璐?59 娑擃亜鍑￠弨顖涘瘮閼宠棄濮忛妴?4 娑擃亝婀弨顖涘瘮閼宠棄濮忛敍娑㈡閸氬骸婀▽娆戭唸婢舵牗澧界悰?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?23 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓渚磑dot 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱￠崨濠咁劅閿涘奔绲鹃張顏勫閸濆秵鏌囩懛鈧柅姘崇箖閵?
+- 閺冦儲婀￠敍?026-03-23
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘暚閹?`docs/cards_raw_minimal_duel_smoke_test.gd` 閻ㄥ嫮绱惍浣风瑢閸欘垵顕伴幀褍璐板Λ鈧敍宀€鈥樼拋銈堝壖閺堫剚婀版担鎾存￥閼村繋璐￠惍渚婄幢閸氬本妞傞弨璺哄經娑撱倖娼惇瀣閸棝銆婂锝呯础 raw 閺嶈渹绶ラ敍宀兯夋鎰ㄢ偓婊呮箙閻楀苯鐖㈡い韬测偓浣风矤娑撳﹣绗呴弬鍥р偓娆撯偓澶嬫▔瀵繘鈧澧濋妴浣稿⒖娴ｆ瑦瀵滄い鍝勭碍閸ョ偟澧濋崼鍡楃俺閵嗕焦瀵滈崡鈥虫倳閸樺鍣搁柅澶嬪娑撳骸鐔€娴滃骸鍑￠柅澶岀波閺嬫粎鎴风紒顓犵波缁犳せ鈧繄娈戠紒鐔剁 DSL/IR 闁炬崘鐭鹃妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭tools/compile_cards_effects.py`閵嗕梗core/effect_resolver.gd`閵嗕梗data/cards/cards_effects.json`閵嗕梗data/cards/cards_semantic.json`閵嗕梗docs/cards_raw_minimal_duel_smoke_test.gd`閵嗕梗docs/plan/mile_stone.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `python tools/compile_cards_effects.py` 閸氬函绱濈紒鐔剁 DSL 缂傛牞鐦х紒鎾寸亯閺囧瓨鏌婃稉?59 娑擃亜鍑￠弨顖涘瘮閼宠棄濮忛妴?4 娑擃亝婀弨顖涘瘮閼宠棄濮忛敍娑樻躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?10 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉鏉堟挸鍤?`CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`閿涙稒顒濋崜宥呮倱濮濄儲澧界悰宀€娈?`docs/milestone_smoke_test.gd` 娑?23 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓渚磑dot 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀佺挧鍕爱濞夊嫭绱￠崨濠咁劅閿涘奔绲鹃張顏勫閸濆秵鏌囩懛鈧柅姘崇箖閵?
+- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘崇殶閺?`battle_scene` 妞ゅ爼鍎?HUD 鐢啫鐪敍灞界殺閻樿埖鈧椒淇婇幁顖欑瑢閹垮秳缍旈幐澶愭尦閹峰棗鍨庢稉鍝勪箯閸欏啿鍨庨崠鐚寸礉楠炶泛鐨?`Next Phase` 閹稿鎸抽崶鍝勭暰閸︺劑銆婇柈銊ュ礁娓氀嶇幢閸氬本妞傛穱顔筋劀 `layout-probe` 鐎靛湱甯虹€硅埖鍨崷鍝勫隘閸╃喓娈戦崚銈呯暰閸欙絽绶為敍宀勪缉閸忓秴鐨㈤崗銊ョ潌閺嶇濡悙纭咁嚖閸掋倓璐熸稉搴㈠閻楀苯灏柌宥呭綌閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭scenes/battle_scene.tscn`閵嗕梗ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐎瑰本鍨氶崷鐑樻珯閼哄倻鍋ｉ柌宥囩矋娑撳氦鍓奸張顒冨Ν閻愮鐭惧鍕倱濮濄儻绱濋棃娆愨偓浣诡梾閺屻儳鈥樼拋?`StatusRow`閵嗕梗ActionRow`閵嗕梗NextPhaseButton` 缁涘濡悙纭呯熅瀵板嫪绗岀€圭懓娅掔猾璇茬€烽崗銊╁劥鐎靛綊缍堥敍娑㈩浕濞嗏剝鐭欑粻鍗烆樆閹笛嗩攽 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 閺冭绱濋崣鎴犲箛閹恒垽鎷￠幎?`PlayerBoard` 閸忋劌鐫嗛弽纭呭Ν閻愮顕ら崚銈勮礋閹存ê婧€閸愬懎顔愰崠鐚寸礉鐎佃壈鍤ч幎銉ユ啞閳ユ粎甯虹€硅埖鍨崷杞扮瑢閹靛澧濈紓鈺冩殣閸ユ儳灏崺鐔峰絺閻㈢喖鍣搁崣鐘偓婵撶幢娣囶喗顒滈幒銏ゆ嫛閸氬骸鍟€濞嗏€蹭簰閸氬奔绔撮崨鎴掓姢閹笛嗩攽閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈呯秼閸撳秴绔风仦鈧稉瀣閻楀苯灏張顏堜紕閹革紕甯虹€硅埖鍨崷鎭掆偓鍌濈箥鐞涘矁绻冪粙瀣╄厬娴犲秴鍤悳鐗堟＆閺堝娈?Godot anchors 鐠€锕€鎲￠敍灞肩稻閺堫亪妯嗘繅鐐存拱濞嗏€崇鐏炩偓妤犲本鏁归柅姘崇箖閵?
+- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺瑜版挸澧犵悰灞藉З閻溾晛顔嶉惃鍕嚋娴滆桨淇婇幁顖炴桨閺夎法绮烘稉鈧粔璇插З閸掍即銆婇柈銊ュ礁娓氀嶇礉娑?`Next Phase` 閹垮秳缍旈崠鍝勵嚠姒绘劕鐫嶇粈鐚寸礉閺傛澘顤冮崶鐐叉値闂冭埖顔岄妴浣瑰閻楀本鏆熼妴浣哥秼閸撳秷鍏橀柌蹇庣瑢 AP 閹芥顩﹂敍灞借嫙娣囨繃瀵旀潻娆庣昂鐎涙顔岄梾蹇撴彥閻撗冪杽閺冭埖娲块弬鑸偓?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭scenes/battle_scene.tscn`閵嗕梗ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐎瑰本鍨氭い鍫曞劥閸欏厖鏅?`PlayerInfoPanel` 閸︾儤娅欓懞鍌滃仯閹恒儱鍙嗘稉搴ゅ壖閺堫剛绮︾€规熬绱濈涵顔款吇闂冭埖顔岄妴浣瑰閻楀本鏆熼妴浣藉厴闁插繑鈧粯鏆熼妴涔P active/total` 閸у洤褰囬懛顏勭秼閸撳秷顢戦崝銊у负鐎硅泛鎻╅悡褝绱遍崷銊︾煓缁犲崬顦婚幍褑顢?`D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈勯嚋娴滆桨淇婇幁顖炴桨閺夊じ绗傜粔璇叉倵娴犲秵婀柆顔藉皡閹存ê婧€娑撳孩澧滈悧灞藉隘閸╃喆鈧倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?Godot anchors 鐠€锕€鎲￠敍灞肩稻閺堫亜濂栭崫宥嗘拱濞嗏€崇鐏炩偓妤犲本鏁归柅姘崇箖閵?
+- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺妞ゅ爼鍎撮崣鍏呮櫠閸栧搫鐓欐潻娑楃濮濄儴鐨熼弫缈犺礋閸欏矁顢戠敮鍐ㄧ湰閿涘瞼顑囨稉鈧悰灞肩箽閻ｆ瑦鎼锋担婊勫瘻闁筋噯绱濈粭顑跨癌鐞涘苯宕熼悪顒€鐫嶇粈鍝勭秼閸撳秷顢戦崝銊у负鐎瑰墎娈戞稉顏冩眽娣団剝浼呴棃銏℃緲閿涘奔濞囬梼鑸殿唽閵嗕焦澧滈悧灞炬殶閵嗕浇鍏橀柌蹇庣瑢 AP 娣団剝浼呴弴鎾肠娑擃厺绗栨稉宥勭瑢閹稿鎸冲ǎ閿嬪笓閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭scenes/battle_scene.tscn`閵嗕梗ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐎瑰本鍨?`ActionRow` 閻㈣鲸铆閸氭垵顔愰崳銊ㄧ殶閺佺繝璐熺痪闈涙倻鐎圭懓娅掗敍灞借嫙閺傛澘顤?`ActionButtonRow` 閹佃儻娴囬幐澶愭尦鐞涘矉绱遍崥灞炬娣囨繄鏆€缁楊兛绨╃悰?`PlayerInfoPanel` 閻ㄥ嫬鎻╅悡褍鎮撳銉┾偓鏄忕帆娑撳秴褰夐妴鍌氭躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈呭蓟鐞涘苯绔风仦鈧稉瀣灛閸﹁桨绗岄幍瀣閸栧搫鐓欐禒宥嗘弓閸欐垹鏁撻柆顔藉皡閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?Godot anchors 鐠€锕€鎲￠敍灞肩稻閺堫亜濂栭崫宥嗘拱濞嗏€崇鐏炩偓妤犲本鏁归柅姘崇箖閵?- 閺冦儲婀￠敍?026-03-25
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏婢跺秳瀵岄梼鑸殿唽閹靛澧?RAID 閸椻€虫躬濠娐ゅ喕 AP閵嗕浇鍏橀柌蹇庣瑢閻╊喗鐖ｉ弶鈥叉閺冭埖婀弰鍓с仛 RAID 閹稿鎸抽惃鍕６妫版﹫绱辨稉宥呭晙閹?`life_trigger_only` 鐠囶垰缍嬫担婧锯偓婊咁洣濮濄垺澧滈悧?RAID閳ユ繄娈戦梽鎰煑閿涘苯鎮撻弮鎯八夋鎰閻?RAID 閸斻劋缍旂€?`allow_from_hand`閵嗕竸P 娑撳氦鍏橀柌蹇曟畱閺嶏繝鐛欓妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/game_manager.gd`閵嗕梗core/rules_engine.gd`閵嗕梗docs/hand_available_actions_smoke_test.gd`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閸︺劍鐭欑粻鍗炲敶閹笛嗩攽 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/hand_available_actions_smoke_test.gd` 閺?Godot 瀹曗晜绨濋敍娑㈡閸氬骸婀▽娆戭唸婢舵牗澧界悰灞芥倱娑撯偓閸涙垝鎶ら敍瀹峝ocs/hand_available_actions_smoke_test.gd` 14 妞ょ懓鍙忛柈銊┾偓姘崇箖閿涘瞼鈥樼拋?`life_trigger_only + allow_from_hand=true` 閻?RAID 閸椻€茬窗閸︺劍澧滈悧灞绢劀鐢憡妯夌粈?RAID 閸斻劋缍旈妴渚磑dot 闁偓閸戠儤妞傛禒宥嗘箒閺冦垺婀?`ObjectDB`/resource 濞夊嫭绱￠崨濠咁劅閿涘奔绲鹃張顏勫閸濆秵鏌囩懛鈧柅姘崇箖閵?
+- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏婢?`battle_scene` 鐢啫鐪幒銏ゆ嫛閹躲儵鏁婇弬鍥攳閸?`ui/battle_scene.gd` 缁?746 鐞涘苯鍤悳鎵畱娑擃厽鏋冩稊杈╃垳閿涘本浠径宥勮礋濮濓絽鐖舵稉顓熸瀮閹绘劗銇氶妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈囶儑 746 鐞涘奔璐￠惍浣哥摟缁楋缚瑕嗗鍙夋禌閹诡澀璐熼垾婊呭负鐎硅埖鍨崷鍝勫敶鐎圭懓灏崺鐔惰礋缁岃　鈧繐绱濋懘姘拱閸忔湹缍戦柅鏄忕帆閺堫亝鏁奸崝銊ｂ偓?- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏濮濓絽鐣肩純鎴炲閸欐牕宕?`UA31ST_MMM_1_105` 閻?`energy_provided`閿涘苯鐨㈤崗鏈电矤缁屽搫顕挒鈩冩暭娑?`{"RED": 1}`閿涘苯鑻熼崥灞绢劄闁插秵鏌婇悽鐔稿灇鏉╂劘顢戦弮?`cards_effects.json`閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/cards/cards_raw.json`閵嗕梗data/cards/cards_effects.json`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閹笛嗩攽 `python tools/compile_cards_effects.py` 閹存劕濮涢悽鐔稿灇 67 瀵姴宕遍惃?`cards_effects.json`閿涘瞼绮虹拋锛勭波閺嬫粈璐?59 娑擃亜鍑￠弨顖涘瘮閼宠棄濮忛妴?4 娑擃亝婀弨顖涘瘮閼宠棄濮忛敍娑㈡饯閹焦顥呴弻銉р€樼拋?`UA31ST_MMM_1_105` 閸?`cards_raw.json` 娑?`cards_effects.json` 娑擃厾娈?`energy_provided` 閸у洣璐?`{"RED": 1}`閵?
+- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏婢跺秴娲栭崥鍫濈磻婵?AP 婢х偤鏆遍幐澶屽负鐎规湹閲滄禍鍝勬礀閸氬牊鏆熺拋锛勭暬閺冨墎娈戦崑蹇撴▕閿涘奔濞囬崣灞炬煙閼奉亜绻侀惃鍕儑 2 閸ョ偛鎮庢穱婵囧瘮 2 瀵?AP閿涘苯鑻熸禒搴ｎ儑 3 閸ョ偛鎮庣挧椋幥旂€规矮璐?3 瀵姰鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/turn_manager.gd`閵嗕梗docs/draw_phase_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻?`_ap_target_for_player()` 瀹歌尪鐨熼弫缈犺礋閳ユ粓顩婚崶鐐叉値閻楃懓鍨介妴浣侯儑 2 閸ョ偛鎮庢潻鏂挎礀 2閵嗕椒绠ｉ崥搴ょ箲閸?3閳ユ繐绱遍崥灞绢劄閺囧瓨鏌?`draw_phase_smoke_test.gd`閿涘本鏌囩懛鈧?P1 娑?P2 閼奉亜绻侀惃鍕儑 2 閸ョ偛鎮庨崸鍥﹁礋 2/2 AP閵?- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘复閸忋儳鐣濋崡鏇氭眽閺堝搫鐔€绾偓濡楀棙鐏﹂敍灞炬煀婢х偟绮烘稉鈧?Action 濡€崇€烽妴涔ulesEngine.get_legal_actions()`閵嗕梗GameManager.execute_action()`閵嗕胶甯虹€硅埖甯堕崚璺烘珤娑?`SimpleAI`閿涘苯鑻熺悰銉╃秷 `Human vs AI`閵嗕梗AI vs AI` 娑撳骸鎮庡▔鏇炲З娴ｆ粌鍟嬮悜鐔诲壖閺堫兙鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/actions/`閵嗕梗core/controllers/`閵嗕梗core/ai/simple_ai.gd`閵嗕梗core/rules_engine.gd`閵嗕梗core/game_manager.gd`閵嗕梗ui/battle_scene.gd`閵嗕梗docs/legal_actions_smoke_test.gd`閵嗕梗docs/vs_ai_smoke_test.gd`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閸︺劍鐭欑粻鍗烆樆閹笛嗩攽 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/legal_actions_smoke_test.gd`閿? 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉幢閹笛嗩攽 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/vs_ai_smoke_test.gd`閿? 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉幢閹笛嗩攽 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/hand_available_actions_smoke_test.gd`閿?4 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉ｂ偓鍌欑瑏濞喡ょ箥鐞涘瞼绮ㄩ弶鐔告娴犲秵婀侀弮銏℃箒閻?ObjectDB/鐠у嫭绨張顏堝櫞閺€鎯ф啞鐠€锔肩礉娴ｅ棙婀梼璇差敚閺傤叀鈻堥柅姘崇箖閵?- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘乘夐崗鍛礂娴ｆ粏顫夐懠鍐跨礉閺勫海鈥?Godot 閻╃鍙ч崨鎴掓姢姒涙顓婚崣顏勬躬濞屾瑧顔堟径鏍ㄥ⒔鐞涘矉绱濋柆鍨帳閸ョ姵鐭欑粻鍗炲敶 `user://logs` 閸愭瑥鍙嗘径杈Е鐎佃壈鍤ч惃鍕儙閸斻劌绱撶敮闀愮瑢鐠囶垰鍨介妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭AGENTS.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻?`AGENTS.md` 閻ㄥ嫧鈧窌odot 閻楃懓鍩嗗▔銊﹀壈娴滃銆嶉垾婵囶唽閽€鏂ょ礉瀹稿弶鏌婃晶鐐┾偓婊堢帛鐠併倕褰ч崷銊︾煓缁犲崬顦绘潻鎰攽 Godot閳ユ繄娈戦弰搴ｂ€樼痪锔芥将閿涘苯鑻熸稉搴㈡拱鏉烆喖鐤勯梽鍛晪閻戠喐澧界悰灞炬煙瀵繋绻氶幐浣风閼锋番鈧?
+- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘崇殶閺佹挳绮拋銈呯磻鐏炩偓閹貉冨煑閸ｃ劑鍘ょ純顕嗙礉閺€閫涜礋 `P1=HUMAN`閵嗕梗P2=AI_SIMPLE`閿涘奔濞囬幋妯绘灍閸︾儤娅欓惄瀛樺复鏉╂稑鍙嗙粻鈧崡鏇氭眽閺堢儤膩瀵繈鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/game_manager.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻?`GameManager` 鐎电厧鍤柊宥囩枂閿涘瞼鈥樼拋?`player_one_controller_type` 娣囨繃瀵?`HUMAN`閿涘畭player_two_controller_type` 姒涙顓婚崐鐓庡嚒閺€閫涜礋 `AI_SIMPLE`閿涙稑婧€閺咁垱鏋冩禒鑸垫弓鐎电顕氱€电厧鍤仦鐐粹偓褍浠涙０婵嗩樆鐟曞棗鍟撻敍灞芥礈濮濄倝绮拋銈呯磻鐏炩偓娴兼氨鏁撻弫鍫涒偓?- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺閳ユ粎婀呴悧灞界垻妞ゅ灈鈧繄娴夐崗宕囨畱娴滆櫣琚悳鈺侇啀瀵板懎鍠呯粵鏍ㄦ暭娑撹桨绗撻悽銊ゅ閺冭泛鑴婄粣妤嬬礉鐏炴洜銇氬鍙夌叀閻娈戦崗銊╁劥閸楋紕澧濈紓鈺冩殣閸ユ儳鑻熼弨顖涘瘮閻愬綊鈧鈥樼拋銈忕幢閼汇儱鎮楃紒顓㈡付鐟曚焦濡搁崜鈺€缍戦崡鈩冨瘻妞ゅ搫绨崶鐐插煂鎼存洟鍎撮敍灞藉灟閼奉亜濮╅崚鍥ㄥ床娑撹櫣顑囨禍灞奸嚋閹烘帒绨鍦崶缂佈呯敾婢跺嫮鎮婇敍灞炬珮闁岸娼０鍕潔缁绶熼崘宕囩摜娴犲秳绻氶悾娆忕俺闁劑鈧氨鏁ら棃銏℃緲閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/effect_resolver.gd`閵嗕梗core/game_manager.gd`閵嗕梗ui/preview_selection_modal.gd`閵嗕梗ui/battle_scene.gd`閵嗕梗scenes/battle_scene.tscn`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閸︺劍鐭欑粻鍗烆樆閹笛嗩攽 `D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit` 閹存劕濮涢崥顖氬З楠炶泛濮炴潪鑺ユ煀瀵湱鐛ラ懘姘拱閿涙稒澧界悰?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`閿涘瞼绮ㄩ弸婊€璐?10 妞ゅ綊鈧俺绻冮妴? 妞ょ懓銇戠拹銉礉鏉堟挸鍤?`CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`閿涘瞼鈥樼拋銈夘暕鐟欏牓鈧澧濋妴浣告礀鎼存洘甯撴惔蹇庣瑢閸氬海鐢诲鍐闁炬崘鐭鹃惃鍕瑹閸旓紕绮ㄩ弸婊€绻氶幐浣风瑝閸欐﹫绱遍幍褑顢?`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\CodexWork\TcgDemo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈嗘煀婢х偞膩閹礁鐪伴崥搴㈠閻楀苯灏崺鐔剁矝閺堫亪浼勯幐鈩冨灛閸︽亽鈧倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors 鐠€锕€鎲℃稉搴ょカ濠ф劖婀柌濠冩杹閸涘﹨顒熼敍灞肩稻閺堫亪妯嗘繅鐐存拱鏉烆喗鏌囩懛鈧柅姘崇箖閵?- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姝渦gfix
+- 閹芥顩﹂敍姘叏婢跺秵澧滈悧灞惧亾閸嬫粍妞傛惔鏇㈠劥妫板嫯顫嶉棃銏℃緲鐞氼偅妯夌粈鍝勮嫙閹炬垿鐝?Bottom HUD 閻ㄥ嫰妫舵０姗堢礉閺€閫涜礋閹剙浠犳禒鍛箽閻ｆ瑤绨ㄦ禒鎯邦嚔娑斿绱濋崣顏呮箒閻愮懓鍤柅澶夎厬閹靛澧濋弮鑸靛閺囧瓨鏌婃０鍕潔閿涘矂浼╅崗宥嗗閻楀苯灏崺鐔锋躬 hover 閺冭埖鏆ｆ担鎾茬瑐閹额兙鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`_on_hand_card_hovered()` 娑撳秴鍟€閸?hover enter 閹?hover exit 閺冩儼鐨熼悽?`card_preview_panel.set_card_data()`閵嗕梗clear_card()` 閺夈儲鏁奸崣姗€顣╃憴鍫ユ桨閺夋寧妯夐梾鎰剁幢瑜版挸澧犳惔鏇㈠劥妫板嫯顫嶆禒鍛暠閹靛澧濋柅澶夎厬濞翠胶鈻兼す鍗炲З閿涘苯褰查柆鍨帳閹剙浠犻弮?`BottomContent` 妤傛ê瀹崇粣浣割杻閵?- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘殺閸楋紕澧濇０鍕潔闂堛垺婢樻禒搴＄俺闁劍鎼锋担婊冨隘缁夎鍤敍灞炬暭娑撳搫娴愮€规碍妯夌粈鍝勬躬閹存ê婧€妞ゅ爼鍎村锔挎櫠閻ㄥ嫮瀚粩瀣癁鐏炲偊绱濋獮璺烘躬閸濆秴绨插蹇撶鐏炩偓閺囧瓨鏌婇弮鑸电壌閹诡噣銆婇柈?HUD 鎼存洝绔熼柌宥嗘煀鐎规矮缍呴敍宀勪缉閸忓秹顣╃憴鍫ユ桨閺夎法鎴风紒顓炲棘娑撳骸绨抽柈銊﹀閻楀苯灏幒鎺斿閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭scenes/battle_scene.tscn`閵嗕梗ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`CardPreviewPanel` 瀹歌弓绮?`UILayer/BottomHUD/BottomPanel/BottomContent` 鏉╀胶些閸?`UILayer` 閻╂潙鐫橀懞鍌滃仯閿涘畭ui/battle_scene.gd` 閻?`@onready` 鐠侯垰绶炴稉?`_update_preview_panel_layout()` 瀹告彃鎮撳銉﹀瘹閸氭垿銆婇柈銊ヤ箯娓氀勮癁鐏炲倸鐣炬担宥夆偓鏄忕帆閵?
+- 閺冦儲婀￠敍?026-03-26
+- 缁鐎烽敍姘閼宠姤娲块弬?- 閹芥顩﹂敍姘拪閻?`cards_effects.json` 娑?14 閺夆剝婀€圭偟骞囬懗钘夊閿涘本瀵滈垾婊堚偓姘辨暏濮濄儵顎冨Ο鈩冩緲閵嗕礁甯€?requirement閵嗕焦甯堕崚鑸电ウ鐠囶厺绠熼妴浣哄濞堝﹤鍤悧宀冾潐閸掓瑢鈧繂缍婇獮鏈佃礋娑擃厽鏋冨鍛濞撳懎宕熼敍灞借嫙鐞涖儱鍘栭崚?`docs/plan/tolist.md` 娴ｆ粈璐熼崥搴ｇ敾 Effect DSL/IR 閹碘晛鐫嶉崗銉ュ經閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭docs/plan/tolist.md`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`docs/plan/tolist.md` 瀹告彃鍟撻崗銉ユ纯缂佹洘婀€圭偟骞囬崢鐔风摍閼宠棄濮忛惃鍕瀻缂佸嫬绶熼崝鐐偓浣稿幢閻楀本妲х亸鍕┾偓浣哥杽閺備粙銆庢惔蹇庣瑢閸愯崵绮ㄦい鐧哥幢閺堫剝鐤嗛張顏冩叏閺€纭呯箥鐞涘本妞傛禒锝囩垳閿涘本婀幍褑顢?Godot 閸愭帞鍎ù瀣槸閵?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙艾鐨?`CardPreviewPanel` 閻ㄥ嫬宕遍悧宀勵暕鐟欏牊鏁兼稉杞扮喘閸忓牆鐫嶇粈?`res://pic/` 娑撳娈戦崢鐔奉潗閺佹潙宕遍崶鎾呯礉閸欘亝婀侀崢鐔锋禈缂傚搫銇戦弮鑸靛閸ョ偤鈧偓閸掔増鏋冪€涙顕涢幆鍜冪幢閸氬本妞傞崥灞绢劄鐠嬪啯鏆ｆ０鍕潔闂堛垺婢樼亸鍝勵嚟娴犮儵鈧倿鍘ょ€瑰本鏆ｉ崡鈥虫禈濮ｆ柧绶ラ妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/card_preview_panel.gd`閵嗕梗scenes/battle_scene.tscn`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈夘暕鐟欏牓娼伴弶鍨嚒閺€閫涜礋閸樼喎娴樻导妯哄帥閸旂姾娴囨い鍝勭碍 `pic -> pic/micro`閿涘奔绗栭崷鐑樻珯闂堛垺婢樼亸鍝勵嚟瀹稿弶鏂佺€规垝浜掔€瑰湱鎾肩€瑰本鏆ｉ崡鈥虫禈閿涙鲍odot 鐢啫鐪幒銏ゆ嫛妤犲矁鐦夊鍛⒔鐞涘被鈧?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙矮璐?`CardPreviewPanel` 鐞涖儱鍘栭崡锛勫娑撳瓨妞傞悩鑸碘偓浣哥潔缁€鐚寸礉妫板嫯顫嶉棃銏℃緲閻滄澘褰查弰鍓с仛瑜版挸澧犻悩鑸碘偓渚婄礄婵?`ACTIVE/RESTED`閿涘鈧礁缍嬮崜?BP 閻╃顕崢鐔奉潗 BP 閻ㄥ嫬顤冮崙蹇撳綁閸栨牓鈧椒澶嶉弮璺哄彠闁款喛鐦濇禒銉ュ挤闁俺绻?RAID 閻ц婧€缁涘绻嶇悰灞炬閻樿埖鈧降鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/game_manager.gd`閵嗕梗ui/card_preview_panel.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈呭幢閻楀苯鎻╅悡褎鏌婃晶?`base_bp` 鐎涙顔岄敍宀勵暕鐟欏牓娼伴弶鍨嚒閸╄桨绨?`state`閵嗕梗bp/base_bp` 娑?`flags.temp_keywords` 閻㈢喐鍨氶垾婊€澶嶉弮鍓佸Ц閹讲鈧繃鏋冮張顒婄幢Godot 閸愭帞鍎宀冪槈瀵板懏澧界悰灞烩偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙氨些闂勩倖澧滈悧灞藉隘姒涙顓婚崡濠冩暪鐠у嘲绔风仦鈧敍灞炬暭娑撳搫鐣弫鏉戠潔缁€鐑樻殻瀵姵澧滈悧灞芥禈閻楀浄绱遍崥灞炬閹绘劙鐝惔鏇㈠劥 HUD 妫板嫮鏆€妤傛ê瀹抽敍灞借嫙鐠佲晜澧滈悧灞肩喘閸忓牐顕伴崣鏍у斧閸ユ崘绁┃鎰剁礉缂傗晝鏆愰崶鍙ョ矌娴ｆ粈璐熼崶鐐衡偓鈧妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/hand_view.gd`閵嗕梗ui/card_view.gd`閵嗕梗ui/battle_scene.gd`閵嗕梗scenes/battle_scene.tscn`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈嗗閻楀苯绔风仦鈧鍙夋暭娑撶儤瀵滅€瑰本鏆ｉ崡锟犵彯鎼存洟鍎寸€靛綊缍堥敍灞肩瑝閸愬秳濞囬悽銊ュ磹閺€鎯版崳閸欘垵顫嗗В鏂剧伐閿涙稑绨抽柈?HUD 鏉╂劘顢戦弮鏈电瑢閸︾儤娅欓崚婵嗩潗妤傛ê瀹抽崸鍥у嚒娑撳﹨鐨熼敍灞惧閻楀矁鍒涢崶鎹愵嚢閸欐牠銆庢惔蹇撳嚒閺€閫涜礋 `pic -> pic/micro`閵嗗倿娈㈤崥搴濆▏閻劑銆嶉惄顔煎敶缂?Godot 閹笛嗩攽 `--layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈呯暚閺佸瓨澧滈悧灞炬▔缁€杞扮瑓閺堫亪浼勯幐鈩冨灛閸︾尨绱辨潻鎰攽娑擃厺绮涢張澶嬫＆閺?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣閺€韬测偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄥ锝嗗灛閸﹀搫灏崺鐔剁瑢閼冲本娅欓崶楣冩晩娴ｅ秶娈戦梻顕€顣介敍宀€些闂勩倓绮庢担婊呮暏娴滃孩鍨崷鍝勭湴閻ㄥ嫰顤傛径鏍級閺€鎾呯幢閸氬本妞傜亸鍡樺閻楀苯灏弨閫涜礋閼冲本娅欓崶鍙ョ瑓閺傚湱娈戦悪顒傜彌鎼存洘鐖敍灞煎▏閹靛澧濇稉搴㈠灛閸﹂缚鍎楅弲顖氫氦鎼存洖鍨庣粋浼欑礉楠炴儼鐨熼弫鏉戠鐏炩偓閹恒垽鎷℃禒銉︾墡妤犲本鍨崷鍝勫敶鐎归€涚矝閽€钘夋躬閼冲本娅欓惌鈺佽埌閸愬懌鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/zone_layout_config.gd`閵嗕梗ui/board_view.gd`閵嗕梗ui/battle_scene.gd`閵嗕梗ui/hand_view.gd`閵嗕梗scenes/battle_scene.tscn`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈堝剹閺咁垰娴橀妴浣瑰灛閸﹀搫灏崺鐔剁瑢閹靛澧濇惔鏇熺埉瀹稿弶鏁兼稉鍝勫瀻缁傝绔风仦鈧敍灞惧灛閸﹀搫灏柌宥嗘煀閸忓彉闊╅崥灞肩閼冲本娅欓崣妯诲床閸欏倹鏆熼敍娑㈡閸氬簼濞囬悽銊┿€嶉惄顔煎敶缂?Godot 閹笛嗩攽 `--layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈嗗灛閸﹀搫鍞寸€硅婀懘杈╊瀲閼冲本娅欓惌鈺佽埌娑撴梻瀚粩瀣閻楀苯绨抽弽蹇旀弓闁喗灏呴幋妯烘簚閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣閺€韬测偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙艾婀悪顒傜彌閹靛澧濇惔鏇熺埉閺傝顢嶆稉濠呯箻娑撯偓濮濄儲鏁圭槐褎澧滈悧宀勭帛鐠併倕鏄傜€甸晲绗屾惔鏇熺埉妤傛ê瀹抽敍灞借嫙娑撳搫绨抽柈銊︽惙娴ｆ粍鐖穱婵堟殌閺堚偓鐏忓繐褰茬憴渚€鐝惔锔肩礉鐟欙絽鍠呴幋妯烘簚閸栧搫鐓欓崑蹇撶毈閸欏﹥澧滈悧灞藉隘閹稿鎸崇悮顐ｅ皨閸戦缚顫嬮柌搴ｆ畱闂傤噣顣介妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/hand_view.gd`閵嗕梗ui/battle_scene.gd`閵嗕梗scenes/battle_scene.tscn`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈嗗閻楀苯鐣弫鏉戠潔缁€杞扮矝娣囨繄鏆€閿涘奔绲炬妯款吇閸楋繝鐝稉搴＄俺閺嶅繘鐝惔锕€鍑℃稉瀣殶閿涘奔绗栭幙宥勭稊閺嶅繑鏌婃晶鐐存付鐏忓繘鐝惔锔惧閺夌噦绱遍梾蹇撴倵娴ｈ法鏁ゆい鍦窗閸愬懐鐤?Godot 閹笛嗩攽 `--layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈嗘拱鏉烆喗鏁圭槐褍鎮楅幋妯烘簚娑撳海瀚粩瀣閻楀苯绨抽弽蹇撶鐏炩偓娴犲秹鈧俺绻冩灞炬暪閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣鐠囦降鈧?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄥ锝囧缁斿澧滈悧灞界俺閺嶅繒娈戝Ο顏勬倻鐎规矮缍呴柨娆掝嚖閿涘本浠径?`BottomHUD` 閸欏厖鏅堕崑蹇曅╂稉铏规祲鐎靛綊鏁嬮悙鐟颁焊缁変紮绱濈憴锝呭枀閹靛澧濋崠鐑樻殻娴ｆ挸鎮滈崣鍐蹭焊缁夎鑻熺€佃壈鍤ф惔鏇㈠劥閹垮秳缍旈幐澶愭尦鐠烘垵鍤崣顖濐潒閼煎啫娲块惃鍕６妫版ǜ鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`BottomHUD.offset_right` 瀹歌弓绮犵紒婵嗩嚠鐟欏棗褰涢崸鎰垼娣囶喗顒滄稉铏规祲鐎电懓褰搁柨姘卞仯閸嬪繒些閿涘矂浼╅崗宥呯俺閺嶅繐顔旀惔锕€绱撶敮鍛婃杹婢堆嶇幢闂呭繐鎮楁担璺ㄦ暏妞ゅ湱娲伴崘鍛枂 Godot 閹笛嗩攽 `--layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈勬叏濮濓絽鎮楃敮鍐ㄧ湰娴犲秹鈧俺绻冩灞炬暪閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣鐠囦降鈧?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙艾婀穱婵囧瘮閻欘剛鐝涢幍瀣鎼存洘鐖崪灞惧灛閸﹀搫娼楅弽鍥ь殩缁撅缚绗夐崣妯兼畱閸撳秵褰佹稉瀣剁礉娑擃厾鐡戦弨鎯с亣閹存ê婧€閼冲本娅欓弰鍓с仛妤傛ê瀹抽敍娑⑩偓姘崇箖娑撳鐨熸惔鏇熺埉妤傛ê瀹崇敮鎼佸櫤楠炶泛鐨獮鍛暪缁毖勫灛閸﹁桨绗屾惔鏇熺埉娑斿妫块惃鍕瀻闂呮棃妫跨捄婵撶礉娑撻缚鍎楅弲顖氭禈闁插﹥鏂侀弴鏉戭樋閸欘垳鏁ゆ妯哄閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`HAND_STRIP_HEIGHT_*` 娑?`BOARD_BOTTOM_GAP` 瀹稿弶瀵滄稉顓犵搼閺€鎯с亣閺傝顢嶆稉瀣殶閿涘畭ActionBar` 閺堚偓鐏忓繘鐝惔锔跨瑢閹存ê婧€閸ф劖鐖ｉ柅鏄忕帆閺堫亝鏁奸崝顭掔幢闂呭繐鎮楁担璺ㄦ暏妞ゅ湱娲伴崘鍛枂 Godot 閹笛嗩攽 `--layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈勮厬缁涘鏂佹径褍鎮楅幋妯烘簚娑撳海瀚粩瀣閻楀苯绨抽弽蹇撶鐏炩偓娴犲秹鈧俺绻冩灞炬暪閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣鐠囦降鈧?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙艾婀穱婵囧瘮閻欘剛鐝涢幍瀣鎼存洘鐖妴浣瑰瘻闁筋喗娓剁亸蹇撳讲鐟欎線鐝惔锔跨瑢閹存ê婧€閸ф劖鐖ｆ總鎴犲娑撳秴褰夐惃鍕閹绘劒绗呴敍宀€鎴风紒顓濊厬缁涘濯烘导鍛婂灛閸﹂缚鍎楅弲顖涙▔缁€娲彯鎼达讣绱遍柅姘崇箖鏉╂稐绔村銉ょ瑓鐠嬪啫绨抽弽蹇涚帛鐠?缁毖冨櫨/鐏忓繐鐫嗘妯哄鐢悂鍣洪敍灞借嫙鐏忓繐绠欓弨鍓佹彛閹存ê婧€娑撳骸绨抽弽蹇庣闂傚娈戦崚鍡涙闂傜绐涢敍宀冾唨閹存ê婧€閼冲本娅欓弴鎾偙濠娾€茬稻娑撳秵灏嬮崢瀣俺闁劍鎼锋担婊冨隘閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈勭矌鐠嬪啯鏆?`HAND_STRIP_HEIGHT_*` 娑?`BOARD_BOTTOM_GAP`閿涘本婀穱顔芥暭 `ZoneLayoutConfig`閵嗕梗BoardView` 鐎靛綊缍堟總鎴犲娑?`ActionBar` 閺堚偓鐏忓繘鐝惔锔肩幢闂呭繐鎮楁担璺ㄦ暏妞ゅ湱娲伴崘鍛枂 Godot 閹笛嗩攽 `--layout-probe` 婢跺秹鐛欓妴?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙艾鐨㈤幋妯烘簚閸ユ稖顫楅惃?`Outside/Removed` 閸栧搫鐓欓柊宥囩枂閺€鎯с亣娑撳搫甯弶銉ф畱 2 閸婂稄绱濋獮鎯扮殶閺佹潙鍙鹃崷銊ㄥ剹閺咁垰娴樻稉顓犳畱閻╃顕担宥囩枂閿涙稑鎮撻弮鎯邦唨閹芥顩﹂崼鍡楀綌閸︺劍鏂佹径褍鎮楅惃鍕隘閸╃喎鍞撮幐澶庮潡閽€鍊熷垱鏉堣鎲滈弨鎾呯礉闁灝鍘ょ€圭偤妾弰鍓с仛閸愬懎顔愰崢瀣煂閸氬奔鏅堕惃?Deck/Life 閸栧搫鐓欓妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/zone_layout_config.gd`閵嗕梗ui/board_view.gd`閵嗕梗ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`outside_area/remove_area` 閻?`width/height` 瀹稿弶瀵?2 閸婂秹鍣哥粻妤嬬礉`BoardView` 娴兼艾顕?`Outside/Removed` 閹芥顩﹂崼鍡楀綌閹笛嗩攽鐟欐帟鎯ょ拹纾嬬珶鐢啫鐪敍娑㈡閸氬簼濞囬悽銊┿€嶉惄顔煎敶缂?Godot 閹笛嗩攽 `--layout-probe`閿涘本鐗庢灞芥磽娑擃亣顫楅拃钘夌垻閸欑姴鍞寸€归€涚矝娴ｅ秳绨懗灞炬珯閸ユ儳鍞撮敍灞肩瑬娑撳秳绗岄崥灞兼櫠 Deck/Life 閸栧搫鐓欓崣鎴犳晸閺勫墽銇氶柌宥呭綌閵?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄥ?P1 閺€鎯с亣閸氬海娈?`Removed` 閹芥顩﹂崼鍡楀綌姒涙顓荤拹纾嬬珶閺傜懓鎮滈敍宀勪缉閸忓秴鍙剧紒褏鐢婚崢瀣弳鐞涘苯濮╅悙鐟板祪閸掑嘲灏敍娑樻倱閺冭泛鐨㈢敮鍐ㄧ湰閹恒垽鎷￠弨鑸垫殐閸ョ偞娲跨粙鍐茬暰閻ㄥ嫪瀵岀痪锔芥将閿涘奔绮庣紒褏鐢婚弽锟犵崣 `Outside/Removed` 閸愬懎顔愭禒宥勭秴娴滃氦鍎楅弲顖氭禈閸愬拑绱濋獮鏈电箽閻ｆ瑦澧滈悧灞藉隘娑撳秹浼勯幐鈩冨灛閸﹁櫣娈戝Λ鈧弻銉礉闁灝鍘ゆ潏鍦喘閹恒儴袝缁粯顐肩痪褎鏌囩懛鈧崣宥咁槻鐠囶垰鍨介妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/board_view.gd`閵嗕梗ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?P1 `RemovedStack` 瀹稿弶鏁兼稉鍝勪箯娑撳顫楃拹纾嬬珶閺勫墽銇氶敍灞肩瑬閹恒垽鎷￠悳鐗堢槷鏉?`Outside/Removed` 娑撳海婀＄€?`LifeStack/DeckStack` 閸愬懎顔愰惌鈺佽埌閿涙盯娈㈤崥搴濆▏閻劑銆嶉惄顔煎敶缂?Godot 閹笛嗩攽 `--layout-probe` 婢跺秹鐛欑敮鍐ㄧ湰閵?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄥ锝嗘杹婢堆冩倵 `Removed` 閸栧搫鐓欓惃鍕剹閺咁垰顕担宥嗘煙瀵骏绱濋弨閫涜礋閸ュ绮崢鐔奉潗缁夊娅庨崠鍝勫祪閸掗攱顢嬬仦鏇炵磻閿涙瓍2 閺€閫涜礋閸欏厖绗傜拹纾嬬珶閵嗕赋1 娣囨繃瀵斿锔跨瑓鐠愮绔熼敍灞借嫙閸氬本顒炵亸?`remove_area` 閻ㄥ嫭鐦笟瀣叐瑜般垽鍣搁弬浼存晪閸ョ偠鍎楅弲顖氭磽鐟欐帪绱濋柆鍨帳鐟欏棜顫庢稉濠冪磽閸掓媽顢戦崝銊у仯閸栫儤鍨ㄦ稉缁樺灛閸﹀搫鍞存笟褋鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/zone_layout_config.gd`閵嗕梗ui/board_view.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`remove_area` 閻ㄥ嫮娴夌€电懓娼楅弽鍥у嚒闁插秵鏌婄拹纾嬬箮閸樼喎顫愰懗灞炬珯閸楁澘鍩涙担宥囩枂閿涘奔绗?`BoardView` 娑?P2/P1 閻?`RemovedStack` 閸掑棗鍩嗛幐澶婂礁娑?瀹革缚绗呯拹纾嬬珶閺勫墽銇氶敍娑㈡閸氬簼濞囬悽銊┿€嶉惄顔煎敶缂?Godot 閹笛嗩攽 `--layout-probe` 婢跺秹鐛欓妴?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄥ锝嗗灛閸﹁桨鑵戞径?4x4 閺嶇厧鐡欐稉?P1 娑?P2 閺堫亜顕鎰瑬 P1 閸椻剝蝎閸嬪繐鐨惃鍕６妫版﹫绱濈亸?P1 閻ㄥ嫬澧犵痪澶哥瑢閼充粙鍣虹痪鍨隘閸╃喐鏁兼稉杞扮瑢 P2 闂€婊冨剼鐎靛湱袨閻ㄥ嫬鏄傜€电鎷版担宥囩枂閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/zone_layout_config.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`PLAYER_ZONES.front_line` 娑?`PLAYER_ZONES.energy_line` 瀹歌尪鐨熼弫缈犺礋閸?P2 鐎靛湱袨閻ㄥ嫭鐦笟瀣棘閺佸府绱遍梾蹇撴倵娴ｈ法鏁ゆい鍦窗閸愬懐鐤?Godot 閹笛嗩攽 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈勮厬婢额喗鐗哥€涙劕顕鎰瑬閹靛澧濋崠鐑樻弓闁喗灏呴幋妯烘簚閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣閺€韬测偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙俺鐨熼弫瀛樺灛閸﹀搫鍞村鍙夊ⅵ閸戝搫宕遍悧宀€娈戠仦鏇犮仛閺傜懓绱￠敍灞炬暭娑撶儤鐗哥€涙劕鍞存禒鍛▔缁€鍝勫幢閸ユ拝绱濇稉宥呭晙妫版繂顦婚崣鐘插閸氬秶袨閵嗕竸P閵嗕竻P 缁涘鏋冪€涙ぞ淇婇幁顖ょ幢娴犲懎婀崡鈥虫禈缂傚搫銇戦弮鍓佹埛缂侇厼娲栭柅鈧崚鐗堟瀮鐎涙鐫嶇粈鎭掆偓?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/card_view.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈嗗灛閸︾儤膩瀵繋绗呮稉宥呭晙娑?`_board_text` 妫板嫮鏆€妤傛ê瀹抽敍瀹峗board_image` 閺€閫涜礋閸楃姷鏁ょ€瑰本鏆ｉ崡鈩冃崘鍛啇閸栧搫鐓欓敍娑㈡閸氬簼濞囬悽銊┿€嶉惄顔煎敶缂?Godot 閹笛嗩攽 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈嗗灛閸﹀搫绔风仦鈧稉搴㈠閻楀苯灏痪锔芥将閺堫亜褰堣ぐ鍗炴惙閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣閺€韬测偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙矮璐熼幋妯烘簚閸楋紕澧濋悙鐟板毊鐞涖儵缍堟０鍕潔闂堛垺婢橀崚閿嬫煀闁槒绶敍宀€鍋ｉ柅澶婂缁炬寧鍨ㄩ懗浠嬪櫤缁惧灝宕遍悧灞炬娴兼艾鎮撳銉ョ潔缁€楦款嚉閸椻€崇秼閸撳秵鍨崷鍝勬彥閻撗備繆閹垬鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`_on_front_card_pressed()` 娑?`_on_energy_card_pressed()` 閸︺劍娲块弬浼粹偓澶夎厬閻樿埖鈧焦妞傞柈鎴掔窗鐠嬪啰鏁?`card_preview_panel.set_card_data(card_data)`閿涙盯娈㈤崥搴濆▏閻劑銆嶉惄顔煎敶缂?Godot 閹笛嗩攽 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈囨櫕闂堛垹绔风仦鈧張顏勫綀瑜板崬鎼烽妴鍌濈箥鐞涘矁绻冪粙瀣╄厬娴犲秵婀侀弮銏℃箒 anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣閺€韬测偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙俺绻樻稉鈧銉︾墡濮?P2 閹存ê婧€娑擃厼銇庨弽鐓庣摍閻ㄥ嫰鏆呴崓蹇撶鐏炩偓閿涘奔绻氶幐浣测偓婊咁儑娑撯偓鐞涘矁鍏橀柌蹇撳隘閵嗕胶顑囨禍宀冾攽閸撳秶鍤庨崠琛♀偓婵呯瑝閸欐﹫绱濋獮璺虹殺娑撱倖甯撻崠鍝勭厵閻ㄥ嫭铆閸氭垼鎹ｉ悙閫涚瑢 P1 鐎瑰苯鍙忕€靛湱袨閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/zone_layout_config.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`OPPONENT_ZONES.energy_line/front_line` 娣囨繃瀵旈懗浠嬪櫤閸︺劋绗傞妴浣稿缁惧灝婀稉瀣剁礉娑?`left` 瀹歌弓绗?P1 鐎靛綊缍堟稉鍝勵嚠缁夋澘鈧》绱遍梾蹇撴倵娴ｈ法鏁ゆい鍦窗閸愬懐鐤?Godot 閹笛嗩攽 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈勮厬婢额喗鍨崷鍝勭鐏炩偓娑撳孩澧滈悧灞藉隘缁撅附娼張顏勫綀瑜板崬鎼烽妴鍌濈箥鐞涘矁绻冪粙瀣╄厬娴犲秵婀侀弮銏℃箒 anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣閺€韬测偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄥ锝勮厬婢?4x4 娑撱倖甯撻崠鍝勭厵妤傛ê瀹虫稉宥勭閼锋潙顕遍懛瀵告畱 P2 閼充粙鍣洪崡鈥茬瑓濠с垽妫舵０姗堢礉鐏忓棗寮婚弬纭呭厴闁插繒鍤庨弨閫涜礋娑撳骸澧犵痪鍨倱妤傛娈戦弽鍥у櫙閺嶇厧鐡欓敍灞借嫙闁插秵鏌婇弽鈩冾劀 P2 閸撳秶鍤庨惃鍕儑娴滃矁顢戞担宥囩枂閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/zone_layout_config.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈呭蓟閺?`energy_line` 娑?`front_line` 瀹歌尙绮烘稉鈧稉鍝勬倱妤傛ɑ鐗哥€涙劧绱濇稉?P2 缂佸瓨瀵旈垾婊咁儑娑撯偓鐞涘矁鍏橀柌蹇嬧偓浣侯儑娴滃矁顢戦崜宥囧殠閳ユ繄娈戦梹婊冨剼妞ゅ搫绨敍娑㈡閸氬簼濞囬悽銊┿€嶉惄顔煎敶缂?Godot 閹笛嗩攽 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`閿涘矁绶崙?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈嗗灛閸﹁桨绗岄幍瀣閸栧搫绔风仦鈧痪锔芥将閺堫亜褰堣ぐ鍗炴惙閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏堟▎婵夌偞婀板▎锟犵崣閺€韬测偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙俺藟閸?`ABILITY_TARGET_SELECTION` 閻ㄥ嫬宕遍悧灞解偓娆撯偓澶婄潔缁€杞颁繆閹垽绱濋崷銊︽珮闁艾绶熼崘宕囩摜閸掓銆冩稉搴暕鐟欏牓鈧澧濆鍦崶娑擃參鍏樻潻钘夊閺勫墽銇氶崡锛勫缂傛牕褰块崪灞惧闂団偓閼充粙鍣洪敍灞肩┒娴滃骸灏崚鍡楁倱閸氬秵鍨ㄦ潻鎴滄妧閸楋紕澧濋妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/effect_resolver.gd`閵嗕梗ui/preview_selection_modal.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈囨窗閺嶅洭鈧瀚ㄩ崐娆撯偓澶嬬垼缁涙儳鍑＄紒鐔剁閺€閫涜礋閳ユ粌鎮曠粔?| 缂傛牕褰?| 閹碘偓闂団偓閼充粙鍣洪垾婵囩壐瀵骏绱濇０鍕潔瀵湱鐛ラ崡锛勫閺嶅洭顣介崥灞绢劄鐏炴洜銇氱紓鏍у娇娑撳孩澧嶉棁鈧懗浠嬪櫤閿涙盯娈㈤崥搴℃躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit`閿涘矂銆嶉惄顔煎讲濮濓絽鐖堕崥顖氬З閿涘奔绮庨崙铏瑰箛閺冦垺婀?anchors warning閿涘本婀崙铏瑰箛閺傛澘顤冮懘姘拱閹躲儵鏁婇妴?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙碍鏁圭粣鍕窗閺嶅洭鈧瀚ㄥ鍦崶閻ㄥ嫪淇婇幁顖氱潔缁€楦垮瘱閸ヨ揪绱濋幁銏狀槻娑撹桨绮庨弰鍓с仛閸椻€虫禈閿涙稈鈧粌鎮曠粔?| 缂傛牕褰?| 閹碘偓闂団偓閼充粙鍣洪垾婵呯矌娣囨繄鏆€娑撳濯洪崐娆撯偓澶婂灙鐞涖劋濞囬悽顭掔礉闁灝鍘ゆ０鍕潔瀵湱鐛ユ穱鈩冧紖鏉╁洩娴囬妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/preview_selection_modal.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈夘暕鐟欏牓鈧澧濆鍦崶瀹歌尙些闂勩倕宕遍崶鍙ョ瑓閺傝鏋冪€涙鐖ｇ粵鎾呯礉娑撳濯洪崚妤勩€冮崐娆撯偓澶嬬壐瀵繑婀弨鐟板З閿涙盯娈㈤崥搴℃躬濞屾瑧顔堟径鏍ㄥ⒔鐞?`D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit`閿涘矂銆嶉惄顔煎讲濮濓絽鐖堕崥顖氬З閿涘奔绮庨崙铏瑰箛閺冦垺婀?anchors warning閿涘本婀崙铏瑰箛閺傛澘顤冮懘姘拱閹躲儵鏁婇妴?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄦ径宥佲偓婊呮箙閻楀苯鐖㈡い鍨涒偓婵呯瑩閻劌鑴婄粣妞捐厬閻愮懓鍤０鍕潔閸楋紕澧濋弮鐘插冀鎼存梻娈戦梻顕€顣介敍娑樼殺閸楋紕澧濈紓鈺冩殣閸ョ偓鏁兼稉铏规磧閸?`CardView.card_pressed` 閼奉亜鐣炬稊澶変繆閸欏嚖绱濋幁銏狀槻娴滆櫣琚悳鈺侇啀閸︺劌鑴婄粣妤€鍞撮惃鍕仯闁鈥樼拋銈嗙ウ缁嬪绱濋獮鎯八夐崗鍛旂€规氨娈戠涵顔款吇/閹烘帒绨幐澶愭尦閺傚洦顢嶉妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/preview_selection_modal.gd`閵嗕梗docs/preview_selection_modal_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗閸︺劍鐭欑粻鍗烆樆閹笛嗩攽 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/preview_selection_modal_smoke_test.gd`閿涘奔琚辨い鍦暏娓氬娼庨柅姘崇箖楠炴儼绶崙?`PREVIEW_SELECTION_MODAL_SMOKE_OK`閿涙盯娈㈤崥搴㈠⒔鐞?`D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`閿?0 妞よ顒滃?raw 鐎电懓鐪弽铚傜伐閸忋劑鍎撮柅姘崇箖楠炴儼绶崙?`CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`閿涘瞼鈥樼拋銈囨箙閻楀苯鐖㈡い璺烘倵閻ㄥ嫰鈧澧濋妴浣告礀鎼存洑绗岄崥搴ｇ敾缂佹挾鐣婚柧鎹愮熅娣囨繃瀵斿锝呯埗閵?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姘閼宠姤娲块弬?- 閸欐ɑ娲块幗妯款洣閿涙艾鐨?`CardPreviewPanel` 閸︺劌缍嬮崜宥呯唨绾偓娑撳﹥鏆ｆ担鎾存杹婢堆傜閸婂稄绱濋崥灞绢劄閹绘劕宕屾０鍕潔閸椻€虫禈閻╊喗鐖ｇ亸鍝勵嚟娑撳骸婧€閺咁垰鍨垫慨瀣樆濡楀棗銇囩亸蹇ョ礉娴ｅ灝鐣弫鏉戝斧閸ユ儳婀０鍕潔闂堛垺婢樻稉顓濅簰閺囨潙銇囬惃鍕槷娓氬妯夌粈鎭掆偓?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/card_preview_panel.gd`閵嗕梗scenes/battle_scene.tscn`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`PREVIEW_CARD_SIZE` 瀹歌弓绮?`220x308` 鐠嬪啯鏆ｆ稉?`440x616`閿涘苯婧€閺咁垯鑵戦惃?`CardPreviewPanel` 閸掓繂顫愰惌鈺佽埌娑旂喎鍑￠幐澶婎嚠鎼存柨顦绘潏纭呯獩閺€鎯с亣閿涙盯娈㈤崥搴濆▏閻劑銆嶉惄顔煎敶缂?Godot 閹笛嗩攽 `--layout-probe` 婢跺秹鐛欓妴?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙碍鍨崷杞扮瑐閻ㄥ嫯顫楅懝韫瑢閸﹀搫婀撮崡鈩冩暭娑撶儤鐗撮幑顔跨箥鐞涘本妞?`state` 閼奉亜濮╅崚鍥ㄥ床閺堟繂鎮滈敍瀹峈ESTED` 濡亞鐤嗛弰鍓с仛閵嗕梗ACTIVE` 缁旀牜鐝涢弰鍓с仛閿涘苯鑻熼崷銊╁櫢婢跺秴鍩涢弬鐗堟闁插秶鐤嗛弮瀣祮娑撳酣鏁嬮悙鐧哥礉闁灝鍘ら悩鑸碘偓浣稿瀼閹广垹鎮楅崙铏瑰箛閺堟繂鎮滃▓瀣殌閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/card_view.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋銈勭矌閹存ê婧€濡€崇础鐠囪褰囪箛顐ゅ弾娑擃厾娈?`state` 閹貉冨煑閺堟繂鎮滈敍灞惧閻楀本膩瀵繋绻氶幐浣风瑝閸欐﹫绱盽_reset_board_orientation()` 娴兼艾婀В蹇旑偧閸掗攱鏌婇崜宥嗕划婢跺秹鏁嬮悙閫涚瑢閺冨娴嗛敍瀹峗apply_board_orientation()` 閸愬秵瀵?`RESTED/ACTIVE` 闁插秵鏌婄敮鍐ㄧ湰閿涘矁顩惄鏍у缁惧じ绗岄懗浠嬪櫤缁惧じ琚辩猾缁樺灛閸﹀搫宕辨担宥冣偓鍌炴閸氬骸婀▽娆戭唸婢舵牗澧界悰?`D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit` 閹存劕濮涢崥顖氬З妞ゅ湱娲伴敍娑欏⒔鐞?`D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 鏉堟挸鍤?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈嗗閻楀苯灏崺鐔剁矝閺堫亪浼勯幐鈩冨灛閸︽亽鈧倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏勫毉閻滅増婀版潪顔芥煀婢х偠鍓奸張顒勬晩鐠囶垬鈧?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄥ锝嗗灛閸﹀搫宕遍悧灞久純顔煎灲閺傤厺绗岃箛顐ゅ弾閻樿埖鈧焦鏋冮張顑跨瑝娑撯偓閼峰娈戦梻顕€顣介敍瀹島i/card_view.gd` 閻滄澘鎮撻弮璺哄悑鐎?`REST` 娑?`RESTED`閿涘瞼鈥樻穱婵囨煀閹垫挸鍤惃鍕搐閹垳濮搁幀浣稿幢閻楀奔绱扮粩瀣祮濡亞鐤嗛弰鍓с仛閵?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/card_view.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`GameManager` 韫囶偆鍙庨柅姘崇箖 `UATypes.state_to_text()` 鏉堟挸鍤惃鍕搐閹垳濮搁幀浣规瀮閺堫兛璐?`REST`閿涘本鍨崷鐑樻篂閸氭垿鈧槒绶鍙夋暭娑撳搫鍚嬬€?`REST/RESTED` 娑撱倗顫掗弬鍥ㄦ拱閿涙稑绔风仦鈧柅鏄忕帆閸忔湹缍戦柈銊ュ瀻閺堫亝鏁奸崝銊ｂ偓?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙艾鐨㈤幋妯烘簚娴兼垶浼呴悩鑸碘偓浣稿幢閻楀瞼娈戝Ο顏嗙枂閺傜懓鎮滈悽鍗炲斧閸忓牊鏌熼崥鎴ｇ殶閺佺繝璐熼崥鎴濅箯濡亞鐤嗛敍灞煎▏鐟欏棜顫庨弬鐟版倻缁楋箑鎮庤ぐ鎾冲鐎电懓鐪仦鏇犮仛妫板嫭婀￠妴?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/card_view.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`RESTED`/`REST` 閻樿埖鈧礁顕惔鏃傛畱閺冨娴嗙憴鎺戝瀹歌尙鏁?`90` 鐠嬪啯鏆ｆ稉?`-90`閿涙盯娈㈤崥搴㈠⒔鐞?`D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 鏉堟挸鍤?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈呯鐏炩偓閺堫亜褰堣ぐ鍗炴惙閵嗗倽绻嶇悰宀冪箖缁嬪鑵戞禒宥嗘箒閺冦垺婀?anchors warning閿涘奔绲鹃張顏勫毉閻滅増婀版潪顔芥煀婢х偠鍓奸張顒勬晩鐠囶垬鈧?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙艾鐨㈡い鍫曞劥 HUD 閻?`Log` 閹稿鎸抽弨閫涜礋閺€鎯ф躬 `Next Phase` 娑撳鏌熼崡鏇犲娑撯偓鐞涘矉绱濋獮鎯邦唨閺冦儱绻旈棃銏℃緲娴犲氦顕氶幐澶愭尦娑撳鏌熺仦鏇炵磻閿涘矂浼╅崗宥変紕閹革繝銆婇柈銊ュ従鐎瑰啯鎼锋担婊勫瘻闁筋喓鈧?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭ui/battle_scene.gd`閵嗕梗scenes/battle_scene.tscn`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`TopBar` 閸欏厖鏅跺鍙夋暭娑?`PhaseControls` 缁旀牗甯撶€圭懓娅掗敍瀹峃ext Phase` 娑?`Log` 閹稿鎸虫稉濠佺瑓閹烘帒鍨敍娌梍update_log_panel_layout()` 娴兼碍瀵?`Log` 閹稿鎸虫担宥囩枂鐏忓棙妫╄箛妤呮桨閺夊灝绔风純顔煎煂閸忔湹绗呴弬鐧哥礉楠炶泛婀惔鏇㈠劥 HUD 娑斿绗傞弨璺哄經妤傛ê瀹抽敍宀勪缉閸忓秷顩惄鏍у従鐎瑰啴銆婇柈銊﹀瘻闁筋喓鈧倿娈㈤崥搴㈠⒔鐞?`D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 鏉堟挸鍤?`[PASS] UI 鐢啫鐪?1920x1080 (hand cards: 7)`閿涘瞼鈥樼拋銈嗗閻楀苯灏崺鐔剁矝閺堫亪浼勯幐鈩冨灛閸﹁桨绗栨い鍫曞劥 HUD 鐢啫鐪張顏囶潶閻潙娼栭妴鍌濈箥鐞涘矁绻冪粙瀣╄厬娴犲秵婀侀弮銏℃箒 anchors warning閿涘奔绲鹃張顏勫毉閻滅増婀版潪顔芥煀婢х偠鍓奸張顒勬晩鐠囶垬鈧?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄦ径宥咁嚠閹靛褰傜挧閿嬫暰閸戣鎮楅幋鎴炴煙閺冪姵纭堕柅澶嬪閸撳秶鍤庣憴鎺曞闂冪粯灏呴惃鍕６妫版﹫绱遍弨璇插毊婢圭増妲戦幋鎰閸氬簼绱扮粩瀣祮閸掗攱鏌婅箛顐ゅ弾閿涘本濡搁梼缁樺皡缁愭褰涙导妯哄帥閺夊啫鎷版禍铏硅鏉堟挸鍙嗛弶鍐閸掑洤鍩岄梼鎻掔暓閺傜櫢绱濋柆鍨帳 UI 娴犲秴浠犻悾娆忔躬閺€璇插毊閺傜顫嬬憴鎺戭嚤閼峰鍋ｉ崙濠氭▎閹嘎ゎ潡閼瑰弶妫ら弫鍫涒偓?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭core/game_manager.gd`閵嗕梗docs/legal_actions_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗闂堟瑦鈧焦顥呴弻銉р€樼拋?`request_attack()` 閸︺劏绻橀崗銉╂▎閹革紕鐛ラ崣锝呮倵娴兼艾鍘涚憴锕€褰?`state_changed`閿涘苯鍟€闁氨鐓?`blockers_requested`閿涙稒鏌婃晶?`attack request snapshot shifts priority to defender` 閸愭帞鍎悽銊ょ伐閿涘本鐗庢宀冪箻閸忋儵妯嗛幐锛勭崶閸欙絾妞傛导姘絺閸戝搫鎻╅悡褎娲块弬鑸偓涔riority_player_id` 閸掑洦宕叉稉娲Щ鐎瑰牊鏌熼妴涔uman_input_enabled` 閸欐ü璐熼崣顖滄暏閿涘奔绗栭梼鎻掔暓閺傜懓澧犵痪鑳潡閼规彃鎻╅悡褍瀵橀崥?`BLOCK` 閸斻劋缍旈妴?- 閺冦儲婀￠敍?026-03-26
+- 閸欐ɑ娲跨猾璇茬€烽敍姝渦gfix
+- 閸欐ɑ娲块幗妯款洣閿涙矮鎱ㄦ径宥嗗灛閺傛妯佸▓闈涙躬閺€璇插毊鐎瑰本鍨氱紒鎾剁暬閸氬簼绮涢柨娆掝嚖娣囨繄鏆€闂冪粯灏呯粣妤€褰涢惃鍕６妫版﹫绱辩亸?`battle_context` 閺€鑸垫殐娑撹桨绮庣悰銊с仛閺堫亞绮ㄧ粻妞捐厬閻ㄥ嫭鍨弬妤冪崶閸欙綇绱濋獮鑸垫煀婢?`last_battle_result` 閻劋绨穱婵堟殌閺堚偓鏉╂垳绔村▎鈩冨灛閺傛绮ㄩ弸婊冩彥閻撗佲偓?- 瑜板崬鎼烽弬鍥︽閹存牗膩閸ф绱癭data/game_state.gd`閵嗕梗core/battle_resolver.gd`閵嗕梗core/game_manager.gd`閵嗕梗docs/legal_actions_smoke_test.gd`閵嗕梗docs/logs.md`
+- 妤犲矁鐦夐弬鐟扮础娑撳海绮ㄩ弸婊愮窗鐞涖儱鍘栭崥鍫熺《閸斻劋缍旈崘鎺斿劔閻劋绶ラ敍宀冾洬閻╂牑鈧粍鏁鹃崙鑽ょ波缁犳鎮楀〒鍛敄 `battle_context`閵嗕線妲荤€瑰牊鏌熸稉宥呭晙閸嬫粎鏆€閸︺劑妯嗛幐鈥虫惙鎼存柣鈧焦娓舵潻鎴炲灛閺傛绮ㄩ弸婊€绮涙穱婵堟殌閸?`last_battle_result`閳ユ繀绗佹い瑙勬焽鐟封偓閿涙鲍odot 閸愭帞鍎崶鐐茬秺瀵板懏澧界悰灞烩偓?- 鏃ユ湡锛?026-03-27
+- 鍙樻洿绫诲瀷锛氬姛鑳芥洿鏂?- 鍙樻洿鎽樿锛氬皢鐢熷懡鍖虹炕鐗屽悗鐨勭‘璁ゆ祦绋嬪垏鎹负鐙珛涓存椂寮圭獥锛涘悓鎵规缈诲紑鐨勭敓鍛界墝浼氱粺涓€灞曠ず锛屽綋鍓嶅彲瑙﹀彂鐗屽湪寮圭獥鍐呮墽琛屸€滃彂鍔?涓嶅彂鍔ㄢ€濓紝鏃犺Е鍙戠墝璧板睍绀哄悗鑷姩鎺ㄨ繘鐨勭‘璁ゆ祦銆?- 褰卞搷鏂囦欢鎴栨ā鍧楋細`data/game_state.gd`銆乣core/effect_resolver.gd`銆乣core/game_manager.gd`銆乣ui/battle_scene.gd`銆乣ui/life_reveal_modal.gd`銆乣docs/life_reveal_modal_smoke_test.gd`銆乣docs/milestone_smoke_test.gd`銆乣docs/logs.md`
+- 楠岃瘉鏂瑰紡涓庣粨鏋滐細鍦ㄩ」鐩唴鎵ц `Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/life_reveal_modal_smoke_test.gd`锛? 椤圭敓鍛界炕鐗屼笓鐢ㄥ啋鐑熷叏閮ㄩ€氳繃骞惰緭鍑?`LIFE_REVEAL_MODAL_SMOKE_OK`锛涢殢鍚庡湪娌欑澶栨墽琛?`--script res://docs/milestone_smoke_test.gd`锛?3 椤归噷绋嬬鍐掔儫鍏ㄩ儴閫氳繃锛涙墽琛?`--resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 杈撳嚭 `[PASS] UI 甯冨眬 1920x1080 (hand cards: 7)`锛岀‘璁ゆ柊澧炲脊绐楀悗鎵嬬墝鍖哄煙浠嶆湭閬尅鎴樺満銆傝繍琛屾湡闂翠粛鏈夋棦鏈?Godot anchors warning 涓庤祫婧愭湭閲婃斁璀﹀憡锛屼絾鏈樆濉炴湰娆￠獙璇侀€氳繃銆- 日期：2026-03-27
 - 变更类型：bugfix
-- 变更摘要：修正战场区域与背景图错位的问题，移除仅作用于战场层的额外缩放；同时将手牌区改为背景图下方的独立底栏，使手牌与战场背景彻底分离，并调整布局探针以校验战场内容仍落在背景矩形内。
-- 影响文件或模块：`data/zone_layout_config.gd`、`ui/board_view.gd`、`ui/battle_scene.gd`、`ui/hand_view.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
-- 验证方式与结果：静态检查确认背景图、战场区域与手牌底栏已改为分离布局，战场区重新共享同一背景变换参数；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认战场内容未脱离背景矩形且独立手牌底栏未遮挡战场。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：在独立手牌底栏方案上进一步收紧手牌默认尺寸与底栏高度，并为底部操作栏保留最小可见高度，解决战场区域偏小及手牌区按钮被挤出视野的问题。
-- 影响文件或模块：`ui/hand_view.gd`、`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
-- 验证方式与结果：静态检查确认手牌完整展示仍保留，但默认卡高与底栏高度已下调，且操作栏新增最小高度约束；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认本轮收紧后战场与独立手牌底栏布局仍通过验收。运行过程中仍有既有 anchors warning，但未阻塞本次验证。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修正独立手牌底栏的横向定位错误，恢复 `BottomHUD` 右侧偏移为相对锚点偏移，解决手牌区整体向右偏移并导致底部操作按钮跑出可视范围的问题。
-- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `BottomHUD.offset_right` 已从绝对视口坐标修正为相对右锚点偏移，避免底栏宽度异常放大；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认修正后布局仍通过验收。运行过程中仍有既有 anchors warning，但未阻塞本次验证。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：在保持独立手牌底栏和战场坐标契约不变的前提下，中等放大战场背景显示高度；通过下调底栏高度常量并小幅收紧战场与底栏之间的分隔间距，为背景图释放更多可用高度。
-- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `HAND_STRIP_HEIGHT_*` 与 `BOARD_BOTTOM_GAP` 已按中等放大方案下调，`ActionBar` 最小高度与战场坐标逻辑未改动；随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认中等放大后战场与独立手牌底栏布局仍通过验收。运行过程中仍有既有 anchors warning，但未阻塞本次验证。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：在保持独立手牌底栏、按钮最小可见高度与战场坐标契约不变的前提下，继续中等拉伸战场背景显示高度；通过进一步下调底栏默认/紧凑/小屏高度常量，并小幅收紧战场与底栏之间的分隔间距，让战场背景更饱满但不挤压底部操作区。
-- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认仅调整 `HAND_STRIP_HEIGHT_*` 与 `BOARD_BOTTOM_GAP`，未修改 `ZoneLayoutConfig`、`BoardView` 对齐契约与 `ActionBar` 最小高度；随后使用项目内置 Godot 执行 `--layout-probe` 复验。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：将战场四角的 `Outside/Removed` 区域配置放大为原来的 2 倍，并调整其在背景图中的相对位置；同时让摘要堆叠在放大后的区域内按角落贴边摆放，避免实际显示内容压到同侧的 Deck/Life 区域。
-- 影响文件或模块：`data/zone_layout_config.gd`、`ui/board_view.gd`、`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `outside_area/remove_area` 的 `width/height` 已按 2 倍重算，`BoardView` 会对 `Outside/Removed` 摘要堆叠执行角落贴边布局；随后使用项目内置 Godot 执行 `--layout-probe`，校验四个角落堆叠内容仍位于背景图内，且不与同侧 Deck/Life 区域发生显示重叠。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修正 P1 放大后的 `Removed` 摘要堆叠默认贴边方向，避免其继续压入行动点印刷区；同时将布局探针收敛回更稳定的主约束，仅继续校验 `Outside/Removed` 内容仍位于背景图内，并保留手牌区不遮挡战场的检查，避免边缘接触类次级断言反复误判。
-- 影响文件或模块：`ui/board_view.gd`、`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 P1 `RemovedStack` 已改为左下角贴边显示，且探针现比较 `Outside/Removed` 与真实 `LifeStack/DeckStack` 内容矩形；随后使用项目内置 Godot 执行 `--layout-probe` 复验布局。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修正放大后 `Removed` 区域的背景对位方式，改为围绕原始移除区印刷框展开：P2 改为右上贴边、P1 保持左下贴边，并同步将 `remove_area` 的比例矩形重新锚回背景四角，避免视觉上漂到行动点区或主战场内侧。
-- 影响文件或模块：`data/zone_layout_config.gd`、`ui/board_view.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `remove_area` 的相对坐标已重新贴近原始背景印刷位置，且 `BoardView` 中 P2/P1 的 `RemovedStack` 分别按右上/左下贴边显示；随后使用项目内置 Godot 执行 `--layout-probe` 复验。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修正战场中央 4x4 格子中 P1 与 P2 未对齐且 P1 卡槽偏小的问题，将 P1 的前线与能量线区域改为与 P2 镜像对称的尺寸和位置。
-- 影响文件或模块：`data/zone_layout_config.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `PLAYER_ZONES.front_line` 与 `PLAYER_ZONES.energy_line` 已调整为和 P2 对称的比例参数；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认中央格子对齐且手牌区未遮挡战场。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：调整战场内已打出卡牌的展示方式，改为格子内仅显示卡图，不再额外叠加名称、AP、BP 等文字信息；仅在卡图缺失时继续回退到文字展示。
-- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认战场模式下不再为 `_board_text` 预留高度，`_board_image` 改为占用完整卡槽内容区域；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认战场布局与手牌区约束未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：为战场卡牌点击补齐预览面板刷新逻辑，点选前线或能量线卡牌时会同步展示该卡当前战场快照信息。
-- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `_on_front_card_pressed()` 与 `_on_energy_card_pressed()` 在更新选中状态时都会调用 `card_preview_panel.set_card_data(card_data)`；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认界面布局未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：进一步校正 P2 战场中央格子的镜像布局，保持“第一行能量区、第二行前线区”不变，并将两排区域的横向起点与 P1 完全对称。
-- 影响文件或模块：`data/zone_layout_config.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `OPPONENT_ZONES.energy_line/front_line` 保持能量在上、前线在下，且 `left` 已与 P1 对齐为对称值；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认中央战场布局与手牌区约束未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修正中央 4x4 两排区域高度不一致导致的 P2 能量卡下溢问题，将双方能量线改为与前线同高的标准格子，并重新校正 P2 前线的第二行位置。
-- 影响文件或模块：`data/zone_layout_config.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认双方 `energy_line` 与 `front_line` 已统一为同高格子，且 P2 维持“第一行能量、第二行前线”的镜像顺序；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认战场与手牌区布局约束未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：补全 `ABILITY_TARGET_SELECTION` 的卡牌候选展示信息，在普通待决策列表与预览选牌弹窗中都追加显示卡牌编号和所需能量，便于区分同名或近似卡牌。
-- 影响文件或模块：`core/effect_resolver.gd`、`ui/preview_selection_modal.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认目标选择候选标签已统一改为“名称 | 编号 | 所需能量”格式，预览弹窗卡牌标题同步展示编号与所需能量；随后在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit`，项目可正常启动，仅出现既有 anchors warning，未出现新增脚本报错。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：收窄目标选择弹窗的信息展示范围，恢复为仅显示卡图；“名称 | 编号 | 所需能量”仅保留下拉候选列表使用，避免预览弹窗信息过载。
-- 影响文件或模块：`ui/preview_selection_modal.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认预览选牌弹窗已移除卡图下方文字标签，下拉列表候选格式未改动；随后在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit`，项目可正常启动，仅出现既有 anchors warning，未出现新增脚本报错。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修复“看牌堆顶”专用弹窗中点击预览卡牌无反应的问题；将卡牌缩略图改为监听 `CardView.card_pressed` 自定义信号，恢复人类玩家在弹窗内的点选确认流程，并补充稳定的确认/排序按钮文案。
-- 影响文件或模块：`ui/preview_selection_modal.gd`、`docs/preview_selection_modal_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/preview_selection_modal_smoke_test.gd`，两项用例均通过并输出 `PREVIEW_SELECTION_MODAL_SMOKE_OK`；随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，10 项正式 raw 对局样例全部通过并输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`，确认看牌堆顶后的选牌、回底与后续结算链路保持正常。
-- 日期：2026-03-26
-- 变更类型：功能更新
-- 变更摘要：将 `CardPreviewPanel` 在当前基础上整体放大一倍，同步提升预览卡图目标尺寸与场景初始外框大小，使完整原图在预览面板中以更大的比例显示。
-- 影响文件或模块：`ui/card_preview_panel.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `PREVIEW_CARD_SIZE` 已从 `220x308` 调整为 `440x616`，场景中的 `CardPreviewPanel` 初始矩形也已按对应外边距放大；随后使用项目内置 Godot 执行 `--layout-probe` 复验。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：战场上的角色与场地卡改为根据运行时 `state` 自动切换朝向，`RESTED` 横置显示、`ACTIVE` 竖立显示，并在重复刷新时重置旋转与锚点，避免状态切换后出现朝向残留。
-- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认仅战场模式读取快照中的 `state` 控制朝向，手牌模式保持不变；`_reset_board_orientation()` 会在每次刷新前恢复锚点与旋转，`_apply_board_orientation()` 再按 `RESTED/ACTIVE` 重新布局，覆盖前线与能量线两类战场卡位。随后在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit` 成功启动项目；执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认手牌区域仍未遮挡战场。运行过程中仍有既有 anchors warning，但未出现本轮新增脚本错误。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修正战场卡牌横置判断与快照状态文本不一致的问题，`ui/card_view.gd` 现同时兼容 `REST` 与 `RESTED`，确保新打出的休息状态卡牌会立即横置显示。
-- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `GameManager` 快照通过 `UATypes.state_to_text()` 输出的休息状态文本为 `REST`，战场朝向逻辑已改为兼容 `REST/RESTED` 两种文本；布局逻辑其余部分未改动。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：将战场休息状态卡牌的横置方向由原先方向调整为向左横置，使视觉方向符合当前对局展示预期。
-- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `RESTED`/`REST` 状态对应的旋转角度已由 `90` 调整为 `-90`；随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认布局未受影响。运行过程中仍有既有 anchors warning，但未出现本轮新增脚本错误。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：将顶部 HUD 的 `Log` 按钮改为放在 `Next Phase` 下方单独一行，并让日志面板从该按钮下方展开，避免遮挡顶部其它操作按钮。
-- 影响文件或模块：`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `TopBar` 右侧已改为 `PhaseControls` 竖排容器，`Next Phase` 与 `Log` 按钮上下排列；`_update_log_panel_layout()` 会按 `Log` 按钮位置将日志面板布置到其下方，并在底部 HUD 之上收口高度，避免覆盖其它顶部按钮。随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认手牌区域仍未遮挡战场且顶部 HUD 布局未被破坏。运行过程中仍有既有 anchors warning，但未出现本轮新增脚本错误。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修复对手发起攻击后我方无法选择前线角色阻挡的问题；攻击声明成功后会立即刷新快照，把阻挡窗口优先权和人类输入权限切到防守方，避免 UI 仍停留在攻击方视角导致点击阻挡角色无效。
-- 影响文件或模块：`core/game_manager.gd`、`docs/legal_actions_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：静态检查确认 `request_attack()` 在进入阻挡窗口后会先触发 `state_changed`，再通知 `blockers_requested`；新增 `attack request snapshot shifts priority to defender` 冒烟用例，校验进入阻挡窗口时会发出快照更新、`priority_player_id` 切换为防守方、`human_input_enabled` 变为可用，且防守方前线角色快照包含 `BLOCK` 动作。
-- 日期：2026-03-26
-- 变更类型：bugfix
-- 变更摘要：修复战斗阶段在攻击完成结算后仍错误保留阻挡窗口的问题；将 `battle_context` 收敛为仅表示未结算中的战斗窗口，并新增 `last_battle_result` 用于保留最近一次战斗结果快照。
-- 影响文件或模块：`data/game_state.gd`、`core/battle_resolver.gd`、`core/game_manager.gd`、`docs/legal_actions_smoke_test.gd`、`docs/logs.md`
-- 验证方式与结果：补充合法动作冒烟用例，覆盖“攻击结算后清空 `battle_context`、防守方不再停留在阻挡响应、最近战斗结果仍保留在 `last_battle_result`”三项断言；Godot 冒烟回归待执行。
+- 变更摘要：修复生命触发结算后若继续进入目标选择等待决策，`pending_life_reveal` 未在链路结束时自动收尾，导致 AI 方被 pending gate 卡住无法继续回合的问题。
+- 影响文件或模块：`core/game_manager.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：在沙箱外执行 `Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/milestone_smoke_test.gd`，23 项全部通过；执行 `--script res://docs/cards_raw_minimal_duel_smoke_test.gd`，10 项全部通过并输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。其中沙箱内直接运行 Godot 仍可能触发既有崩溃或资源警告，但沙箱外回归已确认本次修复生效。

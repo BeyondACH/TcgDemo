@@ -359,22 +359,25 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 				"player_id": str(decision.get("context", {}).get("player_id", game_state.active_player_id)),
 			}
 			play_card(str(decision.get("source_card_uid", "")), int(decision.get("context", {}).get("target_zone", UATypes.Zone.ENERGY_LINE)), play_options)
-			if bool(decision.get("context", {}).get("finalize_life_damage", false)) and game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty():
+			if bool(decision.get("context", {}).get("finalize_life_damage", false)) and game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
 				_apply_logs(effect_resolver.finalize_pending_life_damage(game_state))
 				emit_state_changed()
 			return {"ok": true}
 		"LIFE_TRIGGER_RAID_CHOICE":
 			_apply_logs(_resolve_life_trigger_raid_choice(decision, str(payload.get("choice", "ADD_TO_HAND"))))
+			_maybe_finalize_life_damage_after_pending_resolution()
 			emit_state_changed()
 			return {"ok": true}
 		"LIFE_TRIGGER_RAID_TARGET":
 			_apply_logs(_resolve_life_trigger_raid_target(decision, str(payload.get("choice", ""))))
+			_maybe_finalize_life_damage_after_pending_resolution()
 			emit_state_changed()
 			return {"ok": true}
 		"STEP_SWAP_CHOICE":
 			return request_step_move(str(decision.get("source_card_uid", "")), {"swap_uid": str(payload.get("choice", ""))})
 		"HAND_LIMIT_DISCARD":
 			_apply_logs(_resolve_hand_limit_discard(decision, str(payload.get("choice", ""))))
+			_maybe_finalize_life_damage_after_pending_resolution()
 			emit_state_changed()
 			return {"ok": true}
 		"ABILITY_TARGET_SELECTION":
@@ -383,6 +386,7 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 				str(decision.get("resolution_id", "")),
 				payload.get("choice", payload.get("choices", []))
 			))
+			_maybe_finalize_life_damage_after_pending_resolution()
 			emit_state_changed()
 			return {"ok": true}
 	_apply_logs(["Unsupported decision type: %s" % decision_type])
@@ -393,6 +397,13 @@ func resolve_life_trigger_decision(card_uid: String, activate: bool) -> Dictiona
 	if _has_winner():
 		return {"ok": false, "reason": "winner_exists"}
 	_apply_logs(effect_resolver.resolve_life_trigger_decision(game_state, card_uid, activate))
+	emit_state_changed()
+	return {"ok": true}
+
+func acknowledge_life_reveal(card_uid: String) -> Dictionary:
+	if _has_winner():
+		return {"ok": false, "reason": "winner_exists"}
+	_apply_logs(effect_resolver.acknowledge_life_reveal(game_state, card_uid))
 	emit_state_changed()
 	return {"ok": true}
 
@@ -413,6 +424,7 @@ func get_snapshot() -> Dictionary:
 		"effect_queue_count": game_state.effect_queue.size(),
 		"pending_decisions": _serialize_pending_decisions(action_player_id),
 		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),
+		"life_reveal_modal": _serialize_life_reveal_modal(action_player_id),
 		"controller_types": {
 			UATypes.PLAYER_ONE: get_controller_type(UATypes.PLAYER_ONE),
 			UATypes.PLAYER_TWO: get_controller_type(UATypes.PLAYER_TWO),
@@ -602,6 +614,48 @@ func _serialize_card_list_for_ui(card_uids: Array, action_player_id: String) -> 
 			result.append(serialized)
 	return result
 
+func _serialize_life_reveal_modal(action_player_id: String) -> Dictionary:
+	if game_state.pending_life_reveal.is_empty():
+		return {
+			"visible": false,
+			"player_id": "",
+			"current_card_uid": "",
+			"revealed_cards": [],
+			"can_activate": false,
+			"can_skip": false,
+			"can_acknowledge": false,
+		}
+	var reveal: Dictionary = game_state.pending_life_reveal
+	var current_card_uid := str(reveal.get("current_card_uid", ""))
+	var result_cards: Array[Dictionary] = []
+	for entry_variant in reveal.get("revealed_cards", []):
+		var entry: Dictionary = entry_variant
+		var card_uid := str(entry.get("card_uid", ""))
+		var serialized := _serialize_card(card_uid, action_player_id, false)
+		if serialized.is_empty():
+			continue
+		serialized["has_life_trigger"] = bool(entry.get("has_life_trigger", false))
+		serialized["resolved"] = bool(entry.get("resolved", false))
+		serialized["order_index"] = int(entry.get("order_index", result_cards.size()))
+		serialized["is_current"] = card_uid == current_card_uid
+		result_cards.append(serialized)
+	var current_has_trigger := false
+	for card_data_variant in result_cards:
+		var card_data: Dictionary = card_data_variant
+		if str(card_data.get("uid", "")) != current_card_uid:
+			continue
+		current_has_trigger = bool(card_data.get("has_life_trigger", false))
+		break
+	return {
+		"visible": true,
+		"player_id": str(reveal.get("player_id", "")),
+		"current_card_uid": current_card_uid,
+		"revealed_cards": result_cards,
+		"can_activate": current_card_uid != "" and current_has_trigger,
+		"can_skip": current_card_uid != "" and current_has_trigger,
+		"can_acknowledge": current_card_uid != "" and not current_has_trigger,
+	}
+
 func _serialize_card(card_uid: String, action_player_id: String, include_actions: bool) -> Dictionary:
 	var card: CardInstance = game_state.get_card(card_uid)
 	var card_def: CardDef = null
@@ -724,17 +778,38 @@ func _has_winner() -> bool:
 func _has_pending_life_triggers() -> bool:
 	return not game_state.pending_life_triggers.is_empty()
 
+func _has_pending_life_reveal() -> bool:
+	return not game_state.pending_life_reveal.is_empty()
+
 func _has_pending_decisions() -> bool:
 	return not game_state.pending_decisions.is_empty()
 
+func _life_reveal_fully_resolved() -> bool:
+	if game_state.pending_life_reveal.is_empty():
+		return true
+	for entry_variant in game_state.pending_life_reveal.get("revealed_cards", []):
+		var entry: Dictionary = entry_variant
+		if not bool(entry.get("resolved", false)):
+			return false
+	return true
+
+func _maybe_finalize_life_damage_after_pending_resolution() -> void:
+	if not _life_reveal_fully_resolved():
+		return
+	if not game_state.pending_life_triggers.is_empty() or not game_state.pending_decisions.is_empty():
+		return
+	_apply_logs(effect_resolver.finalize_pending_life_damage(game_state))
+
 func _has_pending_gate() -> bool:
-	return _has_pending_life_triggers() or _has_pending_decisions()
+	return _has_pending_life_triggers() or _has_pending_life_reveal() or _has_pending_decisions()
 
 func _current_priority_player_id() -> String:
 	if not game_state.pending_decisions.is_empty():
 		return str((game_state.pending_decisions[0] as Dictionary).get("owner_player_id", game_state.active_player_id))
 	if not game_state.pending_life_triggers.is_empty():
 		return str((game_state.pending_life_triggers[0] as Dictionary).get("player_id", game_state.active_player_id))
+	if not game_state.pending_life_reveal.is_empty():
+		return str(game_state.pending_life_reveal.get("player_id", game_state.active_player_id))
 	if not game_state.battle_context.is_empty():
 		var battle_context: Dictionary = game_state.battle_context
 		if str(battle_context.get("target_kind", "PLAYER")) == "PLAYER" and not bool(battle_context.get("is_sniper_attack", false)):
@@ -766,6 +841,13 @@ func _drive_controllers(max_steps: int) -> void:
 		var controller: PlayerController = _controllers.get(player_id)
 		if controller == null or controller.is_human():
 			break
+		if _has_pending_life_reveal() and not _has_pending_life_triggers():
+			var current_card_uid := str(game_state.pending_life_reveal.get("current_card_uid", ""))
+			if current_card_uid == "":
+				break
+			acknowledge_life_reveal(current_card_uid)
+			safety -= 1
+			continue
 		var legal_actions := rules_engine.get_legal_actions(game_state, player_id)
 		if legal_actions.is_empty():
 			break
@@ -788,6 +870,8 @@ func _current_pending_context() -> Dictionary:
 		return (game_state.pending_decisions[0] as Dictionary).duplicate(true)
 	if not game_state.pending_life_triggers.is_empty():
 		return (game_state.pending_life_triggers[0] as Dictionary).duplicate(true)
+	if not game_state.pending_life_reveal.is_empty():
+		return game_state.pending_life_reveal.duplicate(true)
 	if not game_state.battle_context.is_empty():
 		return game_state.battle_context.duplicate(true)
 	return {}
@@ -933,7 +1017,7 @@ func _resolve_life_trigger_raid_choice(decision: Dictionary, choice: String) -> 
 		var card = game_state.get_card(card_uid)
 		var card_def = game_state.get_card_def(card.def_id) if card != null else null
 		logs.append("%s adds %s to hand." % [owner_player_id, card_def.name if card_def != null else card_uid])
-		if game_state.pending_life_triggers.is_empty():
+		if game_state.pending_life_triggers.is_empty() and _life_reveal_fully_resolved():
 			logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
 		return logs
 	if choice != "RAID_NOW":
@@ -999,7 +1083,7 @@ func _resolve_life_trigger_raid_target(decision: Dictionary, raid_target_uid: St
 		"ignore_play_timing": true,
 		"player_id": str(decision.get("owner_player_id", "")),
 	})
-	if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty():
+	if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
 		logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
 	return logs
 

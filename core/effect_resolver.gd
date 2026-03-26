@@ -235,6 +235,7 @@ func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> 
 		if not defeat_now.is_empty():
 			_apply_victory(state, defeat_now)
 		return logs
+	_begin_life_reveal_batch(state, player_id, moved)
 	var queued_count := 0
 	for life_uid in moved:
 		if _card_has_trigger(state, life_uid, UATypes.TriggerType.ON_LIFE_TRIGGER):
@@ -243,8 +244,6 @@ func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> 
 			queued_count += 1
 	if queued_count > 0:
 		logs.append("%s may resolve %d life trigger(s) in any order." % [player_id, queued_count])
-	elif not moved.is_empty():
-		logs.append_array(_finalize_pending_life_damage(state))
 	return logs
 
 func resolve_life_trigger_decision(state: GameState, card_uid: String, activate: bool) -> Array[String]:
@@ -260,6 +259,7 @@ func resolve_life_trigger_decision(state: GameState, card_uid: String, activate:
 	if pending_index == -1:
 		return ["Life trigger decision failed: missing pending card."]
 	state.pending_life_triggers.remove_at(pending_index)
+	_mark_life_reveal_resolved(state, card_uid)
 	var owner_player_id := str(pending_entry.get("player_id", ""))
 	var card_name := str(pending_entry.get("card_name", card_uid))
 	if activate:
@@ -267,7 +267,23 @@ func resolve_life_trigger_decision(state: GameState, card_uid: String, activate:
 		logs.append_array(resolve_trigger(card_uid, UATypes.TriggerType.ON_LIFE_TRIGGER, state, {"target_player_id": owner_player_id}))
 	else:
 		logs.append("%s skips life trigger of %s." % [owner_player_id, card_name])
-	if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty():
+	_advance_life_reveal_cursor(state)
+	if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty() and _life_reveal_fully_resolved(state):
+		logs.append_array(_finalize_pending_life_damage(state))
+	return logs
+
+func acknowledge_life_reveal(state: GameState, card_uid: String) -> Array[String]:
+	var logs: Array[String] = []
+	if state.pending_life_reveal.is_empty():
+		return logs
+	var current_card_uid := _current_life_reveal_card_uid(state)
+	if current_card_uid == "" or current_card_uid != card_uid:
+		return ["Life reveal acknowledgement failed: current card mismatch."]
+	if _life_reveal_current_has_trigger(state):
+		return ["Life reveal acknowledgement failed: current card still requires a trigger decision."]
+	_mark_life_reveal_resolved(state, card_uid)
+	_advance_life_reveal_cursor(state)
+	if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty() and _life_reveal_fully_resolved(state):
 		logs.append_array(_finalize_pending_life_damage(state))
 	return logs
 
@@ -548,6 +564,23 @@ func _collect_life_damage_cards(state: GameState, player_id: String, amount: int
 		})
 	return moved
 
+func _begin_life_reveal_batch(state: GameState, player_id: String, card_uids: Array[String]) -> void:
+	var entries: Array[Dictionary] = []
+	for i in range(card_uids.size()):
+		var card_uid := str(card_uids[i])
+		entries.append({
+			"player_id": player_id,
+			"card_uid": card_uid,
+			"has_life_trigger": _card_has_trigger(state, card_uid, UATypes.TriggerType.ON_LIFE_TRIGGER),
+			"resolved": false,
+			"order_index": i,
+		})
+	state.pending_life_reveal = {
+		"player_id": player_id,
+		"revealed_cards": entries,
+	}
+	_advance_life_reveal_cursor(state)
+
 func _finalize_pending_life_damage(state: GameState) -> Array[String]:
 	var logs: Array[String] = []
 	for entry_variant in state.pending_life_damage_cards:
@@ -563,6 +596,7 @@ func _finalize_pending_life_damage(state: GameState) -> Array[String]:
 		if card != null:
 			card.zone = UATypes.Zone.OUTSIDE
 	state.pending_life_damage_cards.clear()
+	state.pending_life_reveal = {}
 	var defeat: Dictionary = victory_checker.check_victory(state)
 	if not defeat.is_empty():
 		_apply_victory(state, defeat)
@@ -580,6 +614,55 @@ func _build_life_trigger_entry(state: GameState, player_id: String, card_uid: St
 		"card_uid": card_uid,
 		"card_name": card_name,
 	}
+
+func _advance_life_reveal_cursor(state: GameState) -> void:
+	if state.pending_life_reveal.is_empty():
+		return
+	var entries: Array = state.pending_life_reveal.get("revealed_cards", [])
+	var current_card_uid := ""
+	for entry_variant in entries:
+		var entry: Dictionary = entry_variant
+		if not bool(entry.get("resolved", false)):
+			current_card_uid = str(entry.get("card_uid", ""))
+			break
+	state.pending_life_reveal["current_card_uid"] = current_card_uid
+
+func _mark_life_reveal_resolved(state: GameState, card_uid: String) -> void:
+	if state.pending_life_reveal.is_empty():
+		return
+	var entries: Array = state.pending_life_reveal.get("revealed_cards", [])
+	for i in range(entries.size()):
+		var entry: Dictionary = entries[i]
+		if str(entry.get("card_uid", "")) != card_uid:
+			continue
+		entry["resolved"] = true
+		entries[i] = entry
+		state.pending_life_reveal["revealed_cards"] = entries
+		return
+
+func _current_life_reveal_card_uid(state: GameState) -> String:
+	if state.pending_life_reveal.is_empty():
+		return ""
+	return str(state.pending_life_reveal.get("current_card_uid", ""))
+
+func _life_reveal_current_has_trigger(state: GameState) -> bool:
+	var current_card_uid := _current_life_reveal_card_uid(state)
+	if current_card_uid == "":
+		return false
+	for entry_variant in state.pending_life_reveal.get("revealed_cards", []):
+		var entry: Dictionary = entry_variant
+		if str(entry.get("card_uid", "")) == current_card_uid:
+			return bool(entry.get("has_life_trigger", false))
+	return false
+
+func _life_reveal_fully_resolved(state: GameState) -> bool:
+	if state.pending_life_reveal.is_empty():
+		return true
+	for entry_variant in state.pending_life_reveal.get("revealed_cards", []):
+		var entry: Dictionary = entry_variant
+		if not bool(entry.get("resolved", false)):
+			return false
+	return true
 
 func _register_delayed_effect(state: GameState, source_card_uid: String, step: Dictionary) -> void:
 	var source_card = state.get_card(source_card_uid)

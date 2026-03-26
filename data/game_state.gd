@@ -26,6 +26,7 @@ var opening_mulligan_hands := {}
 var pending_decisions: Array[Dictionary] = []
 var pending_life_damage_cards: Array[Dictionary] = []
 var pending_life_triggers: Array[Dictionary] = []
+var pending_life_reveal := {}
 var _runtime_id_seed := 1
 
 func get_player(player_id: String) -> PlayerState:
