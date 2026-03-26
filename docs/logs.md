@@ -345,3 +345,18 @@
 - 摘要：梳理 `cards_effects.json` 中 14 条未实现能力，按“通用步骤模板、原子 requirement、控制流语义、特殊出牌规则”归并为中文待办清单，并补充到 `docs/plan/tolist.md` 作为后续 Effect DSL/IR 扩展入口。
 - 影响文件或模块：`docs/plan/tolist.md`、`docs/logs.md`
 - 验证方式与结果：静态检查确认 `docs/plan/tolist.md` 已写入围绕未实现原子能力的分组待办、卡牌映射、实施顺序与冻结项；本轮未修改运行时代码，未执行 Godot 冒烟测试。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：将 `CardPreviewPanel` 的卡牌预览改为优先展示 `res://pic/` 下的原始整卡图，只有原图缺失时才回退到文字详情；同时同步调整预览面板尺寸以适配完整卡图比例。
+- 影响文件或模块：`ui/card_preview_panel.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
+- 验证方式与结果：静态检查确认预览面板已改为原图优先加载顺序 `pic -> pic/micro`，且场景面板尺寸已放宽以容纳完整卡图；Godot 布局探针验证待执行。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：为 `CardPreviewPanel` 补充卡牌临时状态展示，预览面板现可显示当前状态（如 `ACTIVE/RESTED`）、当前 BP 相对原始 BP 的增减变化、临时关键词以及通过 RAID 登场等运行时状态。
+- 影响文件或模块：`core/game_manager.gd`、`ui/card_preview_panel.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认卡牌快照新增 `base_bp` 字段，预览面板已基于 `state`、`bp/base_bp` 与 `flags.temp_keywords` 生成“临时状态”文本；Godot 冒烟验证待执行。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：移除手牌区默认半收起布局，改为完整展示整张手牌图片；同时提高底部 HUD 预留高度，并让手牌优先读取原图资源，缩略图仅作为回退。
+- 影响文件或模块：`ui/hand_view.gd`、`ui/card_view.gd`、`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
+- 验证方式与结果：静态检查确认手牌布局已改为按完整卡高底部对齐，不再使用半收起可见比例；底部 HUD 运行时与场景初始高度均已上调，手牌贴图读取顺序已改为 `pic -> pic/micro`。随后使用项目内置 Godot 执行 `--layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认完整手牌显示下未遮挡战场；运行中仍有既有 anchors warning，但未阻塞本次验收。

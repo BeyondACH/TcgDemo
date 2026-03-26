@@ -614,6 +614,7 @@ func _serialize_card(card_uid: String, action_player_id: String, include_actions
 		"source_image": card_def.source_image,
 		"zone": UATypes.zone_to_key(card.zone),
 		"state": UATypes.state_to_text(card.state),
+		"base_bp": card_def.bp,
 		"bp": card.current_bp,
 		"cost_ap": card_def.cost_ap,
 		"cost_energy": card_def.cost_energy.duplicate(true),

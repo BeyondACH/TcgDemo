@@ -7,7 +7,7 @@ signal card_hovered(card_uid: String, is_hovered: bool)
 const DEFAULT_CARD_SIZE := Vector2(120, 168)
 const DISPLAY_MODE_BOARD := "board"
 const DISPLAY_MODE_HAND := "hand"
-const HAND_PADDING := 4
+const HAND_PADDING := 2
 const HAND_IMAGE_ASPECT_RATIO := 5.0 / 7.0
 const BOARD_PADDING := 4
 const BOARD_INFO_HEIGHT_RATIO := 0.28
@@ -122,7 +122,7 @@ func _refresh_view() -> void:
 	_hand_image.visible = false
 	_board_column.visible = false
 	if _display_mode == DISPLAY_MODE_HAND:
-		var hand_texture := _resolve_card_texture(_card_data)
+		var hand_texture := _resolve_card_texture(_card_data, true)
 		if hand_texture != null:
 			_display_text = _build_hand_text(_card_data)
 			_fallback_label.visible = false
@@ -208,19 +208,19 @@ func _build_board_thumbnail_text(card_data: Dictionary) -> String:
 		lines.append(state)
 	return "\n".join(lines)
 
-func _resolve_card_texture(card_data: Dictionary) -> Texture2D:
-	for image_path in _card_image_candidates(card_data):
+func _resolve_card_texture(card_data: Dictionary, prefer_original: bool = false) -> Texture2D:
+	for image_path in _card_image_candidates(card_data, prefer_original):
 		if ResourceLoader.exists(image_path):
 			var texture := load(image_path)
 			if texture is Texture2D:
 				return texture
 	return null
 
-func _card_image_candidates(card_data: Dictionary) -> Array[String]:
+func _card_image_candidates(card_data: Dictionary, prefer_original: bool = false) -> Array[String]:
 	var candidates: Array[String] = []
 	var source_image := str(card_data.get("source_image", "")).strip_edges()
 	if source_image != "":
-		_append_card_image_candidate(candidates, source_image)
+		_append_card_image_candidate(candidates, source_image, prefer_original)
 	var number := str(card_data.get("number", "")).strip_edges()
 	if number == "":
 		return candidates
@@ -234,17 +234,21 @@ func _card_image_candidates(card_data: Dictionary) -> Array[String]:
 		if normalized == "":
 			continue
 		var filename := normalized if normalized.to_lower().ends_with(".png") else "%s.png" % normalized
-		_append_card_image_candidate(candidates, filename)
+		_append_card_image_candidate(candidates, filename, prefer_original)
 	return candidates
 
-func _append_card_image_candidate(candidates: Array[String], filename: String) -> void:
+func _append_card_image_candidate(candidates: Array[String], filename: String, prefer_original: bool = false) -> void:
 	var normalized := filename.strip_edges()
 	if normalized == "":
 		return
-	for path in [
+	var ordered_paths := [
+		"res://pic/%s" % normalized,
+		"res://pic/micro/%s" % normalized,
+	] if prefer_original else [
 		"res://pic/micro/%s" % normalized,
 		"res://pic/%s" % normalized,
-	]:
+	]
+	for path in ordered_paths:
 		if not candidates.has(path):
 			candidates.append(path)
 

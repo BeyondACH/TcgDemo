@@ -21,6 +21,9 @@ const SMALL_WIDTH_THRESHOLD := 1650.0
 const BOARD_BOTTOM_GAP := 28.0
 const BOARD_TOP_GAP := 18.0
 const BOTTOM_HUD_BOTTOM_MARGIN := 12.0
+const BOARD_LAYOUT_SCALE_DEFAULT := 0.88
+const BOARD_LAYOUT_SCALE_COMPACT := 0.84
+const BOARD_LAYOUT_SCALE_SMALL := 0.8
 const PREVIEW_PANEL_LEFT_MARGIN := 12.0
 const PREVIEW_PANEL_TOP_GAP := 12.0
 const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
@@ -169,7 +172,9 @@ func _update_responsive_layout() -> void:
 
 	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
 	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
-	var bottom_height: float = 112.0 if very_small else (160.0 if compact else 180.0)
+	var bottom_height: float = 148.0 if very_small else (198.0 if compact else 220.0)
+	var board_layout_scale := BOARD_LAYOUT_SCALE_SMALL if very_small else (BOARD_LAYOUT_SCALE_COMPACT if compact else BOARD_LAYOUT_SCALE_DEFAULT)
+	var board_scale_factor := bg_scale_factor * board_layout_scale
 
 	top_hud.offset_top = 8.0 if very_small else 12.0
 	bottom_hud.offset_top = -(bottom_height + BOTTOM_HUD_BOTTOM_MARGIN)
@@ -188,16 +193,16 @@ func _update_responsive_layout() -> void:
 	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	# Update board views with absolute positioning
-	opponent_board.update_layout(letterbox_offset, bg_scale_factor)
-	player_board.update_layout(letterbox_offset, bg_scale_factor)
+	opponent_board.update_layout(letterbox_offset, board_scale_factor)
+	player_board.update_layout(letterbox_offset, board_scale_factor)
 
 	opponent_board.set_compact_mode(compact, very_small)
 	player_board.set_compact_mode(compact, very_small)
 	hand_view.set_compact_mode(compact, very_small)
 
 	# Calculate hand bounds avoiding remove_area and outside_area
-	var remove_rect := ZoneLayoutConfig.get_zone_rect("P1", "remove_area", letterbox_offset, bg_scale_factor)
-	var outside_rect := ZoneLayoutConfig.get_zone_rect("P1", "outside_area", letterbox_offset, bg_scale_factor)
+	var remove_rect := ZoneLayoutConfig.get_zone_rect("P1", "remove_area", letterbox_offset, board_scale_factor)
+	var outside_rect := ZoneLayoutConfig.get_zone_rect("P1", "outside_area", letterbox_offset, board_scale_factor)
 	var hand_left := remove_rect.position.x + remove_rect.size.x + 20.0
 	var hand_right := outside_rect.position.x - 20.0
 	var hand_width := hand_right - hand_left
