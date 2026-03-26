@@ -440,3 +440,8 @@
 - 变更摘要：修复“看牌堆顶”专用弹窗中点击预览卡牌无反应的问题；将卡牌缩略图改为监听 `CardView.card_pressed` 自定义信号，恢复人类玩家在弹窗内的点选确认流程，并补充稳定的确认/排序按钮文案。
 - 影响文件或模块：`ui/preview_selection_modal.gd`、`docs/preview_selection_modal_smoke_test.gd`、`docs/logs.md`
 - 验证方式与结果：在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/preview_selection_modal_smoke_test.gd`，两项用例均通过并输出 `PREVIEW_SELECTION_MODAL_SMOKE_OK`；随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，10 项正式 raw 对局样例全部通过并输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`，确认看牌堆顶后的选牌、回底与后续结算链路保持正常。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：将 `CardPreviewPanel` 在当前基础上整体放大一倍，同步提升预览卡图目标尺寸与场景初始外框大小，使完整原图在预览面板中以更大的比例显示。
+- 影响文件或模块：`ui/card_preview_panel.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `PREVIEW_CARD_SIZE` 已从 `220x308` 调整为 `440x616`，场景中的 `CardPreviewPanel` 初始矩形也已按对应外边距放大；随后使用项目内置 Godot 执行 `--layout-probe` 复验。

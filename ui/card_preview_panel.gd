@@ -2,7 +2,7 @@ extends PanelContainer
 class_name CardPreviewPanel
 
 # 卡牌预览面板，优先展示完整原图；仅在原图缺失时回退到文字详情。
-const PREVIEW_CARD_SIZE := Vector2(220, 308)
+const PREVIEW_CARD_SIZE := Vector2(440, 616)
 const PADDING := 12.0
 
 var _card_image: TextureRect
