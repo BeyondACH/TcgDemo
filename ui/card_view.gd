@@ -10,7 +10,6 @@ const DISPLAY_MODE_HAND := "hand"
 const HAND_PADDING := 2
 const HAND_IMAGE_ASPECT_RATIO := 5.0 / 7.0
 const BOARD_PADDING := 4
-const BOARD_INFO_HEIGHT_RATIO := 0.28
 const PLAYABLE_BORDER_COLOR := Color(0.2, 0.8, 0.3, 0.9)
 const PLAYABLE_BORDER_WIDTH := 3.0
 
@@ -114,10 +113,8 @@ func _refresh_view() -> void:
 	if _content_root == null:
 		return
 	var font_size: int = 10 if _card_size.y <= 44 else (11 if _card_size.y <= 60 else (12 if _card_size.y <= 72 else 14))
-	var board_font_size: int = maxi(8, font_size - 1)
 	add_theme_font_size_override("font_size", font_size)
 	_fallback_label.add_theme_font_size_override("font_size", font_size)
-	_board_text.add_theme_font_size_override("font_size", board_font_size)
 	_fallback_label.visible = true
 	_hand_image.visible = false
 	_board_column.visible = false
@@ -138,8 +135,6 @@ func _refresh_view() -> void:
 			_board_column.visible = true
 			_board_image.texture = board_texture
 			_board_image.custom_minimum_size = _board_image_size()
-			_board_text.custom_minimum_size = Vector2(0, _board_info_height())
-			_board_text.text = _build_board_thumbnail_text(_card_data)
 			return
 	_fallback_label.text = _build_text(_card_data)
 
@@ -258,12 +253,9 @@ func _hand_image_size() -> Vector2:
 	return Vector2(image_width, content_height)
 
 func _board_image_size() -> Vector2:
-	var image_height: float = maxi(48.0, _card_size.y - _board_info_height() - float(BOARD_PADDING * 2))
+	var image_height: float = maxi(48.0, _card_size.y - float(BOARD_PADDING * 2))
 	var image_width: float = round(image_height * HAND_IMAGE_ASPECT_RATIO)
 	return Vector2(minf(_card_size.x - float(BOARD_PADDING * 2), image_width), image_height)
-
-func _board_info_height() -> float:
-	return round(_card_size.y * BOARD_INFO_HEIGHT_RATIO)
 
 func _compact_hint(card_data: Dictionary) -> String:
 	var actions := _format_string_list(card_data.get("available_actions", []))

@@ -134,14 +134,8 @@ func _render_cards() -> void:
 
 		var card_view := CardView.new()
 		card_view.setup(card_data, "", "preview", CARD_SIZE, CardView.DISPLAY_MODE_HAND)
-		card_view.pressed.connect(_on_card_pressed.bind(str(card_data.get("uid", ""))))
+		card_view.card_pressed.connect(_on_preview_card_view_pressed)
 		tile_column.add_child(card_view)
-
-		var name_label := Label.new()
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		name_label.text = str(card_data.get("name", "Unknown"))
-		tile_column.add_child(name_label)
 
 		var controls := HBoxContainer.new()
 		controls.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -149,13 +143,13 @@ func _render_cards() -> void:
 		tile_column.add_child(controls)
 
 		var left_button := Button.new()
-		left_button.text = "←"
+		left_button.text = "<"
 		left_button.custom_minimum_size = Vector2(34, 0)
 		left_button.pressed.connect(_on_move_left_pressed.bind(str(card_data.get("uid", ""))))
 		controls.add_child(left_button)
 
 		var right_button := Button.new()
-		right_button.text = "→"
+		right_button.text = ">"
 		right_button.custom_minimum_size = Vector2(34, 0)
 		right_button.pressed.connect(_on_move_right_pressed.bind(str(card_data.get("uid", ""))))
 		controls.add_child(right_button)
@@ -249,6 +243,9 @@ func _on_card_pressed(card_uid: String) -> void:
 	else:
 		_selected_uids.append(card_uid)
 	_refresh_state()
+
+func _on_preview_card_view_pressed(_owner_player_id: String, card_uid: String, _zone_name: String) -> void:
+	_on_card_pressed(card_uid)
 
 func _on_move_left_pressed(card_uid: String) -> void:
 	var index := _ordered_uids.find(card_uid)

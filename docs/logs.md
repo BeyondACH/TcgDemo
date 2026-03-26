@@ -405,3 +405,38 @@
 - 变更摘要：修正战场中央 4x4 格子中 P1 与 P2 未对齐且 P1 卡槽偏小的问题，将 P1 的前线与能量线区域改为与 P2 镜像对称的尺寸和位置。
 - 影响文件或模块：`data/zone_layout_config.gd`、`docs/logs.md`
 - 验证方式与结果：静态检查确认 `PLAYER_ZONES.front_line` 与 `PLAYER_ZONES.energy_line` 已调整为和 P2 对称的比例参数；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认中央格子对齐且手牌区未遮挡战场。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：调整战场内已打出卡牌的展示方式，改为格子内仅显示卡图，不再额外叠加名称、AP、BP 等文字信息；仅在卡图缺失时继续回退到文字展示。
+- 影响文件或模块：`ui/card_view.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认战场模式下不再为 `_board_text` 预留高度，`_board_image` 改为占用完整卡槽内容区域；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认战场布局与手牌区约束未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
+- 日期：2026-03-26
+- 变更类型：功能更新
+- 变更摘要：为战场卡牌点击补齐预览面板刷新逻辑，点选前线或能量线卡牌时会同步展示该卡当前战场快照信息。
+- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `_on_front_card_pressed()` 与 `_on_energy_card_pressed()` 在更新选中状态时都会调用 `card_preview_panel.set_card_data(card_data)`；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认界面布局未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：进一步校正 P2 战场中央格子的镜像布局，保持“第一行能量区、第二行前线区”不变，并将两排区域的横向起点与 P1 完全对称。
+- 影响文件或模块：`data/zone_layout_config.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `OPPONENT_ZONES.energy_line/front_line` 保持能量在上、前线在下，且 `left` 已与 P1 对齐为对称值；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认中央战场布局与手牌区约束未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修正中央 4x4 两排区域高度不一致导致的 P2 能量卡下溢问题，将双方能量线改为与前线同高的标准格子，并重新校正 P2 前线的第二行位置。
+- 影响文件或模块：`data/zone_layout_config.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认双方 `energy_line` 与 `front_line` 已统一为同高格子，且 P2 维持“第一行能量、第二行前线”的镜像顺序；随后使用项目内置 Godot 执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe`，输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认战场与手牌区布局约束未受影响。运行过程中仍有既有 anchors warning，但未阻塞本次验收。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：补全 `ABILITY_TARGET_SELECTION` 的卡牌候选展示信息，在普通待决策列表与预览选牌弹窗中都追加显示卡牌编号和所需能量，便于区分同名或近似卡牌。
+- 影响文件或模块：`core/effect_resolver.gd`、`ui/preview_selection_modal.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认目标选择候选标签已统一改为“名称 | 编号 | 所需能量”格式，预览弹窗卡牌标题同步展示编号与所需能量；随后在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit`，项目可正常启动，仅出现既有 anchors warning，未出现新增脚本报错。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：收窄目标选择弹窗的信息展示范围，恢复为仅显示卡图；“名称 | 编号 | 所需能量”仅保留下拉候选列表使用，避免预览弹窗信息过载。
+- 影响文件或模块：`ui/preview_selection_modal.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认预览选牌弹窗已移除卡图下方文字标签，下拉列表候选格式未改动；随后在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --quit`，项目可正常启动，仅出现既有 anchors warning，未出现新增脚本报错。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修复“看牌堆顶”专用弹窗中点击预览卡牌无反应的问题；将卡牌缩略图改为监听 `CardView.card_pressed` 自定义信号，恢复人类玩家在弹窗内的点选确认流程，并补充稳定的确认/排序按钮文案。
+- 影响文件或模块：`ui/preview_selection_modal.gd`、`docs/preview_selection_modal_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：在沙箱外执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/preview_selection_modal_smoke_test.gd`，两项用例均通过并输出 `PREVIEW_SELECTION_MODAL_SMOKE_OK`；随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/cards_raw_minimal_duel_smoke_test.gd`，10 项正式 raw 对局样例全部通过并输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`，确认看牌堆顶后的选牌、回底与后续结算链路保持正常。

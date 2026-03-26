@@ -333,6 +333,8 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "front_line"
 	_selected_hand_card_uid = ""
+	if not card_data.is_empty():
+		card_preview_panel.set_card_data(card_data)
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 	if phase == "ATTACK" and player_id == active_player_id:
@@ -356,10 +358,12 @@ func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "energy_line"
 	_selected_hand_card_uid = ""
-	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var card_data := _find_board_card(player_id, card_uid)
+	if not card_data.is_empty():
+		card_preview_panel.set_card_data(card_data)
+	_update_action_buttons()
+	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 	var card_name := str(card_data.get("name", card_uid))
 	var action_text := ", ".join(card_data.get("available_actions", []) as Array)
 	if action_text == "":

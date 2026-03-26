@@ -10,8 +10,8 @@ const BG_IMAGE_HEIGHT := 1024.0
 const OPPONENT_ZONES := {
 	life_area = {"left": 0.794, "top": 0.197, "width": 0.157, "height": 0.305},
 	remove_area = {"left": 0.760, "top": 0.000, "width": 0.238, "height": 0.334},
-	front_line = {"left": 0.264, "top": 0.322, "width": 0.488, "height": 0.166},
-	energy_line = {"left": 0.264, "top": 0.195, "width": 0.488, "height": 0.126},
+	front_line = {"left": 0.248, "top": 0.362, "width": 0.488, "height": 0.166},
+	energy_line = {"left": 0.248, "top": 0.195, "width": 0.488, "height": 0.166},
 	deck = {"left": 0.043, "top": 0.312, "width": 0.121, "height": 0.159},
 	outside_area = {"left": 0.000, "top": 0.000, "width": 0.244, "height": 0.336},
 }
@@ -21,7 +21,7 @@ const PLAYER_ZONES := {
 	life_area = {"left": 0.035, "top": 0.513, "width": 0.175, "height": 0.270},
 	remove_area = {"left": 0.000, "top": 0.666, "width": 0.240, "height": 0.334},
 	front_line = {"left": 0.248, "top": 0.512, "width": 0.488, "height": 0.166},
-	energy_line = {"left": 0.248, "top": 0.679, "width": 0.488, "height": 0.126},
+	energy_line = {"left": 0.248, "top": 0.679, "width": 0.488, "height": 0.166},
 	deck = {"left": 0.812, "top": 0.517, "width": 0.126, "height": 0.151},
 	outside_area = {"left": 0.780, "top": 0.670, "width": 0.220, "height": 0.330},
 }

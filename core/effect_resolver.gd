@@ -1081,7 +1081,7 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		if candidate_card != null:
 			var candidate_def = state.get_card_def(candidate_card.def_id)
 			if candidate_def != null:
-				label = candidate_def.name
+				label = _format_target_choice_label(candidate_def)
 		choices.append({"label": label, "value": candidate_uid})
 		candidate_values.append(candidate_uid)
 	state.effect_queue.append({
@@ -1113,6 +1113,34 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		"title": str(ui_meta.get("title", "")),
 	})
 	return true
+
+func _format_target_choice_label(card_def) -> String:
+	if card_def == null:
+		return ""
+	var parts: Array[String] = [str(card_def.name)]
+	var number := str(card_def.number)
+	if number != "":
+		parts.append("编号:%s" % number)
+	parts.append("所需能量:%s" % _format_energy_cost_text(card_def.cost_energy))
+	return " | ".join(parts)
+
+func _format_energy_cost_text(energy_map: Dictionary) -> String:
+	if energy_map.is_empty():
+		return "0"
+	var parts: Array[String] = []
+	var ordered_colors := ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "BLACK", "WHITE", "COLORLESS"]
+	for color in ordered_colors:
+		var amount := int(energy_map.get(color, 0))
+		if amount > 0:
+			parts.append("%s:%d" % [color, amount])
+	for color_variant in energy_map.keys():
+		var color := str(color_variant)
+		if ordered_colors.has(color):
+			continue
+		var amount := int(energy_map.get(color_variant, 0))
+		if amount > 0:
+			parts.append("%s:%d" % [color, amount])
+	return ", ".join(parts) if not parts.is_empty() else "0"
 
 func _register_preview_ui_meta(context: Dictionary, preview_var: String, meta: Dictionary) -> void:
 	var preview_ui_meta: Dictionary = context.get("_preview_ui_meta", {})
