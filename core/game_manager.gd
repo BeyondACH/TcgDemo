@@ -215,8 +215,10 @@ func request_attack(attacker_uid: String, options: Dictionary = {}) -> Dictionar
 		_apply_logs(["Cannot attack: %s" % result.get("reason", "unknown")])
 		emit_state_changed()
 		return result
+	# Entering the block window changes priority to the defender, so the UI must
+	# receive a fresh snapshot before it decides whether human input is allowed.
+	emit_state_changed()
 	emit_signal("blockers_requested", result)
-	_queue_controller_drive()
 	return result
 
 func resolve_attack(attacker_uid: String, blocker_uid := "") -> Dictionary:
@@ -407,6 +409,7 @@ func get_snapshot() -> Dictionary:
 		"can_bonus_draw": _can_active_player_bonus_draw(),
 		"winner_player_id": game_state.winner_player_id,
 		"battle_context": game_state.battle_context.duplicate(true),
+		"last_battle_result": game_state.last_battle_result.duplicate(true),
 		"effect_queue_count": game_state.effect_queue.size(),
 		"pending_decisions": _serialize_pending_decisions(action_player_id),
 		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),

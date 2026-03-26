@@ -69,6 +69,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 	var target_kind := str(battle_context.get("target_kind", "PLAYER"))
 	var target_uid := str(battle_context.get("target_uid", ""))
 	var is_sniper_attack := bool(battle_context.get("is_sniper_attack", false))
+	var resolved_battle_result: Dictionary = battle_context.duplicate(true)
 	var was_repeat_attack := bool(attacker.flags.get("attacked_this_turn", false))
 	attacker.state = UATypes.CardState.RESTED
 	attacker.flags["attacked_this_turn"] = true
@@ -89,7 +90,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			state.battle_context = {}
 			return ["Attack failed: missing target character definition."]
 		if attacker.current_bp >= target_card.current_bp:
-			battle_context["battle_outcome"] = "ATTACKER_WIN"
+			resolved_battle_result["battle_outcome"] = "ATTACKER_WIN"
 			logs.append_array(effect_resolver.resolve_trigger(target_uid, UATypes.TriggerType.ON_LEAVE, state, {
 				"target_player_id": target_card.controller_player_id,
 				"attacker_uid": attacker_uid,
@@ -104,12 +105,12 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 				"target_uid": target_uid,
 			}))
 			if impact_damage > 0 and not _impact_negated(state, target_uid):
-				battle_context["impact_damage"] = impact_damage
+				resolved_battle_result["impact_damage"] = impact_damage
 				logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, impact_damage))
 			elif impact_damage > 0:
 				logs.append("%s negates impact damage." % target_def.name)
 		else:
-			battle_context["battle_outcome"] = "ATTACKER_FAILS_TO_DEFEAT"
+			resolved_battle_result["battle_outcome"] = "ATTACKER_FAILS_TO_DEFEAT"
 			logs.append("%s fails to defeat %s." % [attacker_def.name, target_def.name])
 			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_LOSE, state, {
 				"target_player_id": defender_player_id,
@@ -122,18 +123,20 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			"target_uid": target_uid,
 		}))
 		_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
-		state.battle_context = battle_context
+		state.last_battle_result = resolved_battle_result
+		state.battle_context = {}
 		return logs
 	if blocker_uid != "" and not is_sniper_attack:
 		var block_validation := rules_engine.can_block(state, defender_player_id, blocker_uid)
 		if not bool(block_validation.get("ok", false)):
 			logs.append("Selected blocker is invalid, attack hits player instead.")
 			var fallback_damage := _direct_attack_damage(attacker, attacker_def)
-			battle_context["damage_to_player"] = fallback_damage
-			battle_context["battle_outcome"] = "DIRECT_DAMAGE"
+			resolved_battle_result["damage_to_player"] = fallback_damage
+			resolved_battle_result["battle_outcome"] = "DIRECT_DAMAGE"
 			logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, fallback_damage))
 			_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
-			state.battle_context = battle_context
+			state.last_battle_result = resolved_battle_result
+			state.battle_context = {}
 			return logs
 		var blocker: CardInstance = state.get_card(blocker_uid)
 		var blocker_def: CardDef = null
@@ -142,16 +145,17 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		if blocker == null or blocker_def == null:
 			logs.append("Blocker missing, attack hits player instead.")
 			var fallback_damage_missing := _direct_attack_damage(attacker, attacker_def)
-			battle_context["damage_to_player"] = fallback_damage_missing
-			battle_context["battle_outcome"] = "DIRECT_DAMAGE"
+			resolved_battle_result["damage_to_player"] = fallback_damage_missing
+			resolved_battle_result["battle_outcome"] = "DIRECT_DAMAGE"
 			logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, fallback_damage_missing))
 			_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
-			state.battle_context = battle_context
+			state.last_battle_result = resolved_battle_result
+			state.battle_context = {}
 			return logs
 		var was_repeat_block := bool(blocker.flags.get("blocked_this_turn", false))
 		blocker.state = UATypes.CardState.RESTED
 		blocker.flags["blocked_this_turn"] = true
-		battle_context["blocker_uid"] = blocker_uid
+		resolved_battle_result["blocker_uid"] = blocker_uid
 		logs.append("%s blocks." % blocker_def.name)
 		logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_BLOCK, state, {
 			"target_player_id": defender_player_id,
@@ -159,7 +163,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			"blocker_uid": blocker_uid,
 		}))
 		if attacker.current_bp >= blocker.current_bp:
-			battle_context["battle_outcome"] = "ATTACKER_WIN"
+			resolved_battle_result["battle_outcome"] = "ATTACKER_WIN"
 			logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_LEAVE, state, {
 				"target_player_id": blocker.controller_player_id,
 				"attacker_uid": attacker_uid,
@@ -176,12 +180,12 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 				"blocker_uid": blocker_uid,
 			}))
 			if impact_damage > 0 and not _impact_negated(state, blocker_uid):
-				battle_context["impact_damage"] = impact_damage
+				resolved_battle_result["impact_damage"] = impact_damage
 				logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, impact_damage))
 			elif impact_damage > 0:
 				logs.append("%s negates impact damage." % blocker_def.name)
 		else:
-			battle_context["battle_outcome"] = "ATTACKER_FAILS_TO_DEFEAT"
+			resolved_battle_result["battle_outcome"] = "ATTACKER_FAILS_TO_DEFEAT"
 			logs.append("%s fails to defeat %s." % [attacker_def.name, blocker_def.name])
 			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_LOSE, state, {
 				"target_player_id": defender_player_id,
@@ -196,15 +200,16 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		_after_block_state_change(blocker, blocker_def, was_repeat_block)
 	else:
 		var direct_damage := _direct_attack_damage(attacker, attacker_def)
-		battle_context["damage_to_player"] = direct_damage
-		battle_context["battle_outcome"] = "DIRECT_DAMAGE"
+		resolved_battle_result["damage_to_player"] = direct_damage
+		resolved_battle_result["battle_outcome"] = "DIRECT_DAMAGE"
 		logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, direct_damage))
 		logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_END, state, {
 			"target_player_id": defender_player_id,
 			"attacker_uid": attacker_uid,
 		}))
 	_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
-	state.battle_context = battle_context
+	state.last_battle_result = resolved_battle_result
+	state.battle_context = {}
 	return logs
 
 func _direct_attack_damage(attacker: CardInstance, attacker_def: CardDef) -> int:

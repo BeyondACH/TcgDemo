@@ -465,3 +465,13 @@
 - 变更摘要：将顶部 HUD 的 `Log` 按钮改为放在 `Next Phase` 下方单独一行，并让日志面板从该按钮下方展开，避免遮挡顶部其它操作按钮。
 - 影响文件或模块：`ui/battle_scene.gd`、`scenes/battle_scene.tscn`、`docs/logs.md`
 - 验证方式与结果：静态检查确认 `TopBar` 右侧已改为 `PhaseControls` 竖排容器，`Next Phase` 与 `Log` 按钮上下排列；`_update_log_panel_layout()` 会按 `Log` 按钮位置将日志面板布置到其下方，并在底部 HUD 之上收口高度，避免覆盖其它顶部按钮。随后执行 `D:\GodotWork\tcg-demo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1366x768 --path D:\GodotWork\tcg-demo -- --layout-probe` 输出 `[PASS] UI 布局 1920x1080 (hand cards: 7)`，确认手牌区域仍未遮挡战场且顶部 HUD 布局未被破坏。运行过程中仍有既有 anchors warning，但未出现本轮新增脚本错误。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修复对手发起攻击后我方无法选择前线角色阻挡的问题；攻击声明成功后会立即刷新快照，把阻挡窗口优先权和人类输入权限切到防守方，避免 UI 仍停留在攻击方视角导致点击阻挡角色无效。
+- 影响文件或模块：`core/game_manager.gd`、`docs/legal_actions_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `request_attack()` 在进入阻挡窗口后会先触发 `state_changed`，再通知 `blockers_requested`；新增 `attack request snapshot shifts priority to defender` 冒烟用例，校验进入阻挡窗口时会发出快照更新、`priority_player_id` 切换为防守方、`human_input_enabled` 变为可用，且防守方前线角色快照包含 `BLOCK` 动作。
+- 日期：2026-03-26
+- 变更类型：bugfix
+- 变更摘要：修复战斗阶段在攻击完成结算后仍错误保留阻挡窗口的问题；将 `battle_context` 收敛为仅表示未结算中的战斗窗口，并新增 `last_battle_result` 用于保留最近一次战斗结果快照。
+- 影响文件或模块：`data/game_state.gd`、`core/battle_resolver.gd`、`core/game_manager.gd`、`docs/legal_actions_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：补充合法动作冒烟用例，覆盖“攻击结算后清空 `battle_context`、防守方不再停留在阻挡响应、最近战斗结果仍保留在 `last_battle_result`”三项断言；Godot 冒烟回归待执行。

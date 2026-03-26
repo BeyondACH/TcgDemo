@@ -20,6 +20,7 @@ var delayed_effects: Array = []
 var static_modifiers: Array = []
 var effect_queue: Array[Dictionary] = []
 var battle_context := {}
+var last_battle_result := {}
 var opening_complete := false
 var opening_mulligan_hands := {}
 var pending_decisions: Array[Dictionary] = []
