@@ -339,3 +339,9 @@
 - 摘要：将卡牌预览面板从底部操作区移出，改为固定显示在战场顶部左侧的独立浮层，并在响应式布局更新时根据顶部 HUD 底边重新定位，避免预览面板继续参与底部手牌区排版。
 - 影响文件或模块：`scenes/battle_scene.tscn`、`ui/battle_scene.gd`、`docs/logs.md`
 - 验证方式与结果：静态检查确认 `CardPreviewPanel` 已从 `UILayer/BottomHUD/BottomPanel/BottomContent` 迁移到 `UILayer` 直属节点，`ui/battle_scene.gd` 的 `@onready` 路径与 `_update_preview_panel_layout()` 已同步指向顶部左侧浮层定位逻辑。
+
+- 日期：2026-03-26
+- 类型：功能更新
+- 摘要：梳理 `cards_effects.json` 中 14 条未实现能力，按“通用步骤模板、原子 requirement、控制流语义、特殊出牌规则”归并为中文待办清单，并补充到 `docs/plan/tolist.md` 作为后续 Effect DSL/IR 扩展入口。
+- 影响文件或模块：`docs/plan/tolist.md`、`docs/logs.md`
+- 验证方式与结果：静态检查确认 `docs/plan/tolist.md` 已写入围绕未实现原子能力的分组待办、卡牌映射、实施顺序与冻结项；本轮未修改运行时代码，未执行 Godot 冒烟测试。
