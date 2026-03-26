@@ -114,7 +114,9 @@ func _ap_target_for_player(player: PlayerState, player_id: String) -> int:
 		if player_id == UATypes.PLAYER_ONE:
 			return 1
 		return 2
-	return mini(UATypes.MAX_AP, player.turn_count + 1)
+	if player.turn_count == 2:
+		return 2
+	return UATypes.MAX_AP
 
 func needs_hand_limit_discard(state: GameState, player_id: String) -> bool:
 	var player: PlayerState = state.get_player(player_id)

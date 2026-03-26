@@ -743,7 +743,7 @@ func _finish_layout_probe() -> void:
 	if player_board.get_child_count() < 6:
 		error = "玩家战场缺失区域容器 (expected >= 6 zones, got %d)" % player_board.get_child_count()
 	elif player_board_rect.size == Vector2.ZERO:
-		error = "鐜╁鎴樺満鍐呭鍖哄煙涓虹┖"
+		error = "玩家战场内容区域为空"
 	elif player_board_rect.position.y + player_board_rect.size.y > hand_rect.position.y + 1.0:
 		error = "玩家战场与手牌缩略图区域发生重叠 (board_bottom=%.1f, hand_top=%.1f)" % [
 			player_board_rect.position.y + player_board_rect.size.y,

@@ -291,3 +291,20 @@
 - 摘要：修复主阶段手牌 RAID 卡在满足 AP、能量与目标条件时未显示 RAID 按钮的问题；不再把 `life_trigger_only` 误当作“禁止手牌 RAID”的限制，同时补齐手牌 RAID 动作对 `allow_from_hand`、AP 与能量的校验。
 - 影响文件或模块：`core/game_manager.gd`、`core/rules_engine.gd`、`docs/hand_available_actions_smoke_test.gd`
 - 验证方式与结果：在沙箱内执行 `D:\Godot_v4.6.1\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\GodotWork\tcg-demo --script res://docs/hand_available_actions_smoke_test.gd` 时 Godot 崩溃；随后在沙箱外执行同一命令，`docs/hand_available_actions_smoke_test.gd` 14 项全部通过，确认 `life_trigger_only + allow_from_hand=true` 的 RAID 卡会在手牌正常显示 RAID 动作。Godot 退出时仍有既有 `ObjectDB`/resource 泄漏告警，但未影响断言通过。
+
+- 日期：2026-03-26
+- 类型：bugfix
+- 摘要：修复 `battle_scene` 布局探针报错文案在 `ui/battle_scene.gd` 第 746 行出现的中文乱码，恢复为正常中文提示。
+- 影响文件或模块：`ui/battle_scene.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查确认第 746 行乱码字符串已替换为“玩家战场内容区域为空”，脚本其余逻辑未改动。
+- 日期：2026-03-26
+- 类型：bugfix
+- 摘要：修正官网抓取卡 `UA31ST_MMM_1_105` 的 `energy_provided`，将其从空对象改为 `{"RED": 1}`，并同步重新生成运行时 `cards_effects.json`。
+- 影响文件或模块：`data/cards/cards_raw.json`、`data/cards/cards_effects.json`、`docs/logs.md`
+- 验证方式与结果：执行 `python tools/compile_cards_effects.py` 成功生成 67 张卡的 `cards_effects.json`，统计结果为 59 个已支持能力、14 个未支持能力；静态检查确认 `UA31ST_MMM_1_105` 在 `cards_raw.json` 与 `cards_effects.json` 中的 `energy_provided` 均为 `{"RED": 1}`。
+
+- 日期：2026-03-26
+- 类型：bugfix
+- 摘要：修复回合开始 AP 增长按玩家个人回合数计算时的偏差，使双方自己的第 2 回合保持 2 张 AP，并从第 3 回合起稳定为 3 张。
+- 影响文件或模块：`core/turn_manager.gd`、`docs/draw_phase_smoke_test.gd`、`docs/logs.md`
+- 验证方式与结果：静态检查 `_ap_target_for_player()` 已调整为“首回合特判、第 2 回合返回 2、之后返回 3”；同步更新 `draw_phase_smoke_test.gd`，断言 P1 与 P2 自己的第 2 回合均为 2/2 AP。

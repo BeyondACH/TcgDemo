@@ -366,8 +366,8 @@ func _enqueue_mulligan_decision(player_id: String) -> void:
 		"owner_player_id": player_id,
 		"source_card_uid": "",
 		"choices": [
-			{"label": "Keep Hand", "value": "keep"},
-			{"label": "Mulligan", "value": "mulligan"},
+			{"label": "保留", "value": "keep"},
+			{"label": "换牌", "value": "mulligan"},
 		],
 		"context": {},
 	})

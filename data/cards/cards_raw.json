@@ -51,7 +51,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-                                "RED":  1
+
                             },
         "bp":  2000,
         "keywords":  [
@@ -2034,7 +2034,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  1
                             },
         "bp":  3000,
         "keywords":  [

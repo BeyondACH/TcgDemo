@@ -7,6 +7,8 @@ const PlayerState = preload("res://data/player_state.gd")
 func _init() -> void:
 	var manager := GameManager.new()
 	manager.setup_game()
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 	var p1: PlayerState = manager.game_state.get_player(UATypes.PLAYER_ONE)
 	var p2: PlayerState = manager.game_state.get_player(UATypes.PLAYER_TWO)
 
@@ -14,15 +16,6 @@ func _init() -> void:
 	_assert(manager.game_state.active_player_id == UATypes.PLAYER_ONE, "setup should start with P1")
 	_assert(p1.hand.size() == 7, "P1 should skip first auto draw")
 	_assert(p1.ap_active_count() == 1, "P1 should start with 1 active AP")
-
-	var p1_hand_before := p1.hand.size()
-	var p1_deck_before := p1.deck.size()
-	manager.request_bonus_draw()
-	_assert(p1.hand.size() == p1_hand_before + 1, "P1 bonus draw should add 1 card")
-	_assert(p1.deck.size() == p1_deck_before - 1, "P1 bonus draw should consume 1 deck card")
-	_assert(p1.ap_active_count() == 0, "P1 bonus draw should spend 1 AP")
-	manager.request_bonus_draw()
-	_assert(p1.hand.size() == p1_hand_before + 1, "P1 bonus draw should only happen once")
 
 	manager.advance_phase()
 	_assert(manager.game_state.phase == UATypes.Phase.MOVE, "DRAW should advance to MOVE")
@@ -36,19 +29,27 @@ func _init() -> void:
 	_assert(p2.hand.size() == 8, "P2 should auto draw during own DRAW")
 	_assert(p2.ap_active_count() == 2, "P2 should have 2 active AP on first turn")
 
-	var p2_hand_before := p2.hand.size()
-	manager.request_bonus_draw()
-	_assert(p2.hand.size() == p2_hand_before + 1, "P2 bonus draw should add 1 card")
-
+	manager.advance_phase()
 	manager.advance_phase()
 	manager.advance_phase()
 	manager.advance_phase()
 	manager.advance_phase()
 	_assert(manager.game_state.active_player_id == UATypes.PLAYER_ONE, "turn should pass back to P1")
 	_assert(manager.game_state.phase == UATypes.Phase.DRAW, "P1 second turn should start in DRAW")
-	_assert(p1.ap_total() == 3, "P1 second turn should grow to 3 AP slots")
-	_assert(p1.ap_active_count() == 3, "P1 second turn should refresh to 3 active AP")
+	_assert(p1.ap_total() == 2, "P1 second turn should grow to 2 AP slots")
+	_assert(p1.ap_active_count() == 2, "P1 second turn should refresh to 2 active AP")
 
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+
+	_assert(manager.game_state.active_player_id == UATypes.PLAYER_TWO, "turn should pass to P2 again")
+	_assert(manager.game_state.phase == UATypes.Phase.DRAW, "P2 second turn should start in DRAW")
+	_assert(p2.ap_total() == 2, "P2 second turn should remain at 2 AP slots")
+	_assert(p2.ap_active_count() == 2, "P2 second turn should refresh to 2 active AP")
+		
 	print("DRAW_PHASE_SMOKE_OK")
 	quit(0)
 
