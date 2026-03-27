@@ -13,7 +13,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  2
                             },
         "bp":  3000,
         "keywords":  [
@@ -51,7 +51,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  1
                             },
         "bp":  2000,
         "keywords":  [
@@ -90,7 +90,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  1
                             },
         "bp":  1000,
         "keywords":  [
@@ -234,7 +234,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  2
                             },
         "bp":  3000,
         "keywords":  [
@@ -410,7 +410,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  1
                             },
         "bp":  2500,
         "keywords":  [
@@ -589,7 +589,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  1
                             },
         "bp":  2500,
         "keywords":  [
@@ -777,7 +777,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  2
                             },
         "bp":  1500,
         "keywords":  [
@@ -1055,7 +1055,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  2
                             },
         "bp":  0,
         "keywords":  [
@@ -1586,7 +1586,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  1
                             },
         "bp":  1000,
         "keywords":  [
