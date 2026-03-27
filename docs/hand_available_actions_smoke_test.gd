@@ -24,6 +24,7 @@ func _init() -> void:
 	_run_test("能量线满员时 PLAY_ENERGY 不可用", _test_character_play_energy_energy_full)
 	_run_test("非 MAIN 阶段手牌无打出动作", _test_no_play_actions_outside_main)
 	_run_test("RAID 卡有有效目标时显示 RAID", _test_raid_available_with_valid_target)
+	_run_test("正式 RAID 卡可识别视为同名的底座", _test_official_raid_available_with_treated_as_name_target)
 	_run_test("RAID 卡无有效目标时不显示 RAID", _test_raid_unavailable_no_valid_target)
 	_run_test("RAID 卡 life_trigger_only 默认不从手牌显示", _test_raid_life_trigger_only_hidden_without_permission)
 	_run_test("临时特殊许可可让自身从手牌显示 RAID", _test_special_play_permission_enables_raid_from_hand)
@@ -86,6 +87,27 @@ func _spawn_temp_card(manager: GameManager, player_id: String, card_data: Dictio
 	var card := CardInstance.new()
 	card.uid = "%s_custom_%s_%d" % [player_id, card_def.id, manager.game_state.cards.size()]
 	card.def_id = card_def.id
+	card.owner_player_id = player_id
+	card.controller_player_id = player_id
+	card.zone = zone
+	card.state = UATypes.CardState.ACTIVE if active else UATypes.CardState.RESTED
+	card.current_bp = card_def.bp
+	manager.game_state.cards[card.uid] = card
+	var zone_cards: Array = manager.zone_manager.get_zone_array(player, zone)
+	if zone_cards != null:
+		zone_cards.append(card.uid)
+	return card.uid
+
+func _spawn_loaded_card(manager: GameManager, player_id: String, def_id: String, zone: int, active := true) -> String:
+	var card_def: CardDef = manager.game_state.get_card_def(def_id)
+	if card_def == null:
+		return ""
+	var player: PlayerState = _player(manager, player_id)
+	if player == null:
+		return ""
+	var card := CardInstance.new()
+	card.uid = "%s_loaded_%s_%d" % [player_id, def_id, manager.game_state.cards.size()]
+	card.def_id = def_id
 	card.owner_player_id = player_id
 	card.controller_player_id = player_id
 	card.zone = zone
@@ -506,6 +528,38 @@ func _test_raid_available_with_valid_target() -> Dictionary:
 	if not actions.has("RAID"):
 		return _fail("RAID卡有有效目标时应有 RAID 动作，实际动作: %s" % str(actions))
 
+	return _ok()
+
+func _test_official_raid_available_with_treated_as_name_target() -> Dictionary:
+	var manager := _new_manager()
+	_advance_to_main(manager, UATypes.PLAYER_ONE)
+	var p1 := _player(manager, UATypes.PLAYER_ONE)
+	p1.ap_area = [{"index": 0, "active": true}]
+	for i in range(4):
+		var energy_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+			"id": "TMP_OFFICIAL_RAID_ENERGY_%d" % i,
+			"name": "正式RAID测试能量%d" % i,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-ORE-%d" % i,
+			"traits": ["测试能量"],
+			"cost_energy": {},
+			"cost_ap": 0,
+			"energy_provided": {"RED": 1},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.ENERGY_LINE, true)
+		if energy_uid == "":
+			return _fail("正式 RAID 测试能量卡创建失败")
+	var base_uid := _spawn_loaded_card(manager, UATypes.PLAYER_ONE, "UA31BT_MMM_1_071", UATypes.Zone.FRONT_LINE, true)
+	var raid_uid := _spawn_loaded_card(manager, UATypes.PLAYER_ONE, "UA31BT_MMM_1_071", UATypes.Zone.HAND, true)
+	if base_uid == "" or raid_uid == "":
+		return _fail("正式 RAID 测试卡创建失败")
+	var actions := _get_hand_card_actions(manager, UATypes.PLAYER_ONE, raid_uid)
+	if not actions.has("RAID"):
+		return _fail("正式 RAID 卡应识别“视为〈美樹 さやか〉”的底座并显示 RAID，实际动作: %s" % str(actions))
 	return _ok()
 
 ## 测试：RAID 卡无有效目标时不显示 RAID 动作

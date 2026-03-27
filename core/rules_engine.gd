@@ -553,7 +553,7 @@ func _build_raid_actions(state: GameState, player_id: String, card: CardInstance
 				continue
 			if target_def.card_type != UATypes.CardType.CHARACTER:
 				continue
-			if required_name != "" and target_def.name != required_name:
+			if required_name != "" and not target_def.matches_reference_name(required_name):
 				continue
 			var target_zones := [UATypes.Zone.FRONT_LINE] if target_card.zone == UATypes.Zone.FRONT_LINE else [UATypes.Zone.ENERGY_LINE, UATypes.Zone.FRONT_LINE]
 			for target_zone in target_zones:
@@ -721,7 +721,7 @@ func _validate_special_play_rule(state: GameState, player_id: String, card: Card
 	if raid_target_def.card_type != UATypes.CardType.CHARACTER:
 		return {"ok": false, "reason": "raid_target_not_character"}
 	var required_name := str(card_def.special_play_rule.get("raid_target_name", ""))
-	if required_name != "" and raid_target_def.name != required_name:
+	if required_name != "" and not raid_target_def.matches_reference_name(required_name):
 		return {"ok": false, "reason": "raid_target_name_mismatch"}
 	var requested_zone := int(options.get("raid_target_zone_choice", target_zone))
 	var resolved_target_zone := requested_zone

@@ -696,6 +696,7 @@ func _serialize_card(card_uid: String, action_player_id: String, include_actions
 		"cost_energy": card_def.cost_energy.duplicate(true),
 		"energy_provided": card_def.energy_provided.duplicate(true),
 		"keywords": _runtime_keywords_for(card, card_def),
+		"special_play_rule": card_def.special_play_rule.duplicate(true),
 		"stacked_under": card.stacked_under.duplicate(),
 		"flags": card.flags.duplicate(true),
 	}
@@ -1131,7 +1132,7 @@ func _build_life_trigger_raid_target_choices(card_uid: String, owner_player_id: 
 				continue
 			if candidate_def.card_type != UATypes.CardType.CHARACTER:
 				continue
-			if required_name != "" and candidate_def.name != required_name:
+			if required_name != "" and not candidate_def.matches_reference_name(required_name):
 				continue
 			var validation := rules_engine.can_play_card(game_state, owner_player_id, card_uid, UATypes.Zone.FRONT_LINE, {"allow_current_zone": true}, {
 				"raid_target_uid": candidate_uid,
@@ -1247,7 +1248,7 @@ func _has_valid_raid_target(card: CardInstance, card_def: CardDef) -> bool:
 				continue
 			if candidate_def.card_type != UATypes.CardType.CHARACTER:
 				continue
-			if required_name != "" and candidate_def.name != required_name:
+			if required_name != "" and not candidate_def.matches_reference_name(required_name):
 				continue
 			return true
 	return false

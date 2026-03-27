@@ -13,8 +13,8 @@ const DEFAULT_CARD_SIZE := Vector2(108, 152)
 const COMPACT_CARD_SIZE := Vector2(92, 128)
 const VERY_SMALL_CARD_SIZE := Vector2(52, 72)
 
-signal front_card_pressed(player_id: String, card_uid: String)
-signal energy_card_pressed(player_id: String, card_uid: String)
+signal front_card_pressed(player_id: String, card_uid: String, card_data: Dictionary)
+signal energy_card_pressed(player_id: String, card_uid: String, card_data: Dictionary)
 signal zone_drop_requested(player_id: String, zone_name: String, card_uid: String)
 signal zone_stack_requested(player_id: String, zone_name: String)
 
@@ -50,36 +50,44 @@ var _bg_scale: float = 1.0
 var _bg_top_offset: float = 0.0
 
 func _ready() -> void:
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_slot_plate_texture = _load_optional_texture(SLOT_PLATE_TEXTURE_PATH)
 
 	# Create zone wrappers for absolute positioning
 	_life_wrapper = Control.new()
 	_life_wrapper.name = "LifeWrapper"
+	_life_wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_life_wrapper)
 
 	_removed_wrapper = Control.new()
 	_removed_wrapper.name = "RemovedWrapper"
+	_removed_wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_removed_wrapper)
 
 	_deck_wrapper = Control.new()
 	_deck_wrapper.name = "DeckWrapper"
+	_deck_wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_deck_wrapper)
 
 	_outside_wrapper = Control.new()
 	_outside_wrapper.name = "OutsideWrapper"
+	_outside_wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_outside_wrapper)
 
 	_front_wrapper = Control.new()
 	_front_wrapper.name = "FrontWrapper"
+	_front_wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_front_wrapper)
 
 	_energy_wrapper = Control.new()
 	_energy_wrapper.name = "EnergyWrapper"
+	_energy_wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_energy_wrapper)
 
 	# Stats label (floating at top)
 	_stats_label = Label.new()
 	_stats_label.name = "StatsLabel"
+	_stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_stats_label.add_theme_font_size_override("font_size", 12)
 	_stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -339,7 +347,7 @@ func _rebuild_row(row: HBoxContainer, cards: Array, zone_name: String) -> void:
 	for card_data in cards:
 		var card_view := CardView.new()
 		card_view.setup(card_data, _player_id, zone_name, _current_card_size, CardView.DISPLAY_MODE_BOARD)
-		card_view.card_pressed.connect(_on_card_pressed)
+		card_view.card_pressed.connect(_on_card_pressed.bind(card_data.duplicate(true)))
 		row.add_child(card_view)
 	for i in range(max(0, MAX_VISIBLE_SLOTS - cards.size())):
 		var placeholder := Control.new()
@@ -354,11 +362,11 @@ func _load_optional_texture(resource_path: String) -> Texture2D:
 	return null
 
 
-func _on_card_pressed(owner_player_id: String, card_uid: String, zone_name: String) -> void:
+func _on_card_pressed(owner_player_id: String, card_uid: String, zone_name: String, card_data: Dictionary) -> void:
 	if zone_name == "front_line":
-		emit_signal("front_card_pressed", owner_player_id, card_uid)
+		emit_signal("front_card_pressed", owner_player_id, card_uid, card_data)
 	elif zone_name == "energy_line":
-		emit_signal("energy_card_pressed", owner_player_id, card_uid)
+		emit_signal("energy_card_pressed", owner_player_id, card_uid, card_data)
 
 
 func _on_zone_dropped(player_id: String, zone_name: String, card_uid: String) -> void:

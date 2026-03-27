@@ -886,7 +886,7 @@ func _enqueue_life_trigger_raid_choice(state: GameState, source_card_uid: String
 						continue
 					if candidate_def.card_type != UATypes.CardType.CHARACTER:
 						continue
-					if required_name != "" and candidate_def.name != required_name:
+					if required_name != "" and not candidate_def.matches_reference_name(required_name):
 						continue
 					raid_enabled = true
 					raid_reason = ""

@@ -159,6 +159,31 @@ func _special_play_rule_from_ir(ir_play_rule: Dictionary) -> Dictionary:
 			return mode.duplicate(true)
 	return {}
 
+func matches_reference_name(required_name: String) -> bool:
+	if required_name == "":
+		return true
+	if name == required_name:
+		return true
+	for alias in _treated_as_names():
+		if alias == required_name:
+			return true
+	return false
+
+func _treated_as_names() -> Array[String]:
+	var result: Array[String] = []
+	var effect_text := str(raw_text.get("effect", ""))
+	if effect_text == "":
+		return result
+	var regex := RegEx.new()
+	var compile_err := regex.compile("〈([^〉]+)〉としても扱う")
+	if compile_err != OK:
+		return result
+	for match in regex.search_all(effect_text):
+		var alias := str(match.get_string(1)).strip_edges()
+		if alias != "" and not result.has(alias):
+			result.append(alias)
+	return result
+
 func _legacy_effect_from_ability(ability: Dictionary) -> Dictionary:
 	var status := str(ability.get("status", "SUPPORTED"))
 	if status != "" and status != "SUPPORTED":

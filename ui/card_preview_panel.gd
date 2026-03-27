@@ -2,7 +2,8 @@ extends PanelContainer
 class_name CardPreviewPanel
 
 # 卡牌预览面板，优先展示完整原图；仅在原图缺失时回退到文字详情。
-const PREVIEW_CARD_SIZE := Vector2(440, 616)
+const PREVIEW_CARD_SIZE_DEFAULT := Vector2(360, 504)
+const PREVIEW_CARD_SIZE_MIN := Vector2(240, 336)
 const PADDING := 12.0
 
 var _card_image: TextureRect
@@ -11,19 +12,18 @@ var _details_box: VBoxContainer
 var _source_label: Label
 var _card_name_label: Label
 var _cost_label: Label
+var _energy_provided_label: Label
 var _stats_label: Label
 var _temp_status_label: Label
 var _keywords_label: Label
 var _effect_label: Label
 var _current_card_data: Dictionary = {}
 var _preview_context: Dictionary = {}
+var _current_preview_card_size := PREVIEW_CARD_SIZE_DEFAULT
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(
-		PREVIEW_CARD_SIZE.x + PADDING * 2.0,
-		PREVIEW_CARD_SIZE.y + PADDING * 2.0
-	)
 	_setup_ui()
+	_apply_preview_card_size(_current_preview_card_size)
 	_refresh_display()
 
 func _setup_ui() -> void:
@@ -41,12 +41,12 @@ func _setup_ui() -> void:
 	_card_image = TextureRect.new()
 	_card_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_card_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_card_image.custom_minimum_size = PREVIEW_CARD_SIZE
+	_card_image.custom_minimum_size = _current_preview_card_size
 	_card_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(_card_image)
 
 	_empty_state_label = Label.new()
-	_empty_state_label.custom_minimum_size = PREVIEW_CARD_SIZE
+	_empty_state_label.custom_minimum_size = _current_preview_card_size
 	_empty_state_label.add_theme_font_size_override("font_size", 16)
 	_empty_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_empty_state_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -76,6 +76,13 @@ func _setup_ui() -> void:
 	_cost_label.add_theme_font_size_override("font_size", 12)
 	_cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_details_box.add_child(_cost_label)
+
+	_energy_provided_label = Label.new()
+	_energy_provided_label.add_theme_font_size_override("font_size", 11)
+	_energy_provided_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_energy_provided_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_energy_provided_label.add_theme_color_override("font_color", Color(0.65, 0.9, 1.0))
+	_details_box.add_child(_energy_provided_label)
 
 	_stats_label = Label.new()
 	_stats_label.add_theme_font_size_override("font_size", 11)
@@ -116,6 +123,18 @@ func clear_card() -> void:
 	_preview_context = {}
 	_refresh_display()
 
+func apply_layout(max_panel_height: float) -> void:
+	var min_panel_height := PREVIEW_CARD_SIZE_MIN.y + PADDING * 2.0
+	var clamped_panel_height: float = maxf(min_panel_height, max_panel_height)
+	var target_card_height: float = clampf(
+		clamped_panel_height - PADDING * 2.0,
+		PREVIEW_CARD_SIZE_MIN.y,
+		PREVIEW_CARD_SIZE_DEFAULT.y
+	)
+	var card_aspect: float = PREVIEW_CARD_SIZE_DEFAULT.x / PREVIEW_CARD_SIZE_DEFAULT.y
+	var target_card_width: float = roundf(target_card_height * card_aspect)
+	_apply_preview_card_size(Vector2(target_card_width, target_card_height))
+
 func _refresh_display() -> void:
 	visible = true
 	if _current_card_data.is_empty():
@@ -125,6 +144,7 @@ func _refresh_display() -> void:
 		_source_label.text = ""
 		_card_name_label.text = ""
 		_cost_label.text = ""
+		_energy_provided_label.text = ""
 		_stats_label.text = ""
 		_temp_status_label.text = ""
 		_keywords_label.text = ""
@@ -140,8 +160,9 @@ func _refresh_display() -> void:
 	var texture := _resolve_card_texture(_current_card_data, true)
 	if texture != null:
 		_card_image.texture = texture
-		_card_image.custom_minimum_size = PREVIEW_CARD_SIZE
+		_card_image.custom_minimum_size = _current_preview_card_size
 		_card_name_label.visible = true
+		_energy_provided_label.visible = true
 		_stats_label.visible = true
 		_temp_status_label.visible = true
 		_cost_label.visible = false
@@ -151,6 +172,7 @@ func _refresh_display() -> void:
 		_card_image.texture = null
 		_details_box.visible = true
 		_card_name_label.visible = true
+		_energy_provided_label.visible = true
 		_stats_label.visible = true
 		_temp_status_label.visible = true
 		_cost_label.visible = true
@@ -162,7 +184,8 @@ func _refresh_display() -> void:
 	var ap_cost := _format_number(_current_card_data.get("cost_ap", 0))
 	var energy_cost := _format_energy_map(_current_card_data.get("cost_energy", {}))
 	var energy_give := _format_energy_map(_current_card_data.get("energy_provided", {}))
-	_cost_label.text = "AP: %s | Cost: %s | Give: %s" % [ap_cost, energy_cost, energy_give]
+	_cost_label.text = "AP: %s | Cost: %s" % [ap_cost, energy_cost]
+	_energy_provided_label.text = "提供能量: %s" % energy_give
 
 	var card_type := str(_current_card_data.get("card_type", "?"))
 	var bp := int(_current_card_data.get("bp", 0))
@@ -305,3 +328,15 @@ func _format_temp_keyword_labels(temp_keywords: Array) -> Array[String]:
 			_:
 				labels.append(keyword)
 	return labels
+
+func _apply_preview_card_size(card_size: Vector2) -> void:
+	_current_preview_card_size = card_size
+	custom_minimum_size = Vector2(
+		_current_preview_card_size.x + PADDING * 2.0,
+		_current_preview_card_size.y + PADDING * 2.0
+	)
+	size = custom_minimum_size
+	if is_instance_valid(_card_image):
+		_card_image.custom_minimum_size = _current_preview_card_size
+	if is_instance_valid(_empty_state_label):
+		_empty_state_label.custom_minimum_size = _current_preview_card_size

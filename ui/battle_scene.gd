@@ -18,6 +18,7 @@ const HAND_STRIP_HEIGHT_SMALL := 148.0
 const HAND_STRIP_INTERNAL_WIDTH_MARGIN := 24.0
 const PREVIEW_PANEL_LEFT_MARGIN := 12.0
 const PREVIEW_PANEL_TOP_GAP := 12.0
+const PREVIEW_PANEL_BOTTOM_CLEARANCE := 16.0
 const LOG_PANEL_TOP_GAP := 10.0
 const LOG_PANEL_RIGHT_MARGIN := 12.0
 const LOG_PANEL_DEFAULT_WIDTH := 340.0
@@ -235,10 +236,12 @@ func _update_responsive_layout() -> void:
 
 func _update_preview_panel_layout() -> void:
 	var top_hud_rect := top_hud.get_global_rect()
-	card_preview_panel.position = Vector2(
-		PREVIEW_PANEL_LEFT_MARGIN,
-		top_hud_rect.position.y + top_hud_rect.size.y + PREVIEW_PANEL_TOP_GAP
-	)
+	var bottom_hud_rect := bottom_hud.get_global_rect()
+	var panel_top := top_hud_rect.position.y + top_hud_rect.size.y + PREVIEW_PANEL_TOP_GAP
+	var available_panel_height := bottom_hud_rect.position.y - panel_top - PREVIEW_PANEL_BOTTOM_CLEARANCE
+	card_preview_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	card_preview_panel.apply_layout(available_panel_height)
+	card_preview_panel.position = Vector2(PREVIEW_PANEL_LEFT_MARGIN, panel_top)
 
 func _update_log_panel_layout(compact: bool, very_small: bool, viewport_height: float) -> void:
 	var toggle_rect := log_toggle_button.get_global_rect()
@@ -345,7 +348,10 @@ func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
 				"zone_label": "手牌",
 			})
 
-func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
+func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_data: Dictionary = {}) -> void:
+	var card_data := pressed_card_data if not pressed_card_data.is_empty() else _find_board_card(player_id, card_uid)
+	if not card_data.is_empty():
+		_set_board_preview(player_id, "front_line", card_data)
 	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
@@ -355,7 +361,6 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 		return
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var phase := str(_snapshot.get("phase", ""))
-	var card_data := _find_board_card(player_id, card_uid)
 	var board_actions: Array = card_data.get("available_actions", [])
 	if _sniper_attack_source_uid != "":
 		if player_id != active_player_id:
@@ -371,8 +376,6 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 			game_manager.resolve_attack(_pending_attack_uid, card_uid)
 			_clear_pending_attack()
 		return
-	if not card_data.is_empty():
-		_set_board_preview(player_id, "front_line", card_data)
 	if player_id != active_player_id:
 		_selected_board_card_uid = ""
 		_selected_board_zone_name = ""
@@ -395,7 +398,10 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 			game_manager.request_attack(card_uid)
 			return
 
-func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
+func _on_energy_card_pressed(player_id: String, card_uid: String, pressed_card_data: Dictionary = {}) -> void:
+	var card_data := pressed_card_data if not pressed_card_data.is_empty() else _find_board_card(player_id, card_uid)
+	if not card_data.is_empty():
+		_set_board_preview(player_id, "energy_line", card_data)
 	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
@@ -404,9 +410,6 @@ func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
 			_execute_raid_play(card_uid)
 		return
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-	var card_data := _find_board_card(player_id, card_uid)
-	if not card_data.is_empty():
-		_set_board_preview(player_id, "energy_line", card_data)
 	if player_id != active_player_id:
 		_selected_board_card_uid = ""
 		_selected_board_zone_name = ""
@@ -743,15 +746,25 @@ func _update_action_buttons() -> void:
 	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
 	var card_type := str(card_data.get("card_type", ""))
 	var available_actions: Array = card_data.get("available_actions", [])
+	var special_play_rule: Dictionary = card_data.get("special_play_rule", {})
+	var is_raid_card := str(special_play_rule.get("type", "")) == "RAID"
 	var board_card_data: Dictionary = _find_board_card(active_player_id, _selected_board_card_uid)
 	var board_actions: Array = board_card_data.get("available_actions", [])
 	play_front_button.disabled = card_type != "CHARACTER" or not input_enabled
 	play_energy_button.disabled = (card_type != "CHARACTER" and card_type != "FIELD") or not input_enabled
 	use_event_button.disabled = card_type != "EVENT" or not input_enabled
 
-	# RAID按钮
-	raid_button.visible = available_actions.has("RAID")
+	# Keep RAID cards discoverable even when the current state makes RAID illegal.
+	raid_button.visible = is_raid_card
 	raid_button.disabled = not available_actions.has("RAID") or _raid_target_selection_mode or not input_enabled
+	if available_actions.has("RAID"):
+		raid_button.tooltip_text = "选择己方场上的符合条件角色作为 RAID 底座。"
+	elif is_raid_card and bool(special_play_rule.get("life_trigger_only", false)):
+		raid_button.tooltip_text = "这张牌当前只能通过生命触发或临时特殊许可进行 RAID。"
+	elif is_raid_card:
+		raid_button.tooltip_text = "当前没有满足条件的能量、AP 或 RAID 底座，暂时不能使用 RAID。"
+	else:
+		raid_button.tooltip_text = ""
 
 	# RAID选择模式时禁用其他打出按钮
 	if _raid_target_selection_mode:
