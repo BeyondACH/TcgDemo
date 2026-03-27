@@ -95,7 +95,6 @@ var _selected_pending_decision_index := -1
 var _selected_pending_decision_choice_index := 0
 var _raid_source_card_uid := ""
 var _raid_target_selection_mode := false
-var _auto_ack_life_reveal_uid := ""
 var _preview_card_uid := ""
 var _preview_player_id := ""
 var _preview_zone_name := ""
@@ -917,47 +916,28 @@ func _sync_preview_selection_modal() -> void:
 
 func _sync_life_reveal_modal() -> void:
 	var modal_data := _current_life_reveal_modal()
-	if not _human_input_enabled() or not bool(modal_data.get("visible", false)) or _has_pending_decisions():
-		_auto_ack_life_reveal_uid = ""
+	if not bool(modal_data.get("visible", false)):
 		if _life_reveal_modal != null:
 			_life_reveal_modal.hide_modal()
 		return
 	if _life_reveal_modal != null:
 		_life_reveal_modal.show_modal(modal_data)
-	var current_card_uid := str(modal_data.get("current_card_uid", ""))
-	if bool(modal_data.get("can_acknowledge", false)) and current_card_uid != "":
-		if _auto_ack_life_reveal_uid != current_card_uid:
-			_auto_ack_life_reveal_uid = current_card_uid
-			call_deferred("_auto_acknowledge_life_reveal", current_card_uid)
-	else:
-		_auto_ack_life_reveal_uid = ""
-
-func _auto_acknowledge_life_reveal(card_uid: String) -> void:
-	if card_uid == "":
-		return
-	var modal_data := _current_life_reveal_modal()
-	if not bool(modal_data.get("visible", false)):
-		return
-	if str(modal_data.get("current_card_uid", "")) != card_uid:
-		return
-	if not bool(modal_data.get("can_acknowledge", false)):
-		return
-	if not _human_input_enabled():
-		return
-	game_manager.acknowledge_life_reveal(card_uid)
 
 func _on_life_reveal_activate_requested(card_uid: String) -> void:
-	if not _human_input_enabled():
+	var modal_data := _current_life_reveal_modal()
+	if not bool(modal_data.get("can_activate", false)):
 		return
 	game_manager.resolve_life_trigger_decision(card_uid, true)
 
 func _on_life_reveal_skip_requested(card_uid: String) -> void:
-	if not _human_input_enabled():
+	var modal_data := _current_life_reveal_modal()
+	if not bool(modal_data.get("can_skip", false)):
 		return
 	game_manager.resolve_life_trigger_decision(card_uid, false)
 
 func _on_life_reveal_acknowledge_requested(card_uid: String) -> void:
-	if not _human_input_enabled():
+	var modal_data := _current_life_reveal_modal()
+	if not bool(modal_data.get("can_acknowledge", false)):
 		return
 	game_manager.acknowledge_life_reveal(card_uid)
 

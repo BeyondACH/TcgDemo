@@ -15,6 +15,9 @@ var _ack_requests: Array[String] = []
 func _init() -> void:
 	_run_test("life reveal snapshot includes trigger and non-trigger cards", _test_life_reveal_snapshot_for_damage)
 	_run_test("life reveal acknowledge finalizes non-trigger damage", _test_life_reveal_acknowledge_flow)
+	_run_test("human trigger reveal offers activate and skip", _test_human_trigger_reveal_controls)
+	_run_test("ai vanilla reveal waits for player acknowledgement", _test_ai_vanilla_reveal_waits_for_player_ack)
+	_run_test("ai trigger reveal requires continue before ai resolves", _test_ai_trigger_reveal_requires_continue_before_ai)
 	_run_test("life reveal modal toggles actions by current card", _test_life_reveal_modal_ui)
 	if _failures.is_empty():
 		print("LIFE_REVEAL_MODAL_SMOKE_OK")
@@ -37,7 +40,10 @@ func _fail(message: String) -> Dictionary:
 
 func _new_manager() -> GameManager:
 	var manager := GameManager.new()
-	manager.setup_game()
+	manager.setup_game({
+		UATypes.PLAYER_ONE: {"controller": "HUMAN"},
+		UATypes.PLAYER_TWO: {"controller": "HUMAN"},
+	})
 	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 	return manager
@@ -158,6 +164,76 @@ func _test_life_reveal_acknowledge_flow() -> Dictionary:
 		return _fail("acknowledging the reveal should finalize the damaged life card into outside.")
 	return _ok()
 
+func _test_human_trigger_reveal_controls() -> Dictionary:
+	var manager := _new_manager()
+	var p2 := _player(manager, UATypes.PLAYER_TWO)
+	p2.life.clear()
+	var trigger_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, _life_trigger_card("HUMAN"), UATypes.Zone.LIFE, true)
+	p2.life = [trigger_uid]
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
+	var modal: Dictionary = manager.get_snapshot().get("life_reveal_modal", {})
+	if not bool(modal.get("visible", false)):
+		return _fail("human trigger reveal should be visible.")
+	if not bool(modal.get("can_activate", false)) or not bool(modal.get("can_skip", false)):
+		return _fail("human trigger reveal should expose activate and skip.")
+	if bool(modal.get("can_acknowledge", false)):
+		return _fail("human trigger reveal should not use continue before trigger choice.")
+	return _ok()
+
+func _test_ai_vanilla_reveal_waits_for_player_ack() -> Dictionary:
+	var manager := GameManager.new()
+	manager.setup_game({
+		UATypes.PLAYER_ONE: {"controller": "HUMAN"},
+		UATypes.PLAYER_TWO: {"controller": "AI_SIMPLE"},
+	})
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	manager.drive_controllers(32)
+	var p2 := _player(manager, UATypes.PLAYER_TWO)
+	p2.life.clear()
+	var vanilla_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, _vanilla_life_card("AI"), UATypes.Zone.LIFE, true)
+	p2.life = [vanilla_uid]
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
+	manager.drive_controllers(16)
+	if manager.game_state.pending_life_reveal.is_empty():
+		return _fail("ai vanilla reveal should remain pending until the player confirms it.")
+	var modal: Dictionary = manager.get_snapshot().get("life_reveal_modal", {})
+	if not bool(modal.get("can_acknowledge", false)):
+		return _fail("ai vanilla reveal should show continue.")
+	manager.acknowledge_life_reveal(vanilla_uid)
+	if not manager.game_state.pending_life_reveal.is_empty():
+		return _fail("ai vanilla reveal should clear after player acknowledgement.")
+	return _ok()
+
+func _test_ai_trigger_reveal_requires_continue_before_ai() -> Dictionary:
+	var manager := GameManager.new()
+	manager.setup_game({
+		UATypes.PLAYER_ONE: {"controller": "HUMAN"},
+		UATypes.PLAYER_TWO: {"controller": "AI_SIMPLE"},
+	})
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	manager.drive_controllers(32)
+	var p2 := _player(manager, UATypes.PLAYER_TWO)
+	p2.life.clear()
+	var trigger_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, _life_trigger_card("AI"), UATypes.Zone.LIFE, true)
+	p2.life = [trigger_uid]
+	var hand_before := p2.hand.size()
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
+	manager.drive_controllers(16)
+	var modal: Dictionary = manager.get_snapshot().get("life_reveal_modal", {})
+	if not bool(modal.get("visible", false)):
+		return _fail("ai trigger reveal should be visible.")
+	if not bool(modal.get("can_acknowledge", false)):
+		return _fail("ai trigger reveal should require continue before AI resolves it.")
+	if bool(modal.get("can_activate", false)) or bool(modal.get("can_skip", false)):
+		return _fail("ai trigger reveal should not expose activate or skip to the player.")
+	manager.acknowledge_life_reveal(trigger_uid)
+	manager.drive_controllers(32)
+	if p2.hand.size() != hand_before + 1:
+		return _fail("after continue, AI should resolve its trigger and draw a card.")
+	if not manager.game_state.pending_life_reveal.is_empty():
+		return _fail("ai trigger reveal should clear after player continue and AI resolution.")
+	return _ok()
+
 func _test_life_reveal_modal_ui() -> Dictionary:
 	var root := Window.new()
 	root.visible = false
@@ -188,6 +264,9 @@ func _test_life_reveal_modal_ui() -> Dictionary:
 		"can_activate": true,
 		"can_skip": true,
 		"can_acknowledge": false,
+		"awaiting_player_confirmation": false,
+		"ai_resolves_after_confirmation": false,
+		"waiting_for_ai_resolution": false,
 	})
 	if not modal._activate_button.visible or not modal._skip_button.visible or modal._continue_button.visible:
 		return _fail("trigger state should show activate/skip and hide continue.")
@@ -206,10 +285,29 @@ func _test_life_reveal_modal_ui() -> Dictionary:
 		"can_activate": false,
 		"can_skip": false,
 		"can_acknowledge": true,
+		"awaiting_player_confirmation": false,
+		"ai_resolves_after_confirmation": false,
+		"waiting_for_ai_resolution": false,
 	})
 	if modal._activate_button.visible or modal._skip_button.visible or not modal._continue_button.visible:
 		return _fail("non-trigger state should hide activate/skip and show continue.")
 	modal._on_continue_pressed()
 	if _ack_requests != ["CARD_VANILLA"]:
 		return _fail("continue should acknowledge the current non-trigger card.")
+	modal.show_modal({
+		"visible": true,
+		"player_id": UATypes.PLAYER_TWO,
+		"current_card_uid": "CARD_AI_TRIGGER",
+		"revealed_cards": [
+			{"uid": "CARD_AI_TRIGGER", "name": "AI Trigger Card", "has_life_trigger": true, "resolved": false, "is_current": true},
+		],
+		"can_activate": false,
+		"can_skip": false,
+		"can_acknowledge": true,
+		"awaiting_player_confirmation": true,
+		"ai_resolves_after_confirmation": true,
+		"waiting_for_ai_resolution": false,
+	})
+	if modal._activate_button.visible or modal._skip_button.visible or not modal._continue_button.visible:
+		return _fail("ai trigger pre-confirm state should show continue only.")
 	return _ok()

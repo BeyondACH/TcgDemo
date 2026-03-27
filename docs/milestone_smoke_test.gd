@@ -74,9 +74,9 @@ func _ok() -> Dictionary:
 func _fail(message: String) -> Dictionary:
 	return {"ok": false, "error": message}
 
-func _new_manager() -> GameManager:
+func _new_manager(controller_config: Dictionary = {}) -> GameManager:
 	var manager := GameManager.new()
-	manager.setup_game()
+	manager.setup_game(controller_config)
 	_resolve_opening(manager)
 	return manager
 
@@ -543,7 +543,10 @@ func _test_failed_attacker_stays_on_field() -> Dictionary:
 	return _ok()
 
 func _test_life_trigger_requires_decision() -> Dictionary:
-	var manager := _new_manager()
+	var manager := _new_manager({
+		UATypes.PLAYER_ONE: {"controller": "HUMAN"},
+		UATypes.PLAYER_TWO: {"controller": "HUMAN"},
+	})
 	var p2 := _player(manager, UATypes.PLAYER_TWO)
 	p2.life.clear()
 	var trigger_uid := _spawn_card(manager, UATypes.PLAYER_TWO, "UA_LIFE_TRIGGER_DRAW", UATypes.Zone.LIFE, true)
@@ -576,7 +579,10 @@ func _test_life_trigger_requires_decision() -> Dictionary:
 	return _ok()
 
 func _test_life_trigger_skip_keeps_damage_flow() -> Dictionary:
-	var manager := _new_manager()
+	var manager := _new_manager({
+		UATypes.PLAYER_ONE: {"controller": "HUMAN"},
+		UATypes.PLAYER_TWO: {"controller": "HUMAN"},
+	})
 	var p2 := _player(manager, UATypes.PLAYER_TWO)
 	if p2 == null:
 		return _fail("生命触发跳过测试玩家初始化失败")

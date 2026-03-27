@@ -686,6 +686,7 @@ func _begin_life_reveal_batch(state: GameState, player_id: String, card_uids: Ar
 			"player_id": player_id,
 			"card_uid": card_uid,
 			"has_life_trigger": _card_has_trigger(state, card_uid, UATypes.TriggerType.ON_LIFE_TRIGGER),
+			"view_confirmed": false,
 			"resolved": false,
 			"order_index": i,
 		})
@@ -711,6 +712,7 @@ func _finalize_pending_life_damage(state: GameState) -> Array[String]:
 			card.zone = UATypes.Zone.OUTSIDE
 	state.pending_life_damage_cards.clear()
 	state.pending_life_reveal = {}
+	state.pending_life_reveal_waiting_for_player = false
 	var defeat: Dictionary = victory_checker.check_victory(state)
 	if not defeat.is_empty():
 		_apply_victory(state, defeat)

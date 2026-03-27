@@ -419,6 +419,11 @@ func resolve_life_trigger_decision(card_uid: String, activate: bool) -> Dictiona
 func acknowledge_life_reveal(card_uid: String) -> Dictionary:
 	if _has_winner():
 		return {"ok": false, "reason": "winner_exists"}
+	if _life_reveal_requires_continue_then_ai(card_uid):
+		_mark_life_reveal_view_confirmed(card_uid)
+		game_state.pending_life_reveal_waiting_for_player = false
+		emit_state_changed()
+		return {"ok": true}
 	_apply_logs(effect_resolver.acknowledge_life_reveal(game_state, card_uid))
 	_resume_effect_queue_if_possible()
 	emit_state_changed()
@@ -457,6 +462,7 @@ func get_snapshot() -> Dictionary:
 	}
 
 func emit_state_changed() -> void:
+	_refresh_life_reveal_waiting_for_player()
 	emit_signal("state_changed", get_snapshot())
 	_queue_controller_drive()
 
@@ -643,10 +649,14 @@ func _serialize_life_reveal_modal(action_player_id: String) -> Dictionary:
 			"can_activate": false,
 			"can_skip": false,
 			"can_acknowledge": false,
+			"awaiting_player_confirmation": false,
+			"ai_resolves_after_confirmation": false,
+			"waiting_for_ai_resolution": false,
 		}
 	var reveal: Dictionary = game_state.pending_life_reveal
 	var current_card_uid := str(reveal.get("current_card_uid", ""))
 	var result_cards: Array[Dictionary] = []
+	var current_view_confirmed := false
 	for entry_variant in reveal.get("revealed_cards", []):
 		var entry: Dictionary = entry_variant
 		var card_uid := str(entry.get("card_uid", ""))
@@ -654,9 +664,12 @@ func _serialize_life_reveal_modal(action_player_id: String) -> Dictionary:
 		if serialized.is_empty():
 			continue
 		serialized["has_life_trigger"] = bool(entry.get("has_life_trigger", false))
+		serialized["view_confirmed"] = bool(entry.get("view_confirmed", false))
 		serialized["resolved"] = bool(entry.get("resolved", false))
 		serialized["order_index"] = int(entry.get("order_index", result_cards.size()))
 		serialized["is_current"] = card_uid == current_card_uid
+		if card_uid == current_card_uid:
+			current_view_confirmed = bool(entry.get("view_confirmed", false))
 		result_cards.append(serialized)
 	var current_has_trigger := false
 	for card_data_variant in result_cards:
@@ -665,14 +678,22 @@ func _serialize_life_reveal_modal(action_player_id: String) -> Dictionary:
 			continue
 		current_has_trigger = bool(card_data.get("has_life_trigger", false))
 		break
+	var reveal_player_id := str(reveal.get("player_id", ""))
+	var reveal_controller_is_human := get_controller_type(reveal_player_id) == PlayerController.CONTROLLER_HUMAN
+	var awaiting_player_confirmation := current_card_uid != "" and _life_reveal_requires_view_confirmation(current_card_uid)
+	var ai_resolves_after_confirmation := current_card_uid != "" and current_has_trigger and not reveal_controller_is_human
+	var waiting_for_ai_resolution := current_card_uid != "" and current_has_trigger and ai_resolves_after_confirmation and current_view_confirmed
 	return {
 		"visible": true,
-		"player_id": str(reveal.get("player_id", "")),
+		"player_id": reveal_player_id,
 		"current_card_uid": current_card_uid,
 		"revealed_cards": result_cards,
-		"can_activate": current_card_uid != "" and current_has_trigger,
-		"can_skip": current_card_uid != "" and current_has_trigger,
-		"can_acknowledge": current_card_uid != "" and not current_has_trigger,
+		"can_activate": current_card_uid != "" and current_has_trigger and reveal_controller_is_human,
+		"can_skip": current_card_uid != "" and current_has_trigger and reveal_controller_is_human,
+		"can_acknowledge": current_card_uid != "" and (not current_has_trigger or awaiting_player_confirmation),
+		"awaiting_player_confirmation": awaiting_player_confirmation,
+		"ai_resolves_after_confirmation": ai_resolves_after_confirmation,
+		"waiting_for_ai_resolution": waiting_for_ai_resolution,
 	}
 
 func _serialize_card(card_uid: String, action_player_id: String, include_actions: bool) -> Dictionary:
@@ -863,17 +884,13 @@ func _drive_controllers(max_steps: int) -> void:
 	while safety > 0:
 		if _has_winner():
 			break
+		_refresh_life_reveal_waiting_for_player()
+		if game_state.pending_life_reveal_waiting_for_player:
+			break
 		var player_id := _current_priority_player_id()
 		var controller: PlayerController = _controllers.get(player_id)
 		if controller == null or controller.is_human():
 			break
-		if _has_pending_life_reveal() and not _has_pending_life_triggers():
-			var current_card_uid := str(game_state.pending_life_reveal.get("current_card_uid", ""))
-			if current_card_uid == "":
-				break
-			acknowledge_life_reveal(current_card_uid)
-			safety -= 1
-			continue
 		var legal_actions := rules_engine.get_legal_actions(game_state, player_id)
 		if legal_actions.is_empty():
 			break
@@ -901,6 +918,53 @@ func _current_pending_context() -> Dictionary:
 	if not game_state.battle_context.is_empty():
 		return game_state.battle_context.duplicate(true)
 	return {}
+
+func _life_reveal_requires_view_confirmation(card_uid: String) -> bool:
+	if game_state.pending_life_reveal.is_empty() or card_uid == "":
+		return false
+	var reveal_player_id := str(game_state.pending_life_reveal.get("player_id", ""))
+	var reveal_controller_is_human := get_controller_type(reveal_player_id) == PlayerController.CONTROLLER_HUMAN
+	for entry_variant in game_state.pending_life_reveal.get("revealed_cards", []):
+		var entry: Dictionary = entry_variant
+		if str(entry.get("card_uid", "")) != card_uid:
+			continue
+		if bool(entry.get("resolved", false)) or bool(entry.get("view_confirmed", false)):
+			return false
+		var has_trigger := bool(entry.get("has_life_trigger", false))
+		if not has_trigger:
+			return true
+		return not reveal_controller_is_human
+	return false
+
+func _mark_life_reveal_view_confirmed(card_uid: String) -> void:
+	if game_state.pending_life_reveal.is_empty() or card_uid == "":
+		return
+	var entries: Array = game_state.pending_life_reveal.get("revealed_cards", [])
+	for i in range(entries.size()):
+		var entry: Dictionary = entries[i]
+		if str(entry.get("card_uid", "")) != card_uid:
+			continue
+		entry["view_confirmed"] = true
+		entries[i] = entry
+		game_state.pending_life_reveal["revealed_cards"] = entries
+		return
+
+func _life_reveal_requires_continue_then_ai(card_uid: String) -> bool:
+	if not _life_reveal_requires_view_confirmation(card_uid):
+		return false
+	for entry_variant in game_state.pending_life_reveal.get("revealed_cards", []):
+		var entry: Dictionary = entry_variant
+		if str(entry.get("card_uid", "")) != card_uid:
+			continue
+		return bool(entry.get("has_life_trigger", false))
+	return false
+
+func _refresh_life_reveal_waiting_for_player() -> void:
+	if game_state.pending_life_reveal.is_empty():
+		game_state.pending_life_reveal_waiting_for_player = false
+		return
+	var current_card_uid := str(game_state.pending_life_reveal.get("current_card_uid", ""))
+	game_state.pending_life_reveal_waiting_for_player = _life_reveal_requires_view_confirmation(current_card_uid)
 
 func _can_active_player_bonus_draw() -> bool:
 	if game_state.phase != UATypes.Phase.DRAW:

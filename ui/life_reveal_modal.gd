@@ -7,7 +7,7 @@ signal acknowledge_requested(card_uid: String)
 
 const CardView = preload("res://ui/card_view.gd")
 
-const CARD_SIZE := Vector2(110, 154)
+const CARD_SIZE := Vector2(160, 224)
 const CURRENT_BORDER := Color(0.96, 0.78, 0.26, 1.0)
 const RESOLVED_BORDER := Color(0.34, 0.68, 0.42, 1.0)
 const IDLE_BORDER := Color(0.3, 0.35, 0.45, 1.0)
@@ -60,7 +60,7 @@ func _build_ui() -> void:
 	add_child(center)
 
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(960, 420)
+	panel.custom_minimum_size = Vector2(1220, 560)
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	center.add_child(panel)
 
@@ -72,7 +72,7 @@ func _build_ui() -> void:
 	panel.add_child(margin)
 
 	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 12)
+	content.add_theme_constant_override("separation", 16)
 	margin.add_child(content)
 
 	_title_label = Label.new()
@@ -90,7 +90,7 @@ func _build_ui() -> void:
 	content.add_child(scroll)
 
 	_cards_row = HBoxContainer.new()
-	_cards_row.add_theme_constant_override("separation", 12)
+	_cards_row.add_theme_constant_override("separation", 18)
 	scroll.add_child(_cards_row)
 
 	var footer := HBoxContainer.new()
@@ -120,14 +120,14 @@ func _render_cards() -> void:
 	for card_variant in _modal_data.get("revealed_cards", []):
 		var card_data: Dictionary = card_variant
 		var tile := PanelContainer.new()
-		tile.custom_minimum_size = Vector2(CARD_SIZE.x + 20, CARD_SIZE.y + 20)
+		tile.custom_minimum_size = Vector2(CARD_SIZE.x + 24, CARD_SIZE.y + 24)
 		_cards_row.add_child(tile)
 
 		var tile_margin := MarginContainer.new()
-		tile_margin.add_theme_constant_override("margin_left", 8)
-		tile_margin.add_theme_constant_override("margin_top", 8)
-		tile_margin.add_theme_constant_override("margin_right", 8)
-		tile_margin.add_theme_constant_override("margin_bottom", 8)
+		tile_margin.add_theme_constant_override("margin_left", 10)
+		tile_margin.add_theme_constant_override("margin_top", 10)
+		tile_margin.add_theme_constant_override("margin_right", 10)
+		tile_margin.add_theme_constant_override("margin_bottom", 10)
 		tile.add_child(tile_margin)
 
 		var card_view := CardView.new()
@@ -145,6 +145,10 @@ func _refresh_state() -> void:
 	_title_label.text = "Life Reveal: %s" % player_id
 	if current_card_uid == "":
 		_subtitle_label.text = "All revealed life cards have been processed."
+	elif bool(_modal_data.get("waiting_for_ai_resolution", false)):
+		_subtitle_label.text = "You have confirmed this revealed card. AI is now resolving its life trigger."
+	elif bool(_modal_data.get("ai_resolves_after_confirmation", false)) and bool(_modal_data.get("awaiting_player_confirmation", false)):
+		_subtitle_label.text = "Review the highlighted revealed card, then press Continue to hand resolution back to AI."
 	else:
 		_subtitle_label.text = "Review the revealed cards. Only the highlighted card can be resolved now."
 
