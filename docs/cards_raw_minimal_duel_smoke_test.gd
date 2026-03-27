@@ -69,8 +69,10 @@ func _init() -> void:
 	_run_test("Raw Delayed Self Leave Removes Energy Contribution", _test_raw_delayed_self_leave_removes_energy_contribution)
 	_run_test("Raw Delayed Self Leave Preserves Followup Chain", _test_raw_delayed_self_leave_does_not_break_followup_trigger_chain)
 	_run_test("Raw Self Special Play Permission After Leave", _test_raw_self_special_play_permission_after_leave)
+	_run_test("Raw Self Special Play Permission Expires After Full Turn Cycle", _test_raw_self_special_play_permission_expires_after_full_turn_cycle)
 	_run_test("Raw Self Special Play Permission Does Not Grant Other Copy", _test_raw_special_play_permission_does_not_grant_other_same_name_card)
 	_run_test("Raw Self Special Play Permission Still Respects RAID Validation", _test_raw_special_play_permission_still_respects_raid_target_validation)
+	_run_test("Raw ON_LEAVE Return To Hand Keeps Battle Cleanup Stable", _test_raw_on_leave_return_to_hand_keeps_battle_cleanup_stable)
 	_run_test("Raw Preview Selected Card Drives Followup Filter", _test_raw_preview_selected_card_context_drives_followup_target_filter)
 	_run_test("Raw Preview Skip Branch Keeps Deck Order", _test_raw_preview_skip_branch_keeps_deck_order_contract)
 	_run_test("Raw Conditional Energy Discount Requires Opponent Yellow Or Purple", _test_raw_conditional_energy_discount_requires_opponent_yellow_or_purple)
@@ -1859,6 +1861,83 @@ func _test_raw_self_special_play_permission_after_leave() -> Dictionary:
 		return _fail("Raw self special play permission sample should lose the temporary RAID permission at the next self turn start.")
 	return _ok()
 
+func _test_raw_self_special_play_permission_expires_after_full_turn_cycle() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Raw full-turn special play permission sample should be able to prepare 4 red energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_SELF_SPECIAL_PLAY_PERMISSION, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw full-turn special play permission sample should prepare the source card.")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw full-turn special play permission source instance should exist.")
+	source_card.flags["entered_via_raid"] = true
+	var raid_base_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_SAYAKA_RAID_BASE_FULL_TURN",
+		"name": "美樹 さやか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-SAYAKA-FULL-TURN",
+		"traits": ["魔法少女"],
+		"cost_energy": {},
+		"cost_ap": 0,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if raid_base_uid == "":
+		return _fail("Raw full-turn special play permission sample should prepare a RAID base.")
+	var chosen_life_uid := _ensure_life_card(manager, player_id)
+	if chosen_life_uid == "":
+		return _fail("Raw full-turn special play permission sample should have a selectable life card.")
+	manager.request_main_activate(source_uid)
+	if manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw full-turn special play permission sample should request explicit life target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": chosen_life_uid,
+	})
+	manager.zone_manager.move_card(manager.game_state, source_uid, UATypes.Zone.HAND, player_id)
+	var hand_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
+	if not hand_actions.has("RAID"):
+		return _fail("Raw full-turn special play permission sample should grant RAID immediately after the source leaves the field.")
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	var permission_during_opponent_turn := false
+	for modifier_variant in manager.game_state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		if str(modifier.get("modifier_type", "")) != "SPECIAL_PLAY_PERMISSION":
+			continue
+		if str(modifier.get("granted_card_uid", "")) != source_uid:
+			continue
+		permission_during_opponent_turn = true
+		break
+	if not permission_during_opponent_turn:
+		return _fail("Raw full-turn special play permission sample should keep the self-bound permission through the opponent turn start.")
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	if _has_bound_special_play_permission(manager, source_uid):
+		return _fail("Raw full-turn special play permission sample should clear the self-bound permission at the next self turn start.")
+	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
+	if expired_actions.has("RAID"):
+		return _fail("Raw full-turn special play permission sample should lose the hand RAID action at the next self turn start.")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw full-turn special play permission sample should not leave stray pending decisions after the full turn cycle.")
+	if not manager.game_state.effect_queue.is_empty():
+		return _fail("Raw full-turn special play permission sample should not leave stray queued effects after the full turn cycle.")
+	return _ok()
+
 func _test_raw_special_play_permission_does_not_grant_other_same_name_card() -> Dictionary:
 	var manager := _new_manager()
 	var player_id := UATypes.PLAYER_ONE
@@ -1904,8 +1983,10 @@ func _test_raw_special_play_permission_does_not_grant_other_same_name_card() -> 
 	manager.zone_manager.move_card(manager.game_state, source_uid, UATypes.Zone.HAND, player_id)
 	var source_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
 	var second_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, second_copy_uid)
-	if not source_actions.has("RAID"):
-		return _fail("Raw self special play copy-bound sample should keep RAID on the specifically granted source copy.")
+	if not _has_bound_special_play_permission(manager, source_uid):
+		return _fail("Raw self special play copy-bound sample should keep the temporary RAID permission bound to the specifically granted source copy.")
+	if _has_bound_special_play_permission(manager, second_copy_uid):
+		return _fail("Raw self special play copy-bound sample should not bind the temporary RAID permission to another copy.")
 	if second_actions.has("RAID"):
 		return _fail("Raw self special play copy-bound sample should not grant RAID to another copy with the same def_id.")
 	return _ok()
@@ -1937,6 +2018,53 @@ func _test_raw_special_play_permission_still_respects_raid_target_validation() -
 	var hand_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
 	if hand_actions.has("RAID"):
 		return _fail("Raw self special play validation sample should still require a legal RAID base instead of bypassing target validation.")
+	return _ok()
+
+func _test_raw_on_leave_return_to_hand_keeps_battle_cleanup_stable() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var attacker_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_RAW_ON_LEAVE_ATTACKER",
+		"name": "Raw 离场链攻击者",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-RAW-ON-LEAVE-ATK",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 5000,
+		"keywords": ["SNIPER"],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var defender_uid := _spawn_raw_card_copy(manager, UATypes.PLAYER_TWO, RAW_ON_LEAVE_TO_HAND, UATypes.Zone.FRONT_LINE, true)
+	if attacker_uid == "" or defender_uid == "":
+		return _fail("Raw ON_LEAVE battle cleanup sample should prepare both the attacker and the official ON_LEAVE defender.")
+	var defender_player := _player(manager, UATypes.PLAYER_TWO)
+	var hand_before := defender_player.hand.size()
+	var declare_result := manager.battle_resolver.declare_attack(manager.game_state, attacker_uid, {
+		"target_kind": "FRONT_CHARACTER",
+		"target_uid": defender_uid,
+	})
+	if not bool(declare_result.get("ok", false)):
+		return _fail("Raw ON_LEAVE battle cleanup sample should be able to declare the targeted attack.")
+	manager.resolve_attack(attacker_uid)
+	var defender_card = manager.game_state.get_card(defender_uid)
+	if defender_card == null or defender_card.zone != UATypes.Zone.HAND:
+		return _fail("Raw ON_LEAVE defender should return to hand instead of remaining in outside after battle leave resolution.")
+	if defender_player.hand.size() != hand_before + 1:
+		return _fail("Raw ON_LEAVE defender should add exactly 1 card back to hand after battle leave resolution.")
+	if not manager.game_state.battle_context.is_empty():
+		return _fail("Raw ON_LEAVE battle cleanup sample should clear battle_context after leave resolution.")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw ON_LEAVE battle cleanup sample should not leave pending decisions after battle leave resolution.")
+	if not manager.game_state.effect_queue.is_empty():
+		return _fail("Raw ON_LEAVE battle cleanup sample should not leave queued effects after battle leave resolution.")
+	manager.advance_phase()
+	manager.advance_phase()
+	if manager.game_state.phase != UATypes.Phase.DRAW or manager.game_state.active_player_id != UATypes.PLAYER_TWO:
+		return _fail("Raw ON_LEAVE battle cleanup sample should still advance cleanly into the next turn DRAW phase.")
 	return _ok()
 
 func _test_raw_preview_selected_card_context_drives_followup_target_filter() -> Dictionary:
@@ -2747,6 +2875,15 @@ func _all_player_cards(manager: GameManager, player_id: String) -> Array[String]
 		for card_uid in zone_cards:
 			result.append(str(card_uid))
 	return result
+
+func _has_bound_special_play_permission(manager: GameManager, card_uid: String) -> bool:
+	for modifier_variant in manager.game_state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		if str(modifier.get("modifier_type", "")) != "SPECIAL_PLAY_PERMISSION":
+			continue
+		if str(modifier.get("granted_card_uid", "")) == card_uid:
+			return true
+	return false
 
 func _extract_choice_values(choices: Array) -> Array[String]:
 	var values: Array[String] = []

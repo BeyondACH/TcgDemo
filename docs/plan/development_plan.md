@@ -22,8 +22,8 @@
 - 效果系统已统一接入 `effect_queue` 执行链，并接入显式决策、目标续执行、延迟效果与静态修正。
 - 统一 DSL/IR 当前达到 `73` 个已支持能力、`0` 个未支持能力。
 - 验证资产当前基线：
-  - `docs/milestone_smoke_test.gd`：27 项通过、0 项失败
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：31 项通过、0 项失败
+  - `docs/milestone_smoke_test.gd`：29 项通过、0 项失败
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：41 项通过、0 项失败
   - `docs/draw_phase_smoke_test.gd`：当前环境稳定通过，可作为 DRAW 阶段专项回归入口
 - 当前主要风险已转为“正式 raw 样例覆盖面和长期稳定性仍需继续压实”，而不是“规则主链路尚未建立”。
 
@@ -91,6 +91,7 @@
 - 连续回合生命周期
 - 离场触发链与延迟效果叠加
 - 更复杂的费用组合与公开信息驱动奖励
+- 当前已固定观察入口：规则层放在 `docs/milestone_smoke_test.gd`，正式模板组合链放在 `docs/cards_raw_minimal_duel_smoke_test.gd`。
 
 实施要求：
 
@@ -101,6 +102,7 @@
 
 - 正式 raw 样例覆盖面持续扩展，且每次扩展都能稳定复跑。
 - 样例脚本不替代规则主冒烟，只承担正式数据模板回归。
+- 连续回合生命周期与离场触发链的观察项至少覆盖“跨完整回合的临时效果过期”“多源延迟效果无残留”“ON_LEAVE 回手/叠放离场后的区域一致性”三类场景。
 
 ## 阶段 D：数据、导入与调试体验补强
 
@@ -184,7 +186,7 @@
 ## 7. 近期执行顺序
 
 1. 继续维护 `docs/milestone_smoke_test.gd` 的规则主冒烟职责，不把正式卡编号样例混进去。
-2. 继续扩 `docs/cards_raw_minimal_duel_smoke_test.gd`，优先覆盖更复杂的预览链、多段条件追加结算、连续回合生命周期与离场触发链。
+2. 继续扩 `docs/cards_raw_minimal_duel_smoke_test.gd`，优先覆盖更复杂的预览链、多段条件追加结算，以及跨完整回合的生命周期 / 离场触发链组合。
 3. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定。
 4. 若后续需求触及 UI 待决策流、预览流或布局消费，同步执行 `--layout-probe` 验收并记录结果。
 

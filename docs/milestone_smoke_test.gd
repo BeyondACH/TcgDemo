@@ -31,6 +31,8 @@ func _init() -> void:
 	_run_test("双次攻击与双次阻挡", _test_double_attack_and_double_block)
 	_run_test("战斗触发", _test_battle_triggers)
 	_run_test("同时触发顺序", _test_simultaneous_trigger_order)
+	_run_test("直到下个自己回合开始的效果仅在来源方回合开始失效", _test_until_next_self_turn_start_expires_only_for_source_controller)
+	_run_test("多个结束主阶段延迟效果不会残留运行时脏状态", _test_multiple_end_main_delayed_effects_leave_no_runtime_residue)
 	_run_test("RAID 显式落点选择", _test_raid_zone_choice)
 	_run_test("RAID 生命触发二选一", _test_life_trigger_raid_choice)
 	_run_test("生命归零胜负", _test_life_zero_victory)
@@ -1616,8 +1618,155 @@ func _test_deck_out_loss() -> Dictionary:
 		return _fail("P1 抽空牌库失败后应判定 P2 获胜")
 	return _ok()
 
+func _test_until_next_self_turn_start_expires_only_for_source_controller() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_UNTIL_NEXT_SELF_TURN_SOURCE",
+		"name": "来源方临时效果",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-UNTIL-SELF-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var locked_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_UNTIL_NEXT_SELF_TURN_TARGET",
+		"name": "对手受限角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-UNTIL-SELF-2",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if source_uid == "" or locked_uid == "":
+		return _fail("直到下个自己回合开始测试卡创建失败")
+	var locked_card = manager.game_state.get_card(locked_uid)
+	if locked_card == null:
+		return _fail("直到下个自己回合开始测试目标实例不存在")
+	locked_card.flags["temp_keywords"] = ["CANNOT_ATTACK"]
+	locked_card.flags["temp_keyword_counts"] = {"CANNOT_ATTACK": 1}
+	manager.game_state.static_modifiers.append({
+		"id": "tmp_until_next_self_turn_keyword",
+		"source_card_uid": source_uid,
+		"owner_player_id": UATypes.PLAYER_ONE,
+		"modifier_type": "TEMP_KEYWORD",
+		"target_uid": locked_uid,
+		"keyword": "CANNOT_ATTACK",
+		"expires": "UNTIL_NEXT_SELF_TURN_START",
+	})
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	locked_card = manager.game_state.get_card(locked_uid)
+	if locked_card == null or not (locked_card.flags.get("temp_keywords", []) as Array).has("CANNOT_ATTACK"):
+		return _fail("直到下个自己回合开始的临时效果不应在对手回合开始前提前失效")
+	manager.advance_phase()
+	manager.advance_phase()
+	var attack_check := manager.rules_engine.can_attack(manager.game_state, UATypes.PLAYER_TWO, locked_uid)
+	if bool(attack_check.get("ok", false)):
+		return _fail("对手回合攻击阶段开始时，受限角色仍应保持不能攻击")
+	manager.effect_resolver.cleanup_start_turn_expirations(manager.game_state, UATypes.PLAYER_ONE)
+	locked_card = manager.game_state.get_card(locked_uid)
+	if locked_card == null:
+		return _fail("直到下个自己回合开始测试目标不应离场")
+	if (locked_card.flags.get("temp_keywords", []) as Array).has("CANNOT_ATTACK"):
+		return _fail("来源方自己的下个回合开始后，应移除临时不能攻击关键词")
+	if not manager.game_state.static_modifiers.is_empty():
+		return _fail("来源方自己的下个回合开始后，不应残留过期的 TEMP_KEYWORD 修饰")
+	return _ok()
+
+func _test_multiple_end_main_delayed_effects_leave_no_runtime_residue() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var first_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_DELAYED_LEAVE_FIRST",
+		"name": "结束主阶段自离场一",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-DELAYED-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, false)
+	var second_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_DELAYED_LEAVE_SECOND",
+		"name": "结束主阶段自离场二",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-DELAYED-2",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, false)
+	if first_uid == "" or second_uid == "":
+		return _fail("多个结束主阶段延迟效果测试卡创建失败")
+	manager.game_state.delayed_effects.append({
+		"id": "tmp_end_main_delayed_1",
+		"source_card_uid": first_uid,
+		"owner_player_id": UATypes.PLAYER_ONE,
+		"event": "ON_END_MAIN_PHASE",
+		"filters": [],
+		"steps": [{"type": "MOVE_CARD", "target": "SOURCE_CARD", "to_zone": "OUTSIDE"}],
+		"once": true,
+		"expires": "",
+	})
+	manager.game_state.delayed_effects.append({
+		"id": "tmp_end_main_delayed_2",
+		"source_card_uid": second_uid,
+		"owner_player_id": UATypes.PLAYER_ONE,
+		"event": "ON_END_MAIN_PHASE",
+		"filters": [],
+		"steps": [{"type": "MOVE_CARD", "target": "SOURCE_CARD", "to_zone": "OUTSIDE"}],
+		"once": true,
+		"expires": "",
+	})
+	manager.advance_phase()
+	var first_card = manager.game_state.get_card(first_uid)
+	var second_card = manager.game_state.get_card(second_uid)
+	if first_card == null or first_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("第一个结束主阶段延迟效果应在进入 ATTACK 前把来源卡移到场外")
+	if second_card == null or second_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("第二个结束主阶段延迟效果应在进入 ATTACK 前把来源卡移到场外")
+	if manager.game_state.phase != UATypes.Phase.ATTACK:
+		return _fail("多个结束主阶段延迟效果结算后仍应推进到 ATTACK")
+	if not manager.game_state.delayed_effects.is_empty():
+		return _fail("多个结束主阶段延迟效果结算后不应残留 delayed_effects")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("多个结束主阶段延迟效果结算后不应残留 pending_decisions")
+	if not manager.game_state.effect_queue.is_empty():
+		return _fail("多个结束主阶段延迟效果结算后不应残留 effect_queue")
+	if not manager.game_state.battle_context.is_empty():
+		return _fail("多个结束主阶段延迟效果结算后不应产生 battle_context 脏状态")
+	manager.advance_phase()
+	manager.advance_phase()
+	if manager.game_state.phase != UATypes.Phase.DRAW or manager.game_state.active_player_id != UATypes.PLAYER_TWO:
+		return _fail("多个结束主阶段延迟效果结算后，回合仍应能稳定推进到下回合 DRAW")
+	return _ok()
+
 func _test_raid_stack_play() -> Dictionary:
-	return _test_raid_zone_choice()
 	var manager := _new_manager()
 	manager.game_state.phase = UATypes.Phase.MAIN
 	var p1 := _player(manager, UATypes.PLAYER_ONE)
@@ -1633,6 +1782,13 @@ func _test_raid_stack_play() -> Dictionary:
 	if base_uid == "" or raid_uid == "":
 		return _fail("RAID 测试卡牌创建失败")
 	manager.play_card(raid_uid, UATypes.Zone.ENERGY_LINE, {"raid_target_uid": base_uid})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("RAID 突进叠放测试应进入显式落点待决策")
+	manager.resolve_pending_decision("RAID_ZONE_CHOICE", {
+		"source_card_uid": raid_uid,
+		"raid_target_uid": base_uid,
+		"choice": UATypes.Zone.ENERGY_LINE,
+	})
 	var raid_card = manager.game_state.get_card(raid_uid)
 	if raid_card == null:
 		return _fail("RAID 后未找到上层卡")
@@ -1678,6 +1834,13 @@ func _test_raid_stack_play() -> Dictionary:
 	var base_uid_front := _spawn_card(manager_front, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, false)
 	var raid_uid_front := _spawn_card(manager_front, UATypes.PLAYER_ONE, "UA31BT_MMM_1_002", UATypes.Zone.HAND, true)
 	manager_front.play_card(raid_uid_front, UATypes.Zone.FRONT_LINE, {"raid_target_uid": base_uid_front})
+	if manager_front.game_state.pending_decisions.size() != 1:
+		return _fail("选择转前线时，RAID 应进入显式落点待决策")
+	manager_front.resolve_pending_decision("RAID_ZONE_CHOICE", {
+		"source_card_uid": raid_uid_front,
+		"raid_target_uid": base_uid_front,
+		"choice": UATypes.Zone.FRONT_LINE,
+	})
 	var raid_card_front = manager_front.game_state.get_card(raid_uid_front)
 	if raid_card_front == null:
 		return _fail("选择转前线时，RAID 后未找到上层卡")
