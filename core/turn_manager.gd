@@ -35,6 +35,7 @@ func begin_turn(state: GameState) -> Array[String]:
 	player.used_bonus_draw = false
 	state.player_turn_flags[state.active_player_id] = {}
 	zone_manager.reset_turn_flags(state, state.active_player_id)
+	zone_manager.ready_field_cards(state, state.active_player_id)
 	var ap_target: int = _ap_target_for_player(player, state.active_player_id)
 	zone_manager.add_ap(player, ap_target)
 	zone_manager.ready_ap(player)

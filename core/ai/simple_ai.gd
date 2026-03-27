@@ -26,6 +26,8 @@ func choose_action(_game_state, snapshot: Dictionary, legal_actions: Array[Dicti
 func choose_pending_decision(_game_state, snapshot: Dictionary, pending: Dictionary, legal_actions: Array[Dictionary]) -> Dictionary:
 	if legal_actions.is_empty():
 		return {}
+	if _has_action_type(legal_actions, ActionTypes.RESOLVE_LIFE_TRIGGER):
+		return _choose_life_trigger_action(snapshot, pending, legal_actions)
 	if pending.has("attacker_uid"):
 		return _choose_block_action(snapshot, legal_actions)
 	var pending_type := str(pending.get("type", ""))
@@ -43,6 +45,8 @@ func choose_pending_decision(_game_state, snapshot: Dictionary, pending: Diction
 		"LIFE_TRIGGER_RAID_TARGET":
 			return legal_actions[0]
 		"ABILITY_TARGET_SELECTION":
+			return legal_actions[0]
+		"TRIGGER_ORDER":
 			return legal_actions[0]
 	return _fallback_action(legal_actions)
 
@@ -147,6 +151,32 @@ func _choose_hand_limit_discard(snapshot: Dictionary, pending: Dictionary, legal
 			best_score = score
 			best_action = action
 	return best_action if not best_action.is_empty() else _fallback_action(legal_actions)
+
+func _choose_life_trigger_action(snapshot: Dictionary, pending: Dictionary, legal_actions: Array[Dictionary]) -> Dictionary:
+	var activate_action := {}
+	var skip_action := {}
+	for action in legal_actions:
+		if str(action.get("type", "")) != ActionTypes.RESOLVE_LIFE_TRIGGER:
+			continue
+		if bool(_action_params(action).get("activate", false)):
+			activate_action = action
+		else:
+			skip_action = action
+	if activate_action.is_empty():
+		return skip_action if not skip_action.is_empty() else _fallback_action(legal_actions)
+	var self_player := _get_self_player_snapshot(snapshot)
+	var card_uid := str(_action_params(activate_action).get("card_uid", pending.get("card_uid", "")))
+	var card_data := _find_card_by_uid(snapshot, card_uid)
+	var activation_score := 40
+	if not card_data.is_empty():
+		activation_score += _card_keep_value(card_data, self_player) / 8
+		if _has_any_keyword(card_data, ["RAID", "SNIPER", "DAMAGE_2", "IMPACT", "IMPACT_PLUS_1", "DOUBLE_ATTACK"]):
+			activation_score += 40
+	if int(self_player.get("life_count", 0)) <= 2:
+		activation_score += 20
+	if activation_score >= 0:
+		return activate_action
+	return skip_action if not skip_action.is_empty() else activate_action
 
 func _find_choice_action(legal_actions: Array[Dictionary], wanted_value, fallback_action := {}) -> Dictionary:
 	for action in legal_actions:
@@ -757,6 +787,12 @@ func _action_params(action: Dictionary) -> Dictionary:
 	if params is Dictionary:
 		return params
 	return {}
+
+func _has_action_type(legal_actions: Array[Dictionary], action_type: String) -> bool:
+	for action in legal_actions:
+		if str(action.get("type", "")) == action_type:
+			return true
+	return false
 
 func _normalize_string_array(value) -> Array[String]:
 	var result: Array[String] = []

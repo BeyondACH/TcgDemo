@@ -15,8 +15,10 @@ var _ai := SimpleAI.new()
 func _init() -> void:
 	_run_test("direct attack beats low-value sniper attack", _test_direct_attack_beats_low_value_sniper)
 	_run_test("lethal attack is prioritized", _test_lethal_attack_is_prioritized)
+	_run_test("ai attack rests attacker and logs name plus number", _test_attack_rests_attacker_and_logs_name_number)
 	_run_test("block compares no block for low damage", _test_block_prefers_no_block_for_low_damage)
 	_run_test("block when lethal is prevented", _test_blocks_when_attack_is_lethal)
+	_run_test("life trigger prefers activation", _test_life_trigger_prefers_activation)
 	_run_test("hand limit discard chooses low-value card", _test_hand_limit_discard_prefers_low_value_card)
 	_run_test("step swap chooses low-value card", _test_step_swap_prefers_low_value_card)
 	_print_summary()
@@ -126,6 +128,39 @@ func _test_lethal_attack_is_prioritized() -> Dictionary:
 		return _fail("expected lethal direct attack to be prioritized")
 	return _ok()
 
+func _test_attack_rests_attacker_and_logs_name_number() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.active_player_id = UATypes.PLAYER_TWO
+	manager.game_state.priority_player_id = UATypes.PLAYER_TWO
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	_player(manager, UATypes.PLAYER_ONE).life = ["L1", "L2", "L3"]
+	var attacker_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, _character_card("TMP_ATTACK_LOG", "Attack Logger", 3200), UATypes.Zone.FRONT_LINE, true)
+	if attacker_uid == "":
+		return _fail("expected attack logger test card to be created")
+	var snapshot := _snapshot(manager)
+	var chosen := _ai.choose_action(manager.game_state, snapshot, _legal_actions(manager, UATypes.PLAYER_TWO))
+	if str(chosen.get("type", "")) != ActionTypes.ATTACK:
+		return _fail("expected AI to choose an attack action, got %s" % str(chosen.get("type", "")))
+	manager.execute_action(chosen)
+	var response_actions := _legal_actions(manager, UATypes.PLAYER_ONE)
+	var no_block := {}
+	for action in response_actions:
+		if str(action.get("type", "")) == ActionTypes.NO_BLOCK:
+			no_block = action
+			break
+	if no_block.is_empty():
+		return _fail("expected defending player to receive a NO_BLOCK action after attack declaration")
+	manager.execute_action(no_block)
+	var attacker := manager.game_state.get_card(attacker_uid)
+	if attacker == null:
+		return _fail("expected attacker to remain in game state after direct attack")
+	if attacker.state != UATypes.CardState.RESTED:
+		return _fail("expected AI attacker to become RESTED after attacking")
+	var expected_log := "Attack Logger [TMP_ATTACK_LOG] attacks."
+	if not manager.game_state.logs.has(expected_log):
+		return _fail("expected attack log to include card name and number, logs: %s" % str(manager.game_state.logs))
+	return _ok()
+
 func _test_block_prefers_no_block_for_low_damage() -> Dictionary:
 	var manager := _new_manager()
 	manager.game_state.active_player_id = UATypes.PLAYER_TWO
@@ -154,6 +189,42 @@ func _test_blocks_when_attack_is_lethal() -> Dictionary:
 	var chosen := _ai.choose_pending_decision(manager.game_state, snapshot, pending, _legal_actions(manager, UATypes.PLAYER_ONE))
 	if str(chosen.get("type", "")) != ActionTypes.BLOCK:
 		return _fail("expected BLOCK when attack would be lethal")
+	return _ok()
+
+func _test_life_trigger_prefers_activation() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.active_player_id = UATypes.PLAYER_TWO
+	manager.game_state.priority_player_id = UATypes.PLAYER_ONE
+	var life_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_LIFE_TRIGGER",
+		"name": "Life Trigger",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP_LIFE_TRIGGER",
+		"traits": ["Tester"],
+		"cost_energy": {},
+		"cost_ap": 0,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2500,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [{"trigger": "ON_LIFE_TRIGGER", "operations": [{"type": "DRAW", "value": 1}]}],
+	}, UATypes.Zone.LIFE, true)
+	if life_uid == "":
+		return _fail("expected life trigger test card to be created")
+	manager.game_state.pending_life_triggers = [{
+		"player_id": UATypes.PLAYER_ONE,
+		"card_uid": life_uid,
+		"card_name": "Life Trigger",
+	}]
+	var snapshot := _snapshot(manager)
+	var pending_entries: Array = snapshot.get("pending_life_triggers", [])
+	var pending: Dictionary = pending_entries[0]
+	var chosen := _ai.choose_pending_decision(manager.game_state, snapshot, pending, _legal_actions(manager, UATypes.PLAYER_ONE))
+	if str(chosen.get("type", "")) != ActionTypes.RESOLVE_LIFE_TRIGGER:
+		return _fail("expected a RESOLVE_LIFE_TRIGGER action")
+	if not bool(chosen.get("params", {}).get("activate", false)):
+		return _fail("expected AI to activate the life trigger by default")
 	return _ok()
 
 func _test_hand_limit_discard_prefers_low_value_card() -> Dictionary:

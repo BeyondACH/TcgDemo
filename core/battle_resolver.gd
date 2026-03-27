@@ -73,7 +73,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 	var was_repeat_attack := bool(attacker.flags.get("attacked_this_turn", false))
 	attacker.state = UATypes.CardState.RESTED
 	attacker.flags["attacked_this_turn"] = true
-	logs.append("%s attacks." % attacker_def.name)
+	logs.append(_format_attack_log(attacker_def))
 	logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_ATTACK, state, {
 		"target_player_id": defender_player_id,
 		"attacker_uid": attacker_uid,
@@ -285,3 +285,11 @@ func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -
 		return true
 	var temp_keywords: Array = card.flags.get("temp_keywords", [])
 	return temp_keywords.has(keyword)
+
+func _format_attack_log(attacker_def: CardDef) -> String:
+	if attacker_def == null:
+		return "Unknown attacker attacks."
+	var card_number := attacker_def.number.strip_edges()
+	if card_number != "":
+		return "%s [%s] attacks." % [attacker_def.name, card_number]
+	return "%s attacks." % attacker_def.name

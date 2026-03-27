@@ -756,9 +756,7 @@ func _can_raid_from_hand(state: GameState, player_id: String, card: CardInstance
 		return true
 	if not bool(card_def.special_play_rule.get("allow_from_hand", false)):
 		return false
-	if not bool(card_def.special_play_rule.get("life_trigger_only", false)):
-		return true
-	return _has_special_play_permission(state, player_id, card.uid, "RAID")
+	return true
 
 func _has_special_play_permission(state: GameState, player_id: String, card_uid: String, mode: String) -> bool:
 	for modifier_variant in state.static_modifiers:

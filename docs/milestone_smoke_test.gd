@@ -28,6 +28,7 @@ func _init() -> void:
 	_run_test("SNIPER 指定角色不可阻挡", _test_sniper_attack_cannot_block)
 	_run_test("DAMAGE_2 造成两点伤害", _test_damage_two)
 	_run_test("冲击与无效", _test_impact_and_negate_impact)
+	_run_test("普通阻挡者会在自己回合开始时恢复 ACTIVE", _test_blocker_recovers_at_own_turn_start)
 	_run_test("双次攻击与双次阻挡", _test_double_attack_and_double_block)
 	_run_test("战斗触发", _test_battle_triggers)
 	_run_test("同时触发顺序", _test_simultaneous_trigger_order)
@@ -1151,6 +1152,64 @@ func _test_double_attack_and_double_block() -> Dictionary:
 		return _fail("DOUBLE_ATTACK 第三次攻击不应再允许")
 	if bool(manager.rules_engine.can_block(manager.game_state, UATypes.PLAYER_TWO, blocker_uid).get("ok", false)):
 		return _fail("DOUBLE_BLOCK 第二次阻挡后不应再允许第三次")
+	return _ok()
+
+func _test_blocker_recovers_at_own_turn_start() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var attacker_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_NORMAL_BLOCK_ATTACKER",
+		"name": "普通攻击测试角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-NB-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var blocker_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_NORMAL_BLOCKER",
+		"name": "普通阻挡测试角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-NB-2",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if attacker_uid == "" or blocker_uid == "":
+		return _fail("普通阻挡恢复测试卡创建失败")
+	var declared := manager.battle_resolver.declare_attack(manager.game_state, attacker_uid)
+	if not bool(declared.get("ok", false)):
+		return _fail("普通阻挡恢复测试的攻击声明失败")
+	manager.resolve_attack(attacker_uid, blocker_uid)
+	var blocker_card = manager.game_state.get_card(blocker_uid)
+	if blocker_card == null:
+		return _fail("普通阻挡恢复测试的阻挡者不存在")
+	if blocker_card.state != UATypes.CardState.RESTED:
+		return _fail("普通阻挡后，阻挡者应转为 RESTED")
+	manager.advance_phase()
+	if manager.game_state.phase != UATypes.Phase.END:
+		return _fail("攻击阶段后应进入 END")
+	if blocker_card.state != UATypes.CardState.RESTED:
+		return _fail("对手回合结束阶段不应提前恢复阻挡者")
+	manager.advance_phase()
+	if manager.game_state.active_player_id != UATypes.PLAYER_TWO:
+		return _fail("回合结束后应切换到阻挡者控制方")
+	if manager.game_state.phase != UATypes.Phase.DRAW:
+		return _fail("阻挡者控制方回合开始后应处于 DRAW")
+	if blocker_card.state != UATypes.CardState.ACTIVE:
+		return _fail("普通阻挡者应在自己回合开始时恢复 ACTIVE")
 	return _ok()
 
 func _test_battle_triggers() -> Dictionary:

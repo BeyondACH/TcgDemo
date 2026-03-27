@@ -1209,8 +1209,6 @@ func _can_play_raid_from_hand(card: CardInstance, card_def: CardDef) -> bool:
 		return false
 	if not bool(card_def.special_play_rule.get("allow_from_hand", false)):
 		return false
-	if bool(card_def.special_play_rule.get("life_trigger_only", false)) and not _has_special_play_permission(card.controller_player_id, card.uid, "RAID"):
-		return false
 	var player: PlayerState = game_state.get_player(card.controller_player_id)
 	if player == null:
 		return false

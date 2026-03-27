@@ -1857,8 +1857,10 @@ func _test_raw_self_special_play_permission_after_leave() -> Dictionary:
 		return _fail("Raw self special play permission sample should allow the source card to RAID from hand after leaving the field.")
 	manager.effect_resolver.cleanup_start_turn_expirations(manager.game_state, player_id)
 	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
-	if expired_actions.has("RAID"):
-		return _fail("Raw self special play permission sample should lose the temporary RAID permission at the next self turn start.")
+	if _has_bound_special_play_permission(manager, source_uid):
+		return _fail("Raw self special play permission sample should clear the self-bound permission at the next self turn start.")
+	if not expired_actions.has("RAID"):
+		return _fail("Raw self special play permission sample should keep the normal hand RAID action after the temporary permission expires.")
 	return _ok()
 
 func _test_raw_self_special_play_permission_expires_after_full_turn_cycle() -> Dictionary:
@@ -1929,9 +1931,11 @@ func _test_raw_self_special_play_permission_expires_after_full_turn_cycle() -> D
 	manager.advance_phase()
 	if _has_bound_special_play_permission(manager, source_uid):
 		return _fail("Raw full-turn special play permission sample should clear the self-bound permission at the next self turn start.")
+	manager.advance_phase()
+	manager.advance_phase()
 	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
-	if expired_actions.has("RAID"):
-		return _fail("Raw full-turn special play permission sample should lose the hand RAID action at the next self turn start.")
+	if not expired_actions.has("RAID"):
+		return _fail("Raw full-turn special play permission sample should keep the normal hand RAID action after the temporary permission expires.")
 	if not manager.game_state.pending_decisions.is_empty():
 		return _fail("Raw full-turn special play permission sample should not leave stray pending decisions after the full turn cycle.")
 	if not manager.game_state.effect_queue.is_empty():
@@ -1987,8 +1991,10 @@ func _test_raw_special_play_permission_does_not_grant_other_same_name_card() -> 
 		return _fail("Raw self special play copy-bound sample should keep the temporary RAID permission bound to the specifically granted source copy.")
 	if _has_bound_special_play_permission(manager, second_copy_uid):
 		return _fail("Raw self special play copy-bound sample should not bind the temporary RAID permission to another copy.")
-	if second_actions.has("RAID"):
-		return _fail("Raw self special play copy-bound sample should not grant RAID to another copy with the same def_id.")
+	if not source_actions.has("RAID"):
+		return _fail("Raw self special play copy-bound sample source card should still have the normal hand RAID action.")
+	if not second_actions.has("RAID"):
+		return _fail("Raw self special play copy-bound sample second copy should still have the normal hand RAID action when a legal base exists.")
 	return _ok()
 
 func _test_raw_special_play_permission_still_respects_raid_target_validation() -> Dictionary:

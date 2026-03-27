@@ -321,6 +321,8 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 func _on_hand_card_selected(card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
 		return
+	if _raid_target_selection_mode and _raid_source_card_uid != card_uid:
+		_clear_raid_selection()
 	_selected_hand_card_uid = card_uid
 	_selected_board_card_uid = ""
 	_selected_board_zone_name = ""
@@ -377,12 +379,14 @@ func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_da
 			_clear_pending_attack()
 		return
 	if player_id != active_player_id:
+		_clear_raid_selection()
 		_selected_board_card_uid = ""
 		_selected_board_zone_name = ""
 		_selected_hand_card_uid = ""
 		_update_action_buttons()
 		selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 		return
+	_clear_raid_selection()
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "front_line"
 	_selected_hand_card_uid = ""
@@ -411,12 +415,14 @@ func _on_energy_card_pressed(player_id: String, card_uid: String, pressed_card_d
 		return
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	if player_id != active_player_id:
+		_clear_raid_selection()
 		_selected_board_card_uid = ""
 		_selected_board_zone_name = ""
 		_selected_hand_card_uid = ""
 		_update_action_buttons()
 		selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 		return
+	_clear_raid_selection()
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "energy_line"
 	_selected_hand_card_uid = ""
@@ -793,7 +799,7 @@ func _sync_pending_decision_controls() -> void:
 	var pending: Array = _snapshot.get("pending_decisions", [])
 	pending_decision_picker.clear()
 	pending_decision_choice_picker.clear()
-	if pending.is_empty():
+	if pending.is_empty() or not _human_input_enabled():
 		_selected_pending_decision_index = -1
 		_selected_pending_decision_choice_index = 0
 		pending_decision_panel.visible = false
