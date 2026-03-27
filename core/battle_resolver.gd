@@ -91,19 +91,31 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			return ["Attack failed: missing target character definition."]
 		if attacker.current_bp >= target_card.current_bp:
 			resolved_battle_result["battle_outcome"] = "ATTACKER_WIN"
-			logs.append_array(effect_resolver.resolve_trigger(target_uid, UATypes.TriggerType.ON_LEAVE, state, {
-				"target_player_id": target_card.controller_player_id,
-				"attacker_uid": attacker_uid,
-				"target_uid": target_uid,
-			}))
 			if target_card.zone == UATypes.Zone.FRONT_LINE:
 				zone_manager.move_card(state, target_uid, UATypes.Zone.OUTSIDE)
 			logs.append("%s defeats %s." % [attacker_def.name, target_def.name])
-			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_WIN, state, {
-				"target_player_id": defender_player_id,
-				"attacker_uid": attacker_uid,
-				"target_uid": target_uid,
-			}))
+			logs.append_array(effect_resolver.resolve_simultaneous_triggers(state, [
+				{
+					"source_card_uid": attacker_uid,
+					"owner_player_id": attacker.controller_player_id,
+					"trigger_type": UATypes.TriggerType.ON_BATTLE_WIN,
+					"context": {
+						"target_player_id": defender_player_id,
+						"attacker_uid": attacker_uid,
+						"target_uid": target_uid,
+					},
+				},
+				{
+					"source_card_uid": target_uid,
+					"owner_player_id": target_card.controller_player_id,
+					"trigger_type": UATypes.TriggerType.ON_LEAVE,
+					"context": {
+						"target_player_id": target_card.controller_player_id,
+						"attacker_uid": attacker_uid,
+						"target_uid": target_uid,
+					},
+				},
+			]))
 			if impact_damage > 0 and not _impact_negated(state, target_uid):
 				resolved_battle_result["impact_damage"] = impact_damage
 				logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, impact_damage))
@@ -164,21 +176,33 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		}))
 		if attacker.current_bp >= blocker.current_bp:
 			resolved_battle_result["battle_outcome"] = "ATTACKER_WIN"
-			logs.append_array(effect_resolver.resolve_trigger(blocker_uid, UATypes.TriggerType.ON_LEAVE, state, {
-				"target_player_id": blocker.controller_player_id,
-				"attacker_uid": attacker_uid,
-				"blocker_uid": blocker_uid,
-			}))
 			if blocker.zone == UATypes.Zone.FRONT_LINE:
 				zone_manager.move_card(state, blocker_uid, UATypes.Zone.OUTSIDE)
 				logs.append("%s wins the battle. %s is moved to outside." % [attacker_def.name, blocker_def.name])
 			else:
 				logs.append("%s wins the battle. %s leaves the field." % [attacker_def.name, blocker_def.name])
-			logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_WIN, state, {
-				"target_player_id": defender_player_id,
-				"attacker_uid": attacker_uid,
-				"blocker_uid": blocker_uid,
-			}))
+			logs.append_array(effect_resolver.resolve_simultaneous_triggers(state, [
+				{
+					"source_card_uid": attacker_uid,
+					"owner_player_id": attacker.controller_player_id,
+					"trigger_type": UATypes.TriggerType.ON_BATTLE_WIN,
+					"context": {
+						"target_player_id": defender_player_id,
+						"attacker_uid": attacker_uid,
+						"blocker_uid": blocker_uid,
+					},
+				},
+				{
+					"source_card_uid": blocker_uid,
+					"owner_player_id": blocker.controller_player_id,
+					"trigger_type": UATypes.TriggerType.ON_LEAVE,
+					"context": {
+						"target_player_id": blocker.controller_player_id,
+						"attacker_uid": attacker_uid,
+						"blocker_uid": blocker_uid,
+					},
+				},
+			]))
 			if impact_damage > 0 and not _impact_negated(state, blocker_uid):
 				resolved_battle_result["impact_damage"] = impact_damage
 				logs.append_array(effect_resolver.deal_damage_to_player(state, defender_player_id, impact_damage))

@@ -187,31 +187,9 @@
 ## 4. 当前已知差距与风险
 
 - 效果系统虽然已经形成统一 `effect_queue` 消费链路，但复杂条件组合、多触发顺序与更丰富的费用/目标模板仍未完全闭环。
-- `docs/draw_phase_smoke_test.gd` 在本地环境下执行仍出现过 Godot headless 进程崩溃，当前不适合作为稳定验证依据。
+- `docs/draw_phase_smoke_test.gd` 已在当前环境中恢复稳定；沙箱外单次执行与连续 5 次重跑均通过，但 Godot 退出时仍保留既有的 `ObjectDB` / resource 泄漏告警，后续回归时仍需继续观察。
 - `docs/milestone_smoke_test.gd` 已修正到与当前实现一致，但脚本退出时仍有 Godot 资源未清理警告，暂未影响断言结果。
 - `docs/cards_raw_minimal_duel_smoke_test.gd` 已降低测试与正式数据脱节风险，但覆盖面仍偏最小样例，尚不能替代完整规则回归。
-- UI 新布局已通过 GUI 布局专项验收，但若后续继续改底部 HUD 高度或战场列宽，仍建议补一次实际窗口目视确认。
-
-## 5. 本次验证结果
-
-- 已执行 `docs/milestone_smoke_test.gd`
-  - 结果：23 项通过，0 项失败。
-  - 当前总冒烟脚本已与现实现状、阶段流转、效果队列消费链路与费用/目标最小样本同步。
-- 已执行 `docs/deck_import_smoke_test.gd`
-  - 结果：通过。
-- 已执行 `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - 结果：10 项通过，0 项失败，输出 `CARDS_RAW_MINIMAL_DUEL_SMOKE_OK`。
-  - 当前最小样例对局脚本已直接消费正式 `cards_raw.json` 卡定义，覆盖 `ON_ENTER`、`ON_LEAVE`、`MAIN_ACTIVATE`、`ON_PLAY`、`ON_LIFE_TRIGGER` 五类效果入口，并补齐 `DRAW_2`、手牌中自减 AP、离场回手、多步骤复杂费用结算，以及”看牌堆顶后检索/回底””不同卡名去重选择”两组正式 raw 样例。
-- 已尝试执行 `docs/draw_phase_smoke_test.gd`
-  - 结果：Godot headless 进程崩溃，未获得可用业务验证结论。
-- 已执行 Godot headless 启动检查：`D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --quit`
-  - 结果：成功启动并正常退出，未新增战场布局与手牌纯缩略图相关脚本解析错误。
-- 已执行 `battle_scene --layout-probe` GUI 布局专项验收
-  - 结果：在 1920x1080窗口尺寸下通过；三列战场区域宽度有效，玩家战场可视底边未压入手牌缩略图区，手牌容器保持纯缩略图结构。
-- 2026-03-24 手牌区域重构验证
-  - 结果：`docs/milestone_smoke_test.gd` 23 项全部通过。
-  - 手牌区域高度降至 160-180px（之前 184-228px），成功避让 `remove_area` 与 `outside_area`。
-  - 实现可打出状态绿色描边、独立预览面板，以及不抬升卡面的悬停预览联动。
 
 ## 6. 建议的下一步里程碑动作
 
@@ -230,13 +208,24 @@
 
 ### P1：规则层与出牌规则层补强
 
-- 将“临时特殊登场 / RAID 许可”正式接入 `RulesEngine` 或等价的出牌合法性校验入口，而不是只停留在效果层打标。
-- 对照 `docs/rules/rule.md`，继续补强以下高风险规则点的自动化验证：
-  - AP 在结束阶段不恢复
-  - 攻击失败的攻击方不会退场
-  - 生命触发为显式可选发动，而不是自动发动
-  - 同时触发时，同方效果按玩家选择顺序处理；双方同时触发时，回合方先处理
-- 若 `docs/draw_phase_smoke_test.gd` 仍不稳定，应新增稳定替代脚本承接对应规则回归，避免关键阶段规则缺少可靠验证入口。
+- 当前定位：P1 已完成收口，规则层与出牌规则层补强阶段结束，后续规则相关回归默认转入 P2。
+- 已完成基线：
+  - “临时特殊登场 / RAID 许可” 已正式进入 `RulesEngine` / 出牌合法性校验链路，不再只是效果层临时打标。
+  - `life_trigger_only` 手牌 `RAID` 已收敛为“默认不允许，需生命触发或临时许可放行”。
+  - `docs/hand_available_actions_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/milestone_smoke_test.gd` 已覆盖该类规则的主路径回归。
+  - `docs/milestone_smoke_test.gd` 已覆盖 `P1-1`、`P1-2`、`P1-3`、`P1-4`、`P1-5` 的专项回归入口。
+- 待拆分执行清单：
+  - 任务 P1-1：已补专项断言，固定验证“AP 在结束阶段不恢复，只有到自己下个回合开始才重新 ready”。
+  - 任务 P1-2：已补专项断言，固定验证“攻击失败的攻击方不会退场”，并与现有伤害/离场逻辑解耦校验。
+  - 任务 P1-3：已补专项断言，固定验证“生命触发必须显式可选发动；跳过触发时不产生效果收益，但生命伤害流程仍继续完成”。
+  - 任务 P1-4：已补专项验证，固定验证“同时触发顺序”：同方多个效果按玩家选择顺序处理，双方同时触发时回合方先处理。
+  - 任务 P1-5：已完成首轮稳定性核验；`docs/draw_phase_smoke_test.gd` 在当前环境下可作为 DRAW 阶段回归入口继续使用。若后续再次出现 headless 崩溃或偶发失败，再新增稳定替代脚本承接对应回归。
+- 建议写入边界：
+  - `core/` 仅在发现规则实现与 `rule.md` 不一致时再改；本阶段已按最小改面补齐 battle 同时触发顺序控制，其余规则回归默认优先补测试，不主动扩大规则代码改面。
+  - `docs/` 作为主工作面，优先在现有 `milestone` 主冒烟脚本之外补专项脚本或最小断言。
+  - `ui/` 默认不动，除非新增回归脚本必须消费新的显式决策快照字段。
+- 当前执行优先级：
+  - P1 已收口，后续规则回归默认转入 P2：验证资产扩充与稳定性建设。
 
 ### P2：验证资产扩充与稳定性建设
 

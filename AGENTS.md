@@ -234,6 +234,17 @@
 - 每次提交 UI/布局相关改动后，都必须额外确认手牌区域没有遮挡战场区域；若无法直接目视验证，至少补充对应的布局检查说明或验证记录
 - 仓库中的代码文件统一使用 UTF-8 编码，新增文件与修改现有代码文件时都应保持为 UTF-8，以避免中文乱码问题
 - 若终端出现中文乱码，先确认文件编码和换行，再决定是否重写
+- 在终端读取中文文件时，不得直接依赖默认 `Get-Content` 输出做结论；涉及规则、计划、日志、报错文案或断言信息等关键中文片段时，必须先用显式 UTF-8 方式重读，再继续分析或引用
+- 推荐统一使用 .NET UTF-8 API 读取关键片段，而不是依赖终端当前代码页：
+  - 单文件全文：`[System.IO.File]::ReadAllText(path, [System.Text.UTF8Encoding]::new($false))`
+  - 按行取片段：`[System.IO.File]::ReadAllLines(path, [System.Text.UTF8Encoding]::new($false))`
+- 若默认输出与显式 UTF-8 输出不一致，以显式 UTF-8 结果为准；禁止基于乱码输出直接判断规则语义、计划状态或日志结论
+- 至少以下内容默认视为“关键中文片段”，读取时应优先走显式 UTF-8：
+  - `docs/rules/rule.md`
+  - `docs/plan/project_development_plan.md`
+  - `docs/plan/mile_stone.md`
+  - `docs/logs/log_yyyy-MM-dd.md` 这类按日日志文件
+  - 含中文 UI 文案、提示文本或断言信息的 `.gd` 文件
 
 ## 验收标准
 

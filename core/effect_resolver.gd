@@ -54,6 +54,59 @@ func resolve_trigger(source_card_uid: String, trigger_type: int, state: GameStat
 	logs.append_array(consume_effect_queue(state))
 	return logs
 
+func resolve_simultaneous_triggers(state: GameState, trigger_entries: Array) -> Array[String]:
+	var grouped_by_owner := {}
+	var owner_order: Array[String] = []
+	for entry_variant in trigger_entries:
+		var entry: Dictionary = entry_variant
+		var source_card_uid := str(entry.get("source_card_uid", ""))
+		var source_card = state.get_card(source_card_uid)
+		if source_card == null:
+			continue
+		var owner_player_id := str(entry.get("owner_player_id", source_card.controller_player_id))
+		var normalized_entry := entry.duplicate(true)
+		normalized_entry["owner_player_id"] = owner_player_id
+		if not grouped_by_owner.has(owner_player_id):
+			grouped_by_owner[owner_player_id] = []
+			owner_order.append(owner_player_id)
+		(grouped_by_owner[owner_player_id] as Array).append(normalized_entry)
+	var owner_groups: Array = []
+	if grouped_by_owner.has(state.active_player_id):
+		owner_groups.append((grouped_by_owner[state.active_player_id] as Array).duplicate(true))
+	for owner_player_id in owner_order:
+		if owner_player_id == state.active_player_id:
+			continue
+		owner_groups.append((grouped_by_owner[owner_player_id] as Array).duplicate(true))
+	return _resolve_trigger_owner_groups(state, owner_groups)
+
+func resolve_trigger_order_decision(state: GameState, decision: Dictionary, selected_source_card_uid: String) -> Array[String]:
+	var context: Dictionary = decision.get("context", {})
+	var current_group: Array = context.get("trigger_entries", [])
+	var next_groups: Array = context.get("queued_owner_groups", [])
+	var chosen_entry := {}
+	var remaining_entries: Array = []
+	for entry_variant in current_group:
+		var entry: Dictionary = entry_variant
+		if chosen_entry.is_empty() and str(entry.get("source_card_uid", "")) == selected_source_card_uid:
+			chosen_entry = entry.duplicate(true)
+			continue
+		remaining_entries.append(entry.duplicate(true))
+	if chosen_entry.is_empty():
+		return ["Trigger order decision failed: selected trigger not found."]
+	var logs := resolve_trigger(
+		str(chosen_entry.get("source_card_uid", "")),
+		int(chosen_entry.get("trigger_type", -1)),
+		state,
+		chosen_entry.get("context", {}).duplicate(true)
+	)
+	if not remaining_entries.is_empty():
+		var owner_player_id := str(chosen_entry.get("owner_player_id", decision.get("owner_player_id", "")))
+		_enqueue_trigger_order_decision(state, owner_player_id, remaining_entries, next_groups)
+		logs.append("%s may resolve the remaining simultaneous trigger(s) in any order." % owner_player_id)
+		return logs
+	logs.append_array(_resolve_trigger_owner_groups(state, next_groups))
+	return logs
+
 func activate_main_effect(state: GameState, player_id: String, card_uid: String, effect_index := 0) -> Array[String]:
 	var logs: Array[String] = []
 	var card = state.get_card(card_uid)
@@ -846,6 +899,81 @@ func _enqueue_life_trigger_raid_choice(state: GameState, source_card_uid: String
 	})
 	logs.append("%s may add the card to hand or raid immediately." % owner_player_id)
 	return logs
+
+func _resolve_trigger_owner_groups(state: GameState, owner_groups: Array) -> Array[String]:
+	var logs: Array[String] = []
+	var remaining_groups: Array = []
+	for group_variant in owner_groups:
+		var group: Array = group_variant
+		if not group.is_empty():
+			remaining_groups.append(group.duplicate(true))
+	while not remaining_groups.is_empty():
+		var current_group: Array = remaining_groups[0]
+		remaining_groups.remove_at(0)
+		if current_group.is_empty():
+			continue
+		if current_group.size() == 1:
+			var entry: Dictionary = current_group[0]
+			logs.append_array(resolve_trigger(
+				str(entry.get("source_card_uid", "")),
+				int(entry.get("trigger_type", -1)),
+				state,
+				entry.get("context", {}).duplicate(true)
+			))
+			continue
+		var owner_player_id := str((current_group[0] as Dictionary).get("owner_player_id", ""))
+		_enqueue_trigger_order_decision(state, owner_player_id, current_group, remaining_groups)
+		logs.append("%s may resolve %d simultaneous trigger(s) in any order." % [owner_player_id, current_group.size()])
+		break
+	return logs
+
+func _enqueue_trigger_order_decision(state: GameState, owner_player_id: String, trigger_entries: Array, queued_owner_groups: Array) -> void:
+	var choices: Array[Dictionary] = []
+	for entry_variant in trigger_entries:
+		var entry: Dictionary = entry_variant
+		var source_card_uid := str(entry.get("source_card_uid", ""))
+		var card: CardInstance = state.get_card(source_card_uid)
+		var card_def = state.get_card_def(card.def_id) if card != null else null
+		var trigger_name := _trigger_type_label(int(entry.get("trigger_type", -1)))
+		var card_name: String = card_def.name if card_def != null else source_card_uid
+		choices.append({
+			"label": "%s (%s)" % [card_name, trigger_name],
+			"value": source_card_uid,
+			"enabled": true,
+			"reason": "",
+		})
+	state.pending_decisions.append({
+		"type": "TRIGGER_ORDER",
+		"owner_player_id": owner_player_id,
+		"source_card_uid": "",
+		"choices": choices,
+		"context": {
+			"trigger_entries": trigger_entries.duplicate(true),
+			"queued_owner_groups": queued_owner_groups.duplicate(true),
+		},
+	})
+
+func _trigger_type_label(trigger_type: int) -> String:
+	match trigger_type:
+		UATypes.TriggerType.ON_ENTER:
+			return "ON_ENTER"
+		UATypes.TriggerType.ON_LEAVE:
+			return "ON_LEAVE"
+		UATypes.TriggerType.ON_ATTACK:
+			return "ON_ATTACK"
+		UATypes.TriggerType.ON_BLOCK:
+			return "ON_BLOCK"
+		UATypes.TriggerType.ON_LIFE_TRIGGER:
+			return "ON_LIFE_TRIGGER"
+		UATypes.TriggerType.MAIN_ACTIVATE:
+			return "MAIN_ACTIVATE"
+		UATypes.TriggerType.ON_BATTLE_WIN:
+			return "ON_BATTLE_WIN"
+		UATypes.TriggerType.ON_BATTLE_LOSE:
+			return "ON_BATTLE_LOSE"
+		UATypes.TriggerType.ON_BATTLE_END:
+			return "ON_BATTLE_END"
+	return "UNKNOWN_TRIGGER"
 
 func _build_effect_queue_entry(source_card_uid: String, effect: Dictionary, context: Dictionary) -> Dictionary:
 	return {

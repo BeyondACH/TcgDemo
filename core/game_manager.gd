@@ -389,6 +389,15 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 			_maybe_finalize_life_damage_after_pending_resolution()
 			emit_state_changed()
 			return {"ok": true}
+		"TRIGGER_ORDER":
+			_apply_logs(effect_resolver.resolve_trigger_order_decision(
+				game_state,
+				decision,
+				str(payload.get("choice", ""))
+			))
+			_maybe_finalize_life_damage_after_pending_resolution()
+			emit_state_changed()
+			return {"ok": true}
 	_apply_logs(["Unsupported decision type: %s" % decision_type])
 	emit_state_changed()
 	return {"ok": false, "reason": "unsupported_decision_type"}
