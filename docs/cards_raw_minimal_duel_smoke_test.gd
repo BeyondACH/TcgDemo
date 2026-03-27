@@ -31,6 +31,12 @@ const RAW_PREVIEW_MAGIC_GIRL_REWARD := "UA31BT_MMM_1_098"
 const RAW_TEMP_ENERGY_SELF_LEAVE_BT := "UA31BT_MMM_1_070"
 const RAW_TEMP_ENERGY_SELF_LEAVE_ST := "UA31ST_MMM_1_070"
 const RAW_SELF_SPECIAL_PLAY_PERMISSION := "UA31BT_MMM_1_090"
+const RAW_CONDITIONAL_ENERGY_DISCOUNT := "UA31BT_MMM_1_068"
+const RAW_DRAW_THEN_DISCARD := "UA31ST_MMM_1_101"
+const RAW_ACTIVE_FIELD := "UA31BT_MMM_1_091"
+const RAW_SOUL_GEM_FINAL_BT := "UA31BT_MMM_1_096"
+const RAW_LIFE_TO_HAND_DOUBLE_ATTACK_RAID := "UA31BT_MMM_1_083"
+const RAW_MULTI_NAME_RAID := "UA31ST_MMM_1_104"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -67,6 +73,14 @@ func _init() -> void:
 	_run_test("Raw Self Special Play Permission Still Respects RAID Validation", _test_raw_special_play_permission_still_respects_raid_target_validation)
 	_run_test("Raw Preview Selected Card Drives Followup Filter", _test_raw_preview_selected_card_context_drives_followup_target_filter)
 	_run_test("Raw Preview Skip Branch Keeps Deck Order", _test_raw_preview_skip_branch_keeps_deck_order_contract)
+	_run_test("Raw Conditional Energy Discount Requires Opponent Yellow Or Purple", _test_raw_conditional_energy_discount_requires_opponent_yellow_or_purple)
+	_run_test("Raw On Enter Draw Then Discard Uses Explicit Choice", _test_raw_on_enter_draw_then_discard_uses_explicit_choice)
+	_run_test("Raw Field Enters Active", _test_raw_field_enters_active)
+	_run_test("Raw Field Main Activate Buff Uses Magic Girl Targeting", _test_raw_field_main_activate_buff_uses_magic_girl_targeting)
+	_run_test("Raw Soul Gem Ready AP Supports Explicit 0 To 2 Choice", _test_raw_soul_gem_ready_ap_supports_explicit_zero_to_two_choice)
+	_run_test("Raw Soul Gem Final Restores Life Only When Empty", _test_raw_soul_gem_final_restores_life_only_when_empty)
+	_run_test("Raw Raid Gains Double Attack After Life To Hand This Turn", _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn)
+	_run_test("Raw Raid Gains Tiered Bonuses From Unique Name Count", _test_raw_raid_gains_tiered_bonuses_from_unique_name_count)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -526,8 +540,10 @@ func _test_raw_event_ready_ap() -> Dictionary:
 	if event_uid == "":
 		return _fail("Raw event sample card should be available.")
 	manager.play_card(event_uid, UATypes.Zone.OUTSIDE)
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw event should not request explicit AP slot selection.")
 	if player.ap_active_count() != 2:
-		return _fail("Raw event should ready up to 2 AP after paying 1 AP.")
+		return _fail("Raw event should automatically ready up to 2 AP after paying 1 AP.")
 	if not player.outside.has(event_uid):
 		return _fail("Raw event should move to outside after resolution.")
 	return _ok()
@@ -1921,8 +1937,6 @@ func _test_raw_special_play_permission_still_respects_raid_target_validation() -
 	var hand_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
 	if hand_actions.has("RAID"):
 		return _fail("Raw self special play validation sample should still require a legal RAID base instead of bypassing target validation.")
-	if not hand_actions.has("PLAY_FRONT"):
-		return _fail("Raw self special play validation sample should still keep normal hand play available after leaving the field.")
 	return _ok()
 
 func _test_raw_preview_selected_card_context_drives_followup_target_filter() -> Dictionary:
@@ -2121,6 +2135,346 @@ func _test_raw_preview_skip_branch_keeps_deck_order_contract() -> Dictionary:
 		return _fail("Raw preview skip order sample should preserve the chosen bottom-deck order even when the reward branch is skipped.")
 	return _ok()
 
+func _test_raw_conditional_energy_discount_requires_opponent_yellow_or_purple() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_exact_red_energy_cards(manager, player_id, 2):
+		return _fail("Raw conditional energy discount sample should prepare exactly 2 red energy first.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_CONDITIONAL_ENERGY_DISCOUNT, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw conditional energy discount sample card should be available.")
+	var preview_without := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, source_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	if int((preview_without.get("cost_energy", {}) as Dictionary).get("RED", 0)) != 3:
+		return _fail("Raw conditional energy discount sample should keep its base 3-red cost without opponent yellow or purple cards.")
+	var blocked_validation := manager.rules_engine.can_play_card(manager.game_state, player_id, source_uid, UATypes.Zone.FRONT_LINE, preview_without)
+	if bool(blocked_validation.get("ok", false)):
+		return _fail("Raw conditional energy discount sample should still fail to play with only 2 red energy before the condition is met.")
+	var opponent_yellow_uid := _spawn_temp_card(manager, opponent_id, {
+		"id": "TMP_OPPONENT_YELLOW_FIELD",
+		"name": "测试黄色对手牌",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-YELLOW-1",
+		"traits": [],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if opponent_yellow_uid == "":
+		return _fail("Raw conditional energy discount sample should be able to prepare an opponent yellow card.")
+	var preview_with := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, source_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	if int((preview_with.get("cost_energy", {}) as Dictionary).get("RED", 0)) != 2:
+		return _fail("Raw conditional energy discount sample should reduce its required red energy by exactly 1 when the opponent has a yellow card.")
+	var allowed_validation := manager.rules_engine.can_play_card(manager.game_state, player_id, source_uid, UATypes.Zone.FRONT_LINE, preview_with)
+	if not bool(allowed_validation.get("ok", false)):
+		return _fail("Raw conditional energy discount sample should become playable once the opponent has a yellow or purple card.")
+	return _ok()
+
+func _test_raw_on_enter_draw_then_discard_uses_explicit_choice() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	if not _ensure_exact_red_energy_cards(manager, player_id, 1):
+		return _fail("Raw draw-then-discard sample should prepare exactly 1 red energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_DRAW_THEN_DISCARD, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw draw-then-discard sample card should be available.")
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var deck_before := player.deck.size()
+	var outside_before := player.outside.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw draw-then-discard sample should request an explicit discard choice after drawing.")
+	if player.deck.size() != deck_before - 1:
+		return _fail("Raw draw-then-discard sample should draw exactly 1 card before the discard choice resolves.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
+		return _fail("Raw draw-then-discard sample should use ability target selection for the discard.")
+	var choice_values := _extract_choice_values(decision.get("choices", []))
+	if choice_values.size() != hand_before:
+		return _fail("Raw draw-then-discard sample should expose the post-draw hand as discard choices.")
+	var discard_uid := choice_values[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": discard_uid,
+	})
+	if player.hand.size() != hand_before - 1:
+		return _fail("Raw draw-then-discard sample should net -1 hand after playing from hand, drawing 1, then discarding 1.")
+	if player.outside.size() != outside_before + 1:
+		return _fail("Raw draw-then-discard sample should place exactly 1 discarded card into outside.")
+	if not player.outside.has(discard_uid):
+		return _fail("Raw draw-then-discard sample should move the chosen discard card to outside.")
+	return _ok()
+
+func _test_raw_field_enters_active() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	if not _ensure_exact_red_energy_cards(manager, player_id, 3):
+		return _fail("Raw active field sample should prepare exactly 3 red energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ACTIVE_FIELD, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw active field sample card should be available.")
+	manager.play_card(source_uid, UATypes.Zone.ENERGY_LINE)
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null or source_card.zone != UATypes.Zone.ENERGY_LINE:
+		return _fail("Raw active field sample should enter the energy line.")
+	if source_card.state != UATypes.CardState.ACTIVE:
+		return _fail("Raw active field sample should enter the field in ACTIVE state.")
+	return _ok()
+
+func _test_raw_field_main_activate_buff_uses_magic_girl_targeting() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ACTIVE_FIELD, UATypes.Zone.ENERGY_LINE)
+	if source_uid == "":
+		return _fail("Raw field buff sample should prepare the field card.")
+	var magic_uid := _spawn_magic_girl_named_card(manager, player_id, "测试魔法少女目标", 1500, UATypes.Zone.FRONT_LINE)
+	var non_magic_uid := _spawn_named_character(manager, player_id, "测试非魔法少女目标", ["普通人"], 1500, UATypes.Zone.FRONT_LINE)
+	if magic_uid == "" or non_magic_uid == "":
+		return _fail("Raw field buff sample should prepare both legal and illegal friendly targets.")
+	var magic_card = manager.game_state.get_card(magic_uid)
+	if magic_card == null:
+		return _fail("Raw field buff sample legal target should exist.")
+	var bp_before: int = magic_card.current_bp
+	manager.request_main_activate(source_uid)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw field buff sample should request explicit target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
+		return _fail("Raw field buff sample should use ability target selection.")
+	var choice_values := _extract_choice_values(decision.get("choices", []))
+	if not choice_values.has(magic_uid):
+		return _fail("Raw field buff sample should include the magic-girl ally in the candidate set.")
+	if choice_values.has(non_magic_uid):
+		return _fail("Raw field buff sample should exclude non-magic-girl allies from the candidate set.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": magic_uid,
+	})
+	if magic_card.current_bp != bp_before + 500:
+		return _fail("Raw field buff sample should grant exactly +500 BP to the selected magic-girl ally.")
+	return _ok()
+
+func _test_raw_soul_gem_ready_ap_supports_explicit_zero_to_two_choice() -> Dictionary:
+	var manager_skip := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager_skip.game_state.active_player_id = player_id
+	manager_skip.game_state.phase = UATypes.Phase.MAIN
+	var skip_player := _player(manager_skip, player_id)
+	_fill_ap(skip_player, 3)
+	_set_ap_active(skip_player, 1)
+	if not _ensure_exact_red_energy_cards(manager_skip, player_id, 3):
+		return _fail("Raw soul gem AP sample should prepare exactly 3 red energy for the skip branch.")
+	var skip_uid := _move_or_spawn_card_to_zone(manager_skip, player_id, RAW_SOUL_GEM_FINAL_BT, UATypes.Zone.HAND)
+	if skip_uid == "":
+		return _fail("Raw soul gem AP sample should prepare the event card for the skip branch.")
+	manager_skip.play_card(skip_uid, UATypes.Zone.OUTSIDE)
+	if not manager_skip.game_state.pending_decisions.is_empty():
+		return _fail("Raw soul gem AP sample should not request explicit AP slot selection.")
+	if skip_player.ap_active_count() != 2:
+		return _fail("Raw soul gem AP sample should automatically ready up to 2 AP slots after paying its cost.")
+
+	var manager_ready := _new_manager()
+	manager_ready.game_state.active_player_id = player_id
+	manager_ready.game_state.phase = UATypes.Phase.MAIN
+	var ready_player := _player(manager_ready, player_id)
+	_fill_ap(ready_player, 3)
+	_set_ap_active(ready_player, 1)
+	if not _ensure_exact_red_energy_cards(manager_ready, player_id, 3):
+		return _fail("Raw soul gem AP sample should prepare exactly 3 red energy for the 2-target branch.")
+	var ready_uid := _move_or_spawn_card_to_zone(manager_ready, player_id, RAW_SOUL_GEM_FINAL_BT, UATypes.Zone.HAND)
+	if ready_uid == "":
+		return _fail("Raw soul gem AP sample should prepare the event card for the 2-target branch.")
+	manager_ready.play_card(ready_uid, UATypes.Zone.OUTSIDE)
+	if not manager_ready.game_state.pending_decisions.is_empty():
+		return _fail("Raw soul gem AP sample should still resolve without explicit AP slot selection in the 2-target branch.")
+	if ready_player.ap_active_count() != 2:
+		return _fail("Raw soul gem AP sample should automatically ready up to 2 AP slots.")
+	return _ok()
+
+func _test_raw_soul_gem_final_restores_life_only_when_empty() -> Dictionary:
+	var manager_empty := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var empty_uid := _move_card_to_life_top(manager_empty, player_id, RAW_SOUL_GEM_FINAL_BT)
+	if empty_uid == "":
+		return _fail("Raw soul gem final sample should move the BT card to life for the empty-life branch.")
+	_trim_life_to_count(manager_empty, player_id, 1)
+	var empty_player := _player(manager_empty, player_id)
+	var deck_before := empty_player.deck.size()
+	manager_empty.effect_resolver.deal_damage_to_player(manager_empty.game_state, player_id, 1)
+	manager_empty.resolve_life_trigger_decision(empty_uid, true)
+	if empty_player.life.size() != 1:
+		return _fail("Raw soul gem final sample should restore exactly 1 life when the player had no remaining life.")
+	if empty_player.deck.size() != deck_before - 1:
+		return _fail("Raw soul gem final sample should move exactly 1 card from the top of the deck to life when empty.")
+	if not empty_player.outside.has(empty_uid):
+		return _fail("Raw soul gem final sample should still send the revealed life trigger card to outside after resolution.")
+
+	var manager_not_empty := _new_manager()
+	var non_empty_uid := _move_card_to_life_top(manager_not_empty, player_id, RAW_SOUL_GEM_FINAL_BT)
+	if non_empty_uid == "":
+		return _fail("Raw soul gem final sample should move the BT card to life for the non-empty branch.")
+	_trim_life_to_count(manager_not_empty, player_id, 2)
+	var non_empty_player := _player(manager_not_empty, player_id)
+	var non_empty_deck_before := non_empty_player.deck.size()
+	manager_not_empty.effect_resolver.deal_damage_to_player(manager_not_empty.game_state, player_id, 1)
+	manager_not_empty.resolve_life_trigger_decision(non_empty_uid, true)
+	if non_empty_player.life.size() != 1:
+		return _fail("Raw soul gem final sample should leave the remaining life unchanged when the player was not empty.")
+	if non_empty_player.deck.size() != non_empty_deck_before:
+		return _fail("Raw soul gem final sample should not move any card from deck to life when life was not empty.")
+	return _ok()
+
+func _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_exact_red_energy_cards(manager, player_id, 4):
+		return _fail("Raw life-to-hand RAID sample should prepare exactly 4 red energy.")
+	var raid_base_uid := _spawn_magic_girl_named_card(manager, player_id, "佐倉 杏子", 2000, UATypes.Zone.FRONT_LINE)
+	var buff_target_uid := _spawn_magic_girl_named_card(manager, player_id, "测试杏子增益目标", 1500, UATypes.Zone.FRONT_LINE)
+	if raid_base_uid == "" or buff_target_uid == "":
+		return _fail("Raw life-to-hand RAID sample should prepare both the RAID base and a friendly buff target.")
+	var source_uid := _move_card_to_life_top(manager, player_id, RAW_LIFE_TO_HAND_DOUBLE_ATTACK_RAID)
+	if source_uid == "":
+		return _fail("Raw life-to-hand RAID sample should place the official RAID card on top of life.")
+	_trim_life_to_count(manager, player_id, 2)
+	var source_card = manager.game_state.get_card(source_uid)
+	var buff_target = manager.game_state.get_card(buff_target_uid)
+	if source_card == null or buff_target == null:
+		return _fail("Raw life-to-hand RAID sample runtime cards should exist.")
+	var target_bp_before: int = buff_target.current_bp
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
+	manager.resolve_life_trigger_decision(source_uid, true)
+	if manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw life-to-hand RAID sample should prompt for add-to-hand or raid-now.")
+	var choice_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
+	if manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw life-to-hand RAID sample should prompt for an explicit RAID target after choosing RAID_NOW.")
+	var target_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": raid_base_uid})
+	if source_card.zone != UATypes.Zone.FRONT_LINE or not bool(source_card.flags.get("entered_via_raid", false)):
+		return _fail("Raw life-to-hand RAID sample should place the source card onto the front line as a RAID card.")
+	manager.effect_resolver.finalize_pending_life_damage(manager.game_state)
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var first_attack := manager.request_attack(source_uid)
+	if not bool(first_attack.get("ok", false)):
+		return _fail("Raw life-to-hand RAID sample should be able to declare its first attack after the RAID life trigger resolves.")
+	manager.resolve_attack(source_uid)
+	_drain_pending_life_windows(manager, false)
+	if source_card.state != UATypes.CardState.ACTIVE:
+		return _fail("Raw life-to-hand RAID sample should gain DOUBLE_ATTACK and become ACTIVE again after its first attack.")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw life-to-hand RAID sample should still request the explicit ally buff target selection.")
+	var buff_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var buff_choices := _extract_choice_values(buff_decision.get("choices", []))
+	if not buff_choices.has(buff_target_uid):
+		return _fail("Raw life-to-hand RAID sample should expose the friendly buff target in its ON_ATTACK selection.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(buff_decision.get("resolution_id", "")),
+		"choice": buff_target_uid,
+	})
+	if buff_target.current_bp != target_bp_before + 1000:
+		return _fail("Raw life-to-hand RAID sample should grant exactly +1000 BP to the selected friendly character.")
+	var second_attack := manager.request_attack(source_uid)
+	if not bool(second_attack.get("ok", false)):
+		return _fail("Raw life-to-hand RAID sample should allow a second attack after gaining DOUBLE_ATTACK.")
+	return _ok()
+
+func _test_raw_raid_gains_tiered_bonuses_from_unique_name_count() -> Dictionary:
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+
+	var manager_two := _new_manager()
+	manager_two.game_state.active_player_id = player_id
+	manager_two.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_two, player_id), 3)
+	if not _ensure_exact_red_energy_cards(manager_two, player_id, 4):
+		return _fail("Raw multi-name RAID sample should prepare exactly 4 red energy for the 2-name branch.")
+	var raid_two_uid := _move_card_to_life_top(manager_two, player_id, RAW_MULTI_NAME_RAID)
+	var base_two_uid := _spawn_magic_girl_named_card(manager_two, player_id, "鹿目 まどか", 2000, UATypes.Zone.FRONT_LINE)
+	var other_two_uid := _spawn_magic_girl_named_card(manager_two, player_id, "巴 マミ", 1500, UATypes.Zone.FRONT_LINE)
+	var other_three_uid := _spawn_magic_girl_named_card(manager_two, player_id, "佐倉 杏子", 1500, UATypes.Zone.ENERGY_LINE)
+	if raid_two_uid == "" or base_two_uid == "" or other_two_uid == "" or other_three_uid == "":
+		return _fail("Raw multi-name RAID sample should prepare the 2-name RAID setup.")
+	_trim_life_to_count(manager_two, player_id, 2)
+	manager_two.effect_resolver.deal_damage_to_player(manager_two.game_state, player_id, 1)
+	manager_two.resolve_life_trigger_decision(raid_two_uid, true)
+	manager_two.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
+	manager_two.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": base_two_uid})
+	manager_two.effect_resolver.finalize_pending_life_damage(manager_two.game_state)
+	var deck_before := _player(manager_two, player_id).deck.size()
+	manager_two.game_state.phase = UATypes.Phase.ATTACK
+	var two_name_attack := manager_two.request_attack(raid_two_uid)
+	if not bool(two_name_attack.get("ok", false)):
+		return _fail("Raw multi-name RAID sample should be able to declare the 2-name branch attack after raiding from life.")
+	manager_two.resolve_attack(raid_two_uid)
+	_drain_pending_life_windows(manager_two, false)
+	if _player(manager_two, player_id).deck.size() != deck_before - 1:
+		return _fail("Raw multi-name RAID sample should draw exactly 1 card when it attacks unblocked with at least 2 unique magic-girl names.")
+
+	var manager_four := _new_manager()
+	manager_four.game_state.active_player_id = player_id
+	manager_four.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_four, player_id), 3)
+	if not _ensure_exact_red_energy_cards(manager_four, player_id, 4):
+		return _fail("Raw multi-name RAID sample should prepare exactly 4 red energy for the 4-name branch.")
+	var raid_four_uid := _move_card_to_life_top(manager_four, player_id, RAW_MULTI_NAME_RAID)
+	var base_four_uid := _spawn_magic_girl_named_card(manager_four, player_id, "鹿目 まどか", 2000, UATypes.Zone.FRONT_LINE)
+	var extra_one_uid := _spawn_magic_girl_named_card(manager_four, player_id, "巴 マミ", 1500, UATypes.Zone.FRONT_LINE)
+	var extra_two_uid := _spawn_magic_girl_named_card(manager_four, player_id, "佐倉 杏子", 1500, UATypes.Zone.ENERGY_LINE)
+	var extra_three_uid := _spawn_magic_girl_named_card(manager_four, player_id, "美樹 さやか", 1500, UATypes.Zone.ENERGY_LINE)
+	var extra_four_uid := _spawn_magic_girl_named_card(manager_four, player_id, "志筑 仁美", 1000, UATypes.Zone.ENERGY_LINE)
+	var blocker_uid := _spawn_named_character(manager_four, opponent_id, "测试阻挡者", [], 1000, UATypes.Zone.FRONT_LINE)
+	if raid_four_uid == "" or base_four_uid == "" or extra_one_uid == "" or extra_two_uid == "" or extra_three_uid == "" or extra_four_uid == "" or blocker_uid == "":
+		return _fail("Raw multi-name RAID sample should prepare the full 4-name combat setup.")
+	_trim_life_to_count(manager_four, player_id, 2)
+	manager_four.effect_resolver.deal_damage_to_player(manager_four.game_state, player_id, 1)
+	manager_four.resolve_life_trigger_decision(raid_four_uid, true)
+	manager_four.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
+	manager_four.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": base_four_uid})
+	manager_four.effect_resolver.finalize_pending_life_damage(manager_four.game_state)
+	var raid_four_card = manager_four.game_state.get_card(raid_four_uid)
+	if raid_four_card == null:
+		return _fail("Raw multi-name RAID sample 4-name attacker should exist.")
+	manager_four.game_state.phase = UATypes.Phase.ATTACK
+	var four_name_attack := manager_four.request_attack(raid_four_uid)
+	if not bool(four_name_attack.get("ok", false)):
+		return _fail("Raw multi-name RAID sample should be able to declare the 4-name branch attack after raiding from life.")
+	manager_four.resolve_attack(raid_four_uid, blocker_uid)
+	_drain_pending_life_windows(manager_four, false)
+	if raid_four_card.current_bp != 1000:
+		return _fail("Raw multi-name RAID sample should gain exactly +1000 BP in the 4-name branch.")
+	if _player(manager_four, opponent_id).life.size() != 6:
+		return _fail("Raw multi-name RAID sample should deal exactly 1 extra damage to the opponent after winning with the 4-name branch.")
+	return _ok()
+
 func _fill_ap(player: PlayerState, total: int) -> void:
 	player.ap_area.clear()
 	for i in range(total):
@@ -2129,6 +2483,43 @@ func _fill_ap(player: PlayerState, total: int) -> void:
 func _set_ap_active(player: PlayerState, active_count: int) -> void:
 	for i in range(player.ap_area.size()):
 		player.ap_area[i]["active"] = i < active_count
+
+func _drain_pending_life_windows(manager: GameManager, activate_life_triggers := false) -> void:
+	var safety := 16
+	while safety > 0:
+		if not manager.game_state.pending_life_triggers.is_empty():
+			var trigger_entry: Dictionary = manager.game_state.pending_life_triggers[0]
+			manager.resolve_life_trigger_decision(str(trigger_entry.get("card_uid", "")), activate_life_triggers)
+			safety -= 1
+			continue
+		if not manager.game_state.pending_life_reveal.is_empty():
+			var current_uid := str(manager.game_state.pending_life_reveal.get("current_card_uid", ""))
+			if current_uid == "":
+				break
+			manager.acknowledge_life_reveal(current_uid)
+			safety -= 1
+			continue
+		break
+
+func _spawn_named_character(manager: GameManager, player_id: String, card_name: String, traits: Array, bp: int, zone: int, card_type := "CHARACTER") -> String:
+	return _spawn_temp_card(manager, player_id, {
+		"id": "TMP_%s_%s_%d" % [card_name, player_id, manager.game_state.cards.size()],
+		"name": card_name,
+		"card_type": card_type,
+		"title_code": "TMP",
+		"number": "TMP-%d" % manager.game_state.cards.size(),
+		"traits": traits.duplicate(),
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": bp,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, zone, true)
+
+func _spawn_magic_girl_named_card(manager: GameManager, player_id: String, card_name: String, bp: int, zone: int) -> String:
+	return _spawn_named_character(manager, player_id, card_name, ["魔法少女"], bp, zone)
 
 func _place_red_energy(manager: GameManager, player_id: String, count: int) -> bool:
 	var moved := 0

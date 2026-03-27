@@ -309,10 +309,19 @@
       "RAID"
     ],
     "template_types": [
+      "TEMP_KEYWORD",
       "TEMP_BP",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA31BT_MMM_1_083_on_attack_0c5835f99c",
+        "timing": "ON_ATTACK",
+        "status": "SUPPORTED",
+        "text": "このターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラは（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。",
+        "reason": "",
+        "template_type": "TEMP_KEYWORD"
+      },
       {
         "id": "UA31BT_MMM_1_083_on_attack_55de0988ed",
         "timing": "ON_ATTACK",
@@ -796,9 +805,27 @@
       "RAID"
     ],
     "template_types": [
+      "DRAW_1",
+      "TEMP_BP",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA31ST_MMM_1_104_on_battle_end_1263e3c809",
+        "timing": "ON_BATTLE_END",
+        "status": "SUPPORTED",
+        "text": "2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA31ST_MMM_1_104_on_attack_dd13351415",
+        "timing": "ON_ATTACK",
+        "status": "SUPPORTED",
+        "text": "4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
+        "reason": "",
+        "template_type": "TEMP_BP"
+      },
       {
         "id": "UA31ST_MMM_1_104_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",

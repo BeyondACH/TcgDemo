@@ -133,6 +133,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			"target_player_id": defender_player_id,
 			"attacker_uid": attacker_uid,
 			"target_uid": target_uid,
+			"battle_outcome": str(resolved_battle_result.get("battle_outcome", "")),
 		}))
 		_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
 		state.last_battle_result = resolved_battle_result
@@ -220,6 +221,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 			"target_player_id": defender_player_id,
 			"attacker_uid": attacker_uid,
 			"blocker_uid": blocker_uid,
+			"battle_outcome": str(resolved_battle_result.get("battle_outcome", "")),
 		}))
 		_after_block_state_change(blocker, blocker_def, was_repeat_block)
 	else:
@@ -230,6 +232,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 		logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_BATTLE_END, state, {
 			"target_player_id": defender_player_id,
 			"attacker_uid": attacker_uid,
+			"battle_outcome": str(resolved_battle_result.get("battle_outcome", "")),
 		}))
 	_after_attack_state_change(attacker, attacker_def, was_repeat_attack)
 	state.last_battle_result = resolved_battle_result

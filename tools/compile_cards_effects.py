@@ -49,6 +49,7 @@ def _build_play_rule(card: dict) -> dict:
         "mode": "NORMAL",
         "special_modes": special_modes,
         "cost_modifiers": _build_play_cost_modifiers(card),
+        "enter_state": _build_enter_state(card),
     }
 
 
@@ -76,7 +77,60 @@ def _build_play_cost_modifiers(card: dict) -> list[dict]:
                 },
             }
         )
+        continue
+    for effect_entry in card.get("effects", []):
+        text = str(effect_entry.get("text", "")).strip()
+        if text != "相手の場に黄か紫のカードがある場合、手札にあるこのカードの必要エナジーを減らす。":
+            continue
+        energy_delta = _parse_energy_delta_from_label(str(effect_entry.get("source_label", "")))
+        if not energy_delta:
+            continue
+        modifiers.append(
+            {
+                "type": "SELF_HAND_ENERGY_DELTA",
+                "from_zone": "HAND",
+                "energy_delta": energy_delta,
+                "requirements": [
+                    {
+                        "type": "PLAYER_HAS_COLOR_IN_FIELD",
+                        "player": "OPPONENT",
+                        "colors": ["YELLOW", "PURPLE"],
+                    }
+                ],
+                "ui": {
+                    "text": text,
+                    "effect_box": str(effect_entry.get("effect_box", "OUTER")),
+                },
+            }
+        )
     return modifiers
+
+
+def _build_enter_state(card: dict) -> str:
+    for effect_entry in card.get("effects", []):
+        text = str(effect_entry.get("text", "")).strip()
+        if text == "このフィールドはアクティブで場に登場させる。":
+            return "ACTIVE"
+    return "RESTED"
+
+
+def _parse_energy_delta_from_label(label: str) -> dict:
+    match = re.fullmatch(r"(赤|青|緑|黄|紫|白|黒)×(\d+)", label.strip())
+    if not match:
+        return {}
+    color_map = {
+        "赤": "RED",
+        "青": "BLUE",
+        "緑": "GREEN",
+        "黄": "YELLOW",
+        "紫": "PURPLE",
+        "白": "WHITE",
+        "黒": "BLACK",
+    }
+    color = color_map.get(match.group(1), "")
+    if color == "":
+        return {}
+    return {color: -int(match.group(2))}
 
 
 def _has_life_trigger_raid_text(card: dict) -> bool:
@@ -374,7 +428,14 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
         )
 
     if text == "自分のAPカードを2枚まで選び、アクティブにする。":
-        return _supported_ability(card, event_name, trigger_entry, [], [], [{"type": "ACTIVATE_AP_SLOTS", "value": 2}])
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            [],
+            [{"type": "ACTIVATE_AP_SLOTS", "value": 2}],
+        )
 
     match = re.fullmatch(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。", text)
     if match:
@@ -692,7 +753,15 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
     if text == "自分のAPカードを2枚まで選び、アクティブにする。":
-        return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "ACTIVATE_AP_SLOTS", "value": 2}], "TRIGGERED")
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            [],
+            [{"type": "ACTIVATE_AP_SLOTS", "value": 2}],
+            "TRIGGERED",
+        )
 
     if text == "カードを1枚引く。":
         return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 1}], "TRIGGERED")
@@ -841,9 +910,64 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
     return _unsupported_ability(card, event_name, pseudo_trigger, "当前原子要求/步骤模板尚未覆盖该文本模式。")
 
 
+def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
+    text = str(effect_entry.get("text", "")).strip()
+    pseudo_trigger = {
+        "source_label": effect_entry.get("source_label", ""),
+        "effect_box": effect_entry.get("effect_box", "OUTER"),
+        "text": text,
+    }
+
+    if text == "このターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラは（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。":
+        pseudo_trigger["trigger"] = "ON_ATTACK"
+        return _supported_ability(
+            card,
+            "ON_ATTACK",
+            pseudo_trigger,
+            [{"type": "PLAYER_TURN_FLAG_TRUE", "player": "SELF", "flag": "life_card_added_to_hand"}],
+            [],
+            [{"type": "ADD_TEMP_KEYWORD", "target_uid": "SOURCE_CARD", "keyword": "DOUBLE_ATTACK", "expires": "END_OF_TURN"}],
+        )
+
+    if text == "2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。":
+        pseudo_trigger["trigger"] = "ON_BATTLE_END"
+        return _supported_ability(
+            card,
+            "ON_BATTLE_END",
+            pseudo_trigger,
+            [
+                {"type": "CONTROLLER_TRAIT_NAME_COUNT_GTE", "trait": "魔法少女", "value": 2},
+                {"type": "CONTEXT_BATTLE_OUTCOME_IS", "value": "DIRECT_DAMAGE"},
+            ],
+            [],
+            [{"type": "DRAW", "value": 1}],
+        )
+
+    if text == "4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）":
+        pseudo_trigger["trigger"] = "ON_ATTACK"
+        return _supported_ability(
+            card,
+            "ON_ATTACK",
+            pseudo_trigger,
+            [{"type": "CONTROLLER_TRAIT_NAME_COUNT_GTE", "trait": "魔法少女", "value": 4}],
+            [],
+            [
+                {"type": "ADD_TEMP_BP_MODIFIER", "target_uid": "SOURCE_CARD", "value": 1000, "expires": "END_OF_TURN"},
+                {"type": "ADD_TEMP_KEYWORD", "target_uid": "SOURCE_CARD", "keyword": "IMPACT", "expires": "END_OF_TURN"},
+            ],
+        )
+
+    return None
+
+
 def _build_card_effects(card: dict, semantic_map: dict[str, dict]) -> dict:
     keywords = _infer_keywords(card)
     abilities = []
+    if str(card.get("card_type", "")) != "EVENT":
+        for effect_entry in card.get("effects", []):
+            ability = _compile_passive_effect(card, effect_entry)
+            if ability:
+                abilities.append(ability)
     for trigger_entry in card.get("trigger_effects", []):
         abilities.extend(_normalize_compiled_abilities(_compile_trigger(card, trigger_entry, semantic_map)))
     if str(card.get("card_type", "")) == "EVENT":

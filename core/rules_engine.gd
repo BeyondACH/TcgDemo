@@ -37,9 +37,10 @@ func can_play_card(state: GameState, player_id: String, card_uid: String, target
 		return raid_validation
 	var is_raid_play := str(raid_validation.get("mode", "NORMAL")) == "RAID"
 	var effective_cost_ap := int(play_modifiers.get("cost_ap", card_def.cost_ap))
+	var effective_cost_energy: Dictionary = play_modifiers.get("cost_energy", card_def.cost_energy)
 	if not _can_pay_ap(player, effective_cost_ap):
 		return {"ok": false, "reason": "not_enough_ap"}
-	if not _has_required_energy(state, player, card_def.cost_energy):
+	if not _has_required_energy(state, player, effective_cost_energy):
 		return {"ok": false, "reason": "not_enough_energy"}
 	match card_def.card_type:
 		UATypes.CardType.CHARACTER:

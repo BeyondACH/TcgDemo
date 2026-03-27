@@ -33,6 +33,7 @@ func begin_turn(state: GameState) -> Array[String]:
 		effect_resolver.cleanup_start_turn_expirations(state, state.active_player_id)
 	player.turn_count += 1
 	player.used_bonus_draw = false
+	state.player_turn_flags[state.active_player_id] = {}
 	zone_manager.reset_turn_flags(state, state.active_player_id)
 	var ap_target: int = _ap_target_for_player(player, state.active_player_id)
 	zone_manager.add_ap(player, ap_target)

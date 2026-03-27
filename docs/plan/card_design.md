@@ -2,9 +2,16 @@
 
 ## 当前状态
 
-- 当前 `data/cards/cards_effects.json` 统计为 73 个已支持能力、0 个未支持能力。
-- 核心 P1 与剩余 P1 已全部落地，运行时已覆盖“特殊登场/出牌规则授权”“临时产能修饰 + 延迟自退场”等高阶模板。
+- 当前 `data/cards/cards_effects.json` 统计为 76 个已支持能力、0 个未支持能力。
+- 核心 P1 与剩余 P1 已全部落地，运行时已覆盖“特殊登场/出牌规则授权”“临时产能修饰 + 延迟自退场”“正式 raw RAID/Final/手牌减费”这批高风险模板。
 - 现有运行时已落地的原子步骤包括：`ACTIVATE_AP_SLOTS`、`ACTIVATE_CARD`、`ADD_TEMP_BP_MODIFIER`、`ADD_TEMP_KEYWORD`、`DRAW`、`FOR_EACH`、`LIFE_TRIGGER_RAID_CHOICE`、`MOVE_CARD`、`MOVE_SELECTED_CARDS`、`MOVE_TOP_DECK_TO_LIFE`、`MOVE_ZONE`、`PLAY_SELECTED_CARDS`、`PREVIEW_TOP_DECK`、`REGISTER_DELAYED_EFFECT`、`REGISTER_STATIC_MODIFIER`、`REORDER_CONTEXT_CARDS`、`SELECT_TARGETS`、`SET_CONTEXT_FLAG`。
+- 本轮补齐的通用能力口径：
+  - 手牌中的条件能量减费（`SELF_HAND_ENERGY_DELTA`）
+  - 场地牌以 `ACTIVE` 状态登场（`play_rule.enter_state`）
+  - “最多 N 张 AP”自动恢复
+  - 基于“本回合曾从生命区加手”的条件 requirement
+  - 基于 `battle_outcome` 的战斗后条件 requirement
+  - 生命/揭示窗口结束后自动恢复 effect queue，避免战斗后队列被挂起
 
 ## 优先级 P0：优先补齐的通用能力模板
 
@@ -124,4 +131,5 @@
 - [ ] 每补一类原子能力，都要同步更新 `tools/compile_cards_effects.py`
 - [ ] 每补一类原子能力，都要重新生成 `data/cards/cards_effects.json`
 - [ ] 至少补一条对应的最小对局或冒烟用例，覆盖新模板的主链路
+- [ ] 正式 raw 样例扩充后，`docs/cards_raw_minimal_duel_smoke_test.gd` 应维持当前 39 项通过、0 项失败基线
 - [ ] 若改动触及 UI 待决策流或预览选择流，额外确认手牌区域不遮挡战场区域

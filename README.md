@@ -1,100 +1,97 @@
 # TcgDemo
 
-基于 Godot 4.6 的本地 1v1 卡牌对战原型项目，玩法设计参考 UNION ARENA 风格。当前仓库已经不只是“能开局的原型”，而是具备基础对局闭环、关键高风险规则、统一效果队列消费链路，以及一批正式 `cards_raw.json` 样例验证的可运行版本。
+基于 Godot 4.6 的本地 1v1 卡牌对战原型项目，玩法设计参考 UNION ARENA 风格。当前仓库已完成基础对局闭环、主要高风险规则区、统一 DSL/IR 执行链与一轮正式 raw 样例回归，开发重点已转入“回归覆盖与稳定性建设”。
 
 ## 项目定位
 
 - 引擎：Godot 4.6
 - 语言：GDScript
 - 主场景：`res://scenes/battle_scene.tscn`
-- 项目目标：先保持规则实现与权威规则文档一致，再逐步把更多正式卡牌文本收敛到统一 DSL/IR 运行时
+- 目标：保持规则实现与 `docs/rules/rule.md` 一致，并持续把更多正式卡牌文本收敛到统一 DSL/IR 运行时
 
-## 权威来源
+## 先看哪些文档
 
-开始改代码前，建议先看这几份文件：
+开始改代码前，建议先读这几份文件：
 
 - `docs/rules/rule.md`
-  - 项目规则、区域限制、结算顺序、状态机和数据映射的最高权威来源
+  - 规则、区域限制、结算顺序、状态机和数据映射的最高权威来源
 - `AGENTS.md`
-  - 本仓库的多 agent 协作规范、边界、验收要求和日志要求
+  - 多 agent 协作规范、边界、日志要求和验收标准
 - `docs/plan/project_development_plan.md`
-  - 正式开发计划
+  - 当前正式开发计划与阶段安排
 - `docs/plan/mile_stone.md`
-  - 当前里程碑盘点，描述“仓库目前已经实现到了哪里”
+  - 当前仓库已经实现到哪里的盘点
 
-如果代码、测试、文档三者不一致，应以 `docs/rules/rule.md` 为准。
+若代码、测试、README 与规则冲突，以 `docs/rules/rule.md` 为准。
 
-## 当前实现状态
+## 当前状态
 
-### 基础对局闭环
+### 规则与对局闭环
 
 当前已经具备：
 
-- 双方 50 张主卡组、起手 7 张、生命区 7 张
-- 回合与阶段流转
-- AP 成长、消耗与重置
-- 区域管理：牌库、手牌、生命区、前线、能量线、场外、除外
-- 基础出牌规则
-- 攻击、阻挡、战斗伤害与胜负判定
-- 生命触发显式决策
-- 一批关键字与特殊规则，包括 `STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`
+- 50 张主卡组、7 张起手、7 张生命区
+- `DRAW -> MOVE -> MAIN -> ATTACK -> END` 主阶段流转
+- AP 成长、支付、额外抽牌与结束阶段不恢复 AP
+- 前线/能量线/生命区/AP/场外/除外等核心区域管理
+- 基础出牌、移动、攻击、阻挡、伤害与胜负判断
+- 生命触发显式决策与结束阶段显式弃牌决策
 
-### 效果系统
+### 已覆盖的关键规则能力
 
-当前效果系统已经形成统一的 `effect_queue` 消费主链路，并支持：
+当前已接入一批高价值关键词与特殊规则：
 
-- `ON_ENTER`
-- `ON_LEAVE`
-- `ON_ATTACK`
-- `ON_BLOCK`
-- `ON_LIFE_TRIGGER`
-- `MAIN_ACTIVATE`
-- `ON_BATTLE_WIN`
-- `ON_BATTLE_LOSE`
-- `ON_BATTLE_END`
+- `STEP`
+- `SNIPER`
+- `DAMAGE_2`
+- `IMPACT`
+- `IMPACT_PLUS_1`
+- `NEGATE_IMPACT`
+- `DOUBLE_ATTACK`
+- `DOUBLE_BLOCK`
+- `RAID`
 
-已接入的效果能力包括基础抽牌、移动、激活/休息、对玩家造成伤害，以及一批显式目标、费用和多步骤结算模板。
+并已补齐一轮高风险规则专项验证，包括：
 
-### DSL/IR 现状
+- 攻击失败的攻击方不会退场
+- 生命触发必须显式选择是否发动
+- 同时触发顺序按规则处理
+- AP 在结束阶段不恢复
 
-项目当前遵循这些原则：
+### 效果系统与 DSL/IR
 
-- 按原子能力写代码，而不是按单卡写特判
-- 运行时只消费统一 IR，不直接执行原始卡文
+当前效果系统已经统一接入 `effect_queue` 主链路，并配套：
+
+- `pending_decisions`
+- `pending_life_triggers`
+- `battle_context`
+- `delayed_effects`
+- `static_modifiers`
+
+运行时当前只消费统一 IR，不直接执行原始卡文。项目坚持以下原则：
+
+- 按原子能力写代码，不按单卡写特判
 - 严格区分“要求”和“步骤”
-- 目标选择默认进入显式待决策流
-- 无法表达的正式卡先标记为“暂不支持”，而不是按卡硬编码
+- 默认通过显式待决策流处理目标选择
+- 新增模板先扩 DSL/IR，再扩编译链与运行时
 
-截至当前里程碑，正式 raw 编译结果为：
+截至 2026-03-27，正式 raw 编译结果为：
 
-- 已支持能力：`59`
-- 未支持能力：`14`
+- 已支持能力：`73`
+- 未支持能力：`0`
 
-## 当前已覆盖的正式 raw 样例
+## 验证基线
 
-`docs/cards_raw_minimal_duel_smoke_test.gd` 目前已经直接消费正式 `cards_raw.json` 卡定义，覆盖了这些典型入口和模板：
-
-- `ON_ENTER` 抽 2
-- `ON_PLAY` 从生命区取 1 到手后再抽 2
-- 手牌中自减 AP
-- `ON_LEAVE` 回手
-- 多步骤复杂费用结算
-- 看牌堆顶后加入手牌、剩余回底
-- 看牌堆顶后按不同卡名去重选择
-- `MAIN_ACTIVATE` 从生命区取牌
-- 事件牌重置 AP
-- 生命触发显式目标选择
-
-## 验证状态
-
-当前关键冒烟结果：
+当前关键验证入口与结果：
 
 - `docs/milestone_smoke_test.gd`
-  - `23` 项通过，`0` 项失败
+  - 27 项通过，0 项失败
 - `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - `10` 项通过，`0` 项失败
+  - 31 项通过，0 项失败
+- `docs/draw_phase_smoke_test.gd`
+  - 当前环境稳定通过，可作为 DRAW 阶段专项回归入口
 
-Godot 退出时仍有既有资源泄漏告警，但当前未影响断言结果。
+Godot 退出时仍存在既有 `ObjectDB` / resource 泄漏告警，但目前未影响断言结果。
 
 ## 目录说明
 
@@ -119,16 +116,28 @@ Godot 退出时仍有既有资源泄漏告警，但当前未影响断言结果�
 python tools/compile_cards_effects.py
 ```
 
-### 运行里程碑冒烟
+### 运行规则主冒烟
 
 ```powershell
 D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd
 ```
 
-### 运行正式 raw 最小样例冒烟
+### 运行正式 raw 样例冒烟
 
 ```powershell
 D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd
+```
+
+### 运行 DRAW 阶段专项
+
+```powershell
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/draw_phase_smoke_test.gd
+```
+
+### 执行布局验收
+
+```powershell
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --resolution 1920x1080 --path D:\CodexWork\TcgDemo -- --layout-probe
 ```
 
 ### 启动项目
@@ -142,15 +151,15 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 - 不要让实现偏离 `docs/rules/rule.md`
 - 涉及 `EffectResolver`、卡牌结构、导入链路或运行时效果模型时，先确认 DSL/IR 契约
 - 不要为单卡写专用运行时逻辑
-- 每次功能更新或 bugfix 都要同步记录到 `docs/logs.md`
+- 每次功能更新或 bugfix 都要同步记录到 `docs/logs/log_yyyy-MM-dd.md`
 - 修改脚本后优先做一次 headless 冒烟验证
 - 涉及界面布局改动后，要额外确认手牌区域没有遮挡战场区域
+- 读取中文规则、计划、日志时优先使用显式 UTF-8 方式，避免终端编码噪音误判
 
 ## 下一步重点
 
-按当前里程碑，下一步最值得继续推进的是：
+按当前里程碑，下一阶段最值得继续推进的是：
 
-- 看牌堆顶后的条件追加结算
-- 更多多目标并行结算模板
-- 更复杂费用组合
-- 更多正式 raw 卡样例接入统一 DSL/IR
+- 扩正式 raw 样例，优先覆盖更复杂的预览链、多段条件追加结算、连续回合生命周期与离场触发链
+- 继续保持 `docs/milestone_smoke_test.gd` 与 `docs/cards_raw_minimal_duel_smoke_test.gd` 的职责分离
+- 持续观察 Godot 退出时既有资源告警是否影响长期回归稳定性

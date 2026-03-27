@@ -200,10 +200,10 @@ func resolve_target_selection_decision(state: GameState, resolution_id: String, 
 func preview_play_modifiers(state: GameState, player_id: String, card_uid: String, context: Dictionary = {}) -> Dictionary:
 	var card = state.get_card(card_uid)
 	if card == null:
-		return {"cost_ap": 0, "allow_current_zone": false, "consumed_delayed_effect_ids": []}
+		return {"cost_ap": 0, "cost_energy": {}, "allow_current_zone": false, "consumed_delayed_effect_ids": []}
 	var card_def = state.get_card_def(card.def_id)
 	if card_def == null:
-		return {"cost_ap": 0, "allow_current_zone": false, "consumed_delayed_effect_ids": []}
+		return {"cost_ap": 0, "cost_energy": {}, "allow_current_zone": false, "consumed_delayed_effect_ids": []}
 
 	var play_context := context.duplicate(true)
 	play_context["player_id"] = player_id
@@ -214,6 +214,7 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 	play_context["played_card_title"] = card_def.title_code
 
 	var ap_delta := 0
+	var effective_cost_energy: Dictionary = card_def.cost_energy.duplicate(true)
 	var allow_current_zone := false
 	var consumed_delayed_effect_ids: Array[String] = []
 
@@ -226,6 +227,9 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 		if modifier_type == "SELF_HAND_AP_DELTA":
 			if _requirements_met(state, card_uid, modifier.get("requirements", []), play_context, card_uid):
 				ap_delta += int(modifier.get("ap_delta", 0))
+		elif modifier_type == "SELF_HAND_ENERGY_DELTA":
+			if _requirements_met(state, card_uid, modifier.get("requirements", []), play_context, card_uid):
+				effective_cost_energy = _apply_energy_delta_map(effective_cost_energy, modifier.get("energy_delta", {}))
 
 	for modifier_variant in state.static_modifiers:
 		var modifier: Dictionary = modifier_variant
@@ -258,6 +262,7 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 	var base_cost_ap := int(card_def.cost_ap)
 	return {
 		"cost_ap": max(0, base_cost_ap + ap_delta),
+		"cost_energy": effective_cost_energy,
 		"allow_current_zone": allow_current_zone,
 		"consumed_delayed_effect_ids": consumed_delayed_effect_ids,
 	}
@@ -544,12 +549,13 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 		var ap_player = state.get_player(ap_player_id)
 		if ap_player != null:
 			var remaining := int(step.get("value", 1))
-			for slot in ap_player.ap_area:
+			for i in range(ap_player.ap_area.size()):
 				if remaining <= 0:
 					break
-				if not bool(slot.get("active", false)):
-					slot["active"] = true
-					remaining -= 1
+				if bool(ap_player.ap_area[i].get("active", false)):
+					continue
+				ap_player.ap_area[i]["active"] = true
+				remaining -= 1
 			ap_logs.append("%s readies up to %d AP slot(s)." % [ap_player_id, int(step.get("value", 1))])
 		return {"logs": ap_logs, "paused": false}
 	if step_type == "LIFE_TRIGGER_RAID_CHOICE":
@@ -1315,6 +1321,48 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 			player_id = _opponent_of(source_card.controller_player_id)
 		var player_state = state.get_player(player_id)
 		return player_state != null and player_state.life.is_empty()
+	if requirement_type == "PLAYER_TURN_FLAG_TRUE":
+		var player_mode_flag := str(requirement.get("player", "SELF"))
+		var player_id_flag := ""
+		if player_mode_flag == "SELF":
+			player_id_flag = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
+		elif player_mode_flag == "OPPONENT":
+			player_id_flag = _opponent_of(source_card.controller_player_id) if source_card != null else ""
+		else:
+			player_id_flag = str(context.get("target_player_id", context.get("source_player_id", "")))
+		var flags: Dictionary = state.player_turn_flags.get(player_id_flag, {})
+		return bool(flags.get(str(requirement.get("flag", "")), false))
+	if requirement_type == "PLAYER_HAS_COLOR_IN_FIELD":
+		var player_mode_color := str(requirement.get("player", "SELF"))
+		var player_id_color := ""
+		if player_mode_color == "SELF":
+			player_id_color = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
+		elif player_mode_color == "OPPONENT":
+			player_id_color = _opponent_of(source_card.controller_player_id) if source_card != null else ""
+		else:
+			player_id_color = str(context.get("target_player_id", context.get("source_player_id", "")))
+		var color_player = state.get_player(player_id_color)
+		if color_player == null:
+			return false
+		var colors: Array[String] = []
+		for color_variant in requirement.get("colors", []):
+			colors.append(str(color_variant))
+		if colors.is_empty():
+			var fallback_color := str(requirement.get("value", ""))
+			if fallback_color != "":
+				colors.append(fallback_color)
+		for zone_cards in [color_player.front_line, color_player.energy_line]:
+			for color_card_uid_variant in zone_cards:
+				var color_card = state.get_card(str(color_card_uid_variant))
+				var color_def = state.get_card_def(color_card.def_id) if color_card != null else null
+				if color_def == null:
+					continue
+				for color_name in colors:
+					if _card_matches_color(color_def, color_name):
+						return true
+		return false
+	if requirement_type == "CONTEXT_BATTLE_OUTCOME_IS":
+		return str(context.get("battle_outcome", "")) == str(requirement.get("value", ""))
 	if requirement_type == "CARD_NAME_IS":
 		return candidate_def != null and candidate_def.name == str(requirement.get("value", ""))
 	if requirement_type == "CARD_TYPE_IS":
@@ -1436,6 +1484,14 @@ func _resolve_numeric_value(state: GameState, provider_variant, context: Diction
 		return unique_names.size() * int(provider.get("multiplier", 1))
 	return int(provider.get("value", 0))
 
+func _apply_energy_delta_map(cost_map: Dictionary, delta_map: Dictionary) -> Dictionary:
+	var result: Dictionary = cost_map.duplicate(true)
+	for color_variant in delta_map.keys():
+		var color := str(color_variant)
+		var base_value := int(result.get(color, 0))
+		result[color] = maxi(0, base_value + int(delta_map.get(color_variant, 0)))
+	return result
+
 func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false, ui_meta: Dictionary = {}) -> bool:
 	var min_count := int(target.get("min", 0))
 	var max_count := int(target.get("max", 1))
@@ -1486,6 +1542,36 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		"ui_mode": str(ui_meta.get("ui_mode", "")),
 		"preview_card_uids": _ensure_array(ui_meta.get("preview_card_uids", [])).duplicate(),
 		"title": str(ui_meta.get("title", "")),
+	})
+	return true
+
+func _enqueue_value_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, choices: Array[Dictionary], candidate_values: Array[String], min_count: int, max_count: int, context: Dictionary, remaining_steps: Array, resume_as_effect := false) -> bool:
+	var source_card = state.get_card(source_card_uid)
+	var owner_player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
+	var resolution_id := state.next_runtime_id("target_select")
+	state.effect_queue.append({
+		"kind": "TARGET_SELECTION",
+		"id": resolution_id,
+		"source_card_uid": source_card_uid,
+		"target_var": selected_var,
+		"min": min_count,
+		"max": max_count,
+		"steps": remaining_steps.duplicate(true),
+		"context": context.duplicate(true),
+		"effect": effect.duplicate(true),
+		"resume_as_effect": resume_as_effect,
+		"candidate_values": candidate_values.duplicate(),
+		"selection_constraints": {},
+	})
+	state.pending_decisions.append({
+		"type": "ABILITY_TARGET_SELECTION",
+		"owner_player_id": owner_player_id,
+		"source_card_uid": source_card_uid,
+		"resolution_id": resolution_id,
+		"target_var": selected_var,
+		"choices": choices.duplicate(true),
+		"min": min_count,
+		"max": max_count,
 	})
 	return true
 

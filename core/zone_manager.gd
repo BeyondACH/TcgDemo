@@ -34,6 +34,7 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 	var card: CardInstance = state.get_card(card_uid)
 	if card == null:
 		return
+	var from_zone := card.zone
 	_release_stacked_under_if_leaving_field(state, card, to_zone)
 	var from_player: PlayerState = state.get_player(card.controller_player_id)
 	var target_player_id := card.controller_player_id
@@ -51,6 +52,10 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 	card.zone = to_zone as UATypes.Zone
 	card.controller_player_id = target_player_id
 	card.clear_stacked_under_marker()
+	if from_zone == UATypes.Zone.LIFE and to_zone == UATypes.Zone.HAND:
+		var flags: Dictionary = state.player_turn_flags.get(target_player_id, {})
+		flags["life_card_added_to_hand"] = true
+		state.player_turn_flags[target_player_id] = flags
 
 func stack_card_on_target(state: GameState, top_card_uid: String, base_card_uid: String, target_zone: int) -> Dictionary:
 	var top_card: CardInstance = state.get_card(top_card_uid)

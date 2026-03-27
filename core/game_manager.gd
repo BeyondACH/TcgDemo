@@ -176,7 +176,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 				_apply_logs(["%s raids onto %s and stays in %s." % [card_def.name, raid_target_uid, UATypes.zone_to_key(raid_target_zone)]])
 			else:
 				zone_manager.move_card(game_state, card_uid, target_zone)
-				card.state = UATypes.CardState.RESTED
+				card.state = _play_enter_state_for(card_def)
 				card.flags["entered_via_raid"] = false
 				_apply_logs(["%s plays %s to %s." % [acting_player_id, card_def.name, UATypes.zone_to_key(target_zone)]])
 			_apply_logs(effect_resolver.resolve_trigger(card_uid, UATypes.TriggerType.ON_ENTER, game_state, {"target_player_id": acting_player_id}))
@@ -188,6 +188,12 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 	effect_resolver.commit_play_modifiers(game_state, play_modifiers)
 	emit_state_changed()
 	return {"ok": true}
+
+func _play_enter_state_for(card_def: CardDef) -> int:
+	if card_def == null:
+		return UATypes.CardState.RESTED
+	var enter_state := str(card_def.play_rule.get("enter_state", "RESTED"))
+	return UATypes.CardState.ACTIVE if enter_state == "ACTIVE" else UATypes.CardState.RESTED
 
 func move_energy_to_front(card_uid: String) -> Dictionary:
 	if _has_winner() or _has_pending_gate():
@@ -406,6 +412,7 @@ func resolve_life_trigger_decision(card_uid: String, activate: bool) -> Dictiona
 	if _has_winner():
 		return {"ok": false, "reason": "winner_exists"}
 	_apply_logs(effect_resolver.resolve_life_trigger_decision(game_state, card_uid, activate))
+	_resume_effect_queue_if_possible()
 	emit_state_changed()
 	return {"ok": true}
 
@@ -413,6 +420,7 @@ func acknowledge_life_reveal(card_uid: String) -> Dictionary:
 	if _has_winner():
 		return {"ok": false, "reason": "winner_exists"}
 	_apply_logs(effect_resolver.acknowledge_life_reveal(game_state, card_uid))
+	_resume_effect_queue_if_possible()
 	emit_state_changed()
 	return {"ok": true}
 
@@ -810,6 +818,12 @@ func _maybe_finalize_life_damage_after_pending_resolution() -> void:
 	if not game_state.pending_life_triggers.is_empty() or not game_state.pending_decisions.is_empty():
 		return
 	_apply_logs(effect_resolver.finalize_pending_life_damage(game_state))
+	_resume_effect_queue_if_possible()
+
+func _resume_effect_queue_if_possible() -> void:
+	if _has_winner() or _has_pending_gate():
+		return
+	_apply_logs(effect_resolver.consume_effect_queue(game_state))
 
 func _has_pending_gate() -> bool:
 	return _has_pending_life_triggers() or _has_pending_life_reveal() or _has_pending_decisions()
