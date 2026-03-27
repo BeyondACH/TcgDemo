@@ -2,8 +2,8 @@
 
 ## 当前状态
 
-- 当前 `data/cards/cards_effects.json` 统计为 70 个已支持能力、3 个未支持能力。
-- 未支持能力已收敛到“特殊登场/出牌规则授权”“临时产能修饰 + 延迟自退场”等高阶模板。
+- 当前 `data/cards/cards_effects.json` 统计为 73 个已支持能力、0 个未支持能力。
+- 核心 P1 与剩余 P1 已全部落地，运行时已覆盖“特殊登场/出牌规则授权”“临时产能修饰 + 延迟自退场”等高阶模板。
 - 现有运行时已落地的原子步骤包括：`ACTIVATE_AP_SLOTS`、`ACTIVATE_CARD`、`ADD_TEMP_BP_MODIFIER`、`ADD_TEMP_KEYWORD`、`DRAW`、`FOR_EACH`、`LIFE_TRIGGER_RAID_CHOICE`、`MOVE_CARD`、`MOVE_SELECTED_CARDS`、`MOVE_TOP_DECK_TO_LIFE`、`MOVE_ZONE`、`PLAY_SELECTED_CARDS`、`PREVIEW_TOP_DECK`、`REGISTER_DELAYED_EFFECT`、`REGISTER_STATIC_MODIFIER`、`REORDER_CONTEXT_CARDS`、`SELECT_TARGETS`、`SET_CONTEXT_FLAG`。
 
 ## 优先级 P0：优先补齐的通用能力模板
@@ -62,11 +62,11 @@
 
 ## 优先级 P1：需要扩展步骤语义的能力
 
-- [ ] 临时增加发生产能
+- [x] 临时增加发生产能
   - 目标：支持“这个角色本回合发生产能 +1/获得额外产能颜色”等统一临时资源修饰。
   - 影响卡：`UA31BT_MMM_1_070`、`UA31ST_MMM_1_070`
 
-- [ ] 临时授予延迟自退场效果
+- [x] 临时授予延迟自退场效果
   - 目标：支持“获得『主阶段结束时，将此角色退场』”这类延迟能力授予。
   - 影响卡：`UA31BT_MMM_1_070`、`UA31ST_MMM_1_070`
   - 建议拆分：
@@ -74,7 +74,7 @@
     - 也可以是临时 keyword + 固定触发解释
     - 但必须保持为可复用原子能力
 
-- [ ] 生命区回手后临时获得特殊登场/RAID 许可
+- [x] 生命区回手后临时获得特殊登场/RAID 许可
   - 目标：支持“直到下个自己回合开始，这张卡可从手牌 REST 登场或 RAID”的特殊出牌规则授予。
   - 影响卡：`UA31BT_MMM_1_090`
   - 注意：按 AGENTS 约束，这类能力应归入出牌规则层或专门的出牌规则模型，不混入普通效果步骤硬编码。
@@ -91,13 +91,13 @@
 ## 卡牌到能力缺口映射
 
 - `UA31BT_MMM_1_070`、`UA31ST_MMM_1_070`
-  - 缺：临时增加发生产能、主阶段结束时自退场
+  - 已补：临时增加发生产能、主阶段结束时自退场
 - `UA31BT_MMM_1_078`
-  - 缺：动态 BP 上限 requirement
+  - 已补：动态 BP 上限 requirement
 - `UA31BT_MMM_1_085`、`UA31ST_MMM_1_085`
   - 已补：失败分支 fallback
 - `UA31BT_MMM_1_090`
-  - 缺：生命区回手后临时获得特殊登场/RAID 许可
+  - 已补：生命区回手后临时获得特殊登场/RAID 许可（绑定来源角色自身，持续到下个自己回合开始）
 - `UA31BT_MMM_1_093`、`UA31BT_MMM_1_094`、`UA31ST_MMM_1_094`
   - 已补：条件满足时替换 BP 阈值
 - `UA31BT_MMM_1_098`
@@ -114,7 +114,7 @@
 
 ## 开发前冻结项
 
-- [ ] 冻结“特殊登场/特殊 RAID 许可”属于出牌规则层的契约，不放回普通步骤特判
+- [x] 冻结“特殊登场/特殊 RAID 许可”属于出牌规则层的契约，不放回普通步骤特判
 - [x] 冻结“optional 成功标记”和“上下文卡引用”的统一字段命名
 - [x] 冻结“动态数值来源”的表达格式，避免后续再出现按卡定制字段
 - [x] 冻结 fallback 控制流的固定 IR 结构，避免脚本化步骤进入正式模型

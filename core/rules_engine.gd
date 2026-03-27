@@ -562,6 +562,8 @@ func _build_raid_actions(state: GameState, player_id: String, card: CardInstance
 				})
 				if not bool(validation.get("ok", false)):
 					continue
+				if str(validation.get("special_play", {}).get("mode", "NORMAL")) != "RAID":
+					continue
 				actions.append(ActionFactory.make_action(
 					"play:%s:%s:raid:%s:%d" % [player_id, card.uid, target_uid, target_zone],
 					ActionTypes.PLAY_CARD,
@@ -700,7 +702,7 @@ func _validate_special_play_rule(state: GameState, player_id: String, card: Card
 		return {"ok": true, "mode": "NORMAL"}
 	if str(card_def.special_play_rule.get("type", "")) != "RAID":
 		return {"ok": true, "mode": "NORMAL"}
-	if card.zone == UATypes.Zone.HAND and not bool(card_def.special_play_rule.get("allow_from_hand", false)) and not bool(options.get("allow_raid_play", false)):
+	if card.zone == UATypes.Zone.HAND and not _can_raid_from_hand(state, player_id, card, card_def, options):
 		return {"ok": true, "mode": "NORMAL"}
 	var raid_target_uid := str(options.get("raid_target_uid", ""))
 	if raid_target_uid == "":
@@ -747,6 +749,30 @@ func _validate_special_play_rule(state: GameState, player_id: String, card: Card
 		"raid_target_zone": raid_target.zone,
 		"target_zone": resolved_target_zone,
 	}
+
+func _can_raid_from_hand(state: GameState, player_id: String, card: CardInstance, card_def: CardDef, options: Dictionary = {}) -> bool:
+	if bool(options.get("allow_raid_play", false)):
+		return true
+	if not bool(card_def.special_play_rule.get("allow_from_hand", false)):
+		return false
+	if not bool(card_def.special_play_rule.get("life_trigger_only", false)):
+		return true
+	return _has_special_play_permission(state, player_id, card.uid, "RAID")
+
+func _has_special_play_permission(state: GameState, player_id: String, card_uid: String, mode: String) -> bool:
+	for modifier_variant in state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		if str(modifier.get("modifier_type", "")) != "SPECIAL_PLAY_PERMISSION":
+			continue
+		if str(modifier.get("owner_player_id", "")) != player_id:
+			continue
+		if str(modifier.get("granted_card_uid", "")) != card_uid:
+			continue
+		var allowed_modes: Array = modifier.get("allowed_modes", [])
+		if not allowed_modes.has(mode):
+			continue
+		return true
+	return false
 
 func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
 	if card_def.keywords.has(keyword):

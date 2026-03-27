@@ -188,6 +188,14 @@ def _conditional_value_provider(default_value, when: list[dict], then_value) -> 
     }
 
 
+def _primary_energy_color(card: dict) -> str:
+    for source in [card.get("energy_provided", {}), card.get("card_meta", {}).get("energy_provided", {})]:
+        if isinstance(source, dict):
+            for color in source.keys():
+                return str(color)
+    return ""
+
+
 def _normalize_compiled_abilities(compiled_ability) -> list[dict]:
     if compiled_ability is None:
         return []
@@ -553,6 +561,61 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
                     "target_uid": "SOURCE_CARD",
                     "to": "HAND",
                     "requirements": [{"type": "CONTEXT_FLAG_FALSE", "var": "primary_target_moved"}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。":
+        color = _primary_energy_color(card)
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            [],
+            [
+                {
+                    "type": "REGISTER_STATIC_MODIFIER",
+                    "modifier_type": "ENERGY_BONUS",
+                    "color": color,
+                    "value": 1,
+                    "expires": "END_OF_TURN",
+                },
+                {
+                    "type": "REGISTER_DELAYED_EFFECT",
+                    "event": "ON_END_MAIN_PHASE",
+                    "expires": "END_OF_TURN",
+                    "once": True,
+                    "filters": [
+                        {
+                            "type": "OR",
+                            "filters": [
+                                {"type": "SELF_IN_ZONE", "zone": "FRONT_LINE"},
+                                {"type": "SELF_IN_ZONE", "zone": "ENERGY_LINE"},
+                            ],
+                        }
+                    ],
+                    "steps": [
+                        {"type": "MOVE_CARD", "target_uid": "SOURCE_CARD", "to": "OUTSIDE"},
+                    ],
+                },
+            ],
+        )
+
+    if text == "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラは次の自分のターン開始時まで、「このカードを自分の場にレストで登場させるかレイドさせる。」を得る。":
+        target_specs, steps = _manual_single_target("SELF", ["LIFE"], [], 1, 1, "selected_life_card")
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_life_card", "to": "HAND"},
+                {"type": "SET_CONTEXT_FLAG", "var": "life_card_added_to_hand", "from_var": "selected_life_card"},
+                {
+                    "type": "REGISTER_STATIC_MODIFIER",
+                    "modifier_type": "SPECIAL_PLAY_PERMISSION",
+                    "granted_card_uid": "SOURCE_CARD",
+                    "allowed_modes": ["REST_SUMMON", "RAID"],
+                    "expires": "UNTIL_NEXT_SELF_TURN_START",
+                    "requirements": [{"type": "CONTEXT_FLAG_TRUE", "var": "life_card_added_to_hand"}],
                 },
             ]
         )

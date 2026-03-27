@@ -35,22 +35,20 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "COMPOSITE"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_070_main_activate_4a5887f15c",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "COMPOSITE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_071",
@@ -480,17 +478,17 @@
       "RAID"
     ],
     "template_types": [
-      "UNSUPPORTED",
+      "SELECT_AND_MOVE",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_090_main_activate_a191957804",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラは次の自分のターン開始時まで、「このカードを自分の場にレストで登場させるかレイドさせる。」を得る。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       },
       {
         "id": "UA31BT_MMM_1_090_on_life_trigger_a342b2ffe2",
@@ -501,10 +499,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_091",
@@ -840,22 +836,20 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "COMPOSITE"
     ],
     "abilities": [
       {
         "id": "UA31ST_MMM_1_070_main_activate_4a5887f15c",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "COMPOSITE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31ST_MMM_1_076",

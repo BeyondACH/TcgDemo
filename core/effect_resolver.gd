@@ -221,6 +221,42 @@ func commit_play_modifiers(state: GameState, modifier_result: Dictionary) -> voi
 		keep.append(delayed_effect)
 	state.delayed_effects = keep
 
+func consume_timed_delayed_effects(state: GameState, event_name: String, context: Dictionary = {}) -> Array[String]:
+	var logs: Array[String] = []
+	if event_name == "":
+		return logs
+	var remaining: Array = []
+	for delayed_variant in state.delayed_effects:
+		var delayed_effect: Dictionary = delayed_variant
+		if str(delayed_effect.get("event", "")) != event_name:
+			remaining.append(delayed_effect)
+			continue
+		if not _is_modifier_active(state, delayed_effect):
+			continue
+		var delayed_context := context.duplicate(true)
+		delayed_context["source_player_id"] = str(delayed_effect.get("owner_player_id", delayed_context.get("source_player_id", "")))
+		delayed_context["target_player_id"] = str(delayed_context.get("target_player_id", delayed_context.get("source_player_id", "")))
+		if not _matches_filter_list(
+			state,
+			delayed_effect.get("filters", []),
+			delayed_context,
+			_get_source_card_uid(delayed_effect),
+			_get_source_card_uid(delayed_effect)
+		):
+			if str(delayed_effect.get("expires", "")) != "END_OF_TURN" and str(delayed_effect.get("expires", "")) != "UNTIL_NEXT_SELF_TURN_START":
+				remaining.append(delayed_effect)
+			continue
+		logs.append_array(_resolve_effect_now(
+			state,
+			_get_source_card_uid(delayed_effect),
+			{"steps": delayed_effect.get("steps", []).duplicate(true)},
+			delayed_context
+		))
+		if not bool(delayed_effect.get("once", false)):
+			remaining.append(delayed_effect)
+	state.delayed_effects = remaining
+	return logs
+
 func cleanup_turn_expirations(state: GameState, ending_player_id: String) -> void:
 	_revert_expired_temporary_modifiers(state, ending_player_id, "END_OF_TURN")
 	state.delayed_effects = _filter_unexpired_modifiers(state.delayed_effects, ending_player_id, "END_OF_TURN")
@@ -702,6 +738,12 @@ func _register_static_modifier(state: GameState, source_card_uid: String, step: 
 	var source_card = state.get_card(source_card_uid)
 	if source_card == null:
 		return
+	var granted_card_uid := str(step.get("granted_card_uid", ""))
+	if granted_card_uid == "SOURCE_CARD":
+		granted_card_uid = source_card_uid
+	var allowed_modes: Array = []
+	for mode_variant in step.get("allowed_modes", []):
+		allowed_modes.append(str(mode_variant))
 	state.static_modifiers.append({
 		"id": state.next_runtime_id("static"),
 		"source_card_uid": source_card_uid,
@@ -714,6 +756,8 @@ func _register_static_modifier(state: GameState, source_card_uid: String, step: 
 		"expires": str(step.get("expires", "")),
 		"color": str(step.get("color", "")),
 		"value": step.get("value", 0),
+		"granted_card_uid": granted_card_uid,
+		"allowed_modes": allowed_modes,
 	})
 
 func _apply_temporary_bp_modifier(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:

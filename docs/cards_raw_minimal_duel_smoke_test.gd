@@ -28,6 +28,9 @@ const RAW_EVENT_DYNAMIC_BP_MADOKA_ST := "UA31ST_MMM_1_094"
 const RAW_RETURN_OTHER_OR_SELF := "UA31BT_MMM_1_085"
 const RAW_RETURN_OTHER_OR_SELF_ST := "UA31ST_MMM_1_085"
 const RAW_PREVIEW_MAGIC_GIRL_REWARD := "UA31BT_MMM_1_098"
+const RAW_TEMP_ENERGY_SELF_LEAVE_BT := "UA31BT_MMM_1_070"
+const RAW_TEMP_ENERGY_SELF_LEAVE_ST := "UA31ST_MMM_1_070"
+const RAW_SELF_SPECIAL_PLAY_PERMISSION := "UA31BT_MMM_1_090"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -54,6 +57,8 @@ func _init() -> void:
 	_run_test("Raw Conditional BP Event Upgrade Sayaka", _test_raw_conditional_bp_event_upgrade_sayaka)
 	_run_test("Raw Conditional BP Event Upgrade Madoka", _test_raw_conditional_bp_event_upgrade_madoka)
 	_run_test("Raw Preview Reward Magic Girl Branches", _test_raw_preview_reward_magic_girl_branches)
+	_run_test("Raw Temporary Energy Bonus Then Self Leave", _test_raw_temporary_energy_bonus_then_self_leave)
+	_run_test("Raw Self Special Play Permission After Leave", _test_raw_self_special_play_permission_after_leave)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -629,7 +634,7 @@ func _test_raw_on_enter_cannot_attack_until_next_self_turn() -> Dictionary:
 	_fill_ap(_player(manager, player_id), 3)
 	if not _ensure_red_energy(manager, player_id, 4):
 		return _fail("Should be able to prepare 4 raw red energy cards for the cannot-attack sample.")
-	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_HOMURA_RAID_SUPPORT, UATypes.Zone.HAND)
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_HOMURA_RAID_SUPPORT, UATypes.Zone.FRONT_LINE)
 	if source_uid == "":
 		return _fail("Raw cannot-attack source card should be available.")
 	var raid_target_uid := _spawn_temp_card(manager, player_id, {
@@ -692,10 +697,11 @@ func _test_raw_on_enter_cannot_attack_until_next_self_turn() -> Dictionary:
 		"effects": [],
 		"trigger_effects": []
 	}, UATypes.Zone.FRONT_LINE, true)
-	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {
-		"raid_target_uid": raid_target_uid,
-		"raid_target_zone_choice": UATypes.Zone.FRONT_LINE,
-	})
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw cannot-attack source card instance should exist.")
+	source_card.flags["entered_via_raid"] = true
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
 	if manager.game_state.pending_decisions.size() != 1:
 		return _fail("Raw cannot-attack sample should first request the hand summon selection.")
 	var summon_decision: Dictionary = manager.game_state.pending_decisions[0]
@@ -1628,6 +1634,111 @@ func _test_raw_preview_reward_magic_girl_branches() -> Dictionary:
 
 func _player(manager: GameManager, player_id: String) -> PlayerState:
 	return manager.game_state.get_player(player_id)
+
+func _test_raw_temporary_energy_bonus_then_self_leave() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TEMP_ENERGY_SELF_LEAVE_BT, UATypes.Zone.ENERGY_LINE)
+	if source_uid == "":
+		return _fail("Raw temporary energy bonus sample card should be available.")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null or source_card.zone != UATypes.Zone.ENERGY_LINE:
+		return _fail("Raw temporary energy bonus sample should start in the energy line.")
+	var snapshot_before := manager.get_snapshot()
+	var energy_before := int(snapshot_before.get("players", {}).get(player_id, {}).get("available_energy", {}).get("RED", 0))
+	manager.request_main_activate(source_uid)
+	var snapshot_after := manager.get_snapshot()
+	var energy_after := int(snapshot_after.get("players", {}).get(player_id, {}).get("available_energy", {}).get("RED", 0))
+	if energy_after != energy_before + 1:
+		return _fail("Raw temporary energy bonus sample should grant exactly +1 red energy for the turn.")
+	manager.advance_phase()
+	var moved_card = manager.game_state.get_card(source_uid)
+	var player := _player(manager, player_id)
+	if moved_card == null or moved_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw temporary energy bonus sample should move itself to outside at end of main phase.")
+	if not player.outside.has(source_uid):
+		return _fail("Raw temporary energy bonus sample should be recorded in outside after the delayed self-leave.")
+	if manager.game_state.phase != UATypes.Phase.ATTACK:
+		return _fail("Raw temporary energy bonus sample should still advance to ATTACK after resolving the delayed self-leave.")
+	var st_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TEMP_ENERGY_SELF_LEAVE_ST, UATypes.Zone.ENERGY_LINE)
+	if st_uid == "":
+		return _fail("Raw temporary energy bonus ST sample card should also be available.")
+	return _ok()
+
+func _test_raw_self_special_play_permission_after_leave() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Raw self special play permission sample should be able to prepare 4 red energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_SELF_SPECIAL_PLAY_PERMISSION, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw self special play permission sample card should be available.")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw self special play permission source instance should exist.")
+	source_card.flags["entered_via_raid"] = true
+	var raid_base_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_SAYAKA_RAID_BASE",
+		"name": "美樹 さやか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-SAYAKA-BASE",
+		"traits": ["魔法少女"],
+		"cost_energy": {},
+		"cost_ap": 0,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if raid_base_uid == "":
+		return _fail("Raw self special play permission sample should be able to prepare a RAID base.")
+	var chosen_life_uid := _ensure_life_card(manager, player_id)
+	if chosen_life_uid == "":
+		return _fail("Raw self special play permission sample should have a selectable life card.")
+	manager.request_main_activate(source_uid)
+	if manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw self special play permission sample should request explicit life target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": chosen_life_uid,
+	})
+	var player := _player(manager, player_id)
+	if not player.hand.has(chosen_life_uid):
+		return _fail("Raw self special play permission sample should add the selected life card to hand.")
+	var permission_found := false
+	for modifier_variant in manager.game_state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		if str(modifier.get("modifier_type", "")) != "SPECIAL_PLAY_PERMISSION":
+			continue
+		if str(modifier.get("granted_card_uid", "")) != source_uid:
+			continue
+		permission_found = true
+		break
+	if not permission_found:
+		return _fail("Raw self special play permission sample should register a self-bound special play permission.")
+	var on_field_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
+	if on_field_actions.has("RAID"):
+		return _fail("Raw self special play permission sample should not expose a hand RAID action while the source card is still on the field.")
+	manager.zone_manager.move_card(manager.game_state, source_uid, UATypes.Zone.HAND, player_id)
+	var hand_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
+	if not hand_actions.has("PLAY_FRONT"):
+		return _fail("Raw self special play permission sample should allow the source card to be played from hand after leaving the field.")
+	if not hand_actions.has("RAID"):
+		return _fail("Raw self special play permission sample should allow the source card to RAID from hand after leaving the field.")
+	manager.effect_resolver.cleanup_start_turn_expirations(manager.game_state, player_id)
+	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
+	if expired_actions.has("RAID"):
+		return _fail("Raw self special play permission sample should lose the temporary RAID permission at the next self turn start.")
+	return _ok()
 
 func _fill_ap(player: PlayerState, total: int) -> void:
 	player.ap_area.clear()

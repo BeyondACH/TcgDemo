@@ -1,18 +1,6 @@
 extends Control
 class_name BattleScene
 
-const UATypes = preload("res://core/ua_types.gd")
-const GameManager = preload("res://core/game_manager.gd")
-const BoardView = preload("res://ui/board_view.gd")
-const HandView = preload("res://ui/hand_view.gd")
-const CardPreviewPanel = preload("res://ui/card_preview_panel.gd")
-const LogPanel = preload("res://ui/log_panel.gd")
-const PhaseIndicator = preload("res://ui/phase_indicator.gd")
-const PreviewSelectionModal = preload("res://ui/preview_selection_modal.gd")
-const LifeRevealModal = preload("res://ui/life_reveal_modal.gd")
-const ZoneCardsPopup = preload("res://ui/zone_cards_popup.gd")
-const ZoneLayoutConfig = preload("res://data/zone_layout_config.gd")
-
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
@@ -615,9 +603,9 @@ func _selected_label_text(active_player_id: String) -> String:
 		if current_card_uid == "":
 			return "Life reveal complete"
 		for card_variant in life_reveal_modal.get("revealed_cards", []):
-			var card_data: Dictionary = card_variant
-			if str(card_data.get("uid", "")) == current_card_uid:
-				return "Life reveal: %s" % str(card_data.get("name", current_card_uid))
+			var revealed_card: Dictionary = card_variant
+			if str(revealed_card.get("uid", "")) == current_card_uid:
+				return "Life reveal: %s" % str(revealed_card.get("name", current_card_uid))
 		return "Life reveal in progress"
 	if _has_pending_decisions():
 		var decision := _current_pending_decision()
@@ -806,8 +794,8 @@ func _sync_pending_decision_controls() -> void:
 		pending_decision_picker.set_item_metadata(i, i)
 	if _selected_pending_decision_index < 0 or _selected_pending_decision_index >= pending.size():
 		_selected_pending_decision_index = 0
-	var decision: Dictionary = pending[_selected_pending_decision_index]
-	if _is_preview_pending_decision(decision):
+	var selected_decision: Dictionary = pending[_selected_pending_decision_index]
+	if _is_preview_pending_decision(selected_decision):
 		pending_decision_panel.visible = false
 		return
 	pending_decision_picker.select(_selected_pending_decision_index)
@@ -954,7 +942,7 @@ func _on_life_reveal_acknowledge_requested(card_uid: String) -> void:
 		return
 	game_manager.acknowledge_life_reveal(card_uid)
 
-func _update_hand_playable_states(player_id: String, hand_cards: Array) -> void:
+func _update_hand_playable_states(_player_id: String, hand_cards: Array) -> void:
 	var phase := str(_snapshot.get("phase", ""))
 	var playable_map := {}
 	if phase != "MAIN" or not _human_input_enabled():

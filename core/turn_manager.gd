@@ -64,6 +64,12 @@ func advance_phase(state: GameState) -> Array[String]:
 			state.phase = UATypes.Phase.MAIN
 			logs.append("Phase advances to MAIN.")
 		UATypes.Phase.MAIN:
+			if effect_resolver != null:
+				logs.append_array(effect_resolver.consume_timed_delayed_effects(state, "ON_END_MAIN_PHASE", {
+					"player_id": state.active_player_id,
+					"source_player_id": state.active_player_id,
+					"target_player_id": state.active_player_id,
+				}))
 			state.phase = UATypes.Phase.ATTACK
 			logs.append("Phase advances to ATTACK.")
 		UATypes.Phase.ATTACK:

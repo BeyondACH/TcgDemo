@@ -1185,6 +1185,8 @@ func _can_play_raid_from_hand(card: CardInstance, card_def: CardDef) -> bool:
 		return false
 	if not bool(card_def.special_play_rule.get("allow_from_hand", false)):
 		return false
+	if bool(card_def.special_play_rule.get("life_trigger_only", false)) and not _has_special_play_permission(card.controller_player_id, card.uid, "RAID"):
+		return false
 	var player: PlayerState = game_state.get_player(card.controller_player_id)
 	if player == null:
 		return false
@@ -1193,6 +1195,21 @@ func _can_play_raid_from_hand(card: CardInstance, card_def: CardDef) -> bool:
 	if not _has_required_energy_for_card(card_def):
 		return false
 	return _has_valid_raid_target(card, card_def)
+
+func _has_special_play_permission(player_id: String, card_uid: String, mode: String) -> bool:
+	for modifier_variant in game_state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		if str(modifier.get("modifier_type", "")) != "SPECIAL_PLAY_PERMISSION":
+			continue
+		if str(modifier.get("owner_player_id", "")) != player_id:
+			continue
+		if str(modifier.get("granted_card_uid", "")) != card_uid:
+			continue
+		var allowed_modes: Array = modifier.get("allowed_modes", [])
+		if not allowed_modes.has(mode):
+			continue
+		return true
+	return false
 
 func _has_valid_raid_target(card: CardInstance, card_def: CardDef) -> bool:
 	var player: PlayerState = game_state.get_player(card.controller_player_id)

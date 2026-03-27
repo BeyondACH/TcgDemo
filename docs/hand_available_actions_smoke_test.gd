@@ -25,7 +25,8 @@ func _init() -> void:
 	_run_test("非 MAIN 阶段手牌无打出动作", _test_no_play_actions_outside_main)
 	_run_test("RAID 卡有有效目标时显示 RAID", _test_raid_available_with_valid_target)
 	_run_test("RAID 卡无有效目标时不显示 RAID", _test_raid_unavailable_no_valid_target)
-	_run_test("RAID 卡 life_trigger_only 仍可从手牌显示", _test_raid_life_trigger_only_still_available_from_hand)
+	_run_test("RAID 卡 life_trigger_only 默认不从手牌显示", _test_raid_life_trigger_only_hidden_without_permission)
+	_run_test("临时特殊许可可让自身从手牌显示 RAID", _test_special_play_permission_enables_raid_from_hand)
 	_run_test("对手卡牌无 available_actions", _test_opponent_card_no_actions)
 	_run_test("能量不足时打出动作不可用", _test_play_unavailable_no_energy)
 	_print_summary()
@@ -547,8 +548,8 @@ func _test_raid_unavailable_no_valid_target() -> Dictionary:
 
 	return _ok()
 
-## 测试：RAID 卡 life_trigger_only=true 且 allow_from_hand=true 时仍显示 RAID
-func _test_raid_life_trigger_only_still_available_from_hand() -> Dictionary:
+## 测试：RAID 卡 life_trigger_only=true 时默认不从手牌显示 RAID
+func _test_raid_life_trigger_only_hidden_without_permission() -> Dictionary:
 	var manager := _new_manager()
 	_advance_to_main(manager, UATypes.PLAYER_ONE)
 	var p1 := _player(manager, UATypes.PLAYER_ONE)
@@ -598,8 +599,71 @@ func _test_raid_life_trigger_only_still_available_from_hand() -> Dictionary:
 		return _fail("RAID生命触发测试卡牌创建失败")
 
 	var actions := _get_hand_card_actions(manager, UATypes.PLAYER_ONE, raid_uid)
+	if actions.has("RAID"):
+		return _fail("life_trigger_only=true 的 RAID 卡在没有临时许可时不应从手牌显示 RAID 动作，实际动作: %s" % str(actions))
+
+	return _ok()
+
+## 测试：临时特殊许可会让绑定自身的牌从手牌显示 RAID
+func _test_special_play_permission_enables_raid_from_hand() -> Dictionary:
+	var manager := _new_manager()
+	_advance_to_main(manager, UATypes.PLAYER_ONE)
+	var p1 := _player(manager, UATypes.PLAYER_ONE)
+	p1.ap_area = [{"index": 0, "active": true}]
+
+	var target_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_SPECIAL_RAID_TARGET",
+		"name": "特殊许可底座",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-SPR-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 0,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var raid_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_SPECIAL_RAID_CARD",
+		"name": "特殊许可RAID牌",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-SPR-2",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [],
+		"special_play_rule": {
+			"type": "RAID",
+			"allow_from_hand": true,
+			"life_trigger_only": true,
+			"raid_target_name": ""
+		}
+	}, UATypes.Zone.HAND, true)
+
+	if target_uid == "" or raid_uid == "":
+		return _fail("特殊许可 RAID 测试卡牌创建失败")
+
+	manager.game_state.static_modifiers.append({
+		"id": "tmp_special_permission",
+		"source_card_uid": raid_uid,
+		"owner_player_id": UATypes.PLAYER_ONE,
+		"modifier_type": "SPECIAL_PLAY_PERMISSION",
+		"granted_card_uid": raid_uid,
+		"allowed_modes": ["REST_SUMMON", "RAID"],
+		"expires": "UNTIL_NEXT_SELF_TURN_START",
+	})
+
+	var actions := _get_hand_card_actions(manager, UATypes.PLAYER_ONE, raid_uid)
 	if not actions.has("RAID"):
-		return _fail("life_trigger_only=true 且 allow_from_hand=true 的 RAID 卡应继续从手牌显示 RAID 动作，实际动作: %s" % str(actions))
+		return _fail("绑定自身的临时特殊许可应让该牌从手牌显示 RAID 动作，实际动作: %s" % str(actions))
 
 	return _ok()
 

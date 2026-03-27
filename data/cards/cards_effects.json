@@ -134,7 +134,43 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -143,15 +179,14 @@
           "effect_box": "OUTER",
           "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -2184,8 +2219,69 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_life_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "LIFE"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_life_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_life_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "LIFE"
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_life_card",
+            "to": "HAND"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "life_card_added_to_hand",
+            "from_var": "selected_life_card"
+          },
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SPECIAL_PLAY_PERMISSION",
+            "granted_card_uid": "SOURCE_CARD",
+            "allowed_modes": [
+              "REST_SUMMON",
+              "RAID"
+            ],
+            "expires": "UNTIL_NEXT_SELF_TURN_START",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "life_card_added_to_hand"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -2194,8 +2290,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラは次の自分のターン開始時まで、「このカードを自分の場にレストで登場させるかレイドさせる。」を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_090_on_life_trigger_a342b2ffe2",
@@ -2225,7 +2320,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -3859,7 +3954,43 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -3868,15 +3999,14 @@
           "effect_box": "OUTER",
           "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },

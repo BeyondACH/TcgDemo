@@ -13,7 +13,6 @@ config_version=5
 config/name="ua"
 run/main_scene="res://scenes/battle_scene.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
-boot_splash/image="uid://dkj2qujwuxkxx"
 config/icon="uid://cv86ts42nongk"
 
 [display]
