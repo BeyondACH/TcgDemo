@@ -1740,16 +1740,14 @@ func _test_raid_inner_effect_gate() -> Dictionary:
 		return _fail("通过突进登场时，框内效果应把场外角色移到移除区")
 	return _ok()
 func _test_simultaneous_trigger_order() -> Dictionary:
-	var life_manager := _new_manager()
-	var p2_life := _player(life_manager, UATypes.PLAYER_TWO)
-	p2_life.life.clear()
-	var first_trigger_uid := _spawn_temp_card(life_manager, UATypes.PLAYER_TWO, {
-		"id": "TMP_SIMULTANEOUS_LIFE_1",
-		"name": "Simultaneous Life 1",
+	var same_side_manager := _new_manager()
+	var first_trigger_uid := _spawn_temp_card(same_side_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_SIMULTANEOUS_ORDER_1",
+		"name": "同时触发一",
 		"card_type": "CHARACTER",
 		"title_code": "TMP",
-		"number": "TMP-SIM-L1",
-		"traits": ["Test"],
+		"number": "TMP-SIM-O1",
+		"traits": ["测试角色"],
 		"cost_energy": {},
 		"cost_ap": 1,
 		"energy_provided": {"GREEN": 1},
@@ -1757,16 +1755,16 @@ func _test_simultaneous_trigger_order() -> Dictionary:
 		"keywords": [],
 		"effects": [],
 		"trigger_effects": [
-			{"trigger": "ON_LIFE_TRIGGER", "operations": [{"type": "DRAW", "value": 1}]}
+			{"trigger": "ON_BATTLE_END", "operations": [{"type": "DRAW", "value": 1}]}
 		]
-	}, UATypes.Zone.LIFE, true)
-	var second_trigger_uid := _spawn_temp_card(life_manager, UATypes.PLAYER_TWO, {
-		"id": "TMP_SIMULTANEOUS_LIFE_2",
-		"name": "Simultaneous Life 2",
+	}, UATypes.Zone.FRONT_LINE, true)
+	var second_trigger_uid := _spawn_temp_card(same_side_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_SIMULTANEOUS_ORDER_2",
+		"name": "同时触发二",
 		"card_type": "CHARACTER",
 		"title_code": "TMP",
-		"number": "TMP-SIM-L2",
-		"traits": ["Test"],
+		"number": "TMP-SIM-O2",
+		"traits": ["测试角色"],
 		"cost_energy": {},
 		"cost_ap": 1,
 		"energy_provided": {"GREEN": 1},
@@ -1774,51 +1772,74 @@ func _test_simultaneous_trigger_order() -> Dictionary:
 		"keywords": [],
 		"effects": [],
 		"trigger_effects": [
-			{"trigger": "ON_LIFE_TRIGGER", "operations": [{"type": "DRAW", "value": 1}]}
+			{"trigger": "ON_BATTLE_END", "operations": [{"type": "DRAW", "value": 1}]}
 		]
-	}, UATypes.Zone.LIFE, true)
+	}, UATypes.Zone.FRONT_LINE, true)
 	if first_trigger_uid == "" or second_trigger_uid == "":
-		return _fail("同时触发顺序测试的生命触发卡创建失败")
-	p2_life.life = [first_trigger_uid, second_trigger_uid]
-	life_manager.effect_resolver.deal_damage_to_player(life_manager.game_state, UATypes.PLAYER_TWO, 2)
-	if life_manager.game_state.pending_life_triggers.size() != 2:
-		return _fail("同方两个生命触发应同时进入待决策")
-	life_manager.resolve_life_trigger_decision(second_trigger_uid, true)
-	if life_manager.game_state.pending_life_triggers.size() != 1:
-		return _fail("处理一张生命触发后，应只剩下一张待决策")
-	if str((life_manager.game_state.pending_life_triggers[0] as Dictionary).get("card_uid", "")) != first_trigger_uid:
-		return _fail("同方同时触发时，应允许玩家按选择顺序先处理任意一张")
-	life_manager.resolve_life_trigger_decision(first_trigger_uid, false)
-	if not life_manager.game_state.pending_life_triggers.is_empty():
-		return _fail("同方生命触发按顺序处理完后不应残留待决策")
-	if not life_manager.game_state.pending_life_reveal.is_empty():
-		return _fail("同方生命触发批次处理完成后不应残留 reveal 状态")
+		return _fail("同方同时触发顺序测试卡创建失败")
+	var same_side_player := _player(same_side_manager, UATypes.PLAYER_ONE)
+	var same_side_hand_before := same_side_player.hand.size()
+	same_side_manager.effect_resolver.resolve_simultaneous_triggers(same_side_manager.game_state, [
+		{
+			"source_card_uid": first_trigger_uid,
+			"owner_player_id": UATypes.PLAYER_ONE,
+			"trigger_type": UATypes.TriggerType.ON_BATTLE_END,
+			"context": {
+				"source_player_id": UATypes.PLAYER_ONE,
+				"target_player_id": UATypes.PLAYER_TWO,
+			},
+		},
+		{
+			"source_card_uid": second_trigger_uid,
+			"owner_player_id": UATypes.PLAYER_ONE,
+			"trigger_type": UATypes.TriggerType.ON_BATTLE_END,
+			"context": {
+				"source_player_id": UATypes.PLAYER_ONE,
+				"target_player_id": UATypes.PLAYER_TWO,
+			},
+		},
+	])
+	if same_side_player.hand.size() != same_side_hand_before:
+		return _fail("同方多个同时触发存在时，不应在顺序决策前直接结算")
+	if same_side_manager.game_state.pending_decisions.size() != 1:
+		return _fail("同方多个同时触发应进入显式顺序决策")
+	var first_order_decision: Dictionary = same_side_manager.game_state.pending_decisions[0]
+	if str(first_order_decision.get("type", "")) != "TRIGGER_ORDER":
+		return _fail("同方同时触发的待决策类型应为 TRIGGER_ORDER")
+	var first_choices: Array = first_order_decision.get("choices", [])
+	if first_choices.size() != 2:
+		return _fail("同方同时触发顺序决策应暴露两项可选触发")
+	var choice_values: Array[String] = []
+	for choice_variant in first_choices:
+		choice_values.append(str((choice_variant as Dictionary).get("value", "")))
+	if not choice_values.has(first_trigger_uid) or not choice_values.has(second_trigger_uid):
+		return _fail("同方同时触发顺序决策应包含全部可选来源")
+	same_side_manager.resolve_pending_decision("TRIGGER_ORDER", {"choice": second_trigger_uid})
+	if same_side_player.hand.size() != same_side_hand_before + 1:
+		return _fail("选择其中一个触发后，应只先结算该触发")
+	if same_side_manager.game_state.pending_decisions.size() != 1:
+		return _fail("同方同时触发结算一项后，剩余项应继续保留待决策")
+	var second_order_decision: Dictionary = same_side_manager.game_state.pending_decisions[0]
+	if str(second_order_decision.get("type", "")) != "TRIGGER_ORDER":
+		return _fail("剩余同方触发应继续使用 TRIGGER_ORDER 待决策")
+	var remaining_choices: Array = second_order_decision.get("choices", [])
+	if remaining_choices.size() != 1:
+		return _fail("结算一项后，剩余顺序决策应只保留一项触发")
+	if str((remaining_choices[0] as Dictionary).get("value", "")) != first_trigger_uid:
+		return _fail("同方同时触发应按玩家选择顺序先处理任意一项")
+	same_side_manager.resolve_pending_decision("TRIGGER_ORDER", {"choice": first_trigger_uid})
+	if same_side_player.hand.size() != same_side_hand_before + 2:
+		return _fail("同方同时触发全部处理完成后，应结算两次触发效果")
+	if not same_side_manager.game_state.pending_decisions.is_empty():
+		return _fail("同方同时触发处理完成后不应残留顺序待决策")
 
-	var battle_manager := _new_manager()
-	battle_manager.game_state.phase = UATypes.Phase.ATTACK
-	var attacker_uid := _spawn_temp_card(battle_manager, UATypes.PLAYER_ONE, {
-		"id": "TMP_SIMULTANEOUS_ATTACKER",
-		"name": "同时触发攻击者",
+	var turn_player_manager := _new_manager()
+	var turn_player_uid := _spawn_temp_card(turn_player_manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_SIMULTANEOUS_TURN_PLAYER",
+		"name": "回合方触发者",
 		"card_type": "CHARACTER",
 		"title_code": "TMP",
-		"number": "TMP-SIM-1",
-		"traits": ["测试角色"],
-		"cost_energy": {},
-		"cost_ap": 1,
-		"energy_provided": {"GREEN": 1},
-		"bp": 5000,
-		"keywords": ["SNIPER"],
-		"effects": [],
-		"trigger_effects": [
-			{"trigger": "ON_BATTLE_WIN", "operations": [{"type": "DRAW", "value": 1}]}
-		]
-	}, UATypes.Zone.FRONT_LINE, true)
-	var target_uid := _spawn_temp_card(battle_manager, UATypes.PLAYER_TWO, {
-		"id": "TMP_SIMULTANEOUS_TARGET",
-		"name": "同时触发防守者",
-		"card_type": "CHARACTER",
-		"title_code": "TMP",
-		"number": "TMP-SIM-2",
+		"number": "TMP-SIM-T1",
 		"traits": ["测试角色"],
 		"cost_energy": {},
 		"cost_ap": 1,
@@ -1827,37 +1848,66 @@ func _test_simultaneous_trigger_order() -> Dictionary:
 		"keywords": [],
 		"effects": [],
 		"trigger_effects": [
-			{"trigger": "ON_LEAVE", "operations": [{"type": "DRAW", "value": 1}]}
+			{"trigger": "ON_BATTLE_END", "operations": [{"type": "DRAW", "value": 1}]}
 		]
 	}, UATypes.Zone.FRONT_LINE, true)
-	if attacker_uid == "" or target_uid == "":
-		return _fail("同时触发顺序测试的战斗卡创建失败")
-	var p1_battle := _player(battle_manager, UATypes.PLAYER_ONE)
-	var p2_battle := _player(battle_manager, UATypes.PLAYER_TWO)
-	var p1_hand_before := p1_battle.hand.size()
-	var p2_hand_before := p2_battle.hand.size()
-	var log_start := battle_manager.game_state.logs.size()
-	var declared := battle_manager.battle_resolver.declare_attack(battle_manager.game_state, attacker_uid, {
-		"target_kind": "FRONT_CHARACTER",
-		"target_uid": target_uid,
-	})
-	if not bool(declared.get("ok", false)):
-		return _fail("同时触发顺序测试的攻击声明失败")
-	battle_manager.resolve_attack(attacker_uid)
-	if p1_battle.hand.size() != p1_hand_before + 1:
-		return _fail("回合方的 ON_BATTLE_WIN 应正常结算")
-	if p2_battle.hand.size() != p2_hand_before + 1:
-		return _fail("非回合方的 ON_LEAVE 应正常结算")
+	var non_turn_player_uid := _spawn_temp_card(turn_player_manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_SIMULTANEOUS_NON_TURN_PLAYER",
+		"name": "非回合方触发者",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-SIM-T2",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [
+			{"trigger": "ON_BATTLE_END", "operations": [{"type": "DRAW", "value": 1}]}
+		]
+	}, UATypes.Zone.FRONT_LINE, true)
+	if turn_player_uid == "" or non_turn_player_uid == "":
+		return _fail("回合方优先顺序测试卡创建失败")
+	var p1_turn_player := _player(turn_player_manager, UATypes.PLAYER_ONE)
+	var p2_turn_player := _player(turn_player_manager, UATypes.PLAYER_TWO)
+	var p1_turn_hand_before := p1_turn_player.hand.size()
+	var p2_turn_hand_before := p2_turn_player.hand.size()
+	var simultaneous_logs := turn_player_manager.effect_resolver.resolve_simultaneous_triggers(turn_player_manager.game_state, [
+		{
+			"source_card_uid": turn_player_uid,
+			"owner_player_id": UATypes.PLAYER_ONE,
+			"trigger_type": UATypes.TriggerType.ON_BATTLE_END,
+			"context": {
+				"source_player_id": UATypes.PLAYER_ONE,
+				"target_player_id": UATypes.PLAYER_TWO,
+			},
+		},
+		{
+			"source_card_uid": non_turn_player_uid,
+			"owner_player_id": UATypes.PLAYER_TWO,
+			"trigger_type": UATypes.TriggerType.ON_BATTLE_END,
+			"context": {
+				"source_player_id": UATypes.PLAYER_TWO,
+				"target_player_id": UATypes.PLAYER_ONE,
+			},
+		},
+	])
+	if p1_turn_player.hand.size() != p1_turn_hand_before + 1:
+		return _fail("回合方同时触发应先正常结算自己的触发")
+	if p2_turn_player.hand.size() != p2_turn_hand_before + 1:
+		return _fail("非回合方同时触发应在回合方后继续结算")
 	var p1_draw_log := -1
 	var p2_draw_log := -1
-	for i in range(log_start, battle_manager.game_state.logs.size()):
-		var line := str(battle_manager.game_state.logs[i])
+	for i in range(simultaneous_logs.size()):
+		var line := str(simultaneous_logs[i])
 		if p1_draw_log == -1 and line == "%s draws 1 card." % UATypes.PLAYER_ONE:
 			p1_draw_log = i
 		if p2_draw_log == -1 and line == "%s draws 1 card." % UATypes.PLAYER_TWO:
 			p2_draw_log = i
 	if p1_draw_log == -1 or p2_draw_log == -1:
-		return _fail("同时触发顺序测试未找到双方触发的抽牌日志")
+		return _fail("回合方优先顺序测试未找到双方触发的抽牌日志")
 	if p1_draw_log > p2_draw_log:
 		return _fail("双方同时触发时，应先处理回合方，再处理非回合方")
 	return _ok()

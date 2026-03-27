@@ -58,7 +58,15 @@ func _init() -> void:
 	_run_test("Raw Conditional BP Event Upgrade Madoka", _test_raw_conditional_bp_event_upgrade_madoka)
 	_run_test("Raw Preview Reward Magic Girl Branches", _test_raw_preview_reward_magic_girl_branches)
 	_run_test("Raw Temporary Energy Bonus Then Self Leave", _test_raw_temporary_energy_bonus_then_self_leave)
+	_run_test("Raw Temporary Energy Bonus Enables Followup Play", _test_raw_temporary_energy_bonus_enables_followup_play)
+	_run_test("Raw Temporary Energy Bonus Expires Before Next Turn Play", _test_raw_temporary_energy_bonus_expires_before_next_turn_play)
+	_run_test("Raw Delayed Self Leave Removes Energy Contribution", _test_raw_delayed_self_leave_removes_energy_contribution)
+	_run_test("Raw Delayed Self Leave Preserves Followup Chain", _test_raw_delayed_self_leave_does_not_break_followup_trigger_chain)
 	_run_test("Raw Self Special Play Permission After Leave", _test_raw_self_special_play_permission_after_leave)
+	_run_test("Raw Self Special Play Permission Does Not Grant Other Copy", _test_raw_special_play_permission_does_not_grant_other_same_name_card)
+	_run_test("Raw Self Special Play Permission Still Respects RAID Validation", _test_raw_special_play_permission_still_respects_raid_target_validation)
+	_run_test("Raw Preview Selected Card Drives Followup Filter", _test_raw_preview_selected_card_context_drives_followup_target_filter)
+	_run_test("Raw Preview Skip Branch Keeps Deck Order", _test_raw_preview_skip_branch_keeps_deck_order_contract)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -1668,6 +1676,101 @@ func _test_raw_temporary_energy_bonus_then_self_leave() -> Dictionary:
 		return _fail("Raw temporary energy bonus ST sample card should also be available.")
 	return _ok()
 
+func _test_raw_temporary_energy_bonus_enables_followup_play() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TEMP_ENERGY_SELF_LEAVE_BT, UATypes.Zone.ENERGY_LINE)
+	if source_uid == "":
+		return _fail("Raw temporary energy bonus followup sample card should be available.")
+	if not _ensure_exact_red_energy_cards(manager, player_id, 2, source_uid):
+		return _fail("Raw temporary energy bonus followup sample should be able to prepare exactly 2 red energy cards.")
+	var followup_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ENTER_DRAW_TWO, UATypes.Zone.HAND)
+	if followup_uid == "":
+		return _fail("Raw temporary energy bonus followup sample should prepare the followup hand card.")
+	var actions_before := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, followup_uid)
+	if actions_before.has("PLAY_FRONT") or actions_before.has("PLAY_ENERGY"):
+		return _fail("Raw temporary energy bonus followup sample should not allow the 3-red card before the bonus resolves.")
+	manager.request_main_activate(source_uid)
+	var actions_after := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, followup_uid)
+	if not actions_after.has("PLAY_FRONT"):
+		return _fail("Raw temporary energy bonus followup sample should allow the 3-red card after the bonus resolves.")
+	return _ok()
+
+func _test_raw_temporary_energy_bonus_expires_before_next_turn_play() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TEMP_ENERGY_SELF_LEAVE_BT, UATypes.Zone.ENERGY_LINE)
+	if source_uid == "":
+		return _fail("Raw temporary energy expiry sample card should be available.")
+	if not _ensure_exact_red_energy_cards(manager, player_id, 2, source_uid):
+		return _fail("Raw temporary energy expiry sample should be able to prepare exactly 2 red energy cards.")
+	var followup_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ENTER_DRAW_TWO, UATypes.Zone.HAND)
+	if followup_uid == "":
+		return _fail("Raw temporary energy expiry sample should prepare the followup hand card.")
+	manager.request_main_activate(source_uid)
+	var boosted_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, followup_uid)
+	if not boosted_actions.has("PLAY_FRONT"):
+		return _fail("Raw temporary energy expiry sample should temporarily allow the 3-red card.")
+	manager.effect_resolver.cleanup_turn_expirations(manager.game_state, player_id)
+	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, followup_uid)
+	if expired_actions.has("PLAY_FRONT") or expired_actions.has("PLAY_ENERGY"):
+		return _fail("Raw temporary energy expiry sample should lose the extra play permission after the turn-end expiry cleanup.")
+	return _ok()
+
+func _test_raw_delayed_self_leave_removes_energy_contribution() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TEMP_ENERGY_SELF_LEAVE_BT, UATypes.Zone.ENERGY_LINE)
+	if source_uid == "":
+		return _fail("Raw delayed self-leave cleanup sample card should be available.")
+	var snapshot_before := manager.get_snapshot()
+	var energy_before := int(snapshot_before.get("players", {}).get(player_id, {}).get("available_energy", {}).get("RED", 0))
+	manager.request_main_activate(source_uid)
+	var snapshot_boosted := manager.get_snapshot()
+	var energy_boosted := int(snapshot_boosted.get("players", {}).get(player_id, {}).get("available_energy", {}).get("RED", 0))
+	manager.advance_phase()
+	var snapshot_after_leave := manager.get_snapshot()
+	var energy_after_leave := int(snapshot_after_leave.get("players", {}).get(player_id, {}).get("available_energy", {}).get("RED", 0))
+	if energy_boosted != energy_before + 1:
+		return _fail("Raw delayed self-leave cleanup sample should first gain exactly +1 red energy.")
+	if energy_after_leave >= energy_before:
+		return _fail("Raw delayed self-leave cleanup sample should remove both the temporary bonus and the source card's own energy contribution after leaving.")
+	return _ok()
+
+func _test_raw_delayed_self_leave_does_not_break_followup_trigger_chain() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	var first_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TEMP_ENERGY_SELF_LEAVE_BT, UATypes.Zone.ENERGY_LINE)
+	var second_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TEMP_ENERGY_SELF_LEAVE_ST, UATypes.Zone.ENERGY_LINE)
+	if first_uid == "" or second_uid == "":
+		return _fail("Raw delayed self-leave chain sample should prepare both BT/ST temporary energy cards.")
+	manager.request_main_activate(first_uid)
+	manager.request_main_activate(second_uid)
+	manager.advance_phase()
+	var first_card = manager.game_state.get_card(first_uid)
+	var second_card = manager.game_state.get_card(second_uid)
+	if first_card == null or first_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw delayed self-leave chain sample should move the first source to outside at end of main phase.")
+	if second_card == null or second_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw delayed self-leave chain sample should move the second source to outside at end of main phase.")
+	if manager.game_state.phase != UATypes.Phase.ATTACK:
+		return _fail("Raw delayed self-leave chain sample should still advance to ATTACK after resolving multiple delayed self-leave effects.")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw delayed self-leave chain sample should not leave stray pending decisions after both delayed effects resolve.")
+	return _ok()
+
 func _test_raw_self_special_play_permission_after_leave() -> Dictionary:
 	var manager := _new_manager()
 	var player_id := UATypes.PLAYER_ONE
@@ -1738,6 +1841,284 @@ func _test_raw_self_special_play_permission_after_leave() -> Dictionary:
 	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
 	if expired_actions.has("RAID"):
 		return _fail("Raw self special play permission sample should lose the temporary RAID permission at the next self turn start.")
+	return _ok()
+
+func _test_raw_special_play_permission_does_not_grant_other_same_name_card() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Raw self special play copy-bound sample should be able to prepare 4 red energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_SELF_SPECIAL_PLAY_PERMISSION, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw self special play copy-bound sample should prepare the source card.")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw self special play copy-bound sample source instance should exist.")
+	source_card.flags["entered_via_raid"] = true
+	var raid_base_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_SAYAKA_RAID_BASE_COPY_BOUND",
+		"name": "美樹 さやか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-SAYAKA-COPY-BASE",
+		"traits": ["魔法少女"],
+		"cost_energy": {},
+		"cost_ap": 0,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if raid_base_uid == "":
+		return _fail("Raw self special play copy-bound sample should prepare a legal RAID base.")
+	var second_copy_uid := _spawn_raw_card_copy(manager, player_id, RAW_SELF_SPECIAL_PLAY_PERMISSION, UATypes.Zone.HAND)
+	if second_copy_uid == "":
+		return _fail("Raw self special play copy-bound sample should prepare a second copy in hand.")
+	var chosen_life_uid := _ensure_life_card(manager, player_id)
+	manager.request_main_activate(source_uid)
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": chosen_life_uid,
+	})
+	manager.zone_manager.move_card(manager.game_state, source_uid, UATypes.Zone.HAND, player_id)
+	var source_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
+	var second_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, second_copy_uid)
+	if not source_actions.has("RAID"):
+		return _fail("Raw self special play copy-bound sample should keep RAID on the specifically granted source copy.")
+	if second_actions.has("RAID"):
+		return _fail("Raw self special play copy-bound sample should not grant RAID to another copy with the same def_id.")
+	return _ok()
+
+func _test_raw_special_play_permission_still_respects_raid_target_validation() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Raw self special play validation sample should be able to prepare 4 red energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_SELF_SPECIAL_PLAY_PERMISSION, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw self special play validation sample should prepare the source card.")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw self special play validation sample source instance should exist.")
+	source_card.flags["entered_via_raid"] = true
+	var chosen_life_uid := _ensure_life_card(manager, player_id)
+	manager.request_main_activate(source_uid)
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": chosen_life_uid,
+	})
+	manager.zone_manager.move_card(manager.game_state, source_uid, UATypes.Zone.HAND, player_id)
+	_clear_named_cards_from_field(manager, player_id, "美樹 さやか")
+	var hand_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
+	if hand_actions.has("RAID"):
+		return _fail("Raw self special play validation sample should still require a legal RAID base instead of bypassing target validation.")
+	if not hand_actions.has("PLAY_FRONT"):
+		return _fail("Raw self special play validation sample should still keep normal hand play available after leaving the field.")
+	return _ok()
+
+func _test_raw_preview_selected_card_context_drives_followup_target_filter() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 1):
+		return _fail("Should be able to prepare 1 raw red energy card for the preview followup filter sample.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_PREVIEW_DISCARD, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw preview followup filter sample should prepare the preview event.")
+	var preview_pick_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_CHAIN_PICK",
+		"name": "预览链已选卡",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-CHAIN-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_rest_1 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_CHAIN_REST_1",
+		"name": "预览链剩余1",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-CHAIN-2",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_rest_2 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_CHAIN_REST_2",
+		"name": "预览链剩余2",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-CHAIN-3",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_rest_3 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_CHAIN_REST_3",
+		"name": "预览链剩余3",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-CHAIN-4",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	_set_deck_top_order(manager, player_id, [preview_pick_uid, preview_rest_1, preview_rest_2, preview_rest_3])
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview followup filter sample should first request a preview selection.")
+	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(first_decision.get("resolution_id", "")),
+		"choice": preview_pick_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview followup filter sample should then request preview reorder.")
+	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_choices := _extract_choice_values(second_decision.get("choices", []))
+	if second_choices.has(preview_pick_uid):
+		return _fail("Raw preview followup filter sample should not re-expose the already selected preview card in the followup decision.")
+	for expected_uid in [preview_rest_1, preview_rest_2, preview_rest_3]:
+		if not second_choices.has(expected_uid):
+			return _fail("Raw preview followup filter sample should carry the remaining preview cards into the followup decision.")
+	return _ok()
+
+func _test_raw_preview_skip_branch_keeps_deck_order_contract() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	_set_ap_active(_player(manager, player_id), 1)
+	if not _ensure_red_energy(manager, player_id, 1):
+		return _fail("Should be able to prepare 1 raw red energy card for the preview skip order sample.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_PREVIEW_MAGIC_GIRL_REWARD, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw preview skip order sample should prepare the preview reward event.")
+	var skip_character_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_SKIP_ORDER_CHAR",
+		"name": "预览顺序普通角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-ORDER-1",
+		"traits": ["普通人"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_1 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_SKIP_ORDER_FILLER_1",
+		"name": "预览顺序填充1",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-ORDER-2",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_2 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_SKIP_ORDER_FILLER_2",
+		"name": "预览顺序填充2",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-ORDER-3",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_3 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_SKIP_ORDER_FILLER_3",
+		"name": "预览顺序填充3",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-ORDER-4",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_4 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_SKIP_ORDER_FILLER_4",
+		"name": "预览顺序填充4",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-ORDER-5",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	_set_deck_top_order(manager, player_id, [skip_character_uid, skip_filler_1, skip_filler_2, skip_filler_3, skip_filler_4])
+	var player := _player(manager, player_id)
+	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	var select_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(select_decision.get("resolution_id", "")),
+		"choice": skip_character_uid,
+	})
+	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(reorder_decision.get("resolution_id", "")),
+		"choices": [skip_filler_4, skip_filler_2, skip_filler_1, skip_filler_3],
+	})
+	var deck_tail: Array[String] = []
+	for i in range(max(0, player.deck.size() - 4), player.deck.size()):
+		deck_tail.append(str(player.deck[i]))
+	if deck_tail != [skip_filler_4, skip_filler_2, skip_filler_1, skip_filler_3]:
+		return _fail("Raw preview skip order sample should preserve the chosen bottom-deck order even when the reward branch is skipped.")
 	return _ok()
 
 func _fill_ap(player: PlayerState, total: int) -> void:
@@ -1847,6 +2228,27 @@ func _spawn_generic_red_energy(manager: GameManager, player_id: String, temp_id:
 		"trigger_effects": []
 	}, UATypes.Zone.ENERGY_LINE, false)
 
+func _ensure_exact_red_energy_cards(manager: GameManager, player_id: String, count: int, keep_uid := "") -> bool:
+	var player := _player(manager, player_id)
+	if player == null:
+		return false
+	var existing_red: Array[String] = []
+	for card_uid_variant in player.energy_line:
+		var card_uid := str(card_uid_variant)
+		var card := manager.game_state.get_card(card_uid)
+		var card_def := manager.game_state.get_card_def(card.def_id) if card != null else null
+		if card_def != null and int(card_def.energy_provided.get("RED", 0)) > 0:
+			existing_red.append(card_uid)
+	for card_uid in existing_red:
+		if card_uid == keep_uid:
+			continue
+		manager.zone_manager.move_card(manager.game_state, card_uid, UATypes.Zone.OUTSIDE, player_id)
+	while _count_red_energy(manager, player_id) < count:
+		var uid := _spawn_generic_red_energy(manager, player_id, "EXACT_%d" % manager.game_state.cards.size())
+		if uid == "":
+			break
+	return _count_red_energy(manager, player_id) == count
+
 func _move_card_to_zone(manager: GameManager, player_id: String, def_id: String, zone: int) -> String:
 	for card_uid in _all_player_cards(manager, player_id):
 		var card := manager.game_state.get_card(card_uid)
@@ -1872,6 +2274,24 @@ func _move_or_spawn_card_to_zone(manager: GameManager, player_id: String, def_id
 	card.controller_player_id = player_id
 	card.zone = zone
 	card.state = UATypes.CardState.ACTIVE if zone != UATypes.Zone.LIFE else UATypes.CardState.RESTED
+	card.current_bp = int(card_def.bp)
+	manager.game_state.cards[card.uid] = card
+	var zone_cards: Array = manager.zone_manager.get_zone_array(_player(manager, player_id), zone)
+	if zone_cards != null:
+		zone_cards.append(card.uid)
+	return card.uid
+
+func _spawn_raw_card_copy(manager: GameManager, player_id: String, def_id: String, zone: int, active := true) -> String:
+	var card_def = manager.game_state.get_card_def(def_id)
+	if card_def == null:
+		return ""
+	var card := CardInstance.new()
+	card.uid = "%s_raw_copy_%s_%d" % [player_id, def_id, manager.game_state.cards.size()]
+	card.def_id = def_id
+	card.owner_player_id = player_id
+	card.controller_player_id = player_id
+	card.zone = zone
+	card.state = UATypes.CardState.ACTIVE if active and zone != UATypes.Zone.LIFE else UATypes.CardState.RESTED
 	card.current_bp = int(card_def.bp)
 	manager.game_state.cards[card.uid] = card
 	var zone_cards: Array = manager.zone_manager.get_zone_array(_player(manager, player_id), zone)
@@ -1936,3 +2356,9 @@ func _all_player_cards(manager: GameManager, player_id: String) -> Array[String]
 		for card_uid in zone_cards:
 			result.append(str(card_uid))
 	return result
+
+func _extract_choice_values(choices: Array) -> Array[String]:
+	var values: Array[String] = []
+	for choice_variant in choices:
+		values.append(str((choice_variant as Dictionary).get("value", "")))
+	return values
