@@ -18,6 +18,9 @@ const RAW_TARGET_REMOVE := "UA31BT_MMM_1_077"
 const RAW_LIFE_TRIGGER_TARGET := "UA31BT_MMM_1_084"
 const RAW_MAIN_ACTIVATE := "UA31BT_MMM_1_089"
 const RAW_EVENT_READY_AP := "UA31BT_MMM_1_095"
+const RAW_HOMURA_RAID_SUPPORT := "UA31BT_MMM_1_075"
+const RAW_HOMURA_OPTIONAL_CHAIN := "UA31ST_MMM_1_102"
+const RAW_FIELD_OUTSIDE_SEARCH := "UA31ST_MMM_1_108"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -33,6 +36,12 @@ func _init() -> void:
 	_run_test("Raw MAIN_ACTIVATE Life To Hand", _test_raw_main_activate_life_to_hand)
 	_run_test("Raw Event Ready AP", _test_raw_event_ready_ap)
 	_run_test("Raw Life Trigger Target Selection", _test_raw_life_trigger_target_selection)
+	_run_test("Raw On Enter Hand Summon", _test_raw_on_enter_hand_summon)
+	_run_test("Raw On Enter Cannot Attack Until Next Self Turn", _test_raw_on_enter_cannot_attack_until_next_self_turn)
+	_run_test("Raw Hand Summon Respects Play Validation", _test_raw_hand_summon_respects_play_validation)
+	_run_test("Raw Optional Return Then Summon Skip", _test_raw_optional_return_then_summon_skip)
+	_run_test("Raw Optional Return Then Summon Success", _test_raw_optional_return_then_summon_success)
+	_run_test("Raw Outside Search Optional Branches", _test_raw_outside_search_optional_branches)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -529,6 +538,501 @@ func _test_raw_life_trigger_target_selection() -> Dictionary:
 		return _fail("Raw life trigger should keep the removed target under the resolver player's outside controller.")
 	if defender.life.has(life_uid):
 		return _fail("Raw life trigger should consume the damaged life card.")
+	return _ok()
+
+func _test_raw_on_enter_hand_summon() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 3):
+		return _fail("Should be able to prepare 3 raw red energy cards for the hand-summon sample.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_KYOKO, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw hand-summon source card should be available.")
+	var valid_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_HAND_SUMMON_VALID",
+		"name": "测试红色魔法少女",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-HAND-SUMMON-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var invalid_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_HAND_SUMMON_INVALID",
+		"name": "测试非目标角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-HAND-SUMMON-2",
+		"traits": ["其他"],
+		"cost_energy": {"BLUE": 2},
+		"cost_ap": 2,
+		"energy_provided": {"BLUE": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var ap_before := player.ap_active_count()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw hand-summon sample should request an explicit hand target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choice_values: Array[String] = []
+	for choice_variant in decision.get("choices", []):
+		choice_values.append(str((choice_variant as Dictionary).get("value", "")))
+	if not choice_values.has(valid_uid):
+		return _fail("Raw hand-summon sample should expose the valid red magical-girl target.")
+	if choice_values.has(invalid_uid):
+		return _fail("Raw hand-summon sample should not expose cards failing AP/color/trait filters.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": valid_uid,
+	})
+	var summoned_card := manager.game_state.get_card(valid_uid)
+	if summoned_card == null or summoned_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw hand-summon sample should move the selected card from hand to front line.")
+	if summoned_card.state != UATypes.CardState.RESTED:
+		return _fail("Raw hand-summon sample should enter the selected card as rested.")
+	if player.hand.size() != hand_before - 2:
+		return _fail("Raw hand-summon sample should spend the source card and the selected summon card from hand.")
+	if player.ap_active_count() != ap_before - 2:
+		return _fail("Raw hand-summon sample should consume AP for both the source play and the summoned card.")
+	return _ok()
+
+func _test_raw_on_enter_cannot_attack_until_next_self_turn() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Should be able to prepare 4 raw red energy cards for the cannot-attack sample.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_HOMURA_RAID_SUPPORT, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw cannot-attack source card should be available.")
+	var raid_target_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_CANNOT_ATTACK_RAID_TARGET",
+		"name": "暁美 ほむら",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-CANNOT-ATTACK-0",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_CANNOT_ATTACK_MADOKA",
+		"name": "鹿目 まどか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-CANNOT-ATTACK-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var summon_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_CANNOT_ATTACK_SUMMON",
+		"name": "测试连带登场角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-CANNOT-ATTACK-2",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var locked_uid := _spawn_temp_card(manager, opponent_id, {
+		"id": "TMP_CANNOT_ATTACK_TARGET",
+		"name": "测试被限制攻击角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-CANNOT-ATTACK-3",
+		"traits": ["敌方角色"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {
+		"raid_target_uid": raid_target_uid,
+		"raid_target_zone_choice": UATypes.Zone.FRONT_LINE,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw cannot-attack sample should first request the hand summon selection.")
+	var summon_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(summon_decision.get("resolution_id", "")),
+		"choice": summon_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw cannot-attack sample should then request the opponent front-line target selection.")
+	var lock_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var lock_choices: Array[String] = []
+	for choice_variant in lock_decision.get("choices", []):
+		lock_choices.append(str((choice_variant as Dictionary).get("value", "")))
+	if not lock_choices.has(locked_uid):
+		return _fail("Raw cannot-attack sample should expose the opponent front-line target after Madoka is present.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(lock_decision.get("resolution_id", "")),
+		"choice": locked_uid,
+	})
+	var locked_card := manager.game_state.get_card(locked_uid)
+	if locked_card == null or not (locked_card.flags.get("temp_keywords", []) as Array).has("CANNOT_ATTACK"):
+		return _fail("Raw cannot-attack sample should add the temporary CANNOT_ATTACK keyword to the selected target.")
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	manager.advance_phase()
+	var attack_validation := manager.rules_engine.can_attack(manager.game_state, opponent_id, locked_uid)
+	if bool(attack_validation.get("ok", false)):
+		return _fail("Raw cannot-attack sample should prevent the locked target from attacking during the opponent's next attack phase.")
+	if str(attack_validation.get("reason", "")) != "cannot_attack":
+		return _fail("Raw cannot-attack sample should fail attacks with the cannot_attack reason.")
+	manager.advance_phase()
+	manager.advance_phase()
+	locked_card = manager.game_state.get_card(locked_uid)
+	if locked_card == null:
+		return _fail("Raw cannot-attack sample should keep the locked target on the field.")
+	if (locked_card.flags.get("temp_keywords", []) as Array).has("CANNOT_ATTACK"):
+		return _fail("Raw cannot-attack sample should remove the temporary CANNOT_ATTACK keyword at the next self turn start.")
+	return _ok()
+
+func _test_raw_hand_summon_respects_play_validation() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 1)
+	if not _ensure_red_energy(manager, player_id, 3):
+		return _fail("Should be able to prepare 3 raw red energy cards for the hand-summon validation sample.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_KYOKO, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw validation source card should be available.")
+	var summon_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_HAND_SUMMON_BLOCKED",
+		"name": "测试待登场角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-HAND-SUMMON-3",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {"allow_raid_play": false})
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw hand-summon validation sample should not offer targets when no AP remains for the follow-up play.")
+	var summon_card := manager.game_state.get_card(summon_uid)
+	if summon_card == null or summon_card.zone != UATypes.Zone.HAND:
+		return _fail("Raw hand-summon validation sample should keep the blocked target in hand.")
+	return _ok()
+
+func _test_raw_optional_return_then_summon_skip() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Should be able to prepare 4 raw red energy cards for the optional chain skip sample.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_HOMURA_OPTIONAL_CHAIN, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw optional-chain source card should be available.")
+	var madoka_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_OPTIONAL_MADOKA_SKIP",
+		"name": "鹿目 まどか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-OPTIONAL-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var summon_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_OPTIONAL_SUMMON_SKIP",
+		"name": "测试后续登场角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-OPTIONAL-2",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 4},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var deck_before := player.deck.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw optional-chain skip sample should first request the optional Madoka selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": "",
+	})
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw optional-chain skip sample should stop resolving after skipping the optional action.")
+	if player.hand.size() != hand_before - 1:
+		return _fail("Raw optional-chain skip sample should only lose the source card from hand.")
+	if player.deck.size() != deck_before:
+		return _fail("Raw optional-chain skip sample should not draw or move cards into the deck after skipping.")
+	var madoka_card := manager.game_state.get_card(madoka_uid)
+	if madoka_card == null or madoka_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw optional-chain skip sample should leave Madoka on the field when the optional action is skipped.")
+	var summon_card := manager.game_state.get_card(summon_uid)
+	if summon_card == null or summon_card.zone != UATypes.Zone.HAND:
+		return _fail("Raw optional-chain skip sample should keep the follow-up summon target in hand.")
+	return _ok()
+
+func _test_raw_optional_return_then_summon_success() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_red_energy(manager, player_id, 4):
+		return _fail("Should be able to prepare 4 raw red energy cards for the optional chain success sample.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_HOMURA_OPTIONAL_CHAIN, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw optional-chain source card should be available.")
+	var madoka_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_OPTIONAL_MADOKA_SUCCESS",
+		"name": "鹿目 まどか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-OPTIONAL-3",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var summon_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_OPTIONAL_SUMMON_SUCCESS",
+		"name": "测试连锁登场角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-OPTIONAL-4",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 4},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var deck_before := player.deck.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw optional-chain success sample should first request the optional Madoka selection.")
+	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(first_decision.get("resolution_id", "")),
+		"choice": madoka_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw optional-chain success sample should then request the follow-up summon selection.")
+	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(second_decision.get("resolution_id", "")),
+		"choice": summon_uid,
+	})
+	if player.hand.size() != hand_before - 1:
+		return _fail("Raw optional-chain success sample should net -1 hand after draw 1 and follow-up summon.")
+	if player.deck.size() != deck_before:
+		return _fail("Raw optional-chain success sample should keep deck size stable after returning one card and drawing one card.")
+	var deck_tail := player.deck.slice(max(0, player.deck.size() - 1), player.deck.size())
+	if deck_tail != [madoka_uid]:
+		return _fail("Raw optional-chain success sample should place the selected Madoka on the deck bottom.")
+	var summon_card := manager.game_state.get_card(summon_uid)
+	if summon_card == null or summon_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw optional-chain success sample should move the selected follow-up card to front line.")
+	if summon_card.state != UATypes.CardState.RESTED:
+		return _fail("Raw optional-chain success sample should enter the follow-up card as rested.")
+	return _ok()
+
+func _test_raw_outside_search_optional_branches() -> Dictionary:
+	var manager_skip := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager_skip.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_skip, player_id), 1)
+	if not _ensure_red_energy(manager_skip, player_id, 3):
+		return _fail("Should be able to prepare 3 raw red energy cards for the outside-search sample.")
+	var source_skip_uid := _move_or_spawn_card_to_zone(manager_skip, player_id, RAW_FIELD_OUTSIDE_SEARCH, UATypes.Zone.HAND)
+	var discard_skip_uid := _spawn_temp_card(manager_skip, player_id, {
+		"id": "TMP_OUTSIDE_SKIP_DISCARD",
+		"name": "测试弃牌",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-OUTSIDE-1",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var outside_skip_uid := _spawn_temp_card(manager_skip, player_id, {
+		"id": "TMP_OUTSIDE_SKIP_TARGET",
+		"name": "测试场外角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-OUTSIDE-2",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 3},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	manager_skip.play_card(source_skip_uid, UATypes.Zone.ENERGY_LINE)
+	if manager_skip.game_state.pending_decisions.size() != 1:
+		return _fail("Raw outside-search skip sample should first request the optional hand discard.")
+	var skip_decision: Dictionary = manager_skip.game_state.pending_decisions[0]
+	manager_skip.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(skip_decision.get("resolution_id", "")),
+		"choice": "",
+	})
+	if not manager_skip.game_state.pending_decisions.is_empty():
+		return _fail("Raw outside-search skip sample should stop after skipping the discard.")
+	var discard_skip_card := manager_skip.game_state.get_card(discard_skip_uid)
+	var outside_skip_card := manager_skip.game_state.get_card(outside_skip_uid)
+	if discard_skip_card == null or discard_skip_card.zone != UATypes.Zone.HAND:
+		return _fail("Raw outside-search skip sample should keep the discard candidate in hand.")
+	if outside_skip_card == null or outside_skip_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw outside-search skip sample should leave the outside candidate in outside.")
+
+	var manager_success := _new_manager()
+	manager_success.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_success, player_id), 1)
+	if not _ensure_red_energy(manager_success, player_id, 3):
+		return _fail("Should be able to prepare 3 raw red energy cards for the outside-search success sample.")
+	var source_success_uid := _move_or_spawn_card_to_zone(manager_success, player_id, RAW_FIELD_OUTSIDE_SEARCH, UATypes.Zone.HAND)
+	var discard_success_uid := _spawn_temp_card(manager_success, player_id, {
+		"id": "TMP_OUTSIDE_SUCCESS_DISCARD",
+		"name": "测试弃牌成功",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-OUTSIDE-3",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var outside_success_uid := _spawn_temp_card(manager_success, player_id, {
+		"id": "TMP_OUTSIDE_SUCCESS_TARGET",
+		"name": "测试场外检索角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-OUTSIDE-4",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 3},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	var opponent_outside_uid := _spawn_temp_card(manager_success, UATypes.PLAYER_TWO, {
+		"id": "TMP_OUTSIDE_OPPONENT_TARGET",
+		"name": "对手场外角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-OUTSIDE-5",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 3},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	var player_success := _player(manager_success, player_id)
+	manager_success.play_card(source_success_uid, UATypes.Zone.ENERGY_LINE)
+	if manager_success.game_state.pending_decisions.size() != 1:
+		return _fail("Raw outside-search success sample should first request the optional hand discard.")
+	var first_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(first_decision.get("resolution_id", "")),
+		"choice": discard_success_uid,
+	})
+	if manager_success.game_state.pending_decisions.size() != 1:
+		return _fail("Raw outside-search success sample should then request the outside retrieval selection.")
+	var second_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	var second_values: Array[String] = []
+	for choice_variant in second_decision.get("choices", []):
+		second_values.append(str((choice_variant as Dictionary).get("value", "")))
+	if not second_values.has(outside_success_uid):
+		return _fail("Raw outside-search success sample should expose the controller's valid outside target.")
+	if second_values.has(opponent_outside_uid):
+		return _fail("Raw outside-search success sample should not expose opponent outside cards.")
+	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(second_decision.get("resolution_id", "")),
+		"choice": outside_success_uid,
+	})
+	var discard_success_card := manager_success.game_state.get_card(discard_success_uid)
+	var outside_success_card := manager_success.game_state.get_card(outside_success_uid)
+	if discard_success_card == null or discard_success_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw outside-search success sample should move the discarded hand card to outside.")
+	if outside_success_card == null or outside_success_card.zone != UATypes.Zone.HAND:
+		return _fail("Raw outside-search success sample should move the selected outside card to hand.")
+	if not player_success.hand.has(outside_success_uid):
+		return _fail("Raw outside-search success sample should add the selected outside card to hand.")
 	return _ok()
 
 func _player(manager: GameManager, player_id: String) -> PlayerState:

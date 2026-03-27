@@ -175,6 +175,41 @@ def _manual_context_target(
     return [target_spec], steps
 
 
+def _normalize_compiled_abilities(compiled_ability) -> list[dict]:
+    if compiled_ability is None:
+        return []
+    if isinstance(compiled_ability, list):
+        return compiled_ability
+    return [compiled_ability]
+
+
+def _hand_character_summon_steps(
+    energy_lte: int,
+    *,
+    source_zone: str = "HAND",
+    store_as: str = "selected_summon_card",
+) -> tuple[list[dict], list[dict]]:
+    requirements = [
+        {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+        {"type": "CARD_COST_ENERGY_LTE", "value": energy_lte},
+        {"type": "CARD_COST_AP_EQ", "value": 1},
+        {"type": "CARD_COLOR_IS", "value": "RED"},
+        {"type": "CARD_HAS_TRAIT", "value": "魔法少女"},
+        {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True},
+    ]
+    target_specs, steps = _manual_single_target("SELF", [source_zone], requirements, 0, 1, store_as)
+    steps.append(
+        {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": store_as,
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": True,
+        }
+    )
+    return target_specs, steps
+
+
 def _supported_ability(
     card: dict,
     event_name: str,
@@ -220,6 +255,12 @@ def _unsupported_ability(card: dict, event_name: str, trigger_entry: dict, reaso
         "status": "UNSUPPORTED",
         "unsupported_reason": reason,
     }
+
+
+def _partial_unsupported_ability(card: dict, event_name: str, trigger_entry: dict, reason: str, suffix: str) -> dict:
+    ability = _unsupported_ability(card, event_name, trigger_entry, reason)
+    ability["id"] = f"{ability['id']}_{suffix}"
+    return ability
 
 
 def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, dict]) -> dict:
@@ -312,6 +353,99 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
         steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_life_card", "to": "HAND"})
         steps.append({"type": "DRAW", "value": 2})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。":
+        target_specs, steps = _hand_character_summon_steps(2)
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。自分の場に〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックできない。」を与える。":
+        target_specs, steps = _hand_character_summon_steps(2)
+        cannot_attack_specs, cannot_attack_steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"}],
+            0,
+            1,
+            "selected_cannot_attack_target",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs + cannot_attack_specs,
+            steps
+            + cannot_attack_steps
+            + [
+                {
+                    "type": "ADD_TEMP_KEYWORD",
+                    "target_var": "selected_cannot_attack_target",
+                    "keyword": "CANNOT_ATTACK",
+                    "expires": "UNTIL_NEXT_SELF_TURN_START",
+                }
+            ],
+        )
+
+    if text == "自分の場の〈鹿目 まどか〉を1枚自分の山札の下に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーが4以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [{"type": "CARD_NAME_IS", "value": "鹿目 まどか"}],
+            0,
+            1,
+            "selected_madoka",
+        )
+        summon_specs, summon_steps = _hand_character_summon_steps(4, store_as="selected_followup_summon")
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs + summon_specs,
+            steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_madoka", "to": "DECK"},
+                {"type": "SET_CONTEXT_FLAG", "var": "optional_madoka_return_performed", "from_var": "selected_madoka"},
+                {"type": "DRAW", "value": 1, "requirements": [{"type": "CONTEXT_FLAG_TRUE", "var": "optional_madoka_return_performed"}]},
+            ]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_FLAG_TRUE", "var": "optional_madoka_return_performed"}])
+                for step in summon_steps
+            ],
+        )
+
+    if text == "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが3以下で消費APが1の［特徴：魔法少女］を1枚まで手札に加える。":
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 0, 1, "selected_hand_discard")
+        search_requirements = [
+            {"type": "CARD_COST_ENERGY_LTE", "value": 3},
+            {"type": "CARD_COST_AP_EQ", "value": 1},
+            {"type": "CARD_HAS_TRAIT", "value": "魔法少女"},
+        ]
+        search_specs, search_steps = _manual_single_target("SELF", ["OUTSIDE"], search_requirements, 0, 1, "selected_outside_card")
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            discard_specs + search_specs,
+            discard_steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_hand_discard", "to": "OUTSIDE"},
+                {"type": "SET_CONTEXT_FLAG", "var": "optional_hand_discard_performed", "from_var": "selected_hand_discard"},
+            ]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_FLAG_TRUE", "var": "optional_hand_discard_performed"}])
+                for step in search_steps
+            ]
+            + [
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "selected_outside_card",
+                    "to": "HAND",
+                    "requirements": [{"type": "CONTEXT_FLAG_TRUE", "var": "optional_hand_discard_performed"}],
+                }
+            ],
+        )
 
     if text == "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。":
         target_specs, steps = _manual_single_target("SELF", ["FRONT_LINE"], [], 1, 1, "selected_target")
@@ -516,7 +650,7 @@ def _build_card_effects(card: dict, semantic_map: dict[str, dict]) -> dict:
     keywords = _infer_keywords(card)
     abilities = []
     for trigger_entry in card.get("trigger_effects", []):
-        abilities.append(_compile_trigger(card, trigger_entry, semantic_map))
+        abilities.extend(_normalize_compiled_abilities(_compile_trigger(card, trigger_entry, semantic_map)))
     if str(card.get("card_type", "")) == "EVENT":
         for effect_entry in card.get("effects", []):
             ability = _compile_event_effect(card, effect_entry, semantic_map)

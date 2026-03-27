@@ -118,6 +118,8 @@ func can_attack(state: GameState, player_id: String, card_uid: String, options: 
 	var card_def: CardDef = state.get_card_def(card.def_id)
 	if card_def == null or card_def.card_type != UATypes.CardType.CHARACTER:
 		return {"ok": false, "reason": "only_character_can_attack"}
+	if _card_has_keyword(card, card_def, "CANNOT_ATTACK"):
+		return {"ok": false, "reason": "cannot_attack"}
 	if bool(card.flags.get("attacked_this_turn", false)):
 		if not _card_has_keyword(card, card_def, "DOUBLE_ATTACK") or bool(card.flags.get("double_attack_consumed", false)):
 			return {"ok": false, "reason": "already_attacked"}

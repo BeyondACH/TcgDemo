@@ -9,10 +9,12 @@ const CardInstance = preload("res://data/card_instance.gd")
 
 var zone_manager
 var victory_checker
+var rules_engine
 
-func _init(p_zone_manager, p_victory_checker) -> void:
+func _init(p_zone_manager, p_victory_checker, p_rules_engine = null) -> void:
 	zone_manager = p_zone_manager
 	victory_checker = p_victory_checker
+	rules_engine = p_rules_engine
 
 func resolve_operations(state: GameState, source_card_uid: String, effect_list: Array, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
@@ -220,9 +222,14 @@ func commit_play_modifiers(state: GameState, modifier_result: Dictionary) -> voi
 	state.delayed_effects = keep
 
 func cleanup_turn_expirations(state: GameState, ending_player_id: String) -> void:
-	_revert_expired_temporary_modifiers(state, ending_player_id)
-	state.delayed_effects = _filter_unexpired_modifiers(state.delayed_effects, ending_player_id)
-	state.static_modifiers = _filter_unexpired_modifiers(state.static_modifiers, ending_player_id)
+	_revert_expired_temporary_modifiers(state, ending_player_id, "END_OF_TURN")
+	state.delayed_effects = _filter_unexpired_modifiers(state.delayed_effects, ending_player_id, "END_OF_TURN")
+	state.static_modifiers = _filter_unexpired_modifiers(state.static_modifiers, ending_player_id, "END_OF_TURN")
+
+func cleanup_start_turn_expirations(state: GameState, starting_player_id: String) -> void:
+	_revert_expired_temporary_modifiers(state, starting_player_id, "UNTIL_NEXT_SELF_TURN_START")
+	state.delayed_effects = _filter_unexpired_modifiers(state.delayed_effects, starting_player_id, "UNTIL_NEXT_SELF_TURN_START")
+	state.static_modifiers = _filter_unexpired_modifiers(state.static_modifiers, starting_player_id, "UNTIL_NEXT_SELF_TURN_START")
 
 func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> Array[String]:
 	var logs: Array[String] = []
@@ -381,6 +388,16 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 		else:
 			context[selected_var] = selected
 		return {"logs": [], "paused": false}
+	if step_type == "SET_CONTEXT_FLAG":
+		var flag_var := str(step.get("var", ""))
+		if flag_var == "":
+			return {"logs": [], "paused": false}
+		if step.has("value"):
+			context[flag_var] = bool(step.get("value", false))
+			return {"logs": [], "paused": false}
+		var source_var := str(step.get("from_var", ""))
+		context[flag_var] = _context_value_is_non_empty(context.get(source_var, null))
+		return {"logs": [], "paused": false}
 	if step_type == "MOVE_SELECTED_CARDS":
 		var move_logs: Array[String] = []
 		var selected_cards: Array = _ensure_array(context.get(str(step.get("from_var", "")), []))
@@ -396,6 +413,8 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 		if remove_from_var != "":
 			context[remove_from_var] = _array_without_values(_ensure_array(context.get(remove_from_var, [])), selected_cards)
 		return {"logs": move_logs, "paused": false}
+	if step_type == "PLAY_SELECTED_CARDS":
+		return {"logs": _play_selected_cards(state, source_card_uid, step, context), "paused": false}
 	if step_type == "REORDER_CONTEXT_CARDS":
 		var source_var := str(step.get("from_var", "preview_cards"))
 		var ordered_var := str(step.get("var", source_var))
@@ -729,6 +748,7 @@ func _apply_temporary_keyword_modifier(state: GameState, source_card_uid: String
 		return logs
 	_add_runtime_keyword(target_card, keyword)
 	var source_card = state.get_card(source_card_uid)
+	var expires := str(step.get("expires", "END_OF_TURN"))
 	state.static_modifiers.append({
 		"id": state.next_runtime_id("temp_keyword"),
 		"source_card_uid": source_card_uid,
@@ -736,9 +756,9 @@ func _apply_temporary_keyword_modifier(state: GameState, source_card_uid: String
 		"modifier_type": "TEMP_KEYWORD",
 		"target_uid": target_uid,
 		"keyword": keyword,
-		"expires": str(step.get("expires", "END_OF_TURN")),
+		"expires": expires,
 	})
-	logs.append("%s gains %s until end of turn." % [target_uid, keyword])
+	logs.append("%s gains %s %s." % [target_uid, keyword, _format_modifier_expiry_text(expires)])
 	return logs
 
 func _enqueue_life_trigger_raid_choice(state: GameState, source_card_uid: String) -> Array[String]:
@@ -1013,6 +1033,12 @@ func _matches_filter(state: GameState, filter_variant, context: Dictionary, cand
 		return candidate_def != null and not candidate_def.keywords.has(str(filter.get("value", "")))
 	if filter_type == "HAS_TRAIT":
 		return candidate_def != null and candidate_def.traits.has(str(filter.get("value", "")))
+	if filter_type == "CARD_COST_ENERGY_LTE":
+		return candidate_def != null and _card_energy_cost_total(candidate_def) <= int(filter.get("value", 0))
+	if filter_type == "CARD_COST_AP_EQ":
+		return candidate_def != null and int(candidate_def.cost_ap) == int(filter.get("value", 0))
+	if filter_type == "CARD_COLOR_IS":
+		return candidate_def != null and _card_matches_color(candidate_def, str(filter.get("value", "")))
 	if filter_type == "TITLE_IS":
 		return candidate_def != null and candidate_def.title_code == str(filter.get("value", ""))
 	if filter_type == "PLAYED_FROM_ZONE_IS":
@@ -1107,8 +1133,31 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		return candidate_def != null and candidate_def.name == str(requirement.get("value", ""))
 	if requirement_type == "CARD_HAS_TRAIT":
 		return candidate_def != null and candidate_def.traits.has(str(requirement.get("value", "")))
+	if requirement_type == "CARD_COST_ENERGY_LTE":
+		return candidate_def != null and _card_energy_cost_total(candidate_def) <= int(requirement.get("value", 0))
+	if requirement_type == "CARD_COST_AP_EQ":
+		return candidate_def != null and int(candidate_def.cost_ap) == int(requirement.get("value", 0))
+	if requirement_type == "CARD_COLOR_IS":
+		return candidate_def != null and _card_matches_color(candidate_def, str(requirement.get("value", "")))
+	if requirement_type == "CARD_CAN_PLAY_TO_ZONE":
+		if candidate_card == null or rules_engine == null:
+			return false
+		var controller_player_id: String = candidate_card.controller_player_id
+		var target_zone := _parse_zone(requirement.get("zone", requirement.get("target_zone", UATypes.Zone.FRONT_LINE)))
+		var play_modifiers := preview_play_modifiers(state, controller_player_id, candidate_card.uid, {
+			"target_player_id": controller_player_id,
+			"target_zone": target_zone,
+		})
+		var validation: Dictionary = rules_engine.can_play_card(state, controller_player_id, candidate_card.uid, target_zone, play_modifiers, {
+			"ignore_play_timing": bool(requirement.get("ignore_play_timing", true)),
+		})
+		return bool(validation.get("ok", false))
 	if requirement_type == "CONTEXT_VAR_NON_EMPTY":
 		return not _ensure_array(context.get(str(requirement.get("var", "")), [])).is_empty()
+	if requirement_type == "CONTEXT_FLAG_TRUE":
+		return bool(context.get(str(requirement.get("var", "")), false))
+	if requirement_type == "CONTEXT_FLAG_FALSE":
+		return not bool(context.get(str(requirement.get("var", "")), false))
 	if requirement_type == "CONTEXT_SELECTED_CARD_HAS_TRAIT":
 		var selected_uid := str(context.get(str(requirement.get("context_var", "")), ""))
 		var selected_card = state.get_card(selected_uid)
@@ -1328,21 +1377,21 @@ func _is_modifier_active(state: GameState, modifier: Dictionary) -> bool:
 		return false
 	return _matches_filter_list(state, modifier.get("while", []), {}, "", source_card_uid)
 
-func _filter_unexpired_modifiers(modifiers: Array, ending_player_id: String) -> Array:
+func _filter_unexpired_modifiers(modifiers: Array, player_id: String, expiry: String) -> Array:
 	var keep: Array = []
 	for modifier_variant in modifiers:
 		var modifier: Dictionary = modifier_variant
-		if str(modifier.get("expires", "")) == "END_OF_TURN" and str(modifier.get("owner_player_id", "")) == ending_player_id:
+		if str(modifier.get("expires", "")) == expiry and str(modifier.get("owner_player_id", "")) == player_id:
 			continue
 		keep.append(modifier)
 	return keep
 
-func _revert_expired_temporary_modifiers(state: GameState, ending_player_id: String) -> void:
+func _revert_expired_temporary_modifiers(state: GameState, player_id: String, expiry: String) -> void:
 	for modifier_variant in state.static_modifiers:
 		var modifier: Dictionary = modifier_variant
-		if str(modifier.get("expires", "")) != "END_OF_TURN":
+		if str(modifier.get("expires", "")) != expiry:
 			continue
-		if str(modifier.get("owner_player_id", "")) != ending_player_id:
+		if str(modifier.get("owner_player_id", "")) != player_id:
 			continue
 		var target_uid := str(modifier.get("target_uid", ""))
 		var target_card = state.get_card(target_uid)
@@ -1365,6 +1414,79 @@ func _add_runtime_keyword(card: CardInstance, keyword: String) -> void:
 		temp_keywords.append(keyword)
 	card.flags["temp_keywords"] = temp_keywords
 	card.flags["temp_keyword_counts"] = temp_keyword_counts
+
+func _context_value_is_non_empty(value) -> bool:
+	if value == null:
+		return false
+	if value is Array:
+		return not value.is_empty()
+	return str(value) != ""
+
+func _format_modifier_expiry_text(expires: String) -> String:
+	match expires:
+		"UNTIL_NEXT_SELF_TURN_START":
+			return "until the next turn start of its source controller"
+		_:
+			return "until end of turn"
+
+func _card_energy_cost_total(card_def) -> int:
+	if card_def == null:
+		return 0
+	var total := 0
+	for amount_variant in card_def.cost_energy.values():
+		total += int(amount_variant)
+	return total
+
+func _card_matches_color(card_def, color: String) -> bool:
+	if card_def == null or color == "":
+		return false
+	var normalized := color.to_upper()
+	return int(card_def.cost_energy.get(normalized, 0)) > 0 or int(card_def.energy_provided.get(normalized, 0)) > 0
+
+func _play_selected_cards(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	if rules_engine == null:
+		logs.append("Play selected cards failed: missing rules engine.")
+		return logs
+	var selected_cards: Array = _ensure_array(context.get(str(step.get("from_var", "")), []))
+	var target_zone := _parse_zone(step.get("to_zone", step.get("to", UATypes.Zone.FRONT_LINE)))
+	var target_state := _parse_card_state(step.get("state", UATypes.CardState.RESTED))
+	var ignore_play_timing := bool(step.get("ignore_play_timing", true))
+	for card_uid_variant in selected_cards:
+		var card_uid := str(card_uid_variant)
+		if card_uid == "":
+			continue
+		var card = state.get_card(card_uid)
+		if card == null:
+			continue
+		var controller_player_id: String = card.controller_player_id
+		var play_modifiers := preview_play_modifiers(state, controller_player_id, card_uid, {
+			"target_player_id": controller_player_id,
+			"target_zone": target_zone,
+		})
+		var validation: Dictionary = rules_engine.can_play_card(state, controller_player_id, card_uid, target_zone, play_modifiers, {
+			"ignore_play_timing": ignore_play_timing,
+		})
+		if not bool(validation.get("ok", false)):
+			logs.append("Play selected card failed: %s." % str(validation.get("reason", "unknown")))
+			continue
+		var player = state.get_player(controller_player_id)
+		if player == null:
+			continue
+		var effective_cost_ap := int(validation.get("cost_ap", play_modifiers.get("cost_ap", 0)))
+		zone_manager.spend_ap(player, effective_cost_ap)
+		zone_manager.move_card(state, card_uid, target_zone, controller_player_id)
+		card.state = target_state
+		card.flags["entered_via_raid"] = false
+		var card_def = state.get_card_def(card.def_id)
+		logs.append("%s plays %s to %s." % [
+			controller_player_id,
+			card_def.name if card_def != null else card_uid,
+			UATypes.zone_to_key(target_zone),
+		])
+		logs.append_array(resolve_trigger(card_uid, UATypes.TriggerType.ON_ENTER, state, {"target_player_id": controller_player_id}))
+		commit_play_modifiers(state, play_modifiers)
+	return logs
 
 func _remove_runtime_keyword(card: CardInstance, keyword: String) -> void:
 	if keyword == "":
@@ -1417,6 +1539,16 @@ func _parse_zone(value) -> int:
 	if zone_name == "REMOVED" or zone_name == "removed":
 		return UATypes.Zone.REMOVED
 	return -1
+
+func _parse_card_state(value) -> int:
+	if value is int:
+		return int(value)
+	var state_name := str(value)
+	if state_name == "ACTIVE" or state_name == "active":
+		return UATypes.CardState.ACTIVE
+	if state_name == "RESTED" or state_name == "rested":
+		return UATypes.CardState.RESTED
+	return UATypes.CardState.RESTED
 
 func _apply_victory(state: GameState, result: Dictionary) -> void:
 	state.winner_player_id = str(result.get("winner", ""))

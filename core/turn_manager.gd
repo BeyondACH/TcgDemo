@@ -10,10 +10,12 @@ const CardInstance = preload("res://data/card_instance.gd")
 
 var zone_manager: ZoneManager
 var victory_checker: VictoryChecker
+var effect_resolver
 
-func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker) -> void:
+func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker, p_effect_resolver = null) -> void:
 	zone_manager = p_zone_manager
 	victory_checker = p_victory_checker
+	effect_resolver = p_effect_resolver
 
 func begin_game(state: GameState) -> Array[String]:
 	state.turn_number = 1
@@ -27,6 +29,8 @@ func begin_turn(state: GameState) -> Array[String]:
 	var player: PlayerState = state.get_player(state.active_player_id)
 	if player == null:
 		return logs
+	if effect_resolver != null:
+		effect_resolver.cleanup_start_turn_expirations(state, state.active_player_id)
 	player.turn_count += 1
 	player.used_bonus_draw = false
 	zone_manager.reset_turn_flags(state, state.active_player_id)

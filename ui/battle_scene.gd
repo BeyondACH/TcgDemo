@@ -105,6 +105,9 @@ var _selected_pending_decision_choice_index := 0
 var _raid_source_card_uid := ""
 var _raid_target_selection_mode := false
 var _auto_ack_life_reveal_uid := ""
+var _preview_card_uid := ""
+var _preview_player_id := ""
+var _preview_zone_name := ""
 
 func _ready() -> void:
 	_setup_optional_art()
@@ -284,6 +287,7 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	_sync_preview_selection_modal()
 	_sync_life_reveal_modal()
 	_sync_life_trigger_controls()
+	_sync_preview_panel()
 	selected_card_label.text = _selected_label_text(active_player_id)
 	_update_action_buttons()
 	log_panel.set_logs(snapshot.get("logs", []))
@@ -323,11 +327,13 @@ func _on_hand_card_selected(card_uid: String) -> void:
 	_sniper_attack_source_uid = ""
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
-	# 更新预览面板
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var card_data := _find_hand_card(active_player_id, card_uid)
 	if not card_data.is_empty():
-		card_preview_panel.set_card_data(card_data)
+		_set_preview_card(card_data, {
+			"relation_label": "己方",
+			"zone_label": "手牌",
+		})
 
 func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
 	# 悬停不再驱动底部预览面板显隐，避免 BottomContent 因新增预览面板高度而整体上抬。
@@ -337,7 +343,10 @@ func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
 		var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 		var card_data := _find_hand_card(active_player_id, _selected_hand_card_uid)
 		if not card_data.is_empty():
-			card_preview_panel.set_card_data(card_data)
+			_set_preview_card(card_data, {
+				"relation_label": "己方",
+				"zone_label": "手牌",
+			})
 
 func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
@@ -365,11 +374,18 @@ func _on_front_card_pressed(player_id: String, card_uid: String) -> void:
 			game_manager.resolve_attack(_pending_attack_uid, card_uid)
 			_clear_pending_attack()
 		return
+	if not card_data.is_empty():
+		_set_board_preview(player_id, "front_line", card_data)
+	if player_id != active_player_id:
+		_selected_board_card_uid = ""
+		_selected_board_zone_name = ""
+		_selected_hand_card_uid = ""
+		_update_action_buttons()
+		selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+		return
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "front_line"
 	_selected_hand_card_uid = ""
-	if not card_data.is_empty():
-		card_preview_panel.set_card_data(card_data)
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 	if phase == "ATTACK" and player_id == active_player_id:
@@ -390,13 +406,20 @@ func _on_energy_card_pressed(player_id: String, card_uid: String) -> void:
 		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
 			_execute_raid_play(card_uid)
 		return
-	_selected_board_card_uid = card_uid
-	_selected_board_zone_name = "energy_line"
-	_selected_hand_card_uid = ""
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var card_data := _find_board_card(player_id, card_uid)
 	if not card_data.is_empty():
-		card_preview_panel.set_card_data(card_data)
+		_set_board_preview(player_id, "energy_line", card_data)
+	if player_id != active_player_id:
+		_selected_board_card_uid = ""
+		_selected_board_zone_name = ""
+		_selected_hand_card_uid = ""
+		_update_action_buttons()
+		selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+		return
+	_selected_board_card_uid = card_uid
+	_selected_board_zone_name = "energy_line"
+	_selected_hand_card_uid = ""
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
 	var card_name := str(card_data.get("name", card_uid))
@@ -561,6 +584,7 @@ func _clear_selection() -> void:
 	_selected_board_card_uid = ""
 	_selected_board_zone_name = ""
 	_sniper_attack_source_uid = ""
+	_clear_preview_card()
 	_clear_raid_selection()
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
@@ -611,6 +635,10 @@ func _selected_label_text(active_player_id: String) -> String:
 		var board_card: Dictionary = _find_board_card(active_player_id, _selected_board_card_uid)
 		if not board_card.is_empty():
 			return "Selected: %s" % str(board_card.get("name", "Unknown"))
+	if _preview_card_uid != "":
+		var preview_card := _find_preview_card()
+		if not preview_card.is_empty():
+			return "Previewing: %s" % str(preview_card.get("name", "Unknown"))
 	if _selected_hand_card_uid == "":
 		return "No card selected"
 	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
@@ -634,6 +662,63 @@ func _find_board_card(player_id: String, card_uid: String) -> Dictionary:
 			if str(card_data.get("uid", "")) == card_uid:
 				return card_data
 	return {}
+
+func _find_preview_card() -> Dictionary:
+	if _preview_card_uid == "":
+		return {}
+	if _preview_zone_name == "hand":
+		return _find_hand_card(_preview_player_id, _preview_card_uid)
+	return _find_board_card(_preview_player_id, _preview_card_uid)
+
+func _set_preview_card(card_data: Dictionary, preview_context: Dictionary, player_id: String = "", zone_name: String = "") -> void:
+	_preview_card_uid = str(card_data.get("uid", ""))
+	_preview_player_id = player_id
+	_preview_zone_name = zone_name
+	card_preview_panel.set_preview(card_data, preview_context)
+
+func _set_board_preview(player_id: String, zone_name: String, card_data: Dictionary) -> void:
+	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	_set_preview_card(card_data, {
+		"relation_label": "己方" if player_id == active_player_id else "对手",
+		"zone_label": "前线" if zone_name == "front_line" else "能量线",
+	}, player_id, zone_name)
+
+func _clear_preview_card() -> void:
+	_preview_card_uid = ""
+	_preview_player_id = ""
+	_preview_zone_name = ""
+	card_preview_panel.clear_card()
+
+func _sync_preview_panel() -> void:
+	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	if _selected_hand_card_uid != "":
+		var hand_card := _find_hand_card(active_player_id, _selected_hand_card_uid)
+		if not hand_card.is_empty():
+			_set_preview_card(hand_card, {
+				"relation_label": "己方",
+				"zone_label": "手牌",
+			}, active_player_id, "hand")
+			return
+		_selected_hand_card_uid = ""
+	if _selected_board_card_uid != "":
+		var board_card := _find_board_card(active_player_id, _selected_board_card_uid)
+		if not board_card.is_empty():
+			_set_board_preview(active_player_id, _selected_board_zone_name, board_card)
+			return
+		_selected_board_card_uid = ""
+		_selected_board_zone_name = ""
+	if _preview_card_uid != "":
+		var preview_card := _find_preview_card()
+		if not preview_card.is_empty():
+			if _preview_zone_name == "hand":
+				_set_preview_card(preview_card, {
+					"relation_label": "己方" if _preview_player_id == active_player_id else "对手",
+					"zone_label": "手牌",
+				}, _preview_player_id, _preview_zone_name)
+			else:
+				_set_board_preview(_preview_player_id, _preview_zone_name, preview_card)
+			return
+	_clear_preview_card()
 
 func _update_action_buttons() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))

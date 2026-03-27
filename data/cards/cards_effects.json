@@ -12,9 +12,7 @@
         "RED": 3
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 2
-      },
+      "energy_provided": {},
       "bp": 3000,
       "keywords": [],
       "text": {
@@ -48,9 +46,7 @@
         "RED": 1
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 1
-      },
+      "energy_provided": {},
       "bp": 2000,
       "keywords": [],
       "text": {
@@ -109,9 +105,7 @@
       "traits": [],
       "cost_energy": {},
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 1
-      },
+      "energy_provided": {},
       "bp": 1000,
       "keywords": [],
       "text": {
@@ -305,9 +299,7 @@
         "RED": 3
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 2
-      },
+      "energy_provided": {},
       "bp": 3000,
       "keywords": [
         "STEP"
@@ -476,8 +468,151 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_summon_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_summon_card"
+          },
+          {
+            "id": "selected_cannot_attack_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                  "value": "鹿目 まどか"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_cannot_attack_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_summon_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon_card",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_cannot_attack_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_cannot_attack_target",
+            "keyword": "CANNOT_ATTACK",
+            "expires": "UNTIL_NEXT_SELF_TURN_START"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -486,8 +621,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。自分の場に〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックできない。」を与える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_075_on_life_trigger_a342b2ffe2",
@@ -517,7 +651,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_KEYWORD",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -600,9 +734,7 @@
         "RED": 2
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 1
-      },
+      "energy_provided": {},
       "bp": 2500,
       "keywords": [],
       "text": {
@@ -883,9 +1015,7 @@
         "RED": 2
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 1
-      },
+      "energy_provided": {},
       "bp": 2500,
       "keywords": [],
       "text": {
@@ -945,8 +1075,102 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_summon_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_summon_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_summon_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon_card",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -955,8 +1179,7 @@
           "effect_box": "OUTER",
           "text": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_082_on_life_trigger_91b04beda2",
@@ -987,7 +1210,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "COMPOSITE",
         "DRAW_1"
       ]
     }
@@ -1309,9 +1532,7 @@
         "RED": 1
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 2
-      },
+      "energy_provided": {},
       "bp": 1500,
       "keywords": [],
       "text": {
@@ -1870,9 +2091,7 @@
         "RED": 3
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 2
-      },
+      "energy_provided": {},
       "bp": 0,
       "keywords": [],
       "text": {
@@ -3217,9 +3436,7 @@
       "traits": [],
       "cost_energy": {},
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 1
-      },
+      "energy_provided": {},
       "bp": 1000,
       "keywords": [],
       "text": {
@@ -3381,9 +3598,7 @@
         "RED": 2
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 1
-      },
+      "energy_provided": {},
       "bp": 2500,
       "keywords": [],
       "text": {
@@ -3419,9 +3634,7 @@
         "RED": 1
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 2
-      },
+      "energy_provided": {},
       "bp": 1500,
       "keywords": [],
       "text": {
@@ -3920,8 +4133,179 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_madoka",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_madoka"
+          },
+          {
+            "id": "selected_followup_summon",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 4
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_followup_summon"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_madoka",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_madoka",
+            "to": "DECK"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "optional_madoka_return_performed",
+            "from_var": "selected_madoka"
+          },
+          {
+            "type": "DRAW",
+            "value": 1,
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "optional_madoka_return_performed"
+              }
+            ]
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_followup_summon",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 4
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "optional_madoka_return_performed"
+              }
+            ]
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_followup_summon",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true,
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "optional_madoka_return_performed"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3930,8 +4314,7 @@
           "effect_box": "OUTER",
           "text": "自分の場の〈鹿目 まどか〉を1枚自分の山札の下に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーが4以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31ST_MMM_1_102_on_life_trigger_0a3e81b9d0",
@@ -3962,7 +4345,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "DRAW_THEN_SELECT_AND_MOVE",
         "MOVE_SELF"
       ]
     }
@@ -4435,9 +4818,7 @@
         "RED": 3
       },
       "cost_ap": 1,
-      "energy_provided": {
-        "RED": 2
-      },
+      "energy_provided": {},
       "bp": 0,
       "keywords": [],
       "text": {
@@ -4459,8 +4840,129 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_hand_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_hand_discard"
+          },
+          {
+            "id": "selected_outside_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_outside_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_hand_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_hand_discard",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "optional_hand_discard_performed",
+            "from_var": "selected_hand_discard"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "optional_hand_discard_performed"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_card",
+            "to": "HAND",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "optional_hand_discard_performed"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4469,8 +4971,7 @@
           "effect_box": "OUTER",
           "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが3以下で消費APが1の［特徴：魔法少女］を1枚まで手札に加える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31ST_MMM_1_108_on_life_trigger_0a3e81b9d0",
@@ -4501,7 +5002,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "MOVE_SELF"
       ]
     }

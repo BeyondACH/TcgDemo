@@ -6,7 +6,9 @@ const PREVIEW_CARD_SIZE := Vector2(440, 616)
 const PADDING := 12.0
 
 var _card_image: TextureRect
+var _empty_state_label: Label
 var _details_box: VBoxContainer
+var _source_label: Label
 var _card_name_label: Label
 var _cost_label: Label
 var _stats_label: Label
@@ -14,6 +16,7 @@ var _temp_status_label: Label
 var _keywords_label: Label
 var _effect_label: Label
 var _current_card_data: Dictionary = {}
+var _preview_context: Dictionary = {}
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(
@@ -21,6 +24,7 @@ func _ready() -> void:
 		PREVIEW_CARD_SIZE.y + PADDING * 2.0
 	)
 	_setup_ui()
+	_refresh_display()
 
 func _setup_ui() -> void:
 	var margin := MarginContainer.new()
@@ -41,9 +45,26 @@ func _setup_ui() -> void:
 	_card_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(_card_image)
 
+	_empty_state_label = Label.new()
+	_empty_state_label.custom_minimum_size = PREVIEW_CARD_SIZE
+	_empty_state_label.add_theme_font_size_override("font_size", 16)
+	_empty_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_empty_state_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_empty_state_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_empty_state_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_empty_state_label.text = "点击手牌或战场上的卡牌后，这里会显示详细预览。"
+	vbox.add_child(_empty_state_label)
+
 	_details_box = VBoxContainer.new()
 	_details_box.add_theme_constant_override("separation", 6)
 	vbox.add_child(_details_box)
+
+	_source_label = Label.new()
+	_source_label.add_theme_font_size_override("font_size", 11)
+	_source_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_source_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_source_label.add_theme_color_override("font_color", Color(0.75, 0.82, 0.98))
+	_details_box.add_child(_source_label)
 
 	_card_name_label = Label.new()
 	_card_name_label.add_theme_font_size_override("font_size", 14)
@@ -83,16 +104,25 @@ func _setup_ui() -> void:
 	_details_box.add_child(_effect_label)
 
 func set_card_data(card_data: Dictionary) -> void:
+	set_preview(card_data, {})
+
+func set_preview(card_data: Dictionary, preview_context: Dictionary = {}) -> void:
 	_current_card_data = card_data.duplicate(true)
+	_preview_context = preview_context.duplicate(true)
 	_refresh_display()
 
 func clear_card() -> void:
 	_current_card_data = {}
+	_preview_context = {}
 	_refresh_display()
 
 func _refresh_display() -> void:
+	visible = true
 	if _current_card_data.is_empty():
 		_card_image.texture = null
+		_card_image.visible = false
+		_empty_state_label.visible = true
+		_source_label.text = ""
 		_card_name_label.text = ""
 		_cost_label.text = ""
 		_stats_label.text = ""
@@ -100,16 +130,17 @@ func _refresh_display() -> void:
 		_keywords_label.text = ""
 		_effect_label.text = ""
 		_details_box.visible = false
-		visible = false
 		return
-
-	visible = true
+	
+	_card_image.visible = true
+	_empty_state_label.visible = false
+	_details_box.visible = true
+	_source_label.text = _build_source_text()
 
 	var texture := _resolve_card_texture(_current_card_data, true)
 	if texture != null:
 		_card_image.texture = texture
 		_card_image.custom_minimum_size = PREVIEW_CARD_SIZE
-		_details_box.visible = true
 		_card_name_label.visible = true
 		_stats_label.visible = true
 		_temp_status_label.visible = true
@@ -165,6 +196,17 @@ func _refresh_display() -> void:
 		if text != "":
 			effect_texts.append("[%s] %s" % [trigger_type, text])
 	_effect_label.text = "\n".join(effect_texts)
+
+func _build_source_text() -> String:
+	var relation := str(_preview_context.get("relation_label", "")).strip_edges()
+	var zone_label := str(_preview_context.get("zone_label", "")).strip_edges()
+	if relation == "" and zone_label == "":
+		return "预览"
+	if relation == "":
+		return "预览来源：%s" % zone_label
+	if zone_label == "":
+		return "预览来源：%s" % relation
+	return "预览来源：%s %s" % [relation, zone_label]
 
 func _resolve_card_texture(card_data: Dictionary, prefer_original: bool = false) -> Texture2D:
 	for image_path in _card_image_candidates(card_data, prefer_original):
@@ -246,9 +288,20 @@ func _build_temp_status_text(state: String, current_bp: int, base_bp: int, flags
 
 	var temp_keywords: Array = flags.get("temp_keywords", [])
 	if not temp_keywords.is_empty():
-		parts.append("临时关键词: %s" % ", ".join(temp_keywords))
+		parts.append("临时关键词: %s" % ", ".join(_format_temp_keyword_labels(temp_keywords)))
 
 	if bool(flags.get("entered_via_raid", false)):
 		parts.append("本回合通过 RAID 登场")
 
 	return "\n".join(parts)
+
+func _format_temp_keyword_labels(temp_keywords: Array) -> Array[String]:
+	var labels: Array[String] = []
+	for keyword_variant in temp_keywords:
+		var keyword := str(keyword_variant)
+		match keyword:
+			"CANNOT_ATTACK":
+				labels.append("不能攻击（直到下个自己回合开始）")
+			_:
+				labels.append(keyword)
+	return labels

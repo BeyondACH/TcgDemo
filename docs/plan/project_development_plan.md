@@ -56,6 +56,8 @@
 
 目标：从“少量硬编码效果”升级到可持续扩展的效果框架。
 
+- 当前优先子阶段：`docs/plan/tolist.md` 中 P0 四项通用模板已补齐，包含“从手牌过滤登场”“optional 前置动作成功后继续结算”“从 OUTSIDE 过滤检索到手”以及“直到下个自己回合开始不能攻击”；下一步转入 P1 的动态 requirement / 条件化阈值替换 / 公开结果驱动奖励。
+
 ### 效果契约冻结
 
 - 统一 `CardDef.effects` / `trigger_effects` 字段命名，明确 `trigger / condition / cost / target / operations / once_per_turn` 结构。

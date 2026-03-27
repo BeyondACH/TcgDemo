@@ -2,13 +2,13 @@
 
 ## 当前状态
 
-- 当前 `data/cards/cards_effects.json` 统计为 59 个已支持能力、14 个未支持能力。
+- 当前 `data/cards/cards_effects.json` 统计为 63 个已支持能力、10 个未支持能力。
 - 未支持能力主要集中在“特殊登场”“条件化阈值替换”“动态数值 requirement”“失败分支”“临时授予限制/出牌规则”等模板。
-- 现有运行时已落地的原子步骤包括：`ACTIVATE_AP_SLOTS`、`ACTIVATE_CARD`、`ADD_TEMP_BP_MODIFIER`、`DRAW`、`FOR_EACH`、`LIFE_TRIGGER_RAID_CHOICE`、`MOVE_CARD`、`MOVE_SELECTED_CARDS`、`MOVE_TOP_DECK_TO_LIFE`、`MOVE_ZONE`、`PREVIEW_TOP_DECK`、`REGISTER_DELAYED_EFFECT`、`REGISTER_STATIC_MODIFIER`、`REORDER_CONTEXT_CARDS`、`SELECT_TARGETS`。
+- 现有运行时已落地的原子步骤包括：`ACTIVATE_AP_SLOTS`、`ACTIVATE_CARD`、`ADD_TEMP_BP_MODIFIER`、`ADD_TEMP_KEYWORD`、`DRAW`、`FOR_EACH`、`LIFE_TRIGGER_RAID_CHOICE`、`MOVE_CARD`、`MOVE_SELECTED_CARDS`、`MOVE_TOP_DECK_TO_LIFE`、`MOVE_ZONE`、`PLAY_SELECTED_CARDS`、`PREVIEW_TOP_DECK`、`REGISTER_DELAYED_EFFECT`、`REGISTER_STATIC_MODIFIER`、`REORDER_CONTEXT_CARDS`、`SELECT_TARGETS`、`SET_CONTEXT_FLAG`。
 
 ## 优先级 P0：优先补齐的通用能力模板
 
-- [ ] 从手牌按过滤条件登场角色
+- [x] 从手牌按过滤条件登场角色
   - 目标：支持“从手牌将满足必要能量、AP、颜色、特征条件的角色以 REST 登场到场上”的统一步骤模板。
   - 影响卡：`UA31BT_MMM_1_075`、`UA31BT_MMM_1_082`、`UA31ST_MMM_1_102`
   - 建议拆分：
@@ -16,7 +16,7 @@
     - 新增“将选中卡以指定状态登场到 FRONT_LINE”步骤
     - 补齐场上容量与合法落点校验
 
-- [ ] 可选支付/可选前置动作后再继续结算
+- [x] 可选支付/可选前置动作后再继续结算
   - 目标：支持“你可以先做 A；若如此做，则执行 B”的固定 IR 组合。
   - 影响卡：`UA31ST_MMM_1_102`、`UA31ST_MMM_1_108`
   - 建议拆分：
@@ -24,11 +24,11 @@
     - 用统一上下文变量驱动后续步骤 requirements
     - 禁止退回按卡分支
 
-- [ ] 从场外按过滤条件检索到手
+- [x] 从场外按过滤条件检索到手
   - 目标：支持“从 OUTSIDE 选择满足费用/AP/特征条件的卡加入手牌”的统一步骤模板。
   - 影响卡：`UA31ST_MMM_1_108`
 
-- [ ] 临时授予“不能攻击”直到下个自己回合开始
+- [x] 临时授予“不能攻击”直到下个自己回合开始
   - 目标：支持非数值型临时限制效果，不只覆盖 BP 增减。
   - 影响卡：`UA31BT_MMM_1_075`
   - 建议拆分：
@@ -92,12 +92,8 @@
 
 - `UA31BT_MMM_1_070`、`UA31ST_MMM_1_070`
   - 缺：临时增加发生产能、主阶段结束时自退场
-- `UA31BT_MMM_1_075`
-  - 缺：从手牌过滤登场、临时禁止攻击直到下个自己回合开始
 - `UA31BT_MMM_1_078`
   - 缺：动态 BP 上限 requirement
-- `UA31BT_MMM_1_082`
-  - 缺：从手牌过滤登场
 - `UA31BT_MMM_1_085`、`UA31ST_MMM_1_085`
   - 缺：失败分支 fallback
 - `UA31BT_MMM_1_090`
@@ -106,17 +102,13 @@
   - 缺：条件满足时替换 BP 阈值
 - `UA31BT_MMM_1_098`
   - 缺：公开结果驱动后续奖励
-- `UA31ST_MMM_1_102`
-  - 缺：可选前置动作后继续结算、从手牌过滤登场
-- `UA31ST_MMM_1_108`
-  - 缺：可选弃牌后从场外过滤检索到手
 
 ## 实施顺序建议
 
-- [ ] 第一批先做“从手牌过滤登场”“可选前置动作后继续结算”“从场外过滤检索到手”
+- [x] 第一批先做“从手牌过滤登场”“可选前置动作后继续结算”“从场外过滤检索到手”
   - 原因：复用面最大，能直接消化 4 张以上卡
-- [ ] 第二批补“临时限制/临时出牌许可/临时产能修饰”
-  - 原因：需要同时对齐 `EffectResolver`、`RulesEngine`、出牌合法性入口
+- [x] 第二批先补“临时限制中的不能攻击直到下个自己回合开始”
+  - 原因：该模板已覆盖 `UA31BT_MMM_1_075`，但“临时出牌许可/临时产能修饰”仍留在后续阶段继续补齐
 - [ ] 第三批补“动态 requirement / 条件化阈值替换 / fallback 控制流”
   - 原因：这部分最容易把 DSL/IR 做散，必须先冻结契约再动手
 
