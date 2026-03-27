@@ -1,4 +1,1450 @@
-﻿[
+[
+    {
+        "id":  "UA31BT_MMM_1_035",
+        "name":  "悪魔ほむら",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-035",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  2
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このカードは〈暁美 ほむら〉としても扱う。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のフロントLの〈鹿目 まどか〉を1枚選び、このキャラと位置を入れ替える。"
+                                },
+                                {
+                                    "trigger":  "ON_ATTACK",
+                                    "source_label":  "アタック時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のエナジーLに〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "カラー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-035.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-035",
+        "raw_effect_text":  "このカードは〈暁美 ほむら〉としても扱う。\n自分のフロントLの〈鹿目 まどか〉を1枚選び、このキャラと位置を入れ替える。\n自分のエナジーLに〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+        "raw_trigger_text":  "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。",
+        "ruby":  "あくまほむら"
+    },
+    {
+        "id":  "UA31BT_MMM_1_036",
+        "name":  "悪魔ほむら",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-036",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  5
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このカードは〈暁美 ほむら〉としても扱う。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈暁美 ほむら〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "自分の場の〈悪魔ほむら〉全ては自分と相手の効果でリムーブエリアに置くことができない。",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "フロントLにある場合"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "自分の場の〈鹿目 まどか〉を1枚手札に戻してもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、このターン中、『BP-3000』。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉の場合、『BP-4000』に代わる。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-036.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-036",
+        "raw_effect_text":  "このカードは〈暁美 ほむら〉としても扱う。\n〈暁美 ほむら〉アクティブにし、フロントLに移動できる\n自分の場の〈悪魔ほむら〉全ては自分と相手の効果でリムーブエリアに置くことができない。\n自分の場の〈鹿目 まどか〉を1枚手札に戻してもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、このターン中、『BP-3000』。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉の場合、『BP-4000』に代わる。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "あくまほむら",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "暁美 ほむら",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA31BT_MMM_1_037",
+        "name":  "キュゥべえ",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-037",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  2
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "相手の場に黄か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "紫×1"
+                        }
+                    ],
+        "trigger_effects":  [
+
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-037.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-037",
+        "raw_effect_text":  "相手の場に黄か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+        "raw_trigger_text":  "-",
+        "ruby":  "きゅぅべえ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_038",
+        "name":  "べべ",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-038",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このカードは〈百江 なぎさ〉としても扱う。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-038.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-038",
+        "raw_effect_text":  "このカードは〈百江 なぎさ〉としても扱う。\n自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "べべ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_039",
+        "name":  "暁美 ほむら",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-039",
+        "traits":  [
+                       "魔法少女"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-039.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-039",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "あけみ　ほむら"
+    },
+    {
+        "id":  "UA31BT_MMM_1_040",
+        "name":  "暁美 ほむら",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-040",
+        "traits":  [
+                       "魔法少女"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から5枚見る。その中から〈鹿目 まどか〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-040.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-040",
+        "raw_effect_text":  "自分の山札の上から5枚見る。その中から〈鹿目 まどか〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "あけみ　ほむら"
+    },
+    {
+        "id":  "UA31BT_MMM_1_041",
+        "name":  "暁美 ほむら",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-041",
+        "traits":  [
+                       "魔法少女"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈暁美 ほむら〉アクティブにし、フロントLに移動できる"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "カードを2枚引き、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LEAVE",
+                                    "source_label":  "退場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "自分の場に〈鹿目 まどか〉がある場合、このキャラのレイド元のカードを1枚まで手札に戻す。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-041.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-041",
+        "raw_effect_text":  "〈暁美 ほむら〉アクティブにし、フロントLに移動できる\nカードを2枚引き、自分の手札を1枚場外に置く。\n自分の場に〈鹿目 まどか〉がある場合、このキャラのレイド元のカードを1枚まで手札に戻す。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "あけみ　ほむら",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "暁美 ほむら",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA31BT_MMM_1_042",
+        "name":  "鹿目 まどか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-042",
+        "traits":  [
+                       "魔法少女"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札から『必要エナジーが1以下』で消費APが1の紫の〔〈暁美 ほむら〉か〈鹿目 まどか〉〕を1枚まで自分の場にレストで登場させる。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉のみの場合、『必要エナジーが2以下』に代わる。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-042.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-042",
+        "raw_effect_text":  "自分の手札から『必要エナジーが1以下』で消費APが1の紫の〔〈暁美 ほむら〉か〈鹿目 まどか〉〕を1枚まで自分の場にレストで登場させる。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉のみの場合、『必要エナジーが2以下』に代わる。",
+        "raw_trigger_text":  "-",
+        "ruby":  "かなめ　まどか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_043",
+        "name":  "百江 なぎさ",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-043",
+        "traits":  [
+                       "魔法少女"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から3枚見る。その中から〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-043.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-043",
+        "raw_effect_text":  "自分の山札の上から3枚見る。その中から〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "ももえ　なぎさ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_044",
+        "name":  "百江 なぎさ",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-044",
+        "traits":  [
+                       "魔法少女"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈百江 なぎさ〉アクティブにし、フロントLに移動できる"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "自分の場の〈百江 なぎさ〉と［特徴：ピュエラ・マギ・ホーリー・クインテット］全ては、このターン中、BP+1000。"
+                                },
+                                {
+                                    "trigger":  "ON_ATTACK",
+                                    "source_label":  "アタック時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "自分の山札の上から1枚を公開する。公開したカードが〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］の場合、そのカードを手札に加える。公開したカードがそれら以外の場合、自分の山札の上か下に置く。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-044.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-044",
+        "raw_effect_text":  "〈百江 なぎさ〉アクティブにし、フロントLに移動できる\n自分の場の〈百江 なぎさ〉と［特徴：ピュエラ・マギ・ホーリー・クインテット］全ては、このターン中、BP+1000。\n自分の山札の上から1枚を公開する。公開したカードが〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］の場合、そのカードを手札に加える。公開したカードがそれら以外の場合、自分の山札の上か下に置く。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "ももえ　なぎさ",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "百江 なぎさ",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA31BT_MMM_1_045",
+        "name":  "暁美 ほむら",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-045",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+                         "NEGATE_IMPACT",
+                         "IMPACT"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト無効"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-045.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-045",
+        "raw_effect_text":  "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "あけみ　ほむら"
+    },
+    {
+        "id":  "UA31BT_MMM_1_046",
+        "name":  "暁美 ほむら",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-046",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "紫"
+                        }
+                    ],
+        "trigger_effects":  [
+
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-046.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-046",
+        "raw_effect_text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "raw_trigger_text":  "-",
+        "ruby":  "あけみ　ほむら"
+    },
+    {
+        "id":  "UA31BT_MMM_1_047",
+        "name":  "鹿目 まどか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-047",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引き、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-047.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-047",
+        "raw_effect_text":  "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "かなめ　まどか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_048",
+        "name":  "鹿目 まどか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-048",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-048.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-048",
+        "raw_effect_text":  "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "かなめ　まどか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_049",
+        "name":  "鹿目 まどか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-049",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  2
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このキャラが登場したターン中のみ発動できる。自分の場の他のキャラを1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-049.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-049",
+        "raw_effect_text":  "このキャラが登場したターン中のみ発動できる。自分の場の他のキャラを1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "かなめ　まどか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_050",
+        "name":  "佐倉 杏子",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-050",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-050.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-050",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "さくら　きょうこ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_051",
+        "name":  "佐倉 杏子",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-051",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引き、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-051.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-051",
+        "raw_effect_text":  "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "さくら　きょうこ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_052",
+        "name":  "佐倉 杏子",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-052",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-052.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-052",
+        "raw_effect_text":  "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。",
+        "raw_trigger_text":  "-",
+        "ruby":  "さくら　きょうこ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_054",
+        "name":  "巴 マミ",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-054",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+                         "NEGATE_IMPACT",
+                         "IMPACT"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト無効"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-054.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-054",
+        "raw_effect_text":  "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "ともえ　まみ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_055",
+        "name":  "巴 マミ",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-055",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このキャラがアクティブの場合のみ発動できる。自分の場の〈百江 なぎさ〉か他の［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚選び、このターン中、BP+1000。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "カラー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-055.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-055",
+        "raw_effect_text":  "このキャラがアクティブの場合のみ発動できる。自分の場の〈百江 なぎさ〉か他の［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚選び、このターン中、BP+1000。",
+        "raw_trigger_text":  "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。",
+        "ruby":  "ともえ　まみ"
+    },
+    {
+        "id":  "UA31BT_MMM_1_056",
+        "name":  "巴 マミ",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-056",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈巴 マミ〉アクティブにし、フロントLに移動できる"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "自分の山札の上から4枚見る。その中から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で自分の山札の下に置く。自分の場に他の［特徴：ピュエラ・マギ・ホーリー・クインテット］が4枚以上ある場合、このキャラはこのターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-056.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-056",
+        "raw_effect_text":  "〈巴 マミ〉アクティブにし、フロントLに移動できる\n自分の山札の上から4枚見る。その中から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で自分の山札の下に置く。自分の場に他の［特徴：ピュエラ・マギ・ホーリー・クインテット］が4枚以上ある場合、このキャラはこのターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "ともえ　まみ",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "巴 マミ",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA31BT_MMM_1_057",
+        "name":  "美樹 さやか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-057",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  1000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-057.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-057",
+        "raw_effect_text":  "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "raw_trigger_text":  "-",
+        "ruby":  "みき　さやか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_058",
+        "name":  "美樹 さやか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-058",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  2
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-058.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-058",
+        "raw_effect_text":  "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "raw_trigger_text":  "-",
+        "ruby":  "みき　さやか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_059",
+        "name":  "美樹 さやか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-059",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚まで選び、このターン中、BP+1000。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-059.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-059",
+        "raw_effect_text":  "自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+        "raw_trigger_text":  "-",
+        "ruby":  "みき　さやか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_060",
+        "name":  "美樹 さやか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-060",
+        "traits":  [
+                       "魔法少女",
+                       "ピュエラ・マギ・ホーリー・クインテット"
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  2,
+        "energy_provided":  {
+                                "PURPLE":  2
+                            },
+        "bp":  3500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場外から紫の［特徴：魔法少女］を1枚まで手札に加える。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-060.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-060",
+        "raw_effect_text":  "自分の場外から紫の［特徴：魔法少女］を1枚まで手札に加える。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "みき　さやか"
+    },
+    {
+        "id":  "UA31BT_MMM_1_061",
+        "name":  "ほむらの武器",
+        "card_type":  "FIELD",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-061",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "PURPLE":  2
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-061.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-061",
+        "raw_effect_text":  "カードを1枚引く。",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "ほむらのぶき"
+    },
+    {
+        "id":  "UA31BT_MMM_1_062",
+        "name":  "このときを、待ってた…",
+        "card_type":  "EVENT",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-062",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+                         "IMPACT"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト（+1）"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-062.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-062",
+        "raw_effect_text":  "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "このときを、まってた…"
+    },
+    {
+        "id":  "UA31BT_MMM_1_063",
+        "name":  "ソウルジェム（暁美 ほむら）",
+        "card_type":  "EVENT",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-063",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分のAPカードを2枚まで選び、アクティブにする。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ファイナル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-063.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-063",
+        "raw_effect_text":  "自分のAPカードを2枚まで選び、アクティブにする。",
+        "raw_trigger_text":  "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "ruby":  "そうるじぇむ　あけみ　ほむら"
+    },
+    {
+        "id":  "UA31BT_MMM_1_064",
+        "name":  "ティロ・デュエット",
+        "card_type":  "EVENT",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-064",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "『BP2000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場の［特徴：ピュエラ・マギ・ホーリー・クインテット］1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-064.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-064",
+        "raw_effect_text":  "『BP2000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場の［特徴：ピュエラ・マギ・ホーリー・クインテット］1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "てぃろ　でゅえっと"
+    },
+    {
+        "id":  "UA31BT_MMM_1_065",
+        "name":  "ピュエラ・マギ・ホーリー・クインテット",
+        "card_type":  "EVENT",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-065",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-065.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-065",
+        "raw_effect_text":  "自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "ぴゅえら　まぎ　ほーりー　くいんてっと"
+    },
+    {
+        "id":  "UA31BT_MMM_1_066",
+        "name":  "もう誰にも頼らない",
+        "card_type":  "EVENT",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-066",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-066.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-066",
+        "raw_effect_text":  "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "もうだれにもたよらない"
+    },
+    {
+        "id":  "UA31BT_MMM_1_067",
+        "name":  "私は何度でも繰り返す……",
+        "card_type":  "EVENT",
+        "title_code":  "MMM",
+        "number":  "UA31BT/MMM-1-067",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "PURPLE":  3
+                        },
+        "cost_ap":  2,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "〈暁美 ほむら〉を選んで使用する場合、このカードの消費APを-1する。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "text":  "自分のフロントLのキャラを1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "2回アタック"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31BT-MMM-1-067.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31BT/MMM-1-067",
+        "raw_effect_text":  "〈暁美 ほむら〉を選んで使用する場合、このカードの消費APを-1する。\n自分のフロントLのキャラを1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "わたしはなんどでもくりかえす……"
+    },
     {
         "id":  "UA31BT_MMM_1_068",
         "name":  "上条 恭介",
@@ -22,8 +1468,8 @@
         "effects":  [
                         {
                             "text":  "相手の場に黄か紫のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
-                            "source_label":  "赤×1",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "赤×1"
                         }
                     ],
         "trigger_effects":  [
@@ -151,8 +1597,8 @@
                         },
                         {
                             "text":  "（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）",
-                            "source_label":  "ダメージ（2）",
-                            "effect_box":  "RAID_INNER"
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "ダメージ（2）"
                         },
                         {
                             "text":  "このキャラはBP2000以下のキャラにブロックされない。",
@@ -243,8 +1689,8 @@
         "effects":  [
                         {
                             "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
-                            "source_label":  "ステップ",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "ステップ"
                         }
                     ],
         "trigger_effects":  [
@@ -419,8 +1865,8 @@
         "effects":  [
                         {
                             "text":  "このカード以外の自分の場の［特徴：魔法少女］のカード名が3種類以上ある場合、このキャラの発生エナジー+。",
-                            "source_label":  "赤",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "赤"
                         }
                     ],
         "trigger_effects":  [
@@ -517,8 +1963,8 @@
         "effects":  [
                         {
                             "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
-                            "source_label":  "ステップ",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "ステップ"
                         }
                     ],
         "trigger_effects":  [
@@ -555,13 +2001,13 @@
         "effects":  [
                         {
                             "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
-                            "source_label":  "ステップ",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "ステップ"
                         },
                         {
                             "text":  "このターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラはBP+1000。",
-                            "source_label":  "自分のターン中",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
                         }
                     ],
         "trigger_effects":  [
@@ -598,8 +2044,8 @@
         "effects":  [
                         {
                             "text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
-                            "source_label":  "赤",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "赤"
                         }
                     ],
         "trigger_effects":  [
@@ -686,8 +2132,8 @@
                         },
                         {
                             "text":  "このターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラは（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。",
-                            "source_label":  "自分のターン中",
-                            "effect_box":  "RAID_INNER"
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "自分のターン中"
                         }
                     ],
         "trigger_effects":  [
@@ -864,8 +2310,8 @@
         "effects":  [
                         {
                             "text":  "自分の場に〈佐倉 杏子〉がある場合、このキャラはBP+1000。",
-                            "source_label":  "自分のターン中",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
                         }
                     ],
         "trigger_effects":  [
@@ -902,13 +2348,14 @@
                             },
         "bp":  3000,
         "keywords":  [
-
+                         "NEGATE_IMPACT",
+                         "IMPACT"
                      ],
         "effects":  [
                         {
                             "text":  "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
-                            "source_label":  "インパクト無効",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト無効"
                         }
                     ],
         "trigger_effects":  [
@@ -950,8 +2397,8 @@
         "effects":  [
                         {
                             "text":  "自分のライフが4以下の場合、このキャラはBP+500。",
-                            "source_label":  "自分のターン中",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
                         }
                     ],
         "trigger_effects":  [
@@ -994,7 +2441,9 @@
                             },
         "bp":  4000,
         "keywords":  [
-                         "RAID"
+                         "RAID",
+                         "NEGATE_IMPACT",
+                         "IMPACT"
                      ],
         "effects":  [
                         {
@@ -1004,13 +2453,13 @@
                         },
                         {
                             "text":  "（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
-                            "source_label":  "インパクト（1）",
-                            "effect_box":  "RAID_INNER"
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "インパクト（1）"
                         },
                         {
                             "text":  "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
-                            "source_label":  "インパクト無効",
-                            "effect_box":  "RAID_INNER"
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "インパクト無効"
                         }
                     ],
         "trigger_effects":  [
@@ -1359,11 +2808,12 @@
                             },
         "bp":  0,
         "keywords":  [
-
+                         "RAID"
                      ],
         "effects":  [
                         {
-                            "effect_box":  "OUTER",
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
                             "text":  "自分の山札の上から5枚見る。その中からキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。公開したカードがを持つ［特徴：魔法少女］の場合、自分のAPカードを1枚まで選び、アクティブにする。"
                         }
                     ],
@@ -1470,68 +2920,6 @@
         "raw_effect_text":  "自分の場の〈佐倉 杏子〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。",
         "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
         "ruby":  "ひとりぼっちはさびしいもんな……"
-    },
-    {
-        "id":  "UA31ST_MMM_1_104",
-        "name":  "鹿目 まどか",
-        "card_type":  "CHARACTER",
-        "title_code":  "MMM",
-        "number":  "UA31ST/MMM-1-104",
-        "traits":  [
-                       "魔法少女"
-                   ],
-        "cost_energy":  {
-                            "RED":  4
-                        },
-        "cost_ap":  1,
-        "energy_provided":  {
-                                "RED":  1
-                            },
-        "bp":  0,
-        "keywords":  [
-                         "RAID"
-                     ],
-        "effects":  [
-                        {
-                            "source_label":  "レイド",
-                            "effect_box":  "RAID_INNER",
-                            "text":  "〈鹿目 まどか〉アクティブにし、フロントLに移動できる"
-                        },
-                        {
-                            "text":  "このカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数により、このキャラは以下の効果を全て得る。",
-                            "effect_box":  "RAID_INNER"
-                        },
-                        {
-                            "text":  "2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。",
-                            "effect_box":  "RAID_INNER"
-                        },
-                        {
-                            "text":  "4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
-                            "source_label":  "自分のターン中",
-                            "effect_box":  "RAID_INNER"
-                        }
-                    ],
-        "trigger_effects":  [
-                                {
-                                    "trigger":  "RAID_RULE",
-                                    "source_label":  "レイド",
-                                    "effect_box":  "RAID_INNER",
-                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
-                                }
-                            ],
-        "rarity":  "SR",
-        "series_title":  "魔法少女まどか☆マギカ",
-        "source_image":  "UA31ST-MMM-104.png",
-        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31ST/MMM-1-104",
-        "raw_effect_text":  "〈鹿目 まどか〉アクティブにし、フロントLに移動できる\nこのカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数により、このキャラは以下の効果を全て得る。\n2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。\n4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
-        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
-        "ruby":  "かなめ　まどか",
-        "special_play_rule":  {
-                                  "type":  "RAID",
-                                  "raid_target_name":  "鹿目 まどか",
-                                  "allow_from_hand":  true,
-                                  "require_full_energy":  true
-                              }
     },
     {
         "id":  "UA31ST_MMM_1_069",
@@ -1673,13 +3061,13 @@
         "effects":  [
                         {
                             "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
-                            "source_label":  "ステップ",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "ステップ"
                         },
                         {
                             "text":  "このターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラはBP+1000。",
-                            "source_label":  "自分のターン中",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
                         }
                     ],
         "trigger_effects":  [
@@ -1707,7 +3095,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  1
                             },
         "bp":  2500,
         "keywords":  [
@@ -1716,8 +3104,8 @@
         "effects":  [
                         {
                             "text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
-                            "source_label":  "赤",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "赤"
                         }
                     ],
         "trigger_effects":  [
@@ -1745,7 +3133,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  2
                             },
         "bp":  1500,
         "keywords":  [
@@ -1788,13 +3176,14 @@
                             },
         "bp":  3000,
         "keywords":  [
-
+                         "NEGATE_IMPACT",
+                         "IMPACT"
                      ],
         "effects":  [
                         {
                             "text":  "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
-                            "source_label":  "インパクト無効",
-                            "effect_box":  "OUTER"
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト無効"
                         }
                     ],
         "trigger_effects":  [
@@ -2021,6 +3410,68 @@
         "ruby":  "かなめ　まどか"
     },
     {
+        "id":  "UA31ST_MMM_1_104",
+        "name":  "鹿目 まどか",
+        "card_type":  "CHARACTER",
+        "title_code":  "MMM",
+        "number":  "UA31ST/MMM-1-104",
+        "traits":  [
+                       "魔法少女"
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈鹿目 まどか〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "このカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数により、このキャラは以下の効果を全て得る。",
+                            "effect_box":  "RAID_INNER"
+                        },
+                        {
+                            "text":  "2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。",
+                            "effect_box":  "RAID_INNER"
+                        },
+                        {
+                            "text":  "4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "自分のターン中"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "魔法少女まどか☆マギカ",
+        "source_image":  "UA31ST-MMM-104.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA31ST/MMM-1-104",
+        "raw_effect_text":  "〈鹿目 まどか〉アクティブにし、フロントLに移動できる\nこのカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数により、このキャラは以下の効果を全て得る。\n2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。\n4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "かなめ　まどか",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "鹿目 まどか",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
         "id":  "UA31ST_MMM_1_105",
         "name":  "佐倉 杏子",
         "card_type":  "CHARACTER",
@@ -2034,7 +3485,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-                                "RED":  1
+                                "RED":  2
                             },
         "bp":  3000,
         "keywords":  [
@@ -2159,7 +3610,7 @@
                         },
         "cost_ap":  1,
         "energy_provided":  {
-
+                                "RED":  2
                             },
         "bp":  0,
         "keywords":  [
