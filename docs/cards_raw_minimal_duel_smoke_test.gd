@@ -21,6 +21,13 @@ const RAW_EVENT_READY_AP := "UA31BT_MMM_1_095"
 const RAW_HOMURA_RAID_SUPPORT := "UA31BT_MMM_1_075"
 const RAW_HOMURA_OPTIONAL_CHAIN := "UA31ST_MMM_1_102"
 const RAW_FIELD_OUTSIDE_SEARCH := "UA31ST_MMM_1_108"
+const RAW_RAID_DYNAMIC_REMOVE := "UA31BT_MMM_1_078"
+const RAW_EVENT_DYNAMIC_BP_SAYAKA := "UA31BT_MMM_1_093"
+const RAW_EVENT_DYNAMIC_BP_MADOKA_BT := "UA31BT_MMM_1_094"
+const RAW_EVENT_DYNAMIC_BP_MADOKA_ST := "UA31ST_MMM_1_094"
+const RAW_RETURN_OTHER_OR_SELF := "UA31BT_MMM_1_085"
+const RAW_RETURN_OTHER_OR_SELF_ST := "UA31ST_MMM_1_085"
+const RAW_PREVIEW_MAGIC_GIRL_REWARD := "UA31BT_MMM_1_098"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -42,6 +49,11 @@ func _init() -> void:
 	_run_test("Raw Optional Return Then Summon Skip", _test_raw_optional_return_then_summon_skip)
 	_run_test("Raw Optional Return Then Summon Success", _test_raw_optional_return_then_summon_success)
 	_run_test("Raw Outside Search Optional Branches", _test_raw_outside_search_optional_branches)
+	_run_test("Raw RAID Dynamic BP Limit", _test_raw_raid_dynamic_bp_limit)
+	_run_test("Raw Return Other Or Self Fallback", _test_raw_return_other_or_self_fallback)
+	_run_test("Raw Conditional BP Event Upgrade Sayaka", _test_raw_conditional_bp_event_upgrade_sayaka)
+	_run_test("Raw Conditional BP Event Upgrade Madoka", _test_raw_conditional_bp_event_upgrade_madoka)
+	_run_test("Raw Preview Reward Magic Girl Branches", _test_raw_preview_reward_magic_girl_branches)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -1035,6 +1047,585 @@ func _test_raw_outside_search_optional_branches() -> Dictionary:
 		return _fail("Raw outside-search success sample should add the selected outside card to hand.")
 	return _ok()
 
+func _test_raw_raid_dynamic_bp_limit() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_RAID_DYNAMIC_REMOVE, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw RAID dynamic-BP sample card should be available.")
+	var source_card := manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw RAID dynamic-BP sample source card should exist.")
+	source_card.flags["entered_via_raid"] = true
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_DYNAMIC_SUPPORT_A",
+		"name": "动态支援A",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-DYN-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_DYNAMIC_SUPPORT_B1",
+		"name": "动态支援B",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-DYN-2",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, true)
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_DYNAMIC_SUPPORT_B2",
+		"name": "动态支援B",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-DYN-3",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var legal_target_uid := _spawn_temp_card(manager, opponent_id, {
+		"id": "TMP_DYNAMIC_TARGET_2000",
+		"name": "动态合法目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-DYN-4",
+		"traits": [],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var illegal_target_uid := _spawn_temp_card(manager, opponent_id, {
+		"id": "TMP_DYNAMIC_TARGET_3000",
+		"name": "动态非法目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-DYN-5",
+		"traits": [],
+		"cost_energy": {"RED": 2},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": opponent_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw RAID dynamic-BP sample should request explicit enemy target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choice_values: Array[String] = []
+	for choice_variant in decision.get("choices", []):
+		choice_values.append(str((choice_variant as Dictionary).get("value", "")))
+	if not choice_values.has(legal_target_uid):
+		return _fail("Raw RAID dynamic-BP sample should expose the 2000-BP legal target.")
+	if choice_values.has(illegal_target_uid):
+		return _fail("Raw RAID dynamic-BP sample should not expose the 3000-BP target when only two other unique names exist.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": legal_target_uid,
+	})
+	var legal_target := manager.game_state.get_card(legal_target_uid)
+	if legal_target == null or legal_target.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw RAID dynamic-BP sample should move the chosen legal target to outside.")
+	return _ok()
+
+func _test_raw_return_other_or_self_fallback() -> Dictionary:
+	var variants := [RAW_RETURN_OTHER_OR_SELF, RAW_RETURN_OTHER_OR_SELF_ST]
+	for card_id in variants:
+		var manager_success := _new_manager()
+		var player_id := UATypes.PLAYER_ONE
+		var source_uid := _move_or_spawn_card_to_zone(manager_success, player_id, card_id, UATypes.Zone.FRONT_LINE)
+		var other_uid := _spawn_temp_card(manager_success, player_id, {
+			"id": "TMP_RETURN_OTHER_%s" % card_id,
+			"name": "低费其他角色%s" % card_id,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-RET-1-%s" % card_id,
+			"traits": [],
+			"cost_energy": {"RED": 1},
+			"cost_ap": 1,
+			"energy_provided": {"RED": 1},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.FRONT_LINE, true)
+		manager_success.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager_success.game_state, {"target_player_id": player_id})
+		if manager_success.game_state.pending_decisions.size() != 1:
+			return _fail("Raw fallback sample should request primary target selection when another legal character exists for %s." % card_id)
+		var success_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+		var success_choices: Array[String] = []
+		for choice_variant in success_decision.get("choices", []):
+			success_choices.append(str((choice_variant as Dictionary).get("value", "")))
+		if not success_choices.has(other_uid):
+			return _fail("Raw fallback sample should expose the other low-cost character for %s." % card_id)
+		if success_choices.has(source_uid):
+			return _fail("Raw fallback sample should not expose the source card as 'other' for %s." % card_id)
+		manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+			"resolution_id": str(success_decision.get("resolution_id", "")),
+			"choice": other_uid,
+		})
+		var source_card_success := manager_success.game_state.get_card(source_uid)
+		var other_card_success := manager_success.game_state.get_card(other_uid)
+		if other_card_success == null or other_card_success.zone != UATypes.Zone.HAND:
+			return _fail("Raw fallback sample should return the selected other character to hand for %s." % card_id)
+		if source_card_success == null or source_card_success.zone != UATypes.Zone.FRONT_LINE:
+			return _fail("Raw fallback sample should keep the source card on the field when the primary branch succeeds for %s." % card_id)
+
+		var manager_fallback := _new_manager()
+		var fallback_source_uid := _move_or_spawn_card_to_zone(manager_fallback, player_id, card_id, UATypes.Zone.FRONT_LINE)
+		manager_fallback.effect_resolver.resolve_trigger(fallback_source_uid, UATypes.TriggerType.ON_ENTER, manager_fallback.game_state, {"target_player_id": player_id})
+		if not manager_fallback.game_state.pending_decisions.is_empty():
+			return _fail("Raw fallback sample should not pause for selection when no legal 'other' target exists for %s." % card_id)
+		var source_card_fallback := manager_fallback.game_state.get_card(fallback_source_uid)
+		if source_card_fallback == null or source_card_fallback.zone != UATypes.Zone.HAND:
+			return _fail("Raw fallback sample should return the source card to hand when the primary branch cannot complete for %s." % card_id)
+	return _ok()
+
+func _test_raw_conditional_bp_event_upgrade_sayaka() -> Dictionary:
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+
+	var manager_default := _new_manager()
+	manager_default.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_default, player_id), 1)
+	if not _ensure_red_energy(manager_default, player_id, 3):
+		return _fail("Should be able to prepare 3 raw red energy cards for the conditional 093 default sample.")
+	_clear_named_cards_from_field(manager_default, player_id, "美樹 さやか")
+	while _count_red_energy(manager_default, player_id) < 3:
+		_spawn_generic_red_energy(manager_default, player_id, "TMP_SAFE_093_DEFAULT_%d" % manager_default.game_state.cards.size())
+	var source_default_uid := _move_or_spawn_card_to_zone(manager_default, player_id, RAW_EVENT_DYNAMIC_BP_SAYAKA, UATypes.Zone.HAND)
+	var target_3000_uid := _spawn_temp_card(manager_default, opponent_id, {
+		"id": "TMP_EVENT_093_TARGET_3000",
+		"name": "093默认目标3000",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-093-1",
+		"traits": [],
+		"cost_energy": {"RED": 3},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var target_4000_uid := _spawn_temp_card(manager_default, opponent_id, {
+		"id": "TMP_EVENT_093_TARGET_4000",
+		"name": "093默认目标4000",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-093-2",
+		"traits": [],
+		"cost_energy": {"RED": 3},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 4000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	manager_default.play_card(source_default_uid, UATypes.Zone.OUTSIDE)
+	if manager_default.game_state.pending_decisions.size() != 1:
+		return _fail("Raw conditional 093 default sample should request explicit target selection.")
+	var default_decision: Dictionary = manager_default.game_state.pending_decisions[0]
+	var default_choices: Array[String] = []
+	for choice_variant in default_decision.get("choices", []):
+		default_choices.append(str((choice_variant as Dictionary).get("value", "")))
+	if not default_choices.has(target_3000_uid):
+		return _fail("Raw conditional 093 default sample should expose the 3000-BP target.")
+	if default_choices.has(target_4000_uid):
+		return _fail("Raw conditional 093 default sample should not expose the 4000-BP target before upgrade conditions are met.")
+
+	var manager_upgraded := _new_manager()
+	manager_upgraded.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_upgraded, player_id), 1)
+	if not _ensure_red_energy(manager_upgraded, player_id, 3):
+		return _fail("Should be able to prepare 3 raw red energy cards for the conditional 093 upgraded sample.")
+	var source_upgraded_uid := _move_or_spawn_card_to_zone(manager_upgraded, player_id, RAW_EVENT_DYNAMIC_BP_SAYAKA, UATypes.Zone.HAND)
+	_spawn_temp_card(manager_upgraded, player_id, {
+		"id": "TMP_EVENT_093_SAYAKA",
+		"name": "美樹 さやか",
+		"card_type": "CHARACTER",
+		"title_code": "MMM",
+		"number": "TMP-093-3",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	_trim_life_to_count(manager_upgraded, player_id, 5)
+	var upgraded_target_uid := _spawn_temp_card(manager_upgraded, opponent_id, {
+		"id": "TMP_EVENT_093_TARGET_4000_UP",
+		"name": "093升级目标4000",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-093-4",
+		"traits": [],
+		"cost_energy": {"RED": 3},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 4000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	manager_upgraded.play_card(source_upgraded_uid, UATypes.Zone.OUTSIDE)
+	if manager_upgraded.game_state.pending_decisions.size() != 1:
+		return _fail("Raw conditional 093 upgraded sample should request explicit target selection.")
+	var upgraded_decision: Dictionary = manager_upgraded.game_state.pending_decisions[0]
+	var upgraded_choices: Array[String] = []
+	for choice_variant in upgraded_decision.get("choices", []):
+		upgraded_choices.append(str((choice_variant as Dictionary).get("value", "")))
+	if not upgraded_choices.has(upgraded_target_uid):
+		return _fail("Raw conditional 093 upgraded sample should expose the 4000-BP target after Sayaka + life<=5 are met.")
+	manager_upgraded.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(upgraded_decision.get("resolution_id", "")),
+		"choice": upgraded_target_uid,
+	})
+	var upgraded_target := manager_upgraded.game_state.get_card(upgraded_target_uid)
+	if upgraded_target == null or upgraded_target.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw conditional 093 upgraded sample should move the chosen 4000-BP target to outside.")
+	return _ok()
+
+func _test_raw_conditional_bp_event_upgrade_madoka() -> Dictionary:
+	for card_id in [RAW_EVENT_DYNAMIC_BP_MADOKA_BT, RAW_EVENT_DYNAMIC_BP_MADOKA_ST]:
+		var player_id := UATypes.PLAYER_ONE
+		var opponent_id := UATypes.PLAYER_TWO
+		var manager_default := _new_manager()
+		manager_default.game_state.phase = UATypes.Phase.MAIN
+		_fill_ap(_player(manager_default, player_id), 1)
+		if not _ensure_red_energy(manager_default, player_id, 4):
+			return _fail("Should be able to prepare 4 raw red energy cards for the conditional 094 default sample (%s)." % card_id)
+		_clear_named_cards_from_field(manager_default, player_id, "鹿目 まどか")
+		while _count_red_energy(manager_default, player_id) < 4:
+			_spawn_generic_red_energy(manager_default, player_id, "TMP_SAFE_094_DEFAULT_%s_%d" % [card_id, manager_default.game_state.cards.size()])
+		var source_default_uid := _move_or_spawn_card_to_zone(manager_default, player_id, card_id, UATypes.Zone.HAND)
+		var default_target_4000_uid := _spawn_temp_card(manager_default, opponent_id, {
+			"id": "TMP_EVENT_094_TARGET_4000_%s" % card_id,
+			"name": "094默认目标4000%s" % card_id,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-094-1-%s" % card_id,
+			"traits": [],
+			"cost_energy": {"RED": 4},
+			"cost_ap": 1,
+			"energy_provided": {},
+			"bp": 4000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.FRONT_LINE, true)
+		manager_default.play_card(source_default_uid, UATypes.Zone.OUTSIDE)
+		if manager_default.game_state.pending_decisions.size() != 0:
+			var default_decision: Dictionary = manager_default.game_state.pending_decisions[0]
+			var default_choices: Array[String] = []
+			for choice_variant in default_decision.get("choices", []):
+				default_choices.append(str((choice_variant as Dictionary).get("value", "")))
+			if default_choices.has(default_target_4000_uid):
+				return _fail("Raw conditional 094 default sample should not expose the 4000-BP target before Madoka is on the field (%s)." % card_id)
+
+		var manager_upgraded := _new_manager()
+		manager_upgraded.game_state.phase = UATypes.Phase.MAIN
+		_fill_ap(_player(manager_upgraded, player_id), 1)
+		if not _ensure_red_energy(manager_upgraded, player_id, 4):
+			return _fail("Should be able to prepare 4 raw red energy cards for the conditional 094 upgraded sample (%s)." % card_id)
+		_clear_named_cards_from_field(manager_upgraded, player_id, "鹿目 まどか")
+		while _count_red_energy(manager_upgraded, player_id) < 4:
+			_spawn_generic_red_energy(manager_upgraded, player_id, "TMP_SAFE_094_UP_%s_%d" % [card_id, manager_upgraded.game_state.cards.size()])
+		var source_upgraded_uid := _move_or_spawn_card_to_zone(manager_upgraded, player_id, card_id, UATypes.Zone.HAND)
+		_spawn_temp_card(manager_upgraded, player_id, {
+			"id": "TMP_EVENT_094_MADOKA_%s" % card_id,
+			"name": "鹿目 まどか",
+			"card_type": "CHARACTER",
+			"title_code": "MMM",
+			"number": "TMP-094-2-%s" % card_id,
+			"traits": ["魔法少女"],
+			"cost_energy": {"RED": 1},
+			"cost_ap": 1,
+			"energy_provided": {"RED": 1},
+			"bp": 1500,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.FRONT_LINE, true)
+		var upgraded_target_uid := _spawn_temp_card(manager_upgraded, opponent_id, {
+			"id": "TMP_EVENT_094_TARGET_4000_UP_%s" % card_id,
+			"name": "094升级目标4000%s" % card_id,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-094-3-%s" % card_id,
+			"traits": [],
+			"cost_energy": {"RED": 4},
+			"cost_ap": 1,
+			"energy_provided": {},
+			"bp": 4000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.FRONT_LINE, true)
+		manager_upgraded.play_card(source_upgraded_uid, UATypes.Zone.OUTSIDE)
+		if manager_upgraded.game_state.pending_decisions.size() != 1:
+			return _fail("Raw conditional 094 upgraded sample should request explicit target selection (%s)." % card_id)
+		var upgraded_decision: Dictionary = manager_upgraded.game_state.pending_decisions[0]
+		var upgraded_choices: Array[String] = []
+		for choice_variant in upgraded_decision.get("choices", []):
+			upgraded_choices.append(str((choice_variant as Dictionary).get("value", "")))
+		if not upgraded_choices.has(upgraded_target_uid):
+			return _fail("Raw conditional 094 upgraded sample should expose the 4000-BP target after Madoka is on the field (%s)." % card_id)
+		manager_upgraded.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+			"resolution_id": str(upgraded_decision.get("resolution_id", "")),
+			"choice": upgraded_target_uid,
+		})
+		var upgraded_target := manager_upgraded.game_state.get_card(upgraded_target_uid)
+		if upgraded_target == null or upgraded_target.zone != UATypes.Zone.OUTSIDE:
+			return _fail("Raw conditional 094 upgraded sample should move the chosen 4000-BP target to outside (%s)." % card_id)
+	return _ok()
+
+func _test_raw_preview_reward_magic_girl_branches() -> Dictionary:
+	var player_id := UATypes.PLAYER_ONE
+
+	var manager_success := _new_manager()
+	manager_success.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_success, player_id), 2)
+	_set_ap_active(_player(manager_success, player_id), 1)
+	if not _ensure_red_energy(manager_success, player_id, 1):
+		return _fail("Should be able to prepare 1 raw red energy card for the preview reward success sample.")
+	var source_success_uid := _move_or_spawn_card_to_zone(manager_success, player_id, RAW_PREVIEW_MAGIC_GIRL_REWARD, UATypes.Zone.HAND)
+	var reward_magic_uid := _spawn_temp_card(manager_success, player_id, {
+		"id": "TMP_PREVIEW_REWARD_MAGIC",
+		"name": "预览奖励魔法少女",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var reward_filler_1 := _spawn_temp_card(manager_success, player_id, {
+		"id": "TMP_PREVIEW_FILLER_1",
+		"name": "预览填充1",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-2",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var reward_filler_2 := _spawn_temp_card(manager_success, player_id, {
+		"id": "TMP_PREVIEW_FILLER_2",
+		"name": "预览填充2",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-3",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var reward_filler_3 := _spawn_temp_card(manager_success, player_id, {
+		"id": "TMP_PREVIEW_FILLER_3",
+		"name": "预览填充3",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-4",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var reward_filler_4 := _spawn_temp_card(manager_success, player_id, {
+		"id": "TMP_PREVIEW_FILLER_4",
+		"name": "预览填充4",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-5",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	_set_deck_top_order(manager_success, player_id, [reward_magic_uid, reward_filler_1, reward_filler_2, reward_filler_3, reward_filler_4])
+	var success_player := _player(manager_success, player_id)
+	manager_success.play_card(source_success_uid, UATypes.Zone.OUTSIDE)
+	if manager_success.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview reward success sample should first request the revealed card selection.")
+	var select_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(select_decision.get("resolution_id", "")),
+		"choice": reward_magic_uid,
+	})
+	if manager_success.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview reward success sample should then request preview reorder.")
+	var reorder_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(reorder_decision.get("resolution_id", "")),
+		"choices": [reward_filler_1, reward_filler_2, reward_filler_3, reward_filler_4],
+	})
+	if not success_player.hand.has(reward_magic_uid):
+		return _fail("Raw preview reward success sample should add the revealed magic-girl card to hand.")
+	if success_player.ap_active_count() != 1:
+		return _fail("Raw preview reward success sample should end with exactly 1 active AP after spending 1 AP and then readying 1 AP.")
+	# 回到底时，最后四张应保持所选顺序。
+	var deck_tail: Array[String] = []
+	for i in range(max(0, success_player.deck.size() - 4), success_player.deck.size()):
+		deck_tail.append(str(success_player.deck[i]))
+	if deck_tail != [reward_filler_1, reward_filler_2, reward_filler_3, reward_filler_4]:
+		return _fail("Raw preview reward success sample should place the remaining preview cards on the deck bottom in the chosen order.")
+
+	var manager_skip := _new_manager()
+	manager_skip.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_skip, player_id), 2)
+	_set_ap_active(_player(manager_skip, player_id), 1)
+	if not _ensure_red_energy(manager_skip, player_id, 1):
+		return _fail("Should be able to prepare 1 raw red energy card for the preview reward skip sample.")
+	var source_skip_uid := _move_or_spawn_card_to_zone(manager_skip, player_id, RAW_PREVIEW_MAGIC_GIRL_REWARD, UATypes.Zone.HAND)
+	var skip_character_uid := _spawn_temp_card(manager_skip, player_id, {
+		"id": "TMP_PREVIEW_SKIP_CHAR",
+		"name": "预览普通角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-6",
+		"traits": ["普通人"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_1 := _spawn_temp_card(manager_skip, player_id, {
+		"id": "TMP_PREVIEW_SKIP_FILLER_1",
+		"name": "预览跳过填充1",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-7",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_2 := _spawn_temp_card(manager_skip, player_id, {
+		"id": "TMP_PREVIEW_SKIP_FILLER_2",
+		"name": "预览跳过填充2",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-8",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_3 := _spawn_temp_card(manager_skip, player_id, {
+		"id": "TMP_PREVIEW_SKIP_FILLER_3",
+		"name": "预览跳过填充3",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-9",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var skip_filler_4 := _spawn_temp_card(manager_skip, player_id, {
+		"id": "TMP_PREVIEW_SKIP_FILLER_4",
+		"name": "预览跳过填充4",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-10",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	_set_deck_top_order(manager_skip, player_id, [skip_character_uid, skip_filler_1, skip_filler_2, skip_filler_3, skip_filler_4])
+	var skip_player := _player(manager_skip, player_id)
+	manager_skip.play_card(source_skip_uid, UATypes.Zone.OUTSIDE)
+	if manager_skip.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview reward skip sample should first request the revealed card selection.")
+	var skip_select_decision: Dictionary = manager_skip.game_state.pending_decisions[0]
+	manager_skip.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(skip_select_decision.get("resolution_id", "")),
+		"choice": skip_character_uid,
+	})
+	if manager_skip.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview reward skip sample should then request preview reorder.")
+	var skip_reorder_decision: Dictionary = manager_skip.game_state.pending_decisions[0]
+	manager_skip.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(skip_reorder_decision.get("resolution_id", "")),
+		"choices": [skip_filler_1, skip_filler_2, skip_filler_3, skip_filler_4],
+	})
+	if skip_player.ap_active_count() != 0:
+		return _fail("Raw preview reward skip sample should leave all AP rested after spending 1 AP when the revealed card is not a magic-girl card.")
+	return _ok()
+
 func _player(manager: GameManager, player_id: String) -> PlayerState:
 	return manager.game_state.get_player(player_id)
 
@@ -1101,6 +1692,49 @@ func _ensure_life_card(manager: GameManager, player_id: String) -> String:
 		manager.zone_manager.move_card(manager.game_state, card_uid, UATypes.Zone.LIFE, player_id)
 		return card_uid
 	return ""
+
+func _trim_life_to_count(manager: GameManager, player_id: String, target_count: int) -> void:
+	var player := _player(manager, player_id)
+	if player == null:
+		return
+	while player.life.size() > target_count:
+		var moved_uid := str(player.life.pop_back())
+		player.outside.append(moved_uid)
+		var moved_card := manager.game_state.get_card(moved_uid)
+		if moved_card != null:
+			moved_card.zone = UATypes.Zone.OUTSIDE
+
+func _clear_named_cards_from_field(manager: GameManager, player_id: String, card_name: String) -> void:
+	var player := _player(manager, player_id)
+	if player == null:
+		return
+	for zone in [player.front_line, player.energy_line]:
+		var to_move: Array[String] = []
+		for card_uid_variant in zone:
+			var card_uid := str(card_uid_variant)
+			var card := manager.game_state.get_card(card_uid)
+			var card_def := manager.game_state.get_card_def(card.def_id) if card != null else null
+			if card_def != null and card_def.name == card_name:
+				to_move.append(card_uid)
+		for card_uid in to_move:
+			manager.zone_manager.move_card(manager.game_state, card_uid, UATypes.Zone.OUTSIDE, player_id)
+
+func _spawn_generic_red_energy(manager: GameManager, player_id: String, temp_id: String) -> String:
+	return _spawn_temp_card(manager, player_id, {
+		"id": temp_id,
+		"name": "测试红能量%s" % temp_id,
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-ENERGY-%s" % temp_id,
+		"traits": [],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, false)
 
 func _move_card_to_zone(manager: GameManager, player_id: String, def_id: String, zone: int) -> String:
 	for card_uid in _all_player_cards(manager, player_id):

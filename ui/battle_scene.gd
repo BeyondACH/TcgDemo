@@ -10,6 +10,7 @@ const LogPanel = preload("res://ui/log_panel.gd")
 const PhaseIndicator = preload("res://ui/phase_indicator.gd")
 const PreviewSelectionModal = preload("res://ui/preview_selection_modal.gd")
 const LifeRevealModal = preload("res://ui/life_reveal_modal.gd")
+const ZoneCardsPopup = preload("res://ui/zone_cards_popup.gd")
 const ZoneLayoutConfig = preload("res://data/zone_layout_config.gd")
 
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
@@ -93,6 +94,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 
 var _snapshot: Dictionary = {}
 var _life_reveal_modal: LifeRevealModal
+var _zone_cards_popup: ZoneCardsPopup
 var _selected_hand_card_uid := ""
 var _selected_board_card_uid := ""
 var _selected_board_zone_name := ""
@@ -137,6 +139,9 @@ func _ready() -> void:
 	_life_reveal_modal.activate_requested.connect(_on_life_reveal_activate_requested)
 	_life_reveal_modal.skip_requested.connect(_on_life_reveal_skip_requested)
 	_life_reveal_modal.acknowledge_requested.connect(_on_life_reveal_acknowledge_requested)
+	_zone_cards_popup = ZoneCardsPopup.new()
+	_zone_cards_popup.name = "ZoneCardsPopup"
+	$UILayer.add_child(_zone_cards_popup)
 	cancel_selection_button.pressed.connect(_clear_selection)
 	log_toggle_button.pressed.connect(_on_log_toggle_pressed)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
@@ -144,9 +149,11 @@ func _ready() -> void:
 	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
 	opponent_board.energy_card_pressed.connect(_on_energy_card_pressed)
 	opponent_board.zone_drop_requested.connect(_on_zone_drop_requested)
+	opponent_board.zone_stack_requested.connect(_on_zone_stack_requested)
 	player_board.front_card_pressed.connect(_on_front_card_pressed)
 	player_board.energy_card_pressed.connect(_on_energy_card_pressed)
 	player_board.zone_drop_requested.connect(_on_zone_drop_requested)
+	player_board.zone_stack_requested.connect(_on_zone_stack_requested)
 	_clear_selection()
 	no_block_button.visible = false
 	bonus_draw_button.visible = false
@@ -261,6 +268,8 @@ func _update_log_panel_layout(compact: bool, very_small: bool, viewport_height: 
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
+	if _zone_cards_popup != null and _zone_cards_popup.visible:
+		_zone_cards_popup.hide_popup()
 	var active_player_id := str(snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var priority_player_id := str(snapshot.get("priority_player_id", active_player_id))
 	var controller_types: Dictionary = snapshot.get("controller_types", {})
@@ -663,6 +672,19 @@ func _find_board_card(player_id: String, card_uid: String) -> Dictionary:
 				return card_data
 	return {}
 
+func _find_zone_cards(player_id: String, zone_name: String) -> Array:
+	var players: Dictionary = _snapshot.get("players", {})
+	var player_data: Dictionary = players.get(player_id, {})
+	var cards_variant = player_data.get(zone_name, [])
+	if cards_variant is Array:
+		var cards: Array = []
+		for card_data_variant in cards_variant:
+			var card_data: Dictionary = (card_data_variant as Dictionary).duplicate(true)
+			card_data["owner_player_id"] = player_id
+			cards.append(card_data)
+		return cards
+	return []
+
 func _find_preview_card() -> Dictionary:
 	if _preview_card_uid == "":
 		return {}
@@ -688,6 +710,13 @@ func _clear_preview_card() -> void:
 	_preview_player_id = ""
 	_preview_zone_name = ""
 	card_preview_panel.clear_card()
+
+func _on_zone_stack_requested(player_id: String, zone_name: String) -> void:
+	var cards := _find_zone_cards(player_id, zone_name)
+	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var relation_label := "己方" if player_id == active_player_id else "对手"
+	var zone_label := "除外区" if zone_name == "removed" else "场外区"
+	_zone_cards_popup.show_zone_cards("%s %s" % [relation_label, zone_label], cards)
 
 func _sync_preview_panel() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))

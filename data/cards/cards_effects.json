@@ -12,7 +12,9 @@
         "RED": 3
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 2
+      },
       "bp": 3000,
       "keywords": [],
       "text": {
@@ -46,7 +48,9 @@
         "RED": 1
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 1
+      },
       "bp": 2000,
       "keywords": [],
       "text": {
@@ -105,7 +109,9 @@
       "traits": [],
       "cost_energy": {},
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 1
+      },
       "bp": 1000,
       "keywords": [],
       "text": {
@@ -299,7 +305,9 @@
         "RED": 3
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 2
+      },
       "bp": 3000,
       "keywords": [
         "STEP"
@@ -734,7 +742,9 @@
         "RED": 2
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 1
+      },
       "bp": 2500,
       "keywords": [],
       "text": {
@@ -876,8 +886,66 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONTROLLER_OTHER_FIELD_UNIQUE_NAME_COUNT_MULTIPLIED",
+                    "trait": "魔法少女",
+                    "multiplier": 1000
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONTROLLER_OTHER_FIELD_UNIQUE_NAME_COUNT_MULTIPLIED",
+                    "trait": "魔法少女",
+                    "multiplier": 1000
+                  }
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -886,8 +954,7 @@
           "effect_box": "RAID_INNER",
           "text": "このカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、退場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_078_on_life_trigger_a342b2ffe2",
@@ -917,7 +984,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -1015,7 +1082,9 @@
         "RED": 2
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 1
+      },
       "bp": 2500,
       "keywords": [],
       "text": {
@@ -1532,7 +1601,9 @@
         "RED": 1
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 2
+      },
       "bp": 1500,
       "keywords": [],
       "text": {
@@ -1554,8 +1625,90 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_primary_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_primary_target",
+            "to": "HAND"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "primary_target_moved",
+            "from_var": "selected_primary_target"
+          },
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "HAND",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_FALSE",
+                "var": "primary_target_moved"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1564,15 +1717,14 @@
           "effect_box": "OUTER",
           "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -2091,7 +2243,9 @@
         "RED": 3
       },
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 2
+      },
       "bp": 0,
       "keywords": [],
       "text": {
@@ -2431,8 +2585,100 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "美樹 さやか"
+                      },
+                      {
+                        "type": "PLAYER_LIFE_LTE",
+                        "player": "SELF",
+                        "value": 5
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "美樹 さやか"
+                      },
+                      {
+                        "type": "PLAYER_LIFE_LTE",
+                        "player": "SELF",
+                        "value": 5
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2441,16 +2687,14 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -2548,8 +2792,90 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "鹿目 まどか"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "鹿目 まどか"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2558,16 +2884,14 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -2900,8 +3224,83 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "revealed_added_card",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "revealed_added_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 5,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "revealed_added_card",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "revealed_added_card",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "value": 1,
+            "requirements": [
+              {
+                "type": "CONTEXT_SELECTED_CARD_HAS_TRAIT",
+                "context_var": "revealed_added_card",
+                "value": "魔法少女"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2910,8 +3309,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から5枚見る。その中からキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。公開したカードがを持つ［特徴：魔法少女］の場合、自分のAPカードを1枚まで選び、アクティブにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -2919,7 +3317,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -3436,7 +3834,9 @@
       "traits": [],
       "cost_energy": {},
       "cost_ap": 1,
-      "energy_provided": {},
+      "energy_provided": {
+        "RED": 1
+      },
       "bp": 1000,
       "keywords": [],
       "text": {
@@ -3656,8 +4056,90 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_primary_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_primary_target",
+            "to": "HAND"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "primary_target_moved",
+            "from_var": "selected_primary_target"
+          },
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "HAND",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_FALSE",
+                "var": "primary_target_moved"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3666,15 +4148,14 @@
           "effect_box": "OUTER",
           "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -3877,8 +4358,90 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "鹿目 まどか"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "鹿目 まどか"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3887,16 +4450,14 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },

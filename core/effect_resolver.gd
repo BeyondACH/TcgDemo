@@ -1029,6 +1029,8 @@ func _matches_filter(state: GameState, filter_variant, context: Dictionary, cand
 		return candidate_def != null and UATypes.card_type_to_text(candidate_def.card_type) == str(filter.get("value", ""))
 	if filter_type == "NAME_NOT":
 		return candidate_def != null and candidate_def.name != str(filter.get("value", ""))
+	if filter_type == "NOT_SOURCE_CARD":
+		return candidate_card_uid != "" and candidate_card_uid != source_card_uid
 	if filter_type == "NOT_HAS_KEYWORD":
 		return candidate_def != null and not candidate_def.keywords.has(str(filter.get("value", "")))
 	if filter_type == "HAS_TRAIT":
@@ -1108,6 +1110,18 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		if compare_card == null:
 			return false
 		return int(compare_card.current_bp) <= int(requirement.get("value", 0))
+	if requirement_type == "CARD_BP_LTE_DYNAMIC":
+		var compare_dynamic = candidate_card if candidate_card != null else source_card
+		if compare_dynamic == null:
+			return false
+		var dynamic_limit := _resolve_numeric_value(
+			state,
+			requirement.get("value_provider", requirement.get("value", 0)),
+			context,
+			source_card_uid,
+			candidate_card_uid,
+		)
+		return int(compare_dynamic.current_bp) <= dynamic_limit
 	if requirement_type == "CARD_BP_LTE_CONTEXT_CARD":
 		var compare_card = candidate_card if candidate_card != null else source_card
 		if compare_card == null:
@@ -1131,6 +1145,8 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		return player_state != null and player_state.life.is_empty()
 	if requirement_type == "CARD_NAME_IS":
 		return candidate_def != null and candidate_def.name == str(requirement.get("value", ""))
+	if requirement_type == "CARD_TYPE_IS":
+		return candidate_def != null and UATypes.card_type_to_text(candidate_def.card_type) == str(requirement.get("value", ""))
 	if requirement_type == "CARD_HAS_TRAIT":
 		return candidate_def != null and candidate_def.traits.has(str(requirement.get("value", "")))
 	if requirement_type == "CARD_COST_ENERGY_LTE":
@@ -1163,6 +1179,19 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		var selected_card = state.get_card(selected_uid)
 		var selected_def = state.get_card_def(selected_card.def_id) if selected_card != null else null
 		return selected_def != null and selected_def.traits.has(str(requirement.get("value", "")))
+	if requirement_type == "PLAYER_LIFE_LTE":
+		var player_mode := str(requirement.get("player", "SELF"))
+		var player_id := ""
+		if player_mode == "SELF":
+			player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
+		elif player_mode == "OPPONENT":
+			player_id = _opponent_of(source_card.controller_player_id) if source_card != null else ""
+		elif player_mode == "TARGET":
+			player_id = str(context.get("target_player_id", ""))
+		else:
+			player_id = str(context.get("player_id", context.get("source_player_id", "")))
+		var life_player = state.get_player(player_id)
+		return life_player != null and life_player.life.size() <= int(requirement.get("value", 0))
 	if requirement_type == "CONTEXT_SELECTED_CARD_TYPE_IS":
 		var selected_uid_type := str(context.get(str(requirement.get("context_var", "")), ""))
 		var selected_card_type = state.get_card(selected_uid_type)
@@ -1192,6 +1221,48 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 					unique_names[d.name] = true
 		return unique_names.size() >= min_count
 	return _matches_filter(state, requirement, context, candidate_card_uid, source_card_uid)
+
+func _resolve_numeric_value(state: GameState, provider_variant, context: Dictionary, source_card_uid: String, candidate_card_uid := "") -> int:
+	if provider_variant is int or provider_variant is float:
+		return int(provider_variant)
+	if provider_variant is String:
+		return int(provider_variant)
+	if not (provider_variant is Dictionary):
+		return 0
+	var provider: Dictionary = provider_variant
+	var provider_type := str(provider.get("type", "FIXED"))
+	if provider_type == "FIXED":
+		return int(provider.get("value", 0))
+	if provider_type == "CONDITIONAL":
+		var when_requirements: Array = provider.get("when", [])
+		if _requirements_met(state, source_card_uid, when_requirements, context, candidate_card_uid):
+			return _resolve_numeric_value(state, provider.get("then", provider.get("value", 0)), context, source_card_uid, candidate_card_uid)
+		return _resolve_numeric_value(state, provider.get("default", 0), context, source_card_uid, candidate_card_uid)
+	if provider_type == "CONTROLLER_OTHER_FIELD_UNIQUE_NAME_COUNT_MULTIPLIED":
+		var source_card = state.get_card(source_card_uid)
+		if source_card == null:
+			return 0
+		var player = state.get_player(source_card.controller_player_id)
+		if player == null:
+			return 0
+		var trait_value := str(provider.get("trait", ""))
+		var unique_names: Dictionary = {}
+		for zone_cards in [player.front_line, player.energy_line]:
+			for card_uid_variant in zone_cards:
+				var card_uid := str(card_uid_variant)
+				if card_uid == "" or card_uid == source_card_uid:
+					continue
+				var field_card = state.get_card(card_uid)
+				if field_card == null:
+					continue
+				var field_def = state.get_card_def(field_card.def_id)
+				if field_def == null:
+					continue
+				if trait_value != "" and not field_def.traits.has(trait_value):
+					continue
+				unique_names[field_def.name] = true
+		return unique_names.size() * int(provider.get("multiplier", 1))
+	return int(provider.get("value", 0))
 
 func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false, ui_meta: Dictionary = {}) -> bool:
 	var min_count := int(target.get("min", 0))

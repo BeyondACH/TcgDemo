@@ -584,6 +584,8 @@ func _serialize_player(player_id: String, action_player_id: String) -> Dictionar
 		"life": _serialize_life_cards(player.life),
 		"front_line": _serialize_cards(player.front_line, action_player_id),
 		"energy_line": _serialize_cards(player.energy_line, action_player_id),
+		"outside": _serialize_cards(player.outside, action_player_id),
+		"removed": _serialize_cards(player.removed, action_player_id),
 		"outside_count": player.outside.size(),
 		"removed_count": player.removed.size(),
 	}

@@ -175,6 +175,19 @@ def _manual_context_target(
     return [target_spec], steps
 
 
+def _fixed_value_provider(value: int) -> dict:
+    return {"type": "FIXED", "value": value}
+
+
+def _conditional_value_provider(default_value, when: list[dict], then_value) -> dict:
+    return {
+        "type": "CONDITIONAL",
+        "default": default_value,
+        "when": when,
+        "then": then_value,
+    }
+
+
 def _normalize_compiled_abilities(compiled_ability) -> list[dict]:
     if compiled_ability is None:
         return []
@@ -303,6 +316,26 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
     if match:
         requirements = [{"type": "CARD_BP_LTE", "value": int(match.group(1))}]
         target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements)
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "このカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、退場させる。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": {
+                        "type": "CONTROLLER_OTHER_FIELD_UNIQUE_NAME_COUNT_MULTIPLIED",
+                        "trait": "魔法少女",
+                        "multiplier": 1000,
+                    },
+                }
+            ],
+            0,
+            1,
+        )
         steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
@@ -498,6 +531,33 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
             ],
         )
 
+    if text == "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_COST_ENERGY_LTE", "value": 1},
+                {"type": "NOT_SOURCE_CARD"},
+            ],
+            0,
+            1,
+            "selected_primary_target",
+        )
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_primary_target", "to": "HAND"},
+                {"type": "SET_CONTEXT_FLAG", "var": "primary_target_moved", "from_var": "selected_primary_target"},
+                {
+                    "type": "MOVE_CARD",
+                    "target_uid": "SOURCE_CARD",
+                    "to": "HAND",
+                    "requirements": [{"type": "CONTEXT_FLAG_FALSE", "var": "primary_target_moved"}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
     semantic_entry = semantic_map.get(card["id"])
     if semantic_entry and not semantic_entry.get("can_be_expressed_by_dsl", True):
         reason = " / ".join(semantic_entry.get("missing_capabilities", []))
@@ -519,6 +579,45 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
     if match:
         requirements = [{"type": "CARD_BP_LTE", "value": int(match.group(1))}]
         target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements)
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": _conditional_value_provider(
+                        _fixed_value_provider(3000),
+                        [
+                            {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "美樹 さやか"},
+                            {"type": "PLAYER_LIFE_LTE", "player": "SELF", "value": 5},
+                        ],
+                        _fixed_value_provider(5000),
+                    ),
+                }
+            ],
+        )
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": _conditional_value_provider(
+                        _fixed_value_provider(3000),
+                        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"}],
+                        _fixed_value_provider(5000),
+                    ),
+                }
+            ],
+        )
         steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
@@ -570,6 +669,39 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
                 {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_preview_cards", "to": "HAND", "remove_from_var": "preview_cards"},
                 {"type": "REORDER_CONTEXT_CARDS", "from_var": "preview_cards", "var": "ordered_preview_cards"},
                 {"type": "MOVE_SELECTED_CARDS", "from_var": "ordered_preview_cards", "to": "DECK"},
+            ],
+            "TRIGGERED",
+        )
+
+    if text == "自分の山札の上から5枚見る。その中からキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。公開したカードがを持つ［特徴：魔法少女］の場合、自分のAPカードを1枚まで選び、アクティブにする。":
+        target_specs, select_steps = _manual_context_target(
+            "preview_cards",
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=1,
+            store_as="revealed_added_card",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            target_specs,
+            [
+                {"type": "PREVIEW_TOP_DECK", "count": 5, "var": "preview_cards"},
+            ]
+            + select_steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "revealed_added_card", "to": "HAND", "remove_from_var": "preview_cards"},
+                {"type": "REORDER_CONTEXT_CARDS", "from_var": "preview_cards", "var": "ordered_preview_cards"},
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "ordered_preview_cards", "to": "DECK"},
+                {
+                    "type": "ACTIVATE_AP_SLOTS",
+                    "value": 1,
+                    "requirements": [
+                        {"type": "CONTEXT_SELECTED_CARD_HAS_TRAIT", "context_var": "revealed_added_card", "value": "魔法少女"}
+                    ],
+                },
             ],
             "TRIGGERED",
         )

@@ -2,8 +2,8 @@
 
 ## 当前状态
 
-- 当前 `data/cards/cards_effects.json` 统计为 63 个已支持能力、10 个未支持能力。
-- 未支持能力主要集中在“特殊登场”“条件化阈值替换”“动态数值 requirement”“失败分支”“临时授予限制/出牌规则”等模板。
+- 当前 `data/cards/cards_effects.json` 统计为 70 个已支持能力、3 个未支持能力。
+- 未支持能力已收敛到“特殊登场/出牌规则授权”“临时产能修饰 + 延迟自退场”等高阶模板。
 - 现有运行时已落地的原子步骤包括：`ACTIVATE_AP_SLOTS`、`ACTIVATE_CARD`、`ADD_TEMP_BP_MODIFIER`、`ADD_TEMP_KEYWORD`、`DRAW`、`FOR_EACH`、`LIFE_TRIGGER_RAID_CHOICE`、`MOVE_CARD`、`MOVE_SELECTED_CARDS`、`MOVE_TOP_DECK_TO_LIFE`、`MOVE_ZONE`、`PLAY_SELECTED_CARDS`、`PREVIEW_TOP_DECK`、`REGISTER_DELAYED_EFFECT`、`REGISTER_STATIC_MODIFIER`、`REORDER_CONTEXT_CARDS`、`SELECT_TARGETS`、`SET_CONTEXT_FLAG`。
 
 ## 优先级 P0：优先补齐的通用能力模板
@@ -38,7 +38,7 @@
 
 ## 优先级 P1：需要扩展原子 requirement 的能力
 
-- [ ] 动态 BP 上限 requirement
+- [x] 动态 BP 上限 requirement
   - 目标：支持“自己场上其他某特征角色的名称种类数 × N”这类动态阈值。
   - 影响卡：`UA31BT_MMM_1_078`
   - 建议拆分：
@@ -46,14 +46,14 @@
     - 明确“其他”“名称种类数”“按特征过滤”的统一语义
     - 再复用到 `CARD_BP_LTE_DYNAMIC` 类模板，而不是按卡硬编码
 
-- [ ] 条件满足时替换数值阈值
+- [x] 条件满足时替换数值阈值
   - 目标：支持“默认 BP3000，若满足条件则改为 BP5000”的统一能力模板。
   - 影响卡：`UA31BT_MMM_1_093`、`UA31BT_MMM_1_094`、`UA31ST_MMM_1_094`
   - 建议拆分：
     - 明确是“可变 requirement 参数”而不是两段按卡分支
     - 支持由场面条件、生命值条件驱动的数值升级
 
-- [ ] 公开结果驱动后续奖励
+- [x] 公开结果驱动后续奖励
   - 目标：支持“预览并公开选到的牌，若其满足某特征/关键词，则执行额外步骤”的 requirement 模板。
   - 影响卡：`UA31BT_MMM_1_098`
   - 建议拆分：
@@ -81,7 +81,7 @@
 
 ## 优先级 P2：需要补齐控制流语义的能力
 
-- [ ] 首选动作失败时执行 fallback
+- [x] 首选动作失败时执行 fallback
   - 目标：支持“若能回收其他角色则回收；否则将自己回手”的统一失败分支模板。
   - 影响卡：`UA31BT_MMM_1_085`、`UA31ST_MMM_1_085`
   - 建议拆分：
@@ -95,13 +95,13 @@
 - `UA31BT_MMM_1_078`
   - 缺：动态 BP 上限 requirement
 - `UA31BT_MMM_1_085`、`UA31ST_MMM_1_085`
-  - 缺：失败分支 fallback
+  - 已补：失败分支 fallback
 - `UA31BT_MMM_1_090`
   - 缺：生命区回手后临时获得特殊登场/RAID 许可
 - `UA31BT_MMM_1_093`、`UA31BT_MMM_1_094`、`UA31ST_MMM_1_094`
-  - 缺：条件满足时替换 BP 阈值
+  - 已补：条件满足时替换 BP 阈值
 - `UA31BT_MMM_1_098`
-  - 缺：公开结果驱动后续奖励
+  - 已补：公开结果驱动后续奖励
 
 ## 实施顺序建议
 
@@ -109,15 +109,15 @@
   - 原因：复用面最大，能直接消化 4 张以上卡
 - [x] 第二批先补“临时限制中的不能攻击直到下个自己回合开始”
   - 原因：该模板已覆盖 `UA31BT_MMM_1_075`，但“临时出牌许可/临时产能修饰”仍留在后续阶段继续补齐
-- [ ] 第三批补“动态 requirement / 条件化阈值替换 / fallback 控制流”
-  - 原因：这部分最容易把 DSL/IR 做散，必须先冻结契约再动手
+- [x] 第三批补“动态 requirement / 条件化阈值替换 / fallback 控制流”
+  - 结果：已落地统一 `value_provider`、上下文卡引用与 fallback 主链/后备链表达，覆盖 `078`、`085`、`093`、`094`、`098`
 
 ## 开发前冻结项
 
 - [ ] 冻结“特殊登场/特殊 RAID 许可”属于出牌规则层的契约，不放回普通步骤特判
-- [ ] 冻结“optional 成功标记”和“上下文卡引用”的统一字段命名
-- [ ] 冻结“动态数值来源”的表达格式，避免后续再出现按卡定制字段
-- [ ] 冻结 fallback 控制流的固定 IR 结构，避免脚本化步骤进入正式模型
+- [x] 冻结“optional 成功标记”和“上下文卡引用”的统一字段命名
+- [x] 冻结“动态数值来源”的表达格式，避免后续再出现按卡定制字段
+- [x] 冻结 fallback 控制流的固定 IR 结构，避免脚本化步骤进入正式模型
 
 ## 验收要求
 

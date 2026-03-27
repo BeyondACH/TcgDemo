@@ -1,6 +1,8 @@
 extends VBoxContainer
 class_name ZoneStackSummaryView
 
+signal summary_pressed
+
 const DEFAULT_STACK_SIZE := Vector2(58, 82)
 const COMPACT_STACK_SIZE := Vector2(48, 68)
 const DEFAULT_Y_STEP := 8.0
@@ -20,7 +22,7 @@ var _count := 0
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 4)
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = Control.MOUSE_FILTER_STOP
 
 	_title_label = Label.new()
 	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -116,3 +118,8 @@ func _create_card_back_style(index: int) -> StyleBoxFlat:
 	style.expand_margin_right = 1
 	style.expand_margin_bottom = 1
 	return style
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		emit_signal("summary_pressed")
+		accept_event()

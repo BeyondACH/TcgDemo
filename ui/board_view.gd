@@ -16,6 +16,7 @@ const VERY_SMALL_CARD_SIZE := Vector2(52, 72)
 signal front_card_pressed(player_id: String, card_uid: String)
 signal energy_card_pressed(player_id: String, card_uid: String)
 signal zone_drop_requested(player_id: String, zone_name: String, card_uid: String)
+signal zone_stack_requested(player_id: String, zone_name: String)
 
 var _player_id := ""
 var _current_card_size := DEFAULT_CARD_SIZE
@@ -95,6 +96,7 @@ func _ready() -> void:
 	_removed_stack = ZoneStackSummaryView.new()
 	_removed_stack.name = "RemovedStack"
 	_removed_stack.set_compact_mode(false)
+	_removed_stack.summary_pressed.connect(_on_removed_stack_pressed)
 	_removed_wrapper.add_child(_removed_stack)
 
 	# Create Deck stack
@@ -107,6 +109,7 @@ func _ready() -> void:
 	_outside_stack = ZoneStackSummaryView.new()
 	_outside_stack.name = "OutsideStack"
 	_outside_stack.set_compact_mode(false)
+	_outside_stack.summary_pressed.connect(_on_outside_stack_pressed)
 	_outside_wrapper.add_child(_outside_stack)
 
 	# Create Front Line zone
@@ -360,6 +363,12 @@ func _on_card_pressed(owner_player_id: String, card_uid: String, zone_name: Stri
 
 func _on_zone_dropped(player_id: String, zone_name: String, card_uid: String) -> void:
 	emit_signal("zone_drop_requested", player_id, zone_name, card_uid)
+
+func _on_removed_stack_pressed() -> void:
+	emit_signal("zone_stack_requested", _player_id, "removed")
+
+func _on_outside_stack_pressed() -> void:
+	emit_signal("zone_stack_requested", _player_id, "outside")
 
 
 ## Calculate a single card size for stack zones (deck, outside, removed).
