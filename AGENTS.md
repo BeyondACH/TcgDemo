@@ -19,9 +19,9 @@
 
 ### 开发计划文件
 
-- 项目当前的正式开发计划保存在 `docs/plan/project_development_plan.md`。
+- 项目当前的正式开发计划保存在 `docs/plan/development_plan.md`。
 - 主 agent 在进入需求拆分、接口冻结、并行分工、阶段验收前，应先对齐该计划与 `docs/rules/rule.md`。
-- 如果新的需求会改变里程碑优先级、接口冻结项或测试策略，应先更新 `docs/plan/project_development_plan.md`，再组织多 agent 实施。
+- 如果新的需求会改变里程碑优先级、接口冻结项或测试策略，应先更新 `docs/plan/development_plan.md`，再组织多 agent 实施。
 - 每次在计划模式下，主 agent 都必须结合任务复杂度、跨模块耦合度与预期上下文消耗量，先判断是否值得引入子 agent 并行实施；只有在拆分后能明显提升推进效率且不会增加规则或接口失配风险时，才应启用子 agent。
 
 ### 当前目录职责
@@ -244,7 +244,7 @@
 - 若默认输出与显式 UTF-8 输出不一致，以显式 UTF-8 结果为准；禁止基于乱码输出直接判断规则语义、计划状态或日志结论
 - 至少以下内容默认视为“关键中文片段”，读取时应优先走显式 UTF-8：
   - `docs/rules/rule.md`
-  - `docs/plan/project_development_plan.md`
+  - `docs/plan/development_plan.md`
   - `docs/plan/mile_stone.md`
   - `docs/logs/log_yyyy-MM-dd.md` 这类按日日志文件
   - 含中文 UI 文案、提示文本或断言信息的 `.gd` 文件

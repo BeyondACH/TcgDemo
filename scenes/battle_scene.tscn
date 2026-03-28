@@ -354,6 +354,79 @@ grow_vertical = 2
 mouse_filter = 0
 script = ExtResource("8_preview_modal")
 
+[node name="DeckSelectionModal" type="Control" parent="UILayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Dimmer" type="ColorRect" parent="UILayer/DeckSelectionModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 0.72)
+
+[node name="CenterContainer" type="CenterContainer" parent="UILayer/DeckSelectionModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="DeckSelectionPanel" type="PanelContainer" parent="UILayer/DeckSelectionModal/CenterContainer"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+
+[node name="DeckSelectionContent" type="VBoxContainer" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DeckSelectionTitle" type="Label" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+text = "开始游戏前选择双方卡组"
+horizontal_alignment = 1
+
+[node name="DeckSelectionHint" type="Label" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+autowrap_mode = 3
+text = "卡组来源会自动扫描 data/decks 下的 txt 文件。"
+horizontal_alignment = 1
+
+[node name="PlayerOneDeckLabel" type="Label" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+text = "P1 卡组"
+
+[node name="PlayerOneDeckPicker" type="OptionButton" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerTwoDeckLabel" type="Label" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+text = "P2 卡组"
+
+[node name="PlayerTwoDeckPicker" type="OptionButton" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DeckSelectionStatusLabel" type="Label" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+autowrap_mode = 3
+text = "请选择双方卡组后开始对局。"
+
+[node name="StartGameButton" type="Button" parent="UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent"]
+layout_mode = 2
+text = "开始游戏"
+
 [node name="LogPanel" type="PanelContainer" parent="UILayer"]
 visible = false
 layout_mode = 1

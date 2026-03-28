@@ -24,6 +24,7 @@ signal log_added(text: String)
 const CARD_DATA_PATH := "res://data/cards/cards_effects.json"
 const STARTER_A_PATH := "res://data/decks/starter_a.txt"
 const STARTER_B_PATH := "res://data/decks/starter_b.txt"
+const DECKS_DIR_PATH := "res://data/decks"
 
 @export_enum("HUMAN", "AI_SIMPLE") var player_one_controller_type := PlayerController.CONTROLLER_HUMAN
 @export_enum("HUMAN", "AI_SIMPLE") var player_two_controller_type := PlayerController.CONTROLLER_AI_SIMPLE
@@ -43,21 +44,38 @@ var _controller_drive_in_progress := false
 
 func _ready() -> void:
 	randomize()
-	setup_game()
 
 # Initialize a fresh game state, decks, starting hands, and opening turn.
-func setup_game(controller_config: Dictionary = {}) -> void:
+func setup_game(setup_config: Dictionary = {}) -> void:
 	game_state = GameState.new()
-	_reset_controller_state(controller_config)
+	_reset_controller_state(_extract_controller_config(setup_config))
 	_load_card_defs()
-	var starter_a: Array = _load_deck_list(STARTER_A_PATH)
-	var starter_b: Array = _load_deck_list(STARTER_B_PATH)
+	var player_deck_paths := _extract_player_deck_paths(setup_config)
+	var starter_a: Array = _load_deck_list(str(player_deck_paths.get(UATypes.PLAYER_ONE, STARTER_A_PATH)))
+	var starter_b: Array = _load_deck_list(str(player_deck_paths.get(UATypes.PLAYER_TWO, STARTER_B_PATH)))
 	_create_player(UATypes.PLAYER_ONE, starter_a)
 	_create_player(UATypes.PLAYER_TWO, starter_b)
 	_prepare_opening_hand(UATypes.PLAYER_ONE)
 	_prepare_opening_hand(UATypes.PLAYER_TWO)
 	_enqueue_mulligan_decision(UATypes.PLAYER_ONE)
 	emit_state_changed()
+
+func get_available_decks() -> Array[Dictionary]:
+	var deck_files: Array[String] = []
+	for file_name_variant in DirAccess.get_files_at(DECKS_DIR_PATH):
+		var file_name := str(file_name_variant)
+		if file_name.get_extension().to_lower() != "txt":
+			continue
+		deck_files.append(file_name)
+	deck_files.sort()
+	var decks: Array[Dictionary] = []
+	for file_name in deck_files:
+		decks.append({
+			"name": file_name.get_basename(),
+			"file_name": file_name,
+			"path": "%s/%s" % [DECKS_DIR_PATH, file_name],
+		})
+	return decks
 
 func set_controller_config(controller_config: Dictionary) -> void:
 	_reset_controller_state(controller_config)
@@ -80,6 +98,26 @@ func _reset_controller_state(controller_config: Dictionary = {}) -> void:
 	_controllers[UATypes.PLAYER_TWO] = _build_controller_for(UATypes.PLAYER_TWO)
 	_controller_drive_pending = false
 	_controller_drive_in_progress = false
+
+func _extract_controller_config(setup_config: Dictionary) -> Dictionary:
+	var controller_config := {}
+	for key_variant in setup_config.keys():
+		var key := str(key_variant)
+		if key == UATypes.PLAYER_ONE or key == UATypes.PLAYER_TWO:
+			controller_config[key] = (setup_config[key_variant] as Dictionary).duplicate(true)
+	return controller_config
+
+func _extract_player_deck_paths(setup_config: Dictionary) -> Dictionary:
+	var player_deck_paths := {
+		UATypes.PLAYER_ONE: STARTER_A_PATH,
+		UATypes.PLAYER_TWO: STARTER_B_PATH,
+	}
+	var deck_config: Dictionary = setup_config.get("player_decks", {})
+	for player_id in [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]:
+		var configured_path := str(deck_config.get(player_id, ""))
+		if configured_path != "":
+			player_deck_paths[player_id] = configured_path
+	return player_deck_paths
 
 func _build_controller_for(player_id: String) -> PlayerController:
 	var config: Dictionary = _controller_config.get(player_id, {})

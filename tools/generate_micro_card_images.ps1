@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-# Generate 84px-high PNG thumbnails for hand display from pic/*.png into pic/micro/.
+# Generate 84px-high PNG thumbnails for missing pic/*.png files into pic/micro/.
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $sourceDir = Join-Path $projectRoot "pic"
 $outputDir = Join-Path $sourceDir "micro"
@@ -15,9 +15,17 @@ New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
 Add-Type -AssemblyName System.Drawing
 
 $sourceFiles = Get-ChildItem -Path $sourceDir -File -Filter *.png | Sort-Object Name
+$scanned = $sourceFiles.Count
 $generated = 0
+$skippedExisting = 0
 
 foreach ($file in $sourceFiles) {
+	$outputPath = Join-Path $outputDir $file.Name
+	if (Test-Path $outputPath) {
+		$skippedExisting++
+		continue
+	}
+
 	$image = [System.Drawing.Image]::FromFile($file.FullName)
 	try {
 		if ($image.Height -le 0) {
@@ -42,7 +50,6 @@ foreach ($file in $sourceFiles) {
 				$graphics.Dispose()
 			}
 
-			$outputPath = Join-Path $outputDir $file.Name
 			$bitmap.Save($outputPath, [System.Drawing.Imaging.ImageFormat]::Png)
 			$generated++
 		}
@@ -55,4 +62,4 @@ foreach ($file in $sourceFiles) {
 	}
 }
 
-Write-Output ("Generated {0} micro images in {1}" -f $generated, $outputDir)
+Write-Output ("scanned={0} skipped_existing={1} generated={2} output_dir={3}" -f $scanned, $skippedExisting, $generated, $outputDir)

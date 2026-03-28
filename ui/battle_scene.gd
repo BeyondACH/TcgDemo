@@ -80,6 +80,11 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var log_panel: LogPanel = $UILayer/LogPanel
 @onready var preview_selection_modal: PreviewSelectionModal = $UILayer/PreviewSelectionModal
 @onready var log_toggle_button: Button = $UILayer/TopHUD/TopBar/PhaseControls/LogToggleButton
+@onready var deck_selection_modal: Control = $UILayer/DeckSelectionModal
+@onready var deck_selection_status_label: Label = $UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent/DeckSelectionStatusLabel
+@onready var player_one_deck_picker: OptionButton = $UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent/PlayerOneDeckPicker
+@onready var player_two_deck_picker: OptionButton = $UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent/PlayerTwoDeckPicker
+@onready var start_game_button: Button = $UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent/StartGameButton
 
 var _snapshot: Dictionary = {}
 var _life_reveal_modal: LifeRevealModal
@@ -98,6 +103,8 @@ var _raid_target_selection_mode := false
 var _preview_card_uid := ""
 var _preview_player_id := ""
 var _preview_zone_name := ""
+var _available_decks: Array[Dictionary] = []
+var _opening_setup_pending := true
 
 func _ready() -> void:
 	_setup_optional_art()
@@ -132,6 +139,7 @@ func _ready() -> void:
 	$UILayer.add_child(_zone_cards_popup)
 	cancel_selection_button.pressed.connect(_clear_selection)
 	log_toggle_button.pressed.connect(_on_log_toggle_pressed)
+	start_game_button.pressed.connect(_on_start_game_pressed)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
 	hand_view.hand_card_hovered.connect(_on_hand_card_hovered)
 	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
@@ -154,9 +162,12 @@ func _ready() -> void:
 	activate_life_button.visible = false
 	skip_life_button.visible = false
 	pending_decision_panel.visible = false
+	deck_selection_modal.visible = false
+	_load_deck_selection_options()
 	get_viewport().size_changed.connect(_update_responsive_layout)
 	_update_responsive_layout()
 	_on_state_changed(game_manager.get_snapshot())
+	_show_deck_selection_modal()
 	call_deferred("_run_layout_probe_if_requested")
 
 func _setup_optional_art() -> void:
@@ -316,6 +327,75 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	if _is_preview_pending_decision(_current_pending_decision()):
 		pending_decision_panel.visible = false
 	resolve_pending_decision_button.disabled = has_winner or not has_pending_decisions or _selected_pending_decision_index < 0 or not human_input_enabled
+	_refresh_deck_selection_modal_state()
+
+func _load_deck_selection_options() -> void:
+	_available_decks = game_manager.get_available_decks()
+	player_one_deck_picker.clear()
+	player_two_deck_picker.clear()
+	for deck in _available_decks:
+		var deck_name := str(deck.get("name", ""))
+		player_one_deck_picker.add_item(deck_name)
+		player_two_deck_picker.add_item(deck_name)
+	if _available_decks.is_empty():
+		deck_selection_status_label.text = "未在 data/decks 中找到可用的 txt 卡组。"
+		start_game_button.disabled = true
+		return
+	player_one_deck_picker.select(_preferred_deck_index("starter_a", 0))
+	player_two_deck_picker.select(_preferred_deck_index("starter_b", min(1, _available_decks.size() - 1)))
+	start_game_button.disabled = false
+	deck_selection_status_label.text = "请选择双方卡组后开始对局。"
+
+func _preferred_deck_index(preferred_name: String, fallback_index: int) -> int:
+	for i in range(_available_decks.size()):
+		if str(_available_decks[i].get("file_name", "")).get_basename() == preferred_name:
+			return i
+	return clampi(fallback_index, 0, max(0, _available_decks.size() - 1))
+
+func _show_deck_selection_modal() -> void:
+	_opening_setup_pending = true
+	_refresh_deck_selection_modal_state()
+	deck_selection_modal.visible = true
+
+func _hide_deck_selection_modal() -> void:
+	deck_selection_modal.visible = false
+
+func _refresh_deck_selection_modal_state() -> void:
+	if deck_selection_modal == null:
+		return
+	var can_start := _opening_setup_pending and not _available_decks.is_empty() and player_one_deck_picker.selected >= 0 and player_two_deck_picker.selected >= 0
+	player_one_deck_picker.disabled = not _opening_setup_pending or _available_decks.is_empty()
+	player_two_deck_picker.disabled = not _opening_setup_pending or _available_decks.is_empty()
+	start_game_button.disabled = not can_start
+	if not _opening_setup_pending:
+		_hide_deck_selection_modal()
+	elif _available_decks.is_empty():
+		deck_selection_status_label.text = "未在 data/decks 中找到可用的 txt 卡组。"
+
+func _selected_deck_path(picker: OptionButton) -> String:
+	var index := picker.selected
+	if index < 0 or index >= _available_decks.size():
+		return ""
+	return str(_available_decks[index].get("path", ""))
+
+func _start_game_with_selected_decks() -> void:
+	var player_one_deck_path := _selected_deck_path(player_one_deck_picker)
+	var player_two_deck_path := _selected_deck_path(player_two_deck_picker)
+	if player_one_deck_path == "" or player_two_deck_path == "":
+		deck_selection_status_label.text = "请先为双方选择卡组。"
+		return
+	_opening_setup_pending = false
+	_hide_deck_selection_modal()
+	_clear_selection()
+	game_manager.setup_game({
+		"player_decks": {
+			UATypes.PLAYER_ONE: player_one_deck_path,
+			UATypes.PLAYER_TWO: player_two_deck_path,
+		}
+	})
+
+func _on_start_game_pressed() -> void:
+	_start_game_with_selected_decks()
 
 func _on_hand_card_selected(card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
@@ -965,11 +1045,13 @@ func _update_hand_playable_states(_player_id: String, hand_cards: Array) -> void
 	hand_view.set_playable_cards(playable_map)
 
 func _human_input_enabled() -> bool:
-	return bool(_snapshot.get("human_input_enabled", true))
+	return not _opening_setup_pending and bool(_snapshot.get("human_input_enabled", true))
 
 func _run_layout_probe_if_requested() -> void:
 	if not OS.get_cmdline_user_args().has("--layout-probe"):
 		return
+	if _opening_setup_pending:
+		_start_game_with_selected_decks()
 	if game_state_has_opening_probe_pending():
 		game_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 		game_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
