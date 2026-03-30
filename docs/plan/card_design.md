@@ -49,7 +49,11 @@
 
 ### P1：规则共性稳定性回归
 
-- 当前进入主阶段，围绕 `docs/milestone_smoke_test.gd` 继续增补共性规则断言，重点观察：
+- 当前已完成第一轮专项化落地，不再只依赖 `docs/milestone_smoke_test.gd` 单入口。
+- 当前固定采用“两层入口”：
+  - 规则主冒烟：`docs/milestone_smoke_test.gd`
+  - 运行时脏状态专项：`docs/runtime_residue_smoke_test.gd`
+- 本阶段重点观察：
   - `delayed_effects` 是否按回合正确过期
   - `pending_decisions` 是否在复杂链后清空
   - `effect_queue` 是否在显式决策后恢复并耗尽
@@ -58,7 +62,15 @@
   - 本回合临时关键词结束时清理
   - `entered_this_turn` 在下个自己回合开始时清理
   - 多个结束主阶段延迟效果不残留脏状态
-- 若后续新增高风险规则修复，仍先补主冒烟，再扩正式 raw 样例。
+  - 显式目标选择恢复后 `effect_queue` 耗尽且不残留待决策
+  - 延迟效果在 `ON_END_MAIN_PHASE / END_OF_TURN / UNTIL_NEXT_SELF_TURN_START` 的结算与过期不残留脏状态
+  - 战斗后离场与叠放离场不残留 `battle_context`
+  - 生命触发与显式目标选择混合链最终清空 `pending_life_triggers / pending_decisions / effect_queue / battle_context`
+- 当前验证基线已扩为：
+  - `docs/runtime_residue_smoke_test.gd`：`4 / 0`
+  - `docs/milestone_smoke_test.gd`：`32 / 0`
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：`66 / 0`
+- 若后续新增高风险规则修复，优先顺序调整为：先补主冒烟或专项稳定性回归，再补正式 raw 样例。
 
 ### P2：非高风险收尾项
 
@@ -84,5 +96,6 @@
   - 对应回归脚本
 - 当前推荐验证入口固定为：
   - 规则主冒烟：`docs/milestone_smoke_test.gd`
+  - 规则稳定性专项：`docs/runtime_residue_smoke_test.gd`
   - 正式 raw 样例：`docs/cards_raw_minimal_duel_smoke_test.gd`
 - 若改动触及预览流或布局消费，额外执行 `--layout-probe`，并记录“手牌区域不遮挡战场区域”的验收结果。
