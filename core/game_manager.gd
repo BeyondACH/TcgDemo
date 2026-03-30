@@ -188,6 +188,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 	var play_modifiers := effect_resolver.preview_play_modifiers(game_state, acting_player_id, card_uid, {
 		"target_player_id": acting_player_id,
 		"target_zone": target_zone,
+		"target_uid": str(options.get("target_uid", "")),
 	})
 	if bool(options.get("force_allow_current_zone", false)):
 		play_modifiers["allow_current_zone"] = true
@@ -337,7 +338,7 @@ func execute_action(action: Dictionary) -> Dictionary:
 	match action_type:
 		ActionTypes.PLAY_CARD:
 			var play_options := {}
-			for key in ["raid_target_uid", "raid_target_zone_choice", "allow_raid_play", "force_allow_current_zone", "ignore_pending_gate", "ignore_play_timing"]:
+			for key in ["raid_target_uid", "raid_target_zone_choice", "allow_raid_play", "force_allow_current_zone", "ignore_pending_gate", "ignore_play_timing", "target_uid"]:
 				if params.has(key):
 					play_options[key] = params.get(key)
 			play_options["player_id"] = str(action.get("player_id", game_state.active_player_id))

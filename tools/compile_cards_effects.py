@@ -80,6 +80,28 @@ def _build_play_cost_modifiers(card: dict) -> list[dict]:
         continue
     for effect_entry in card.get("effects", []):
         text = str(effect_entry.get("text", "")).strip()
+        match = re.fullmatch(r"〈(.+)〉を選んで使用する場合、このカードの消費APを-1する。", text)
+        if not match:
+            continue
+        modifiers.append(
+            {
+                "type": "SELF_HAND_AP_DELTA",
+                "from_zone": "HAND",
+                "ap_delta": -1,
+                "requirements": [
+                    {
+                        "type": "CONTEXT_TARGET_NAME_IS",
+                        "value": match.group(1),
+                    }
+                ],
+                "ui": {
+                    "text": text,
+                    "effect_box": str(effect_entry.get("effect_box", "OUTER")),
+                },
+            }
+        )
+    for effect_entry in card.get("effects", []):
+        text = str(effect_entry.get("text", "")).strip()
         if text != "相手の場に黄か紫のカードがある場合、手札にあるこのカードの必要エナジーを減らす。":
             continue
         energy_delta = _parse_energy_delta_from_label(str(effect_entry.get("source_label", "")))
@@ -187,6 +209,52 @@ def _manual_single_target(
     return [target_spec], steps
 
 
+def _auto_target_set(
+    owner: str,
+    zones: list[str],
+    *,
+    requirements: list[dict] | None = None,
+    filters: list[dict] | None = None,
+    min_count: int = 0,
+    max_count: int = -1,
+    store_as: str = "selected_targets",
+) -> tuple[list[dict], list[dict]]:
+    target_spec = {
+        "id": store_as,
+        "scope": "CARD",
+        "candidate": {
+            "owner": owner,
+            "zones": zones,
+            "filters": filters or [],
+            "requirements": requirements or [],
+        },
+        "select": {
+            "min": min_count,
+            "max": max_count,
+            "mode": "AUTO",
+        },
+        "store_as": store_as,
+    }
+    steps = [
+        {
+            "type": "SELECT_TARGETS",
+            "var": store_as,
+            "target": {
+                "type": "CARD_SET",
+                "owner": owner,
+                "zones": zones,
+                "filters": filters or [],
+                "requirements": requirements or [],
+                "min": min_count,
+                "max": max_count,
+                "selection_mode": "AUTO",
+                "manual": False,
+            },
+        }
+    ]
+    return [target_spec], steps
+
+
 def _manual_context_target(
     source_var: str,
     requirements: list[dict] | None = None,
@@ -237,6 +305,14 @@ def _name_in_zone_requirement(name: str, zones: list[str], owner: str = "SELF") 
         "type": "CONTROLLER_HAS_NAME_IN_ZONE",
         "value": name,
         "zones": zones,
+        "owner": owner,
+    }
+
+
+def _field_names_all_in_set_requirement(names: list[str], owner: str = "SELF") -> dict:
+    return {
+        "type": "CONTROLLER_FIELD_ALL_NAMES_IN_SET",
+        "names": names,
         "owner": owner,
     }
 
@@ -902,6 +978,76 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
             steps,
         )
 
+    if text == "自分のフロントLの〈鹿目 まどか〉を1枚選び、このキャラと位置を入れ替える。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE"],
+            [{"type": "CARD_NAME_IS", "value": "鹿目 まどか"}],
+            1,
+            1,
+            "selected_madoka_target",
+        )
+        steps.append({"type": "SWAP_SOURCE_WITH_SELECTED_CARD", "target_var": "selected_madoka_target"})
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "自分の場の〈鹿目 まどか〉を1枚手札に戻してもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、このターン中、『BP-3000』。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉の場合、『BP-4000』に代わる。":
+        return_specs, return_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [{"type": "CARD_NAME_IS", "value": "鹿目 まどか"}],
+            0,
+            1,
+            "selected_returned_madoka",
+        )
+        debuff_specs, debuff_steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [],
+            0,
+            1,
+            "selected_enemy_target",
+        )
+        debuff_value = _conditional_value_provider(
+            _fixed_value_provider(-3000),
+            [_field_names_all_in_set_requirement(["暁美 ほむら", "鹿目 まどか"])],
+            _fixed_value_provider(-4000),
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            return_specs + debuff_specs,
+            return_steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_returned_madoka", "to": "HAND"},
+                {"type": "SET_CONTEXT_FLAG", "var": "returned_madoka_to_hand", "from_var": "selected_returned_madoka"},
+            ]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_FLAG_TRUE", "var": "returned_madoka_to_hand"}])
+                for step in debuff_steps
+            ]
+            + [
+                {
+                    "type": "ADD_TEMP_BP_MODIFIER",
+                    "target_var": "selected_enemy_target",
+                    "value_provider": debuff_value,
+                    "expires": "END_OF_TURN",
+                    "requirements": [{"type": "CONTEXT_FLAG_TRUE", "var": "returned_madoka_to_hand"}],
+                }
+            ],
+        )
+
+    if text == "自分の場に〈鹿目 まどか〉がある場合、このキャラのレイド元のカードを1枚まで手札に戻す。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"}],
+            [],
+            [{"type": "MOVE_SOURCE_STACKED_UNDER_TO_ZONE", "to": "HAND", "count": 1}],
+        )
+
     if text == "自分の場外から紫の［特徴：魔法少女］を1枚まで手札に加える。":
         target_specs, steps = _manual_single_target(
             "SELF",
@@ -1033,6 +1179,102 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
         )
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
+    if text == "自分の場の〈百江 なぎさ〉と［特徴：ピュエラ・マギ・ホーリー・クインテット］全ては、このターン中、BP+1000。":
+        target_specs, steps = _auto_target_set(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            filters=[
+                {
+                    "type": "OR",
+                    "filters": [
+                        {"type": "NAME_IS", "value": "百江 なぎさ"},
+                        {"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"},
+                    ],
+                }
+            ],
+            store_as="selected_team_targets",
+        )
+        steps.append(
+            {
+                "type": "FOR_EACH",
+                "items_var": "selected_team_targets",
+                "current_var": "current_item",
+                "steps": [
+                    {
+                        "type": "ADD_TEMP_BP_MODIFIER",
+                        "target": {"type": "CURRENT_ITEM"},
+                        "value": 1000,
+                        "expires": "END_OF_TURN",
+                    }
+                ],
+            }
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "自分の山札の上から1枚を公開する。公開したカードが〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］の場合、そのカードを手札に加える。公開したカードがそれら以外の場合、自分の山札の上か下に置く。":
+        matched_specs, matched_steps = _manual_context_target(
+            "preview_cards",
+            filters=[
+                {
+                    "type": "OR",
+                    "filters": [
+                        {"type": "NAME_IS", "value": "百江 なぎさ"},
+                        {"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"},
+                    ],
+                }
+            ],
+            min_count=0,
+            max_count=1,
+            store_as="revealed_match_card",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            matched_specs,
+            [
+                {"type": "PREVIEW_TOP_DECK", "count": 1, "var": "preview_cards"},
+            ]
+            + [
+                dict(step, target={**step["target"], "selection_mode": "AUTO", "manual": False})
+                if step.get("type") == "SELECT_TARGETS"
+                else step
+                for step in matched_steps
+            ]
+            + [
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "revealed_match_card",
+                    "to": "HAND",
+                    "remove_from_var": "preview_cards",
+                    "target_player_mode": "SOURCE",
+                },
+                {"type": "SET_CONTEXT_FLAG", "var": "revealed_match_succeeded", "from_var": "revealed_match_card"},
+                {
+                    "type": "SELECT_TARGETS",
+                    "var": "revealed_nonmatch_position",
+                    "requirements": [{"type": "CONTEXT_FLAG_FALSE", "var": "revealed_match_succeeded"}],
+                    "target": {
+                        "type": "OPTION_SET",
+                        "options": ["TOP", "BOTTOM"],
+                        "min": 1,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": True,
+                    },
+                },
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "preview_cards",
+                    "to": "DECK",
+                    "to_position_from_var": "revealed_nonmatch_position",
+                    "target_player_mode": "SOURCE",
+                    "requirements": [{"type": "CONTEXT_FLAG_FALSE", "var": "revealed_match_succeeded"}],
+                },
+            ],
+        )
+
     semantic_entry = semantic_map.get(card["id"])
     if semantic_entry and not semantic_entry.get("can_be_expressed_by_dsl", True):
         reason = " / ".join(semantic_entry.get("missing_capabilities", []))
@@ -1131,6 +1373,8 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
         return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 2}], "TRIGGERED")
 
     if re.fullmatch(r"自分の場に〈(.+)〉がある場合、手札にあるこのカードの消費APを-1する。", text):
+        return None
+    if re.fullmatch(r"〈(.+)〉を選んで使用する場合、このカードの消費APを-1する。", text):
         return None
 
     if text == "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。":

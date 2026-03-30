@@ -502,8 +502,14 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 		var move_logs: Array[String] = []
 		var selected_cards: Array = _ensure_array(context.get(str(step.get("from_var", "")), []))
 		var to_zone := _parse_zone(step.get("to_zone", step.get("to", UATypes.Zone.OUTSIDE)))
+		var target_player_mode := str(step.get("target_player_mode", ""))
 		var target_player_id := str(step.get("target_player_id", context.get("target_player_id", "")))
-		var to_position := str(step.get("to_position", ""))
+		if target_player_mode == "SOURCE":
+			var move_source_card = state.get_card(source_card_uid)
+			target_player_id = move_source_card.controller_player_id if move_source_card != null else str(context.get("source_player_id", target_player_id))
+		elif target_player_mode == "TARGET":
+			target_player_id = str(context.get("target_player_id", target_player_id))
+		var to_position := str(step.get("to_position", context.get(str(step.get("to_position_from_var", "")), "")))
 		for card_uid_variant in selected_cards:
 			var card_uid := str(card_uid_variant)
 			if card_uid == "":
@@ -571,6 +577,10 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 		return {"logs": _apply_temporary_bp_modifier(state, source_card_uid, step, context), "paused": false}
 	if step_type == "ADD_TEMP_KEYWORD":
 		return {"logs": _apply_temporary_keyword_modifier(state, source_card_uid, step, context), "paused": false}
+	if step_type == "SWAP_SOURCE_WITH_SELECTED_CARD":
+		return {"logs": _swap_source_with_selected_card(state, source_card_uid, step, context), "paused": false}
+	if step_type == "MOVE_SOURCE_STACKED_UNDER_TO_ZONE":
+		return {"logs": _move_source_stacked_under_to_zone(state, source_card_uid, step), "paused": false}
 	if step_type == "FOR_EACH":
 		var logs: Array[String] = []
 		var values: Array = _ensure_array(context.get(str(step.get("items_var", "")), []))
@@ -835,6 +845,8 @@ func _apply_temporary_bp_modifier(state: GameState, source_card_uid: String, ste
 	if target_card == null:
 		return logs
 	var delta := int(step.get("value", 0))
+	if step.has("value_provider"):
+		delta = _resolve_numeric_value(state, step.get("value_provider", 0), context, source_card_uid, target_uid)
 	target_card.current_bp += delta
 	var source_card = state.get_card(source_card_uid)
 	state.static_modifiers.append({
@@ -847,6 +859,40 @@ func _apply_temporary_bp_modifier(state: GameState, source_card_uid: String, ste
 		"expires": str(step.get("expires", "END_OF_TURN")),
 	})
 	logs.append("%s BP changes by %d until end of turn." % [target_uid, delta])
+	return logs
+
+func _swap_source_with_selected_card(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var source_card = state.get_card(source_card_uid)
+	var target_uid := _resolve_step_target_uid(step, context, source_card_uid)
+	var target_card = state.get_card(target_uid)
+	if source_card == null or target_card == null or source_card.uid == target_card.uid:
+		return logs
+	var source_zone: int = source_card.zone
+	var target_zone: int = target_card.zone
+	var source_controller: String = source_card.controller_player_id
+	var target_controller: String = target_card.controller_player_id
+	zone_manager.move_card(state, target_uid, source_zone, source_controller)
+	zone_manager.move_card(state, source_card_uid, target_zone, target_controller)
+	logs.append("Swapped %s with %s." % [source_card_uid, target_uid])
+	return logs
+
+func _move_source_stacked_under_to_zone(state: GameState, source_card_uid: String, step: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return logs
+	var to_zone := _parse_zone(step.get("to_zone", step.get("to", UATypes.Zone.HAND)))
+	var count := maxi(0, int(step.get("count", 1)))
+	var moved := 0
+	while moved < count and not source_card.stacked_under.is_empty():
+		var stacked_uid := str(source_card.stacked_under[0])
+		source_card.stacked_under.remove_at(0)
+		if stacked_uid == "":
+			continue
+		zone_manager.move_card(state, stacked_uid, to_zone, source_card.controller_player_id)
+		logs.append("Moved stacked card %s to %s." % [stacked_uid, UATypes.zone_to_key(to_zone)])
+		moved += 1
 	return logs
 
 func _apply_temporary_keyword_modifier(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
@@ -1136,6 +1182,13 @@ func _resolve_target_set(state: GameState, source_card_uid: String, target: Dict
 		if max_count >= 0 and result.size() > max_count:
 			return result.slice(0, max_count)
 		return result
+	if target_type == "OPTION_SET":
+		for option_variant in target.get("options", []):
+			var option_value := str(option_variant)
+			if option_value == "":
+				continue
+			result.append(option_value)
+		return result
 	if target_type != "CARD_SET":
 		return result
 	var source_card = state.get_card(source_card_uid)
@@ -1335,6 +1388,41 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 				if zone_def != null and zone_def.name == required_zone_name:
 					return true
 		return false
+	if requirement_type == "CONTROLLER_FIELD_ALL_NAMES_IN_SET":
+		if source_card == null:
+			return false
+		var player_mode_names := str(requirement.get("owner", "SELF"))
+		var player_id_names: String = source_card.controller_player_id
+		if player_mode_names == "OPPONENT":
+			player_id_names = _opponent_of(source_card.controller_player_id)
+		var names_player = state.get_player(player_id_names)
+		if names_player == null:
+			return false
+		var allowed_names: Dictionary = {}
+		for name_variant in requirement.get("names", []):
+			var allowed_name := str(name_variant)
+			if allowed_name != "":
+				allowed_names[allowed_name] = true
+		for zone_cards in [names_player.front_line, names_player.energy_line]:
+			for field_uid_variant in zone_cards:
+				var field_uid := str(field_uid_variant)
+				if field_uid == "":
+					continue
+				var field_card = state.get_card(field_uid)
+				var field_def = state.get_card_def(field_card.def_id) if field_card != null else null
+				if field_def == null:
+					continue
+				if field_def.card_type != UATypes.CardType.CHARACTER:
+					continue
+				var matched_allowed := false
+				for allowed_name_variant in allowed_names.keys():
+					var allowed_name := str(allowed_name_variant)
+					if field_def.matches_reference_name(allowed_name):
+						matched_allowed = true
+						break
+				if not matched_allowed:
+					return false
+		return true
 	if requirement_type == "CARD_BP_LTE":
 		var compare_card = candidate_card if candidate_card != null else source_card
 		if compare_card == null:
@@ -1473,6 +1561,13 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		var selected_card_type = state.get_card(selected_uid_type)
 		var selected_def_type = state.get_card_def(selected_card_type.def_id) if selected_card_type != null else null
 		return selected_def_type != null and UATypes.card_type_to_text(selected_def_type.card_type) == str(requirement.get("value", ""))
+	if requirement_type == "CONTEXT_TARGET_NAME_IS":
+		var target_uid := str(context.get("target_uid", ""))
+		if target_uid == "":
+			return false
+		var target_card = state.get_card(target_uid)
+		var target_def = state.get_card_def(target_card.def_id) if target_card != null else null
+		return target_def != null and target_def.name == str(requirement.get("value", ""))
 	if requirement_type == "SOURCE_STATE_IS_ACTIVE":
 		return source_card != null and source_card.state == UATypes.CardState.ACTIVE
 	if requirement_type == "SOURCE_ENTERED_THIS_TURN":

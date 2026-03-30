@@ -37,8 +37,59 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_madoka_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_madoka_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_madoka_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "SWAP_SOURCE_WITH_SELECTED_CARD",
+            "target_var": "selected_madoka_target"
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -47,8 +98,7 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLの〈鹿目 まどか〉を1枚選び、このキャラと位置を入れ替える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_035_on_attack_786c851e21",
@@ -245,9 +295,8 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "TEMP_BP",
-        "COMPOSITE"
+        "COMPOSITE",
+        "TEMP_BP"
       ]
     }
   },
@@ -299,8 +348,140 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_returned_madoka",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_returned_madoka"
+          },
+          {
+            "id": "selected_enemy_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_enemy_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_returned_madoka",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_returned_madoka",
+            "to": "HAND"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "returned_madoka_to_hand",
+            "from_var": "selected_returned_madoka"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_enemy_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "returned_madoka_to_hand"
+              }
+            ]
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_enemy_target",
+            "value_provider": {
+              "type": "CONDITIONAL",
+              "default": {
+                "type": "FIXED",
+                "value": -3000
+              },
+              "when": [
+                {
+                  "type": "CONTROLLER_FIELD_ALL_NAMES_IN_SET",
+                  "names": [
+                    "暁美 ほむら",
+                    "鹿目 まどか"
+                  ],
+                  "owner": "SELF"
+                }
+              ],
+              "then": {
+                "type": "FIXED",
+                "value": -4000
+              }
+            },
+            "expires": "END_OF_TURN",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_TRUE",
+                "var": "returned_madoka_to_hand"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -309,8 +490,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分の場の〈鹿目 まどか〉を1枚手札に戻してもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、このターン中、『BP-3000』。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉の場合、『BP-4000』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_036_on_life_trigger_a342b2ffe2",
@@ -340,7 +520,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_BP",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -939,9 +1119,20 @@
         "timing": {
           "event": "ON_LEAVE"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+            "value": "鹿目 まどか"
+          }
+        ],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "MOVE_SOURCE_STACKED_UNDER_TO_ZONE",
+            "to": "HAND",
+            "count": 1
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -950,8 +1141,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分の場に〈鹿目 まどか〉がある場合、このキャラのレイド元のカードを1枚まで手札に戻す。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_041_on_life_trigger_a342b2ffe2",
@@ -982,7 +1172,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
-        "UNSUPPORTED",
+        "COMPOSITE",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -1412,8 +1602,90 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_team_targets",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "ピュエラ・マギ・ホーリー・クインテット"
+                    }
+                  ]
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": -1,
+              "mode": "AUTO"
+            },
+            "store_as": "selected_team_targets"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_team_targets",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "ピュエラ・マギ・ホーリー・クインテット"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": -1,
+              "selection_mode": "AUTO",
+              "manual": false
+            }
+          },
+          {
+            "type": "FOR_EACH",
+            "items_var": "selected_team_targets",
+            "current_var": "current_item",
+            "steps": [
+              {
+                "type": "ADD_TEMP_BP_MODIFIER",
+                "target": {
+                  "type": "CURRENT_ITEM"
+                },
+                "value": 1000,
+                "expires": "END_OF_TURN"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -1422,8 +1694,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分の場の〈百江 なぎさ〉と［特徴：ピュエラ・マギ・ホーリー・クインテット］全ては、このターン中、BP+1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_044_on_attack_65f4861a26",
@@ -1432,8 +1703,120 @@
           "event": "ON_ATTACK"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "revealed_match_card",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "ピュエラ・マギ・ホーリー・クインテット"
+                    }
+                  ]
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "revealed_match_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 1,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "revealed_match_card",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "ピュエラ・マギ・ホーリー・クインテット"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "AUTO",
+              "manual": false,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "revealed_match_card",
+            "to": "HAND",
+            "remove_from_var": "preview_cards",
+            "target_player_mode": "SOURCE"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "revealed_match_succeeded",
+            "from_var": "revealed_match_card"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "revealed_nonmatch_position",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_FALSE",
+                "var": "revealed_match_succeeded"
+              }
+            ],
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "BOTTOM"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position_from_var": "revealed_nonmatch_position",
+            "target_player_mode": "SOURCE",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_FALSE",
+                "var": "revealed_match_succeeded"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1442,8 +1825,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分の山札の上から1枚を公開する。公開したカードが〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］の場合、そのカードを手札に加える。公開したカードがそれら以外の場合、自分の山札の上か下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_044_on_life_trigger_a342b2ffe2",
@@ -1473,7 +1855,8 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "COMPOSITE",
+        "SELECT_AND_MOVE",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -4337,7 +4720,23 @@
     "play_rule": {
       "mode": "NORMAL",
       "special_modes": [],
-      "cost_modifiers": [],
+      "cost_modifiers": [
+        {
+          "type": "SELF_HAND_AP_DELTA",
+          "from_zone": "HAND",
+          "ap_delta": -1,
+          "requirements": [
+            {
+              "type": "CONTEXT_TARGET_NAME_IS",
+              "value": "暁美 ほむら"
+            }
+          ],
+          "ui": {
+            "text": "〈暁美 ほむら〉を選んで使用する場合、このカードの消費APを-1する。",
+            "effect_box": "OUTER"
+          }
+        }
+      ],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -4401,26 +4800,6 @@
           "text": "相手のフロントLのキャラを1枚選び、退場させる。"
         },
         "status": "SUPPORTED"
-      },
-      {
-        "id": "UA31BT_MMM_1_067_on_play_ab88d8d3da",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": "〈暁美 ほむら〉を選んで使用する場合、このカードの消費APを-1する。"
-        },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
       },
       {
         "id": "UA31BT_MMM_1_067_on_play_6712de979d",
@@ -4496,7 +4875,6 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED",
         "TEMP_BP"
       ]
     }
