@@ -77,8 +77,99 @@
           "event": "ON_LIFE_TRIGGER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_outside_summon",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_outside_summon"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_summon",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_outside_summon",
+            "to": "FRONT_LINE",
+            "state": "ACTIVE",
+            "ignore_play_timing": true,
+            "allow_current_zone": true
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -87,15 +178,15 @@
           "effect_box": "OUTER",
           "text": "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "UNSUPPORTED",
+        "COMPOSITE"
       ]
     }
   },
@@ -417,8 +508,124 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          },
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 5,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -427,8 +634,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から5枚見る。その中から〈鹿目 まどか〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_040_on_life_trigger_bab7196d2b",
@@ -446,6 +652,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -466,6 +673,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -499,7 +707,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -660,8 +868,127 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_summon_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "暁美 ほむら"
+                    },
+                    {
+                      "type": "NAME_IS",
+                      "value": "鹿目 まどか"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_summon_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_summon_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "暁美 ほむら"
+                    },
+                    {
+                      "type": "NAME_IS",
+                      "value": "鹿目 まどか"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon_card",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true,
+            "allow_current_zone": false
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -670,15 +997,14 @@
           "effect_box": "OUTER",
           "text": "自分の手札から『必要エナジーが1以下』で消費APが1の紫の〔〈暁美 ほむら〉か〈鹿目 まどか〉〕を1枚まで自分の場にレストで登場させる。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉のみの場合、『必要エナジーが2以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -722,8 +1048,142 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "ピュエラ・マギ・ホーリー・クインテット"
+                    }
+                  ]
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          },
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 3,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "ピュエラ・マギ・ホーリー・クインテット"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -732,15 +1192,14 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から3枚見る。その中から〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -1016,6 +1475,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -1040,6 +1500,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -1138,8 +1599,58 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_top_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_top_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 2,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_top_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_top_cards",
+            "to": "DECK",
+            "to_position": "TOP",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1148,15 +1659,14 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -1230,6 +1740,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -1250,6 +1761,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -1336,6 +1848,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -1356,6 +1869,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -1443,6 +1957,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -1467,6 +1982,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -1718,8 +2234,99 @@
           "event": "ON_LIFE_TRIGGER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_outside_summon",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_outside_summon"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_summon",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_outside_summon",
+            "to": "FRONT_LINE",
+            "state": "ACTIVE",
+            "ignore_play_timing": true,
+            "allow_current_zone": true
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1728,15 +2335,15 @@
           "effect_box": "OUTER",
           "text": "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "UNSUPPORTED",
+        "COMPOSITE"
       ]
     }
   },
@@ -1791,8 +2398,128 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_summon",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_summon"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 4,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_summon",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_preview_summon",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true,
+            "allow_current_zone": true
+          },
+          {
+            "type": "REMOVE_CONTEXT_VALUES",
+            "from_var": "selected_preview_summon",
+            "target_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_uid": "SOURCE_CARD",
+            "keyword": "IMPACT",
+            "expires": "END_OF_TURN",
+            "requirements": [
+              {
+                "type": "CONTROLLER_OTHER_TRAIT_CARD_COUNT_GTE",
+                "trait": "ピュエラ・マギ・ホーリー・クインテット",
+                "value": 4
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1801,8 +2528,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分の山札の上から4枚見る。その中から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で自分の山札の下に置く。自分の場に他の［特徴：ピュエラ・マギ・ホーリー・クインテット］が4枚以上ある場合、このキャラはこのターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_056_on_life_trigger_a342b2ffe2",
@@ -1832,7 +2558,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_KEYWORD",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -1984,6 +2710,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -2017,6 +2744,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -2127,6 +2855,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -2147,6 +2876,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 0,
               "max": 1,
@@ -2250,6 +2980,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -2270,6 +3001,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -2444,6 +3176,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -2464,6 +3197,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -2658,6 +3392,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -2678,6 +3413,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -2791,8 +3527,76 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "HAS_TRAIT",
+                  "value": "ピュエラ・マギ・ホーリー・クインテット"
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 5,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "HAS_TRAIT",
+                  "value": "ピュエラ・マギ・ホーリー・クインテット"
+                }
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2801,8 +3605,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -2810,7 +3613,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -2859,6 +3662,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -2879,6 +3683,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -2977,6 +3782,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -2997,6 +3803,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -3621,6 +4428,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -3639,13 +4447,10 @@
                   "value": "RED"
                 },
                 {
-                  "type": "CARD_HAS_TRAIT",
-                  "value": "魔法少女"
-                },
-                {
                   "type": "CARD_CAN_PLAY_TO_ZONE",
                   "zone": "FRONT_LINE",
-                  "ignore_play_timing": true
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
                 }
               ]
             },
@@ -3664,6 +4469,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CONTROLLER_HAS_NAME_IN_FIELD",
@@ -3689,6 +4495,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -3707,13 +4514,10 @@
                   "value": "RED"
                 },
                 {
-                  "type": "CARD_HAS_TRAIT",
-                  "value": "魔法少女"
-                },
-                {
                   "type": "CARD_CAN_PLAY_TO_ZONE",
                   "zone": "FRONT_LINE",
-                  "ignore_play_timing": true
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
                 }
               ],
               "min": 0,
@@ -3727,7 +4531,8 @@
             "from_var": "selected_summon_card",
             "to": "FRONT_LINE",
             "state": "RESTED",
-            "ignore_play_timing": true
+            "ignore_play_timing": true,
+            "allow_current_zone": false
           },
           {
             "type": "SELECT_TARGETS",
@@ -3738,6 +4543,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CONTROLLER_HAS_NAME_IN_FIELD",
@@ -3913,6 +4719,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE",
@@ -3938,6 +4745,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE",
@@ -4034,6 +4842,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -4063,6 +4872,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -4296,6 +5106,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -4314,13 +5125,10 @@
                   "value": "RED"
                 },
                 {
-                  "type": "CARD_HAS_TRAIT",
-                  "value": "魔法少女"
-                },
-                {
                   "type": "CARD_CAN_PLAY_TO_ZONE",
                   "zone": "FRONT_LINE",
-                  "ignore_play_timing": true
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
                 }
               ]
             },
@@ -4342,6 +5150,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -4360,13 +5169,10 @@
                   "value": "RED"
                 },
                 {
-                  "type": "CARD_HAS_TRAIT",
-                  "value": "魔法少女"
-                },
-                {
                   "type": "CARD_CAN_PLAY_TO_ZONE",
                   "zone": "FRONT_LINE",
-                  "ignore_play_timing": true
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
                 }
               ],
               "min": 0,
@@ -4380,7 +5186,8 @@
             "from_var": "selected_summon_card",
             "to": "FRONT_LINE",
             "state": "RESTED",
-            "ignore_play_timing": true
+            "ignore_play_timing": true,
+            "allow_current_zone": false
           }
         ],
         "limits": {
@@ -4518,6 +5325,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -4538,6 +5346,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 0,
               "max": 1,
@@ -4643,6 +5452,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -4667,6 +5477,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -4706,6 +5517,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -4726,6 +5538,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -4814,6 +5627,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -4847,6 +5661,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -5089,6 +5904,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -5109,6 +5925,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -5195,6 +6012,7 @@
               "zones": [
                 "LIFE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -5215,6 +6033,7 @@
               "zones": [
                 "LIFE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -5258,6 +6077,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE",
@@ -5283,6 +6103,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE",
@@ -5382,6 +6203,7 @@
               "zones": [
                 "LIFE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -5402,6 +6224,7 @@
               "zones": [
                 "LIFE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -5527,6 +6350,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_HAS_TRAIT",
@@ -5553,6 +6377,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_HAS_TRAIT",
@@ -5685,6 +6510,7 @@
               "zones": [
                 "LIFE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -5705,6 +6531,7 @@
               "zones": [
                 "LIFE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -5787,6 +6614,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -5807,6 +6635,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -5846,6 +6675,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -5892,6 +6722,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -5995,6 +6826,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -6015,6 +6847,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -6054,6 +6887,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -6095,6 +6929,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -6641,6 +7476,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -6661,6 +7497,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -6700,6 +7537,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE",
@@ -6725,6 +7563,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE",
@@ -6807,6 +7646,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -6827,6 +7667,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -7298,6 +8139,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -7331,6 +8173,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -7443,6 +8286,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -7463,6 +8307,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -7545,6 +8390,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -7565,6 +8411,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -7604,6 +8451,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -7645,6 +8493,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_BP_LTE_DYNAMIC",
@@ -7838,6 +8687,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -7862,6 +8712,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -7944,6 +8795,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_NAME_IS",
@@ -7966,6 +8818,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -7984,13 +8837,10 @@
                   "value": "RED"
                 },
                 {
-                  "type": "CARD_HAS_TRAIT",
-                  "value": "魔法少女"
-                },
-                {
                   "type": "CARD_CAN_PLAY_TO_ZONE",
                   "zone": "FRONT_LINE",
-                  "ignore_play_timing": true
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
                 }
               ]
             },
@@ -8013,6 +8863,7 @@
                 "FRONT_LINE",
                 "ENERGY_LINE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_NAME_IS",
@@ -8054,6 +8905,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_TYPE_IS",
@@ -8072,13 +8924,10 @@
                   "value": "RED"
                 },
                 {
-                  "type": "CARD_HAS_TRAIT",
-                  "value": "魔法少女"
-                },
-                {
                   "type": "CARD_CAN_PLAY_TO_ZONE",
                   "zone": "FRONT_LINE",
-                  "ignore_play_timing": true
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
                 }
               ],
               "min": 0,
@@ -8099,6 +8948,7 @@
             "to": "FRONT_LINE",
             "state": "RESTED",
             "ignore_play_timing": true,
+            "allow_current_zone": false,
             "requirements": [
               {
                 "type": "CONTEXT_FLAG_TRUE",
@@ -8226,6 +9076,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -8292,6 +9143,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -8534,6 +9386,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -8554,6 +9407,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -8664,6 +9518,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -8684,6 +9539,7 @@
               "zones": [
                 "FRONT_LINE"
               ],
+              "filters": [],
               "requirements": [],
               "min": 1,
               "max": 1,
@@ -8806,6 +9662,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": []
             },
             "select": {
@@ -8823,6 +9680,7 @@
               "zones": [
                 "OUTSIDE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_COST_ENERGY_LTE",
@@ -8856,6 +9714,7 @@
               "zones": [
                 "HAND"
               ],
+              "filters": [],
               "requirements": [],
               "min": 0,
               "max": 1,
@@ -8882,6 +9741,7 @@
               "zones": [
                 "OUTSIDE"
               ],
+              "filters": [],
               "requirements": [
                 {
                   "type": "CARD_COST_ENERGY_LTE",

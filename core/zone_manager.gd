@@ -30,7 +30,7 @@ func shuffle_zone(player: PlayerState, zone: int) -> void:
 	if zone_array != null:
 		zone_array.shuffle()
 
-func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id := "") -> void:
+func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id := "", to_position := "") -> void:
 	var card: CardInstance = state.get_card(card_uid)
 	if card == null:
 		return
@@ -48,7 +48,11 @@ func move_card(state: GameState, card_uid: String, to_zone: int, to_player_id :=
 		from_array.erase(card_uid)
 	var to_array = get_zone_array(to_player, to_zone)
 	if to_array != null:
-		to_array.append(card_uid)
+		var normalized_position := str(to_position).to_upper()
+		if to_zone == UATypes.Zone.DECK and normalized_position == "TOP":
+			to_array.push_front(card_uid)
+		else:
+			to_array.append(card_uid)
 	card.zone = to_zone as UATypes.Zone
 	card.controller_player_id = target_player_id
 	card.clear_stacked_under_marker()

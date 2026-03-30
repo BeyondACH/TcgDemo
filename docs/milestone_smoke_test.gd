@@ -33,6 +33,7 @@ func _init() -> void:
 	_run_test("战斗触发", _test_battle_triggers)
 	_run_test("同时触发顺序", _test_simultaneous_trigger_order)
 	_run_test("直到下个自己回合开始的效果仅在来源方回合开始失效", _test_until_next_self_turn_start_expires_only_for_source_controller)
+	_run_test("本回合临时关键词会在结束时清理且不残留运行时脏状态", _test_end_of_turn_temp_keyword_cleanup_leaves_no_runtime_residue)
 	_run_test("多个结束主阶段延迟效果不会残留运行时脏状态", _test_multiple_end_main_delayed_effects_leave_no_runtime_residue)
 	_run_test("RAID 显式落点选择", _test_raid_zone_choice)
 	_run_test("RAID 生命触发二选一", _test_life_trigger_raid_choice)
@@ -1751,6 +1752,57 @@ func _test_until_next_self_turn_start_expires_only_for_source_controller() -> Di
 		return _fail("来源方自己的下个回合开始后，应移除临时不能攻击关键词")
 	if not manager.game_state.static_modifiers.is_empty():
 		return _fail("来源方自己的下个回合开始后，不应残留过期的 TEMP_KEYWORD 修饰")
+	return _ok()
+
+func _test_end_of_turn_temp_keyword_cleanup_leaves_no_runtime_residue() -> Dictionary:
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_END_OF_TURN_IMPACT_SOURCE",
+		"name": "回合结束临时冲击来源",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-END-IMPACT-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	if source_uid == "":
+		return _fail("结束回合临时关键词测试卡创建失败")
+	manager.effect_resolver.resolve_effect(manager.game_state, source_uid, {
+		"steps": [
+			{
+				"type": "ADD_TEMP_KEYWORD",
+				"target_uid": "SOURCE_CARD",
+				"keyword": "IMPACT",
+				"expires": "END_OF_TURN",
+			}
+		]
+	}, {"source_player_id": UATypes.PLAYER_ONE})
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("结束回合临时关键词测试来源实例不存在")
+	if not (source_card.flags.get("temp_keywords", []) as Array).has("IMPACT"):
+		return _fail("ADD_TEMP_KEYWORD 应立即把 IMPACT 加到来源卡的运行时关键词中")
+	if manager.game_state.static_modifiers.is_empty():
+		return _fail("ADD_TEMP_KEYWORD 应注册一个 END_OF_TURN 的 TEMP_KEYWORD 修饰")
+	if not manager.game_state.pending_decisions.is_empty() or not manager.game_state.effect_queue.is_empty() or not manager.game_state.battle_context.is_empty():
+		return _fail("临时关键词即时结算后不应残留 pending_decisions、effect_queue 或 battle_context")
+	manager.effect_resolver.cleanup_turn_expirations(manager.game_state, UATypes.PLAYER_ONE)
+	source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("结束回合临时关键词测试来源卡不应离场")
+	if (source_card.flags.get("temp_keywords", []) as Array).has("IMPACT"):
+		return _fail("END_OF_TURN 清理后应移除临时 IMPACT 关键词")
+	if not manager.game_state.static_modifiers.is_empty():
+		return _fail("END_OF_TURN 清理后不应残留 TEMP_KEYWORD 修饰")
+	if not manager.game_state.pending_decisions.is_empty() or not manager.game_state.effect_queue.is_empty() or not manager.game_state.battle_context.is_empty():
+		return _fail("END_OF_TURN 临时关键词清理后不应残留运行时脏状态")
 	return _ok()
 
 func _test_multiple_end_main_delayed_effects_leave_no_runtime_residue() -> Dictionary:

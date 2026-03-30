@@ -10,6 +10,14 @@ const RAW_ENTER_DRAW_TWO := "UA31ST_MMM_1_106"
 const RAW_PLAY_LIFE_TO_HAND_DRAW_TWO := "UA31BT_MMM_1_092"
 const RAW_PREVIEW_DISCARD := "UA31ST_MMM_1_103"
 const RAW_PREVIEW_DISTINCT := "UA31ST_MMM_1_109"
+const RAW_OUTSIDE_LIFE_SUMMON_035 := "UA31BT_MMM_1_035"
+const RAW_PREVIEW_TOP_040 := "UA31BT_MMM_1_040"
+const RAW_PREVIEW_TOP_043 := "UA31BT_MMM_1_043"
+const RAW_PREVIEW_REORDER_048 := "UA31BT_MMM_1_048"
+const RAW_HAND_SUMMON_042 := "UA31BT_MMM_1_042"
+const RAW_OUTSIDE_LIFE_SUMMON_055 := "UA31BT_MMM_1_055"
+const RAW_PREVIEW_SUMMON_IMPACT_056 := "UA31BT_MMM_1_056"
+const RAW_PREVIEW_TOP_065 := "UA31BT_MMM_1_065"
 const RAW_ON_LEAVE_TO_HAND := "UA31BT_MMM_1_069"
 const RAW_KYOKO := "UA31BT_MMM_1_082"
 const RAW_EVENT_AP_DISCOUNT := "UA31BT_MMM_1_099"
@@ -49,6 +57,13 @@ func _init() -> void:
 	_run_test("Raw Complex Cost Combo", _test_raw_complex_cost_combo)
 	_run_test("Raw Preview Add Then Discard", _test_raw_preview_add_then_discard)
 	_run_test("Raw Preview Distinct Names", _test_raw_preview_distinct_names)
+	_run_test("Raw Life Trigger Outside Summon 035 / 055", _test_raw_life_trigger_outside_summon_035_and_055)
+	_run_test("Raw Life Trigger Outside Summon Safe Skip", _test_raw_life_trigger_outside_summon_safe_skip)
+	_run_test("Raw Preview Add Then Discard 040", _test_raw_preview_add_then_discard_040)
+	_run_test("Raw Preview Add Then Discard 043", _test_raw_preview_add_then_discard_043)
+	_run_test("Raw Preview Reorder 048", _test_raw_preview_reorder_048)
+	_run_test("Raw Hand Summon 042", _test_raw_hand_summon_042)
+	_run_test("Raw Preview Add Up To Two Distinct Names 065", _test_raw_preview_add_up_to_two_distinct_names_065)
 	_run_test("Raw MAIN_ACTIVATE Life To Hand", _test_raw_main_activate_life_to_hand)
 	_run_test("Raw Event Ready AP", _test_raw_event_ready_ap)
 	_run_test("Raw Life Trigger Target Selection", _test_raw_life_trigger_target_selection)
@@ -63,6 +78,8 @@ func _init() -> void:
 	_run_test("Raw Conditional BP Event Upgrade Sayaka", _test_raw_conditional_bp_event_upgrade_sayaka)
 	_run_test("Raw Conditional BP Event Upgrade Madoka", _test_raw_conditional_bp_event_upgrade_madoka)
 	_run_test("Raw Preview Reward Magic Girl Branches", _test_raw_preview_reward_magic_girl_branches)
+	_run_test("Raw Preview Summon 056 Without Bonus", _test_raw_preview_summon_056_without_bonus)
+	_run_test("Raw Preview Summon 056 With Bonus", _test_raw_preview_summon_056_with_bonus)
 	_run_test("Raw Temporary Energy Bonus Then Self Leave", _test_raw_temporary_energy_bonus_then_self_leave)
 	_run_test("Raw Temporary Energy Bonus Enables Followup Play", _test_raw_temporary_energy_bonus_enables_followup_play)
 	_run_test("Raw Temporary Energy Bonus Expires Before Next Turn Play", _test_raw_temporary_energy_bonus_expires_before_next_turn_play)
@@ -495,6 +512,668 @@ func _test_raw_preview_distinct_names() -> Dictionary:
 	var deck_tail := player.deck.slice(max(0, player.deck.size() - 2), player.deck.size())
 	if deck_tail != [preview_non_magic_uid, preview_a2_uid]:
 		return _fail("Raw distinct preview sample should place the remaining preview cards on the deck bottom in the chosen order.")
+	return _ok()
+
+func _test_raw_life_trigger_outside_summon_035_and_055() -> Dictionary:
+	var samples := [
+		{
+			"source_id": RAW_OUTSIDE_LIFE_SUMMON_035,
+			"source_energy": 3,
+			"sample_label": "035",
+		},
+		{
+			"source_id": RAW_OUTSIDE_LIFE_SUMMON_055,
+			"source_energy": 2,
+			"sample_label": "055",
+		},
+	]
+	for sample_variant in samples:
+		var sample: Dictionary = sample_variant
+		var manager := _new_manager()
+		var player_id := UATypes.PLAYER_ONE
+		manager.game_state.phase = UATypes.Phase.MAIN
+		_fill_ap(_player(manager, player_id), 3)
+		if not _ensure_color_energy(manager, player_id, "PURPLE", int(sample.get("source_energy", 0))):
+			return _fail("Raw %s life-trigger sample should prepare enough purple energy." % str(sample.get("sample_label", "")))
+		var source_uid := _move_card_to_life_top(manager, player_id, str(sample.get("source_id", "")))
+		if source_uid == "":
+			return _fail("Raw %s life-trigger sample card should be available." % str(sample.get("sample_label", "")))
+		var target_uid := _spawn_temp_card(manager, player_id, {
+			"id": "TMP_LIFE_TRIGGER_SUMMON_TARGET_%s" % str(sample.get("sample_label", "")),
+			"name": "测试紫色登场目标%s" % str(sample.get("sample_label", "")),
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-LIFE-SUMMON-%s" % str(sample.get("sample_label", "")),
+			"traits": [],
+			"cost_energy": {"PURPLE": 1},
+			"cost_ap": 1,
+			"energy_provided": {"PURPLE": 1},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.OUTSIDE, false)
+		var outside_before := _player(manager, player_id).outside.size()
+		manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
+		manager.resolve_life_trigger_decision(source_uid, true)
+		if manager.game_state.pending_decisions.size() != 1:
+			return _fail("Raw %s life-trigger sample should request a target selection after activation." % str(sample.get("sample_label", "")))
+		var decision: Dictionary = manager.game_state.pending_decisions[0]
+		var choice_values := _extract_choice_values(decision.get("choices", []))
+		if not choice_values.has(target_uid):
+			return _fail("Raw %s life-trigger sample should expose the matching outside target." % str(sample.get("sample_label", "")))
+		manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+			"resolution_id": str(decision.get("resolution_id", "")),
+			"choice": target_uid,
+		})
+		var target_card := manager.game_state.get_card(target_uid)
+		var player := _player(manager, player_id)
+		if target_card == null or target_card.zone != UATypes.Zone.FRONT_LINE:
+			return _fail("Raw %s life-trigger sample should move the chosen card to the front line." % str(sample.get("sample_label", "")))
+		if target_card.state != UATypes.CardState.ACTIVE:
+			return _fail("Raw %s life-trigger sample should summon the chosen card ACTIVE." % str(sample.get("sample_label", "")))
+		if not player.front_line.has(target_uid):
+			return _fail("Raw %s life-trigger sample should leave the summoned card on the front line." % str(sample.get("sample_label", "")))
+		if player.outside.has(target_uid):
+			return _fail("Raw %s life-trigger sample should remove the chosen card from outside after summoning it." % str(sample.get("sample_label", "")))
+		if not player.outside.has(source_uid):
+			return _fail("Raw %s life-trigger sample should finish by moving the revealed life card to outside." % str(sample.get("sample_label", "")))
+		if player.outside.size() != outside_before:
+			return _fail("Raw %s life-trigger sample should replace the outside target with the resolved life card." % str(sample.get("sample_label", "")))
+	return _ok()
+
+func _test_raw_life_trigger_outside_summon_safe_skip() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 3):
+		return _fail("Raw life-trigger skip sample should prepare enough purple energy.")
+	var source_uid := _move_card_to_life_top(manager, player_id, RAW_OUTSIDE_LIFE_SUMMON_035)
+	if source_uid == "":
+		return _fail("Raw life-trigger skip sample card should be available.")
+	var outside_before := _player(manager, player_id).outside.size()
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
+	manager.resolve_life_trigger_decision(source_uid, true)
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw life-trigger skip sample should not request a target selection when no valid outside card exists.")
+	var player := _player(manager, player_id)
+	if not player.outside.has(source_uid):
+		return _fail("Raw life-trigger skip sample should move the revealed life card to outside after skipping.")
+	if player.outside.size() != outside_before + 1:
+		return _fail("Raw life-trigger skip sample should only move the life card to outside.")
+	return _ok()
+
+func _test_raw_preview_add_then_discard_040() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 1):
+		return _fail("Raw preview 040 sample should prepare enough purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_PREVIEW_TOP_040, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw preview 040 sample card should be available.")
+	var preview_madoka_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_040_MADOKA",
+		"name": "鹿目 まどか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-040-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_other_1 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_040_OTHER_1",
+		"name": "测试预览040其他1",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-040-2",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_other_2 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_040_OTHER_2",
+		"name": "测试预览040其他2",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-040-3",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_other_3 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_040_OTHER_3",
+		"name": "测试预览040其他3",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-040-4",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_other_4 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_040_OTHER_4",
+		"name": "测试预览040其他4",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-040-5",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	_set_deck_top_order(manager, player_id, [preview_madoka_uid, preview_other_1, preview_other_2, preview_other_3, preview_other_4])
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var outside_before := player.outside.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 040 sample should first request a preview selection.")
+	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_choices := _extract_choice_values(first_decision.get("choices", []))
+	if not first_choices.has(preview_madoka_uid):
+		return _fail("Raw preview 040 sample should expose the matching Madoka preview card.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(first_decision.get("resolution_id", "")),
+		"choice": preview_madoka_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 040 sample should then request preview reorder.")
+	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(second_decision.get("resolution_id", "")),
+		"choices": [preview_other_4, preview_other_2, preview_other_1, preview_other_3],
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 040 sample should request a discard after adding the previewed card.")
+	var third_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_choice_values := _extract_choice_values(third_decision.get("choices", []))
+	if discard_choice_values.is_empty():
+		return _fail("Raw preview 040 sample should expose at least one discard choice.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(third_decision.get("resolution_id", "")),
+		"choice": discard_choice_values[0],
+	})
+	if not player.hand.has(preview_madoka_uid):
+		return _fail("Raw preview 040 sample should move the chosen Madoka card to hand.")
+	if player.hand.size() != hand_before - 1:
+		return _fail("Raw preview 040 sample should net -1 hand after playing, adding 1, and discarding 1.")
+	if player.outside.size() != outside_before + 1:
+		return _fail("Raw preview 040 sample should discard exactly 1 card to outside.")
+	var deck_tail := player.deck.slice(max(0, player.deck.size() - 4), player.deck.size())
+	if deck_tail != [preview_other_4, preview_other_2, preview_other_1, preview_other_3]:
+		return _fail("Raw preview 040 sample should place the remaining preview cards on the deck bottom in the chosen order.")
+	return _ok()
+
+func _test_raw_preview_add_then_discard_043() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 1):
+		return _fail("Raw preview 043 sample should prepare enough purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_PREVIEW_TOP_043, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw preview 043 sample card should be available.")
+	var preview_trait_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_043_TRAIT",
+		"name": "测试预览043特征目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-043-1",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_nagisa_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_043_NAGISA",
+		"name": "百江 なぎさ",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-043-2",
+		"traits": ["魔法少女"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_filler_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_043_FILLER",
+		"name": "测试预览043其他",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-043-3",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	_set_deck_top_order(manager, player_id, [preview_trait_uid, preview_nagisa_uid, preview_filler_uid])
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var outside_before := player.outside.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 043 sample should first request a preview selection.")
+	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_choices := _extract_choice_values(first_decision.get("choices", []))
+	if not first_choices.has(preview_trait_uid):
+		return _fail("Raw preview 043 sample should expose the trait-matched preview card.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(first_decision.get("resolution_id", "")),
+		"choice": preview_trait_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 043 sample should then request preview reorder.")
+	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(second_decision.get("resolution_id", "")),
+		"choices": [preview_nagisa_uid, preview_filler_uid],
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 043 sample should request a discard after adding the previewed card.")
+	var third_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_choice_values := _extract_choice_values(third_decision.get("choices", []))
+	if discard_choice_values.is_empty():
+		return _fail("Raw preview 043 sample should expose at least one discard choice.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(third_decision.get("resolution_id", "")),
+		"choice": discard_choice_values[0],
+	})
+	if not player.hand.has(preview_trait_uid):
+		return _fail("Raw preview 043 sample should move the chosen trait card to hand.")
+	if player.hand.size() != hand_before - 1:
+		return _fail("Raw preview 043 sample should net -1 hand after playing, adding 1, and discarding 1.")
+	if player.outside.size() != outside_before + 1:
+		return _fail("Raw preview 043 sample should discard exactly 1 card to outside.")
+	var deck_tail := player.deck.slice(max(0, player.deck.size() - 2), player.deck.size())
+	if deck_tail != [preview_nagisa_uid, preview_filler_uid]:
+		return _fail("Raw preview 043 sample should place the remaining preview cards on the deck bottom in the chosen order.")
+	return _ok()
+
+func _test_raw_preview_reorder_048() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 2):
+		return _fail("Raw preview 048 sample should prepare enough purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_PREVIEW_REORDER_048, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw preview 048 sample card should be available.")
+	var top_keep_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_048_KEEP",
+		"name": "测试预览048保留",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-048-1",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var top_outside_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_048_OUTSIDE",
+		"name": "测试预览048外置",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-PRE-048-2",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	_set_deck_top_order(manager, player_id, [top_keep_uid, top_outside_uid])
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 048 sample should request a reorder decision.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choice_values := _extract_choice_values(decision.get("choices", []))
+	if not choice_values.has(top_keep_uid) or not choice_values.has(top_outside_uid):
+		return _fail("Raw preview 048 sample should expose both preview cards for reordering.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choices": [top_keep_uid],
+	})
+	var player := _player(manager, player_id)
+	if player.deck.is_empty() or str(player.deck[0]) != top_keep_uid:
+		return _fail("Raw preview 048 sample should return the chosen card to the top of the deck.")
+	if not player.outside.has(top_outside_uid):
+		return _fail("Raw preview 048 sample should move the unchosen card to outside.")
+	return _ok()
+
+func _test_raw_hand_summon_042() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 4):
+		return _fail("Raw hand summon 042 sample should prepare enough purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_HAND_SUMMON_042, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw hand summon 042 sample card should be available.")
+	var summon_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_HAND_SUMMON_042_TARGET",
+		"name": "暁美 ほむら",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-HAND-042-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var filler_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_HAND_SUMMON_042_FILLER",
+		"name": "测试042无关牌",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-HAND-042-2",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw hand summon 042 sample should request a summon target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choice_values := _extract_choice_values(decision.get("choices", []))
+	if not choice_values.has(summon_uid):
+		return _fail("Raw hand summon 042 sample should expose the matching hand card as a summon target.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": summon_uid,
+	})
+	var source_card := manager.game_state.get_card(source_uid)
+	var summon_card := manager.game_state.get_card(summon_uid)
+	if source_card == null or source_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw hand summon 042 sample should play the source card to the front line.")
+	if source_card.state != UATypes.CardState.RESTED:
+		return _fail("Raw hand summon 042 sample should leave the source card rested after entering.")
+	if summon_card == null or summon_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw hand summon 042 sample should move the chosen hand card to the front line.")
+	if summon_card.state != UATypes.CardState.RESTED:
+		return _fail("Raw hand summon 042 sample should summon the chosen hand card rested.")
+	if not player.front_line.has(summon_uid):
+		return _fail("Raw hand summon 042 sample should leave the chosen hand card on the front line.")
+	if player.hand.size() != hand_before - 2:
+		return _fail("Raw hand summon 042 sample should net -2 hand after playing the source and summoning one card.")
+	if not player.hand.has(filler_uid):
+		return _fail("Raw hand summon 042 sample should not consume unrelated hand cards.")
+	return _ok()
+
+func _test_raw_preview_add_up_to_two_distinct_names_065() -> Dictionary:
+	var invalid_manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	invalid_manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(invalid_manager, player_id), 3)
+	if not _ensure_color_energy(invalid_manager, player_id, "PURPLE", 3):
+		return _fail("Raw preview 065 sample should prepare enough purple energy.")
+	var invalid_source_uid := _move_or_spawn_card_to_zone(invalid_manager, player_id, RAW_PREVIEW_TOP_065, UATypes.Zone.HAND)
+	if invalid_source_uid == "":
+		return _fail("Raw preview 065 sample card should be available.")
+	var invalid_preview_dup_1 := _spawn_temp_card(invalid_manager, player_id, {
+		"id": "TMP_PREVIEW_065_DUP_1",
+		"name": "测试同名候补",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-1",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var invalid_preview_dup_2 := _spawn_temp_card(invalid_manager, player_id, {
+		"id": "TMP_PREVIEW_065_DUP_2",
+		"name": "测试同名候补",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-2",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var invalid_preview_unique_1 := _spawn_temp_card(invalid_manager, player_id, {
+		"id": "TMP_PREVIEW_065_UNIQUE_1",
+		"name": "测试065唯一1",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-3",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var invalid_preview_unique_2 := _spawn_temp_card(invalid_manager, player_id, {
+		"id": "TMP_PREVIEW_065_UNIQUE_2",
+		"name": "测试065唯一2",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-4",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var invalid_preview_unique_3 := _spawn_temp_card(invalid_manager, player_id, {
+		"id": "TMP_PREVIEW_065_UNIQUE_3",
+		"name": "测试065唯一3",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-5",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	_set_deck_top_order(invalid_manager, player_id, [invalid_preview_dup_1, invalid_preview_dup_2, invalid_preview_unique_1, invalid_preview_unique_2, invalid_preview_unique_3])
+	var invalid_player := _player(invalid_manager, player_id)
+	var invalid_hand_before := invalid_player.hand.size()
+	invalid_manager.play_card(invalid_source_uid, UATypes.Zone.OUTSIDE)
+	if invalid_manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 065 sample should first request a preview selection.")
+	var invalid_first_decision: Dictionary = invalid_manager.game_state.pending_decisions[0]
+	invalid_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(invalid_first_decision.get("resolution_id", "")),
+		"choices": [invalid_preview_dup_1, invalid_preview_dup_2],
+	})
+	if invalid_player.hand.size() != invalid_hand_before - 1:
+		return _fail("Raw preview 065 sample should not move cards to hand after a rejected duplicate-name selection.")
+	if invalid_player.hand.has(invalid_preview_dup_1) or invalid_player.hand.has(invalid_preview_dup_2):
+		return _fail("Raw preview 065 sample should reject duplicate-name preview cards instead of adding them to hand.")
+	if invalid_manager.game_state.pending_decisions.size() != 0:
+		return _fail("Raw preview 065 sample should clear the invalid selection decision under the current resolver flow.")
+	if invalid_manager.game_state.effect_queue.size() != 1:
+		return _fail("Raw preview 065 sample should requeue the unresolved effect after rejecting duplicate names.")
+
+	var manager := _new_manager()
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 3):
+		return _fail("Raw preview 065 sample should prepare enough purple energy for the valid path.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_PREVIEW_TOP_065, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw preview 065 sample card should be available for the valid path.")
+	var preview_dup_1 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_065_VALID_DUP_1",
+		"name": "测试同名候补",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-V-1",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_dup_2 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_065_VALID_DUP_2",
+		"name": "测试同名候补",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-V-2",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_unique_1 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_065_VALID_UNIQUE_1",
+		"name": "测试065唯一1",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-V-3",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_unique_2 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_065_VALID_UNIQUE_2",
+		"name": "测试065唯一2",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-V-4",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var preview_unique_3 := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_PREVIEW_065_VALID_UNIQUE_3",
+		"name": "测试065唯一3",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-PRE-065-V-5",
+		"traits": ["ピュエラ・マギ・ホーリー・クインテット"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	_set_deck_top_order(manager, player_id, [preview_dup_1, preview_dup_2, preview_unique_1, preview_unique_2, preview_unique_3])
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 065 sample should first request a preview selection for the valid path.")
+	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(first_decision.get("resolution_id", "")),
+		"choices": [preview_dup_1, preview_unique_1],
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 065 sample should then request preview reorder.")
+	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(second_decision.get("resolution_id", "")),
+		"choices": [preview_unique_3, preview_dup_2, preview_unique_2],
+	})
+	if player.hand.size() != hand_before + 1:
+		return _fail("Raw preview 065 sample should net +1 hand after adding 2 preview cards from a hand-played event.")
+	for required_uid in [preview_dup_1, preview_unique_1]:
+		if not player.hand.has(required_uid):
+			return _fail("Raw preview 065 sample should add the chosen preview cards to hand.")
+	var deck_tail := player.deck.slice(max(0, player.deck.size() - 3), player.deck.size())
+	if deck_tail != [preview_unique_3, preview_dup_2, preview_unique_2]:
+		return _fail("Raw preview 065 sample should place the remaining preview cards on the deck bottom in the chosen order.")
 	return _ok()
 
 func _test_raw_main_activate_life_to_hand() -> Dictionary:
@@ -1658,6 +2337,161 @@ func _test_raw_preview_reward_magic_girl_branches() -> Dictionary:
 		return _fail("Raw preview reward skip sample should leave all AP rested after spending 1 AP when the revealed card is not a magic-girl card.")
 	return _ok()
 
+func _test_raw_preview_summon_056_without_bonus() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 4):
+		return _fail("Raw 056 no-bonus sample should prepare 4 purple energy.")
+	var source_uid := _move_card_to_life_top(manager, player_id, RAW_PREVIEW_SUMMON_IMPACT_056)
+	var raid_base_uid := _spawn_named_character(manager, player_id, "巴 マミ", ["魔法少女", "ピュエラ・マギ・ホーリー・クインテット"], 2000, UATypes.Zone.FRONT_LINE)
+	var blocker_uid := _spawn_named_character(manager, opponent_id, "056无加成阻挡者", [], 1000, UATypes.Zone.FRONT_LINE)
+	if source_uid == "" or raid_base_uid == "" or blocker_uid == "":
+		return _fail("Raw 056 no-bonus sample should prepare the life card, RAID base and blocker.")
+	_trim_life_to_count(manager, player_id, 2)
+	var preview_target_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_056_PREVIEW_NO_BONUS_TARGET",
+		"name": "056无加成登场角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-056-NO-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"PURPLE": 2},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var filler_1 := _spawn_named_character(manager, player_id, "056无加成填充1", [], 1000, UATypes.Zone.DECK)
+	var filler_2 := _spawn_named_character(manager, player_id, "056无加成填充2", [], 1000, UATypes.Zone.DECK)
+	var filler_3 := _spawn_named_character(manager, player_id, "056无加成填充3", [], 1000, UATypes.Zone.DECK)
+	if preview_target_uid == "" or filler_1 == "" or filler_2 == "" or filler_3 == "":
+		return _fail("Raw 056 no-bonus sample should prepare preview candidates.")
+	_set_deck_top_order(manager, player_id, [preview_target_uid, filler_1, filler_2, filler_3])
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
+	manager.resolve_life_trigger_decision(source_uid, true)
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": raid_base_uid})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 056 no-bonus sample should request preview selection after raiding.")
+	var pick_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(pick_decision.get("resolution_id", "")),
+		"choice": preview_target_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 056 no-bonus sample should request preview reorder after selecting a summon target.")
+	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(reorder_decision.get("resolution_id", "")),
+		"choices": [filler_1, filler_2, filler_3],
+	})
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw 056 no-bonus sample should clear pending decisions after preview resolution.")
+	manager.effect_resolver.finalize_pending_life_damage(manager.game_state)
+	var source_card = manager.game_state.get_card(source_uid)
+	var summoned_card = manager.game_state.get_card(preview_target_uid)
+	if source_card == null or summoned_card == null:
+		return _fail("Raw 056 no-bonus sample runtime cards should exist.")
+	if (source_card.flags.get("temp_keywords", []) as Array).has("IMPACT"):
+		return _fail("Raw 056 no-bonus sample should not grant IMPACT when fewer than four other quintet cards are on the field.")
+	if summoned_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw 056 no-bonus sample should summon the chosen preview character onto the front line.")
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var attack_result := manager.request_attack(source_uid)
+	if not bool(attack_result.get("ok", false)):
+		return _fail("Raw 056 no-bonus sample should be able to attack after raiding.")
+	manager.resolve_attack(source_uid, blocker_uid)
+	if _player(manager, opponent_id).life.size() != 7:
+		return _fail("Raw 056 no-bonus sample should not deal extra player damage without IMPACT.")
+	return _ok()
+
+func _test_raw_preview_summon_056_with_bonus() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 4):
+		return _fail("Raw 056 bonus sample should prepare 4 purple energy.")
+	var source_uid := _move_card_to_life_top(manager, player_id, RAW_PREVIEW_SUMMON_IMPACT_056)
+	var raid_base_uid := _spawn_named_character(manager, player_id, "巴 マミ", ["魔法少女", "ピュエラ・マギ・ホーリー・クインテット"], 2000, UATypes.Zone.FRONT_LINE)
+	var support_front_uid := _spawn_named_character(manager, player_id, "056加成前线支援", ["魔法少女", "ピュエラ・マギ・ホーリー・クインテット"], 1500, UATypes.Zone.FRONT_LINE)
+	var support_front_2_uid := _spawn_named_character(manager, player_id, "056加成前线支援2", ["魔法少女", "ピュエラ・マギ・ホーリー・クインテット"], 1500, UATypes.Zone.FRONT_LINE)
+	var support_energy_1_uid := _spawn_named_character(manager, player_id, "056加成能量支援1", ["魔法少女", "ピュエラ・マギ・ホーリー・クインテット"], 1500, UATypes.Zone.ENERGY_LINE)
+	var support_energy_2_uid := _spawn_named_character(manager, player_id, "056加成能量支援2", ["魔法少女", "ピュエラ・マギ・ホーリー・クインテット"], 1500, UATypes.Zone.ENERGY_LINE)
+	var blocker_uid := _spawn_named_character(manager, opponent_id, "056加成阻挡者", [], 1000, UATypes.Zone.FRONT_LINE)
+	if source_uid == "" or raid_base_uid == "" or support_front_uid == "" or support_front_2_uid == "" or support_energy_1_uid == "" or support_energy_2_uid == "" or blocker_uid == "":
+		return _fail("Raw 056 bonus sample should prepare the RAID base, supports and blocker.")
+	_trim_life_to_count(manager, player_id, 2)
+	var preview_target_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_056_PREVIEW_BONUS_TARGET",
+		"name": "056加成登场角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-056-YES-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"PURPLE": 2},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, false)
+	var filler_1 := _spawn_named_character(manager, player_id, "056加成填充1", [], 1000, UATypes.Zone.DECK)
+	var filler_2 := _spawn_named_character(manager, player_id, "056加成填充2", [], 1000, UATypes.Zone.DECK)
+	var filler_3 := _spawn_named_character(manager, player_id, "056加成填充3", [], 1000, UATypes.Zone.DECK)
+	if preview_target_uid == "" or filler_1 == "" or filler_2 == "" or filler_3 == "":
+		return _fail("Raw 056 bonus sample should prepare preview candidates.")
+	_set_deck_top_order(manager, player_id, [preview_target_uid, filler_1, filler_2, filler_3])
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
+	manager.resolve_life_trigger_decision(source_uid, true)
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": raid_base_uid})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 056 bonus sample should request preview selection after raiding.")
+	var pick_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(pick_decision.get("resolution_id", "")),
+		"choice": preview_target_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 056 bonus sample should request preview reorder after selecting a summon target.")
+	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(reorder_decision.get("resolution_id", "")),
+		"choices": [filler_1, filler_2, filler_3],
+	})
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw 056 bonus sample should clear pending decisions after preview resolution.")
+	manager.effect_resolver.finalize_pending_life_damage(manager.game_state)
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw 056 bonus sample runtime source card should exist.")
+	if not (source_card.flags.get("temp_keywords", []) as Array).has("IMPACT"):
+		return _fail("Raw 056 bonus sample should grant IMPACT when four other quintet cards are on the field.")
+	manager.game_state.phase = UATypes.Phase.ATTACK
+	var attack_result := manager.request_attack(source_uid)
+	if not bool(attack_result.get("ok", false)):
+		return _fail("Raw 056 bonus sample should be able to attack after raiding.")
+	manager.resolve_attack(source_uid, blocker_uid)
+	_drain_pending_life_windows(manager, false)
+	if _player(manager, opponent_id).life.size() != 6:
+		return _fail("Raw 056 bonus sample should deal exactly 1 extra player damage after winning the battle with IMPACT.")
+	if not manager.game_state.battle_context.is_empty():
+		return _fail("Raw 056 bonus sample should clear battle_context after combat resolution.")
+	manager.effect_resolver.cleanup_turn_expirations(manager.game_state, player_id)
+	if (source_card.flags.get("temp_keywords", []) as Array).has("IMPACT"):
+		return _fail("Raw 056 bonus sample should remove the temporary IMPACT keyword at end of turn.")
+	return _ok()
+
 func _player(manager: GameManager, player_id: String) -> PlayerState:
 	return manager.game_state.get_player(player_id)
 
@@ -2773,6 +3607,51 @@ func _ensure_exact_red_energy_cards(manager: GameManager, player_id: String, cou
 		if uid == "":
 			break
 	return _count_red_energy(manager, player_id) == count
+
+func _count_color_energy(manager: GameManager, player_id: String, color: String) -> int:
+	var player := _player(manager, player_id)
+	if player == null:
+		return 0
+	var total := 0
+	for card_uid_variant in player.energy_line:
+		var card_uid := str(card_uid_variant)
+		var card := manager.game_state.get_card(card_uid)
+		var card_def := manager.game_state.get_card_def(card.def_id) if card != null else null
+		if card_def == null:
+			continue
+		total += int(card_def.energy_provided.get(color.to_upper(), 0))
+	return total
+
+func _spawn_generic_energy(manager: GameManager, player_id: String, color: String, temp_id: String) -> String:
+	var color_key := color.to_upper()
+	var cost_energy: Dictionary = {}
+	cost_energy[color_key] = 1
+	var energy_provided: Dictionary = {}
+	energy_provided[color_key] = 1
+	return _spawn_temp_card(manager, player_id, {
+		"id": temp_id,
+		"name": "测试%s能量" % color_key,
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-ENERGY-%s" % temp_id,
+		"traits": [],
+		"cost_energy": cost_energy,
+		"cost_ap": 1,
+		"energy_provided": energy_provided,
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, false)
+
+func _ensure_color_energy(manager: GameManager, player_id: String, color: String, count: int) -> bool:
+	if _count_color_energy(manager, player_id, color) >= count:
+		return true
+	while _count_color_energy(manager, player_id, color) < count:
+		var uid := _spawn_generic_energy(manager, player_id, color, "EXACT_%s_%d" % [color.to_upper(), manager.game_state.cards.size()])
+		if uid == "":
+			break
+	return _count_color_energy(manager, player_id, color) >= count
 
 func _move_card_to_zone(manager: GameManager, player_id: String, def_id: String, zone: int) -> String:
 	for card_uid in _all_player_cards(manager, player_id):

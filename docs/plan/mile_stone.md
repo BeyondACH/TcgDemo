@@ -1,6 +1,6 @@
 # 当前项目里程碑盘点
 
-更新时间：2026-03-27
+更新时间：2026-03-30
 
 ## 1. 盘点依据
 
@@ -19,8 +19,8 @@
 
 - 基础对局闭环已实现，核心区域、阶段流转、资源支付、战斗与胜负判断具备稳定主路径。
 - 高风险规则区已补齐一轮专项回归，规则主链路已不再依赖临时说明文档来补语义。
-- 统一 DSL/IR 已收口到 `73` 个已支持能力、`0` 个未支持能力，当前运行时已具备继续吸收正式 raw 卡模板的基础。
-- 正式 raw 样例验证已形成独立基线，当前重点从“补能力缺口”转向“继续扩覆盖面与稳定性”。
+- 统一 DSL/IR 已扩展到 `112` 个已支持能力、`17` 个未支持能力；当前运行时已具备继续吸收正式 raw 卡模板的基础，但仍有 `13` 张卡存在未支持能力待收口。
+- 正式 raw 样例验证已形成独立基线，当前重点转为“两条线并行推进”：继续扩覆盖面与稳定性，同时针对剩余 requirement / step 高耦合缺口做定点收口。
 - `SimpleAI` 已从静态优先级选择器升级为轻量评分式 `v2`，AI 对局基线已形成“行为专项 smoke + 整体流程 smoke”的双层验证。
 - UI 已完成战场区、堆叠区、预览区、待决策交互和底部手牌区的第一轮收口，能支撑规则验证与日常调试。
 
@@ -100,7 +100,7 @@
 - `resolve_effect`、`resolve_trigger`、`MAIN_ACTIVATE` 与手动目标续执行已统一接入队列消费链。
 - `trigger_effects` 已支持 `ON_ENTER`、`ON_LEAVE`、`ON_ATTACK`、`ON_BLOCK`、`ON_LIFE_TRIGGER`、`MAIN_ACTIVATE`、`ON_BATTLE_WIN`、`ON_BATTLE_LOSE`、`ON_BATTLE_END`。
 - 已支持显式目标、基础费用、步骤式结算、静态修正、延迟效果与出牌前修饰消费。
-- 正式 raw 编译结果已达到 `73` 个已支持能力、`0` 个未支持能力。
+- 正式 raw 编译结果当前为 `112` 个已支持能力、`17` 个未支持能力。
 - 已覆盖高阶模板：临时产能修饰、延迟自退场、绑定自身的临时特殊登场 / `RAID` 许可、动态 BP 阈值、条件化阈值替换、公开结果奖励与 fallback 主链/后备链。
 
 当前剩余重点：
@@ -108,6 +108,7 @@
 - 继续补更复杂的正式 raw 组合样例。
 - 继续围绕 `docs/milestone_smoke_test.gd` 观察共性生命周期语义，重点确认 `UNTIL_NEXT_SELF_TURN_START` 只在来源方下个回合开始失效、多个 `ON_END_MAIN_PHASE` / `END_OF_TURN` 延迟效果不会残留 `pending_decisions`、`effect_queue` 或 `battle_context` 脏状态。
 - 继续围绕 `docs/cards_raw_minimal_duel_smoke_test.gd` 观察正式 raw 组合链路，重点确认跨完整回合的临时特殊登场许可过期、`ON_LEAVE` 回手链与战斗/阶段推进衔接稳定，以及叠放离场后的区域与标记一致性。
+- `UA31BT_MMM_1_056` 已完成收口；若继续推进未支持能力，应优先围绕同类“预览链 + 条件追加授予临时能力 / 精确计数 requirement”模板继续收口。
 
 ## 里程碑 M5：数据、导入与验证资产
 
@@ -129,8 +130,8 @@
 
 当前验证基线：
 
-- `docs/milestone_smoke_test.gd`：29 项通过、0 项失败
-- `docs/cards_raw_minimal_duel_smoke_test.gd`：41 项通过、0 项失败
+- `docs/milestone_smoke_test.gd`：31 项通过、0 项失败
+- `docs/cards_raw_minimal_duel_smoke_test.gd`：50 项通过、0 项失败
 - `docs/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
 - `docs/vs_ai_smoke_test.gd`：2 项通过、0 项失败
 
@@ -182,6 +183,7 @@
 - 继续扩 `docs/cards_raw_minimal_duel_smoke_test.gd` 的正式 raw 模板覆盖面。
 - 保持 `docs/milestone_smoke_test.gd` 的规则主冒烟职责不漂移。
 - 继续把“连续回合生命周期与离场触发链”的观察落到固定回归入口，而不是停留在抽象风险描述。
+- 若继续推进未支持能力，优先从剩余 requirement / step 高耦合模板切入，而不是围绕过期计划清单空转。
 - 保持 `docs/simple_ai_v2_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 的 AI 验证分层，逐步压实 AI 节奏判断而不污染规则主冒烟。
 - 保持规则、计划、README 与日志描述一致，避免再次出现文档口径滞后。
 
@@ -195,6 +197,7 @@
 ## 5. 下一阶段建议
 
 1. 继续补正式 raw 样例，优先覆盖更复杂的预览链、多段条件追加结算、连续回合生命周期与离场触发链。
-2. 若新增需求触及高风险规则区，先补规则主冒烟，再扩 raw 样例，不要反过来用样例脚本替代规则验证。
-3. 若继续提升 AI 质量，优先补动作上下文参数与更多 AI 专项 smoke，而不是直接把 `SimpleAI` 推向复杂搜索。
-4. 若后续改动触及 UI 预览流、待决策流或布局消费，执行 `battle_scene --layout-probe` 并把结果同步写入当日日志。
+2. 若继续推进未支持能力，优先处理 requirement / step 高耦合的真实技术缺口，并先冻结 IR 契约与 requirement/step 边界。
+3. 若新增需求触及高风险规则区，先补规则主冒烟，再扩 raw 样例，不要反过来用样例脚本替代规则验证。
+4. 若继续提升 AI 质量，优先补动作上下文参数与更多 AI 专项 smoke，而不是直接把 `SimpleAI` 推向复杂搜索。
+5. 若后续改动触及 UI 预览流、待决策流或布局消费，执行 `battle_scene --layout-probe` 并把结果同步写入当日日志。

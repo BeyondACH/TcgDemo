@@ -149,6 +149,7 @@ def _manual_single_target(
     min_count: int = 1,
     max_count: int = 1,
     store_as: str = "selected_target",
+    filters: list[dict] | None = None,
 ) -> tuple[list[dict], list[dict]]:
     target_spec = {
         "id": store_as,
@@ -156,6 +157,7 @@ def _manual_single_target(
         "candidate": {
             "owner": owner,
             "zones": zones,
+            "filters": filters or [],
             "requirements": requirements or [],
         },
         "select": {
@@ -173,6 +175,7 @@ def _manual_single_target(
                 "type": "CARD_SET",
                 "owner": owner,
                 "zones": zones,
+                "filters": filters or [],
                 "requirements": requirements or [],
                 "min": min_count,
                 "max": max_count,
@@ -263,25 +266,171 @@ def _hand_character_summon_steps(
     *,
     source_zone: str = "HAND",
     store_as: str = "selected_summon_card",
+    color: str = "RED",
+    traits: list[str] | None = None,
+    names: list[str] | None = None,
+    state: str = "RESTED",
 ) -> tuple[list[dict], list[dict]]:
     requirements = [
         {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
         {"type": "CARD_COST_ENERGY_LTE", "value": energy_lte},
         {"type": "CARD_COST_AP_EQ", "value": 1},
-        {"type": "CARD_COLOR_IS", "value": "RED"},
-        {"type": "CARD_HAS_TRAIT", "value": "魔法少女"},
-        {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True},
+        {"type": "CARD_COLOR_IS", "value": color},
+        {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": source_zone != "HAND"},
     ]
-    target_specs, steps = _manual_single_target("SELF", [source_zone], requirements, 0, 1, store_as)
+    filters: list[dict] = []
+    if traits:
+        if len(traits) == 1:
+            requirements.append({"type": "CARD_HAS_TRAIT", "value": traits[0]})
+        else:
+            filters.append({"type": "OR", "filters": [{"type": "HAS_TRAIT", "value": trait} for trait in traits]})
+    if names:
+        if len(names) == 1:
+            requirements.append({"type": "CARD_NAME_IS", "value": names[0]})
+        else:
+            filters.append({"type": "OR", "filters": [{"type": "NAME_IS", "value": name} for name in names]})
+    target_specs, steps = _manual_single_target("SELF", [source_zone], requirements, 0, 1, store_as, filters=filters)
     steps.append(
         {
             "type": "PLAY_SELECTED_CARDS",
             "from_var": store_as,
             "to": "FRONT_LINE",
-            "state": "RESTED",
+            "state": state,
             "ignore_play_timing": True,
+            "allow_current_zone": source_zone != "HAND",
         }
     )
+    return target_specs, steps
+
+
+def _outside_character_summon_steps(
+    *,
+    energy_lte: int,
+    ap_eq: int,
+    color: str,
+    state: str,
+    store_as: str = "selected_outside_summon",
+) -> tuple[list[dict], list[dict]]:
+    requirements = [
+        {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+        {"type": "CARD_COST_ENERGY_LTE", "value": energy_lte},
+        {"type": "CARD_COST_AP_EQ", "value": ap_eq},
+        {"type": "CARD_COLOR_IS", "value": color},
+        {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": True},
+    ]
+    target_specs, steps = _manual_single_target("SELF", ["OUTSIDE"], requirements, 0, 1, store_as)
+    steps.append(
+        {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": store_as,
+            "to": "FRONT_LINE",
+            "state": state,
+            "ignore_play_timing": True,
+            "allow_current_zone": True,
+        }
+    )
+    return target_specs, steps
+
+
+def _preview_add_to_hand_then_reorder_steps(
+    *,
+    count: int,
+    requirements: list[dict] | None = None,
+    filters: list[dict] | None = None,
+    min_count: int = 0,
+    max_count: int = 1,
+    store_as: str = "selected_preview_cards",
+    distinct_by: str = "",
+    discard_after_add: bool = False,
+) -> tuple[list[dict], list[dict]]:
+    constraints = {"distinct_by": distinct_by} if distinct_by else None
+    target_specs, select_steps = _manual_context_target(
+        "preview_cards",
+        requirements=requirements,
+        filters=filters,
+        min_count=min_count,
+        max_count=max_count,
+        store_as=store_as,
+        constraints=constraints,
+    )
+    steps: list[dict] = [{"type": "PREVIEW_TOP_DECK", "count": count, "var": "preview_cards"}]
+    steps += select_steps
+    steps += [
+        {"type": "MOVE_SELECTED_CARDS", "from_var": store_as, "to": "HAND", "remove_from_var": "preview_cards"},
+        {"type": "REORDER_CONTEXT_CARDS", "from_var": "preview_cards", "var": "ordered_preview_cards"},
+        {"type": "MOVE_SELECTED_CARDS", "from_var": "ordered_preview_cards", "to": "DECK"},
+    ]
+    if discard_after_add:
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "selected_discard")
+        target_specs += discard_specs
+        steps += [
+            dict(step, requirements=[{"type": "CONTEXT_VAR_NON_EMPTY", "var": store_as}])
+            for step in discard_steps
+        ]
+        steps.append(
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "selected_discard",
+                "to": "OUTSIDE",
+                "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": store_as}],
+            }
+        )
+    return target_specs, steps
+
+
+def _preview_summon_then_reorder_steps(
+    *,
+    count: int,
+    requirements: list[dict] | None = None,
+    filters: list[dict] | None = None,
+    min_count: int = 0,
+    max_count: int = 1,
+    store_as: str = "selected_preview_summon",
+    state: str = "RESTED",
+) -> tuple[list[dict], list[dict]]:
+    target_specs, select_steps = _manual_context_target(
+        "preview_cards",
+        requirements=requirements,
+        filters=filters,
+        min_count=min_count,
+        max_count=max_count,
+        store_as=store_as,
+    )
+    steps: list[dict] = [{"type": "PREVIEW_TOP_DECK", "count": count, "var": "preview_cards"}]
+    steps += select_steps
+    steps += [
+        {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": store_as,
+            "to": "FRONT_LINE",
+            "state": state,
+            "ignore_play_timing": True,
+            "allow_current_zone": True,
+        },
+        {"type": "REMOVE_CONTEXT_VALUES", "from_var": store_as, "target_var": "preview_cards"},
+        {"type": "REORDER_CONTEXT_CARDS", "from_var": "preview_cards", "var": "ordered_preview_cards"},
+        {"type": "MOVE_SELECTED_CARDS", "from_var": "ordered_preview_cards", "to": "DECK"},
+    ]
+    return target_specs, steps
+
+
+def _preview_reorder_keep_top_rest_outside_steps(*, count: int) -> tuple[list[dict], list[dict]]:
+    target_specs, steps = _manual_context_target(
+        "preview_cards",
+        min_count=0,
+        max_count=count,
+        store_as="selected_top_cards",
+    )
+    steps = [{"type": "PREVIEW_TOP_DECK", "count": count, "var": "preview_cards"}] + steps + [
+        {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_top_cards",
+            "to": "DECK",
+            "to_position": "TOP",
+            "remove_from_var": "preview_cards",
+        },
+        {"type": "MOVE_SELECTED_CARDS", "from_var": "preview_cards", "to": "OUTSIDE"},
+    ]
     return target_specs, steps
 
 
@@ -341,6 +490,89 @@ def _partial_unsupported_ability(card: dict, event_name: str, trigger_entry: dic
 def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, dict]) -> dict:
     event_name = str(trigger_entry.get("trigger", ""))
     text = str(trigger_entry.get("text", "")).strip()
+    card_id = str(card.get("id", ""))
+
+    if event_name == "ON_LIFE_TRIGGER" and card_id in ["UA31BT_MMM_1_035", "UA31BT_MMM_1_055"]:
+        target_specs, steps = _outside_character_summon_steps(
+            energy_lte=2,
+            ap_eq=1,
+            color="PURPLE",
+            state="ACTIVE",
+            store_as="selected_outside_summon",
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_040":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=5,
+            requirements=[{"type": "CARD_NAME_IS", "value": "鹿目 まどか"}],
+            discard_after_add=True,
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_043":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=3,
+            filters=[
+                {
+                    "type": "OR",
+                    "filters": [
+                        {"type": "NAME_IS", "value": "百江 なぎさ"},
+                        {"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"},
+                    ],
+                }
+            ],
+            discard_after_add=True,
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_048":
+        target_specs, steps = _preview_reorder_keep_top_rest_outside_steps(count=2)
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_042":
+        target_specs, steps = _hand_character_summon_steps(
+            1,
+            color="PURPLE",
+            names=["暁美 ほむら", "鹿目 まどか"],
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_056":
+        target_specs, steps = _preview_summon_then_reorder_steps(
+            count=4,
+            requirements=[
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_COST_ENERGY_LTE", "value": 2},
+                {"type": "CARD_COST_AP_EQ", "value": 1},
+                {"type": "CARD_COLOR_IS", "value": "PURPLE"},
+                {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": True},
+            ],
+            state="RESTED",
+        )
+        steps.append(
+            {
+                "type": "ADD_TEMP_KEYWORD",
+                "target_uid": "SOURCE_CARD",
+                "keyword": "IMPACT",
+                "expires": "END_OF_TURN",
+                "requirements": [
+                    {
+                        "type": "CONTROLLER_OTHER_TRAIT_CARD_COUNT_GTE",
+                        "trait": "ピュエラ・マギ・ホーリー・クインテット",
+                        "value": 4,
+                    }
+                ],
+            }
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            steps,
+        )
 
     if event_name == "RAID_RULE" and text == "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。":
         var_ability = _supported_ability(
@@ -692,12 +924,22 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
 def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str, dict]) -> dict | None:
     event_name = "ON_PLAY"
     text = str(effect_entry.get("text", "")).strip()
+    card_id = str(card.get("id", ""))
     pseudo_trigger = {
         "trigger": event_name,
         "source_label": effect_entry.get("source_label", ""),
         "effect_box": effect_entry.get("effect_box", "OUTER"),
         "text": text,
     }
+
+    if card_id == "UA31BT_MMM_1_065":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=5,
+            filters=[{"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"}],
+            max_count=2,
+            distinct_by="CARD_NAME",
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
     match = re.fullmatch(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。", text)
     if match:

@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-03-27
+更新时间：2026-03-30
 
 ## 1. 计划摘要
 
@@ -20,12 +20,12 @@
 - 高风险规则区已覆盖：攻击失败攻击方不退场、AP 在结束阶段不恢复、生命触发可选发动、同时触发顺序按规则处理。
 - 关键词与特殊登场已覆盖一批核心能力：`STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`IMPACT_PLUS_1`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`。
 - 效果系统已统一接入 `effect_queue` 执行链，并接入显式决策、目标续执行、延迟效果与静态修正。
-- 统一 DSL/IR 当前达到 `73` 个已支持能力、`0` 个未支持能力。
+- 统一 DSL/IR 当前达到 `112` 个已支持能力、`17` 个未支持能力，未支持项集中在 `13` 张卡上。
 - 验证资产当前基线：
-  - `docs/milestone_smoke_test.gd`：29 项通过、0 项失败
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：41 项通过、0 项失败
+  - `docs/milestone_smoke_test.gd`：31 项通过、0 项失败
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：50 项通过、0 项失败
   - `docs/draw_phase_smoke_test.gd`：当前环境稳定通过，可作为 DRAW 阶段专项回归入口
-- 当前主要风险已转为“正式 raw 样例覆盖面和长期稳定性仍需继续压实”，而不是“规则主链路尚未建立”。
+- 当前主要风险已转为“两条主线并行观察”：一是正式 raw 样例覆盖面和长期稳定性仍需继续压实；二是剩余 `13` 张卡上的 requirement / step 高耦合模板仍待继续收口。
 
 ## 3. 开发阶段规划
 
@@ -91,6 +91,7 @@
 - 连续回合生命周期
 - 离场触发链与延迟效果叠加
 - 更复杂的费用组合与公开信息驱动奖励
+- 预览链后追加临时能力、精确计数 requirement 与复杂多段结算的组合模板
 - 当前已固定观察入口：规则层放在 `docs/milestone_smoke_test.gd`，正式模板组合链放在 `docs/cards_raw_minimal_duel_smoke_test.gd`。
 
 实施要求：
@@ -187,8 +188,9 @@
 
 1. 继续维护 `docs/milestone_smoke_test.gd` 的规则主冒烟职责，不把正式卡编号样例混进去。
 2. 继续扩 `docs/cards_raw_minimal_duel_smoke_test.gd`，优先覆盖更复杂的预览链、多段条件追加结算，以及跨完整回合的生命周期 / 离场触发链组合。
-3. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定。
-4. 若后续需求触及 UI 待决策流、预览流或布局消费，同步执行 `--layout-probe` 验收并记录结果。
+3. 若继续推进当前未支持能力，优先处理 requirement / step 高耦合的组合模板，再逐步扩到其余未支持文本模式。
+4. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定。
+5. 若后续需求触及 UI 待决策流、预览流或布局消费，同步执行 `--layout-probe` 验收并记录结果。
 
 ## 8. 实施假设
 

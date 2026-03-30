@@ -492,16 +492,23 @@ func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, 
 		var source_var := str(step.get("from_var", ""))
 		context[flag_var] = _context_value_is_non_empty(context.get(source_var, null))
 		return {"logs": [], "paused": false}
+	if step_type == "REMOVE_CONTEXT_VALUES":
+		var remove_source_var := str(step.get("from_var", ""))
+		var remove_target_var := str(step.get("target_var", remove_source_var))
+		var values_to_remove: Array = _ensure_array(context.get(remove_source_var, []))
+		context[remove_target_var] = _array_without_values(_ensure_array(context.get(remove_target_var, [])), values_to_remove)
+		return {"logs": [], "paused": false}
 	if step_type == "MOVE_SELECTED_CARDS":
 		var move_logs: Array[String] = []
 		var selected_cards: Array = _ensure_array(context.get(str(step.get("from_var", "")), []))
 		var to_zone := _parse_zone(step.get("to_zone", step.get("to", UATypes.Zone.OUTSIDE)))
 		var target_player_id := str(step.get("target_player_id", context.get("target_player_id", "")))
+		var to_position := str(step.get("to_position", ""))
 		for card_uid_variant in selected_cards:
 			var card_uid := str(card_uid_variant)
 			if card_uid == "":
 				continue
-			zone_manager.move_card(state, card_uid, to_zone, target_player_id)
+			zone_manager.move_card(state, card_uid, to_zone, target_player_id, to_position)
 			move_logs.append("Moved card %s to %s." % [card_uid, UATypes.zone_to_key(to_zone)])
 		var remove_from_var := str(step.get("remove_from_var", ""))
 		if remove_from_var != "":
@@ -1207,6 +1214,8 @@ func _matches_filter(state: GameState, filter_variant, context: Dictionary, cand
 
 	if filter_type == "CARD_TYPE_IS":
 		return candidate_def != null and UATypes.card_type_to_text(candidate_def.card_type) == str(filter.get("value", ""))
+	if filter_type == "NAME_IS":
+		return candidate_def != null and candidate_def.name == str(filter.get("value", ""))
 	if filter_type == "NAME_NOT":
 		return candidate_def != null and candidate_def.name != str(filter.get("value", ""))
 	if filter_type == "NOT_SOURCE_CARD":
@@ -1386,6 +1395,8 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 			"target_player_id": controller_player_id,
 			"target_zone": target_zone,
 		})
+		if bool(requirement.get("allow_current_zone", false)):
+			play_modifiers["allow_current_zone"] = true
 		var validation: Dictionary = rules_engine.can_play_card(state, controller_player_id, candidate_card.uid, target_zone, play_modifiers, {
 			"ignore_play_timing": bool(requirement.get("ignore_play_timing", true)),
 		})
@@ -1442,6 +1453,27 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 				if d != null and d.traits.has(trait_value):
 					unique_names[d.name] = true
 		return unique_names.size() >= min_count
+	if requirement_type == "CONTROLLER_OTHER_TRAIT_CARD_COUNT_GTE":
+		if source_card == null:
+			return false
+		var count_player = state.get_player(source_card.controller_player_id)
+		if count_player == null:
+			return false
+		var count_trait := str(requirement.get("trait", ""))
+		var count_min := int(requirement.get("value", 0))
+		var matched_count := 0
+		for zone_cards in [count_player.front_line, count_player.energy_line]:
+			for card_uid_v in zone_cards:
+				var count_uid := str(card_uid_v)
+				if count_uid == "" or count_uid == source_card_uid:
+					continue
+				var count_card = state.get_card(count_uid)
+				if count_card == null:
+					continue
+				var count_def = state.get_card_def(count_card.def_id)
+				if count_def != null and count_def.traits.has(count_trait):
+					matched_count += 1
+		return matched_count >= count_min
 	return _matches_filter(state, requirement, context, candidate_card_uid, source_card_uid)
 
 func _resolve_numeric_value(state: GameState, provider_variant, context: Dictionary, source_card_uid: String, candidate_card_uid := "") -> int:
@@ -1795,6 +1827,8 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 			"target_player_id": controller_player_id,
 			"target_zone": target_zone,
 		})
+		if bool(step.get("allow_current_zone", false)):
+			play_modifiers["allow_current_zone"] = true
 		var validation: Dictionary = rules_engine.can_play_card(state, controller_player_id, card_uid, target_zone, play_modifiers, {
 			"ignore_play_timing": ignore_play_timing,
 		})
