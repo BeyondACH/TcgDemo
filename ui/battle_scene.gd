@@ -1,6 +1,7 @@
 extends Control
 class_name BattleScene
 
+const BoardTargetSelectionHelper = preload("res://ui/board_target_selection_helper.gd")
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
@@ -276,8 +277,8 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	var priority_player_id := str(snapshot.get("priority_player_id", active_player_id))
 	var controller_types: Dictionary = snapshot.get("controller_types", {})
 	var players: Dictionary = snapshot.get("players", {})
-	var p1: Dictionary = players.get(UATypes.PLAYER_ONE, {})
-	var p2: Dictionary = players.get(UATypes.PLAYER_TWO, {})
+	var p1: Dictionary = _decorate_board_targets(UATypes.PLAYER_ONE, players.get(UATypes.PLAYER_ONE, {}))
+	var p2: Dictionary = _decorate_board_targets(UATypes.PLAYER_TWO, players.get(UATypes.PLAYER_TWO, {}))
 	var active_player_data: Dictionary = p1 if active_player_id == UATypes.PLAYER_ONE else p2
 	var display_hand_player_data: Dictionary = p1 if display_hand_player_id == UATypes.PLAYER_ONE else p2
 	var action_controller_type := str(controller_types.get(priority_player_id, snapshot.get("action_player_controller", "HUMAN")))
@@ -435,6 +436,8 @@ func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_da
 	var card_data := pressed_card_data if not pressed_card_data.is_empty() else _find_board_card(player_id, card_uid)
 	if not card_data.is_empty():
 		_set_board_preview(player_id, "front_line", card_data)
+	if _resolve_board_target_selection_from_card(player_id, card_uid, "front_line"):
+		return
 	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
@@ -487,6 +490,8 @@ func _on_energy_card_pressed(player_id: String, card_uid: String, pressed_card_d
 	var card_data := pressed_card_data if not pressed_card_data.is_empty() else _find_board_card(player_id, card_uid)
 	if not card_data.is_empty():
 		_set_board_preview(player_id, "energy_line", card_data)
+	if _resolve_board_target_selection_from_card(player_id, card_uid, "energy_line"):
+		return
 	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
@@ -687,6 +692,8 @@ func _on_log_toggle_pressed() -> void:
 	log_panel.visible = not log_panel.visible
 
 func _selected_label_text(active_player_id: String) -> String:
+	if _is_board_target_selection_pending(_current_pending_decision()):
+		return "Choose a battlefield target"
 	var life_reveal_modal: Dictionary = _current_life_reveal_modal()
 	if bool(life_reveal_modal.get("visible", false)):
 		var current_card_uid := str(life_reveal_modal.get("current_card_uid", ""))
@@ -700,6 +707,8 @@ func _selected_label_text(active_player_id: String) -> String:
 	if _has_pending_decisions():
 		var decision := _current_pending_decision()
 		if not decision.is_empty():
+			if _is_board_target_selection_pending(decision):
+				return "Choose a battlefield target"
 			if _is_preview_pending_decision(decision):
 				return str(decision.get("title", "处理看牌堆顶"))
 			return "Pending: %s (%s)" % [str(decision.get("type", "decision")), str(decision.get("source_card_uid", ""))]
@@ -1004,8 +1013,13 @@ func _sync_life_reveal_modal() -> void:
 		if _life_reveal_modal != null:
 			_life_reveal_modal.hide_modal()
 		return
+	if _should_allow_board_selection_passthrough():
+		if _life_reveal_modal != null:
+			_life_reveal_modal.hide_modal()
+		return
 	if _life_reveal_modal != null:
 		_life_reveal_modal.show_modal(modal_data)
+		_life_reveal_modal.set_input_blocking(true)
 
 func _on_life_reveal_activate_requested(card_uid: String) -> void:
 	var modal_data := _current_life_reveal_modal()

@@ -47,6 +47,9 @@ func hide_modal() -> void:
 	for child in _cards_row.get_children():
 		child.queue_free()
 
+func set_input_blocking(blocking: bool) -> void:
+	_set_mouse_filter_recursive(self, Control.MOUSE_FILTER_STOP if blocking else Control.MOUSE_FILTER_IGNORE)
+
 func _build_ui() -> void:
 	var overlay := ColorRect.new()
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -197,3 +200,9 @@ func _on_continue_pressed() -> void:
 	var current_card_uid := str(_modal_data.get("current_card_uid", ""))
 	if current_card_uid != "":
 		acknowledge_requested.emit(current_card_uid)
+
+func _set_mouse_filter_recursive(node: Node, filter: int) -> void:
+	if node is Control:
+		(node as Control).mouse_filter = filter
+	for child in node.get_children():
+		_set_mouse_filter_recursive(child, filter)

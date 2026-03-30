@@ -674,6 +674,28 @@ func _serialize_pending_decisions(action_player_id: String) -> Array[Dictionary]
 		var preview_card_uids: Array = pending.get("preview_card_uids", [])
 		if not preview_card_uids.is_empty():
 			pending["preview_cards"] = _serialize_card_list_for_ui(preview_card_uids, action_player_id)
+		if str(pending.get("type", "")) == "ABILITY_TARGET_SELECTION":
+			var board_targets: Array[Dictionary] = []
+			var board_target_uids: Array[String] = []
+			for choice_variant in pending.get("choices", []):
+				var choice: Dictionary = choice_variant
+				var card_uid := str(choice.get("value", ""))
+				if card_uid == "":
+					continue
+				var card: CardInstance = game_state.get_card(card_uid)
+				if card == null:
+					continue
+				if card.zone != UATypes.Zone.FRONT_LINE and card.zone != UATypes.Zone.ENERGY_LINE:
+					continue
+				board_target_uids.append(card_uid)
+				board_targets.append({
+					"uid": card_uid,
+					"player_id": card.controller_player_id,
+					"zone": UATypes.zone_to_key(card.zone),
+				})
+			pending["ui_allows_board_selection"] = not board_targets.is_empty()
+			pending["board_target_uids"] = board_target_uids
+			pending["board_targets"] = board_targets
 		result.append(pending)
 	return result
 

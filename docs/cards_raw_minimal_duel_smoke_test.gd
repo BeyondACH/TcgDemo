@@ -2,6 +2,7 @@ extends SceneTree
 
 const UATypes = preload("res://core/ua_types.gd")
 const GameManager = preload("res://core/game_manager.gd")
+const BoardTargetSelectionHelper = preload("res://ui/board_target_selection_helper.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
@@ -117,6 +118,7 @@ func _init() -> void:
 	_run_test("Raw Soul Gem Final Restores Life Only When Empty", _test_raw_soul_gem_final_restores_life_only_when_empty)
 	_run_test("Raw Raid Gains Double Attack After Life To Hand This Turn", _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn)
 	_run_test("Raw Raid Gains Tiered Bonuses From Unique Name Count", _test_raw_raid_gains_tiered_bonuses_from_unique_name_count)
+	_run_test("Raw Battle Scene Resolves P1 Life Trigger Board Target Click", _test_raw_battle_scene_resolves_p1_life_trigger_board_target_click)
 	_run_test("Raw Attack BP Down Requires Named Energy", _test_raw_attack_bp_down_requires_named_energy)
 	_run_test("Raw Main Activate Swap 035", _test_raw_main_activate_swap_035)
 	_run_test("Raw Optional Return Debuff 036", _test_raw_optional_return_debuff_036)
@@ -4048,6 +4050,37 @@ func _test_raw_raid_gains_tiered_bonuses_from_unique_name_count() -> Dictionary:
 		return _fail("Raw multi-name RAID sample should gain exactly +1000 BP in the 4-name branch.")
 	if _player(manager_four, opponent_id).life.size() != 6:
 		return _fail("Raw multi-name RAID sample should deal exactly 1 extra damage to the opponent after winning with the 4-name branch.")
+	return _ok()
+
+func _test_raw_battle_scene_resolves_p1_life_trigger_board_target_click() -> Dictionary:
+	var manager := _new_manager()
+	var defender_id := UATypes.PLAYER_ONE
+	var attacker_id := UATypes.PLAYER_TWO
+	var life_uid := _move_card_to_life_top(manager, defender_id, RAW_TARGET_REMOVE)
+	var ally_target_uid := _move_card_to_zone(manager, defender_id, RAW_LIFE_TRIGGER_TARGET, UATypes.Zone.FRONT_LINE)
+	var enemy_target_uid := _move_card_to_zone(manager, attacker_id, RAW_LIFE_TRIGGER_TARGET, UATypes.Zone.FRONT_LINE)
+	if life_uid == "" or ally_target_uid == "" or enemy_target_uid == "":
+		return _fail("Battle scene life-trigger click sample should prepare life card plus both board-side targets.")
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, defender_id, 1)
+	manager.resolve_life_trigger_decision(life_uid, true)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Battle scene life-trigger click sample should create a pending target selection.")
+	var snapshot := manager.get_snapshot()
+	var pending: Array = snapshot.get("pending_decisions", [])
+	if pending.size() != 1:
+		return _fail("Battle scene snapshot should expose exactly one pending decision.")
+	var decision: Dictionary = pending[0]
+	if not bool(decision.get("ui_allows_board_selection", false)):
+		return _fail("Battle scene snapshot should flag the pending target selection as board-clickable.")
+	if BoardTargetSelectionHelper.resolve_pending_click(manager, snapshot, false, attacker_id, enemy_target_uid, "front_line"):
+		return _fail("Battle scene helper should reject non-candidate board clicks from the wrong side.")
+	if not BoardTargetSelectionHelper.resolve_pending_click(manager, snapshot, false, defender_id, ally_target_uid, "front_line"):
+		return _fail("Battle scene helper should accept the pending P1 board target selection click.")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Battle scene helper should consume the pending target selection after a legal board click.")
+	var target_card := manager.game_state.get_card(ally_target_uid)
+	if target_card == null or target_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Battle scene helper should resolve the clicked P1 battlefield target through the existing decision pipeline.")
 	return _ok()
 
 func _fill_ap(player: PlayerState, total: int) -> void:

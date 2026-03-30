@@ -13,6 +13,8 @@ const BOARD_PADDING := 4
 const RESTED_ROTATION_DEGREES := -90.0
 const PLAYABLE_BORDER_COLOR := Color(0.2, 0.8, 0.3, 0.9)
 const PLAYABLE_BORDER_WIDTH := 3.0
+const PENDING_TARGET_BORDER_COLOR := Color(0.35, 0.84, 1.0, 0.95)
+const PENDING_TARGET_BORDER_WIDTH := 4.0
 
 var owner_player_id := ""
 var card_uid := ""
@@ -23,6 +25,7 @@ var _display_mode := DISPLAY_MODE_BOARD
 var _card_data: Dictionary = {}
 var _is_hovered := false
 var _is_playable := false
+var _is_pending_target_selectable := false
 
 var _content_root: Control
 var _fallback_label: Label
@@ -43,6 +46,7 @@ func setup(card_data: Dictionary, p_owner_player_id: String, p_zone_name: String
 	_card_size = card_size
 	_display_mode = display_mode
 	_display_text = _build_text(_card_data)
+	_is_pending_target_selectable = bool(_card_data.get("pending_target_selectable", false))
 	custom_minimum_size = _card_size
 	clip_contents = true
 	alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -420,6 +424,9 @@ func set_playable(playable: bool) -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if _is_pending_target_selectable and zone_name != "hand":
+		var board_rect := Rect2(Vector2.ZERO, size)
+		draw_rect(board_rect, PENDING_TARGET_BORDER_COLOR, false, PENDING_TARGET_BORDER_WIDTH)
 	if _is_playable and zone_name == "hand":
 		# 绘制可打出状态边框
 		var rect := Rect2(Vector2.ZERO, size)
