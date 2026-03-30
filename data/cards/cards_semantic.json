@@ -5,6 +5,7 @@
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
+      "TEMP_BP",
       "COMPOSITE"
     ],
     "abilities": [
@@ -19,10 +20,10 @@
       {
         "id": "UA31BT_MMM_1_035_on_attack_786c851e21",
         "timing": "ON_ATTACK",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分のエナジーLに〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP"
       },
       {
         "id": "UA31BT_MMM_1_035_on_life_trigger_1893c592fd",
@@ -87,17 +88,17 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "TEMP_BP",
       "DRAW_1"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_038_on_enter_31960d25ca",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP"
       },
       {
         "id": "UA31BT_MMM_1_038_on_life_trigger_91b04beda2",
@@ -108,10 +109,8 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_039",
@@ -169,6 +168,7 @@
       "RAID"
     ],
     "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
       "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
@@ -176,10 +176,10 @@
       {
         "id": "UA31BT_MMM_1_041_on_enter_851e73b2d6",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを2枚引き、自分の手札を1枚場外に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
       },
       {
         "id": "UA31BT_MMM_1_041_on_leave_a080cb17f9",
@@ -372,17 +372,17 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "TEMP_KEYWORD",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_049_main_activate_517786ccd9",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "このキャラが登場したターン中のみ発動できる。自分の場の他のキャラを1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_KEYWORD"
       },
       {
         "id": "UA31BT_MMM_1_049_on_life_trigger_bab7196d2b",
@@ -393,10 +393,8 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_050",
@@ -452,22 +450,20 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "COMPOSITE"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_052_main_activate_ddbfbcd32c",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "COMPOSITE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_054",
@@ -497,17 +493,17 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "TEMP_BP",
       "COMPOSITE"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_055_main_activate_c16bdc3246",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "このキャラがアクティブの場合のみ発動できる。自分の場の〈百江 なぎさ〉か他の［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚選び、このターン中、BP+1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP"
       },
       {
         "id": "UA31BT_MMM_1_055_on_life_trigger_1893c592fd",
@@ -518,10 +514,8 @@
         "template_type": "COMPOSITE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_056",
@@ -619,17 +613,17 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "SELECT_AND_MOVE",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_060_on_enter_c7c20a29af",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場外から紫の［特徴：魔法少女］を1枚まで手札に加える。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       },
       {
         "id": "UA31BT_MMM_1_060_on_life_trigger_bab7196d2b",
@@ -640,10 +634,8 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_061",
@@ -682,7 +674,7 @@
     ],
     "template_types": [
       "READY_AND_TEMP_BP",
-      "UNSUPPORTED"
+      "TEMP_BP"
     ],
     "abilities": [
       {
@@ -696,16 +688,14 @@
       {
         "id": "UA31BT_MMM_1_062_on_play_f9ce148bf7",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_063",
@@ -741,8 +731,7 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -756,16 +745,14 @@
       {
         "id": "UA31BT_MMM_1_064_on_play_df5c30d21c",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP2000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場の［特徴：ピュエラ・マギ・ホーリー・クインテット］1枚につき、この効果で選べるキャラのBPの範囲+1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_065",
@@ -801,8 +788,7 @@
     "source": "cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -816,16 +802,14 @@
       {
         "id": "UA31BT_MMM_1_066_on_play_21af7db47b",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_067",
@@ -833,7 +817,8 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "UNSUPPORTED",
+      "TEMP_BP"
     ],
     "abilities": [
       {
@@ -855,10 +840,10 @@
       {
         "id": "UA31BT_MMM_1_067_on_play_6712de979d",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分のフロントLのキャラを1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP"
       }
     ],
     "can_be_expressed_by_dsl": false,

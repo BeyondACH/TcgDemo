@@ -81,15 +81,6 @@
   - `battle_context` 是否在 ON_LEAVE / 延迟效果 / 叠放离场后不残留脏状态
 - 若后续新增高风险规则修复，先补主冒烟，再扩正式 raw 样例。
 
-### P2：非高风险计划项
-
-- `docs/plan/todo.md` 中仍未落地、但不属于高风险规则区的项，当前优先顺序固定为：
-  1. 更完整的日志输出
-  2. 完善 `ui/card_preview_panel.gd`
-  3. 开始游戏前弹窗选择双方卡组
-  4. 开始时的卡组打乱逻辑
-- 这批事项不应与高风险规则语义变更混在同一轮处理。
-
 ## 接口冻结项
 
 - 若继续实现当前未支持能力，优先冻结 `tools/compile_cards_effects.py` 的 IR 输出，再改 `core/effect_resolver.gd` 的 requirement / target / step 解释器。

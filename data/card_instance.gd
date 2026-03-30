@@ -17,6 +17,7 @@ var flags := {
 	"activated_main_this_turn": false,
 	"double_attack_consumed": false,
 	"double_block_consumed": false,
+	"entered_this_turn": false,
 	"entered_via_raid": false,
 	"is_stacked_under": false,
 	"stack_parent_uid": "",
@@ -32,6 +33,7 @@ func reset_turn_flags() -> void:
 	flags["activated_main_this_turn"] = false
 	flags["double_attack_consumed"] = false
 	flags["double_block_consumed"] = false
+	flags["entered_this_turn"] = false
 
 func clear_runtime_effect_flags() -> void:
 	flags["entered_via_raid"] = false

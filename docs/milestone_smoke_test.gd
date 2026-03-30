@@ -34,6 +34,7 @@ func _init() -> void:
 	_run_test("同时触发顺序", _test_simultaneous_trigger_order)
 	_run_test("直到下个自己回合开始的效果仅在来源方回合开始失效", _test_until_next_self_turn_start_expires_only_for_source_controller)
 	_run_test("本回合临时关键词会在结束时清理且不残留运行时脏状态", _test_end_of_turn_temp_keyword_cleanup_leaves_no_runtime_residue)
+	_run_test("本回合登场标记会在下个自己回合开始时清理", _test_entered_this_turn_flag_clears_on_next_turn_start)
 	_run_test("多个结束主阶段延迟效果不会残留运行时脏状态", _test_multiple_end_main_delayed_effects_leave_no_runtime_residue)
 	_run_test("RAID 显式落点选择", _test_raid_zone_choice)
 	_run_test("RAID 生命触发二选一", _test_life_trigger_raid_choice)
@@ -1803,6 +1804,35 @@ func _test_end_of_turn_temp_keyword_cleanup_leaves_no_runtime_residue() -> Dicti
 		return _fail("END_OF_TURN 清理后不应残留 TEMP_KEYWORD 修饰")
 	if not manager.game_state.pending_decisions.is_empty() or not manager.game_state.effect_queue.is_empty() or not manager.game_state.battle_context.is_empty():
 		return _fail("END_OF_TURN 临时关键词清理后不应残留运行时脏状态")
+	return _ok()
+
+func _test_entered_this_turn_flag_clears_on_next_turn_start() -> Dictionary:
+	var manager := _new_manager()
+	var source_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_ENTERED_THIS_TURN",
+		"name": "本回合登场标记测试",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-ENTERED-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("entered_this_turn 测试来源卡创建失败")
+	source_card.flags["entered_this_turn"] = true
+	manager.zone_manager.reset_turn_flags(manager.game_state, UATypes.PLAYER_ONE)
+	source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("entered_this_turn 测试来源卡不应离场")
+	if bool(source_card.flags.get("entered_this_turn", false)):
+		return _fail("entered_this_turn 标记应在来源方下个回合开始时被清理")
 	return _ok()
 
 func _test_multiple_end_main_delayed_effects_leave_no_runtime_residue() -> Dictionary:

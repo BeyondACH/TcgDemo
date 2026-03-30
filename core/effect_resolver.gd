@@ -1250,6 +1250,11 @@ func _matches_filter(state: GameState, filter_variant, context: Dictionary, cand
 			if _matches_filter(state, nested, context, candidate_card_uid, source_card_uid):
 				return true
 		return false
+	if filter_type == "AND":
+		for nested in filter.get("filters", []):
+			if not _matches_filter(state, nested, context, candidate_card_uid, source_card_uid):
+				return false
+		return true
 	if filter_type == "SELF_IN_ZONE":
 		return source_card != null and source_card.zone == _parse_zone(filter.get("zone", filter.get("value", -1)))
 	return true
@@ -1294,11 +1299,49 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 				if field_def != null and field_def.name == required_name:
 					return true
 		return false
+	if requirement_type == "CONTROLLER_HAS_NAME_IN_ZONE":
+		if source_card == null:
+			return false
+		var player_mode_zone := str(requirement.get("owner", "SELF"))
+		var player_id_zone: String = source_card.controller_player_id
+		if player_mode_zone == "OPPONENT":
+			player_id_zone = _opponent_of(source_card.controller_player_id)
+		var zone_player = state.get_player(player_id_zone)
+		if zone_player == null:
+			return false
+		var required_zone_name := str(requirement.get("value", ""))
+		var zones: Array = requirement.get("zones", [])
+		for zone_variant in zones:
+			var zone_key := str(zone_variant)
+			var zone_cards: Array = []
+			match zone_key:
+				"FRONT_LINE":
+					zone_cards = zone_player.front_line
+				"ENERGY_LINE":
+					zone_cards = zone_player.energy_line
+				"HAND":
+					zone_cards = zone_player.hand
+				"LIFE":
+					zone_cards = zone_player.life
+				"OUTSIDE":
+					zone_cards = zone_player.outside
+				"REMOVED":
+					zone_cards = zone_player.removed
+				_:
+					zone_cards = []
+			for zone_card_uid in zone_cards:
+				var zone_card = state.get_card(str(zone_card_uid))
+				var zone_def = state.get_card_def(zone_card.def_id) if zone_card != null else null
+				if zone_def != null and zone_def.name == required_zone_name:
+					return true
+		return false
 	if requirement_type == "CARD_BP_LTE":
 		var compare_card = candidate_card if candidate_card != null else source_card
 		if compare_card == null:
 			return false
 		return int(compare_card.current_bp) <= int(requirement.get("value", 0))
+	if requirement_type == "SOURCE_BP_GTE":
+		return source_card != null and int(source_card.current_bp) >= int(requirement.get("value", 0))
 	if requirement_type == "CARD_BP_LTE_DYNAMIC":
 		var compare_dynamic = candidate_card if candidate_card != null else source_card
 		if compare_dynamic == null:
@@ -1432,6 +1475,8 @@ func _matches_requirement(state: GameState, requirement_variant, context: Dictio
 		return selected_def_type != null and UATypes.card_type_to_text(selected_def_type.card_type) == str(requirement.get("value", ""))
 	if requirement_type == "SOURCE_STATE_IS_ACTIVE":
 		return source_card != null and source_card.state == UATypes.CardState.ACTIVE
+	if requirement_type == "SOURCE_ENTERED_THIS_TURN":
+		return source_card != null and bool(source_card.flags.get("entered_this_turn", false))
 	if requirement_type == "CONTROLLER_TRAIT_NAME_COUNT_GTE":
 		if source_card == null:
 			return false
@@ -1516,6 +1561,28 @@ func _resolve_numeric_value(state: GameState, provider_variant, context: Diction
 					continue
 				unique_names[field_def.name] = true
 		return unique_names.size() * int(provider.get("multiplier", 1))
+	if provider_type == "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED":
+		var source_card_fixed = state.get_card(source_card_uid)
+		if source_card_fixed == null:
+			return int(provider.get("value", 0))
+		var fixed_player = state.get_player(source_card_fixed.controller_player_id)
+		if fixed_player == null:
+			return int(provider.get("value", 0))
+		var trait_fixed := str(provider.get("trait", ""))
+		var count := 0
+		for zone_cards in [fixed_player.front_line, fixed_player.energy_line]:
+			for fixed_uid_variant in zone_cards:
+				var fixed_uid := str(fixed_uid_variant)
+				if fixed_uid == "":
+					continue
+				var fixed_card = state.get_card(fixed_uid)
+				var fixed_def = state.get_card_def(fixed_card.def_id) if fixed_card != null else null
+				if fixed_def == null:
+					continue
+				if trait_fixed != "" and not fixed_def.traits.has(trait_fixed):
+					continue
+				count += 1
+		return int(provider.get("value", 0)) + count * int(provider.get("multiplier", 1))
 	return int(provider.get("value", 0))
 
 func _apply_energy_delta_map(cost_map: Dictionary, delta_map: Dictionary) -> Dictionary:
@@ -1842,6 +1909,7 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 		zone_manager.spend_ap(player, effective_cost_ap)
 		zone_manager.move_card(state, card_uid, target_zone, controller_player_id)
 		card.state = target_state
+		card.flags["entered_this_turn"] = true
 		card.flags["entered_via_raid"] = false
 		var card_def = state.get_card_def(card.def_id)
 		logs.append("%s plays %s to %s." % [

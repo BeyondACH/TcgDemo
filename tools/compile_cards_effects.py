@@ -232,6 +232,15 @@ def _manual_context_target(
     return [target_spec], steps
 
 
+def _name_in_zone_requirement(name: str, zones: list[str], owner: str = "SELF") -> dict:
+    return {
+        "type": "CONTROLLER_HAS_NAME_IN_ZONE",
+        "value": name,
+        "zones": zones,
+        "owner": owner,
+    }
+
+
 def _fixed_value_provider(value: int) -> dict:
     return {"type": "FIXED", "value": value}
 
@@ -659,6 +668,17 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
             [{"type": "DRAW", "value": 1}] + steps + [{"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"}],
         )
 
+    if text == "カードを2枚引き、自分の手札を1枚場外に置く。":
+        target_specs, steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "discard_from_hand")
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            [{"type": "DRAW", "value": 2}] + steps + [{"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"}],
+        )
+
     if text == "自分のAPカードを2枚まで選び、アクティブにする。":
         return _supported_ability(
             card,
@@ -668,6 +688,19 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
             [],
             [{"type": "ACTIVATE_AP_SLOTS", "value": 2}],
         )
+
+    match = re.fullmatch(r"自分のエナジーLに〈(.+)〉がある場合、相手のフロントLのキャラを1枚まで選び、このターン中、BP-(\d+)。", text)
+    if match:
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [_name_in_zone_requirement(match.group(1), ["ENERGY_LINE"])],
+            0,
+            1,
+            "selected_target",
+        )
+        steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": -int(match.group(2)), "expires": "END_OF_TURN"})
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
     match = re.fullmatch(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。", text)
     if match:
@@ -687,6 +720,16 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
         steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_life_card", "to": "HAND"})
         steps.append({"type": "DRAW", "value": 2})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [{"type": "SOURCE_BP_GTE", "value": 5000}],
+            [],
+            [{"type": "ACTIVATE_CARD", "target_uid": "SOURCE_CARD"}],
+        )
 
     if text == "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。":
         target_specs, steps = _hand_character_summon_steps(2)
@@ -792,10 +835,86 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
         steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 1000, "expires": "END_OF_TURN"})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
+    if text == "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [],
+            0,
+            1,
+            "selected_target",
+            filters=[{"type": "NOT_SOURCE_CARD"}],
+        )
+        steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 1000, "expires": "END_OF_TURN"})
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
     if text == "自分の場の［特徴：魔法少女］を1枚選び、このターン中、BP+500。":
         requirements = [{"type": "CARD_HAS_TRAIT", "value": "魔法少女"}]
         target_specs, steps = _manual_single_target("SELF", ["FRONT_LINE", "ENERGY_LINE"], requirements, 1, 1, "selected_target")
         steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 500, "expires": "END_OF_TURN"})
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if text == "このキャラが登場したターン中のみ発動できる。自分の場の他のキャラを1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [],
+            1,
+            1,
+            "selected_target",
+            filters=[{"type": "NOT_SOURCE_CARD"}],
+        )
+        steps.append({"type": "ADD_TEMP_KEYWORD", "target_var": "selected_target", "keyword": "IMPACT", "expires": "END_OF_TURN"})
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [{"type": "SOURCE_ENTERED_THIS_TURN"}],
+            target_specs,
+            steps,
+        )
+
+    if text == "このキャラがアクティブの場合のみ発動できる。自分の場の〈百江 なぎさ〉か他の［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚選び、このターン中、BP+1000。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [],
+            1,
+            1,
+            "selected_target",
+            filters=[
+                {
+                    "type": "OR",
+                    "filters": [
+                        {"type": "NAME_IS", "value": "百江 なぎさ"},
+                        {"type": "AND", "filters": [{"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"}, {"type": "NOT_SOURCE_CARD"}]},
+                    ],
+                }
+            ],
+        )
+        steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 1000, "expires": "END_OF_TURN"})
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [{"type": "SOURCE_STATE_IS_ACTIVE"}],
+            target_specs,
+            steps,
+        )
+
+    if text == "自分の場外から紫の［特徴：魔法少女］を1枚まで手札に加える。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["OUTSIDE"],
+            [
+                {"type": "CARD_COLOR_IS", "value": "PURPLE"},
+                {"type": "CARD_HAS_TRAIT", "value": "魔法少女"},
+            ],
+            0,
+            1,
+            "selected_outside_card",
+        )
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_outside_card", "to": "HAND"})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
     if text == "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。":
@@ -1013,6 +1132,68 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
 
     if re.fullmatch(r"自分の場に〈(.+)〉がある場合、手札にあるこのカードの消費APを-1する。", text):
         return None
+
+    if text == "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。":
+        target_specs, steps = _manual_single_target("SELF", ["FRONT_LINE"], [], 1, 1, "selected_target")
+        steps.extend(
+            [
+                {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 2000, "expires": "END_OF_TURN"},
+                {"type": "ADD_TEMP_KEYWORD", "target_var": "selected_target", "keyword": "IMPACT_PLUS_1", "expires": "END_OF_TURN"},
+                {
+                    "type": "DRAW",
+                    "value": 1,
+                    "requirements": [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "暁美 ほむら"}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "『BP2000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場の［特徴：ピュエラ・マギ・ホーリー・クインテット］1枚につき、この効果で選べるキャラのBPの範囲+1000。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": {
+                        "type": "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED",
+                        "value": 2000,
+                        "trait": "ピュエラ・マギ・ホーリー・クインテット",
+                        "multiplier": 1000,
+                    },
+                }
+            ],
+        )
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": _conditional_value_provider(
+                        _fixed_value_provider(3000),
+                        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "暁美 ほむら"}],
+                        _fixed_value_provider(5000),
+                    ),
+                }
+            ],
+        )
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分のフロントLのキャラを1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。":
+        target_specs, steps = _manual_single_target("SELF", ["FRONT_LINE"], [], 1, 1, "selected_target")
+        steps.extend(
+            [
+                {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 1000, "expires": "END_OF_TURN"},
+                {"type": "ADD_TEMP_KEYWORD", "target_var": "selected_target", "keyword": "DOUBLE_ATTACK", "expires": "END_OF_TURN"},
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
     if text == "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。":
         target_specs, steps = _manual_single_target("SELF", ["LIFE"], [], 1, 1, "selected_life_card")

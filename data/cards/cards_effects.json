@@ -57,8 +57,69 @@
           "event": "ON_ATTACK"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CONTROLLER_HAS_NAME_IN_ZONE",
+                  "value": "鹿目 まどか",
+                  "zones": [
+                    "ENERGY_LINE"
+                  ],
+                  "owner": "SELF"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CONTROLLER_HAS_NAME_IN_ZONE",
+                  "value": "鹿目 まどか",
+                  "zones": [
+                    "ENERGY_LINE"
+                  ],
+                  "owner": "SELF"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": -1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -67,8 +128,7 @@
           "effect_box": "OUTER",
           "text": "自分のエナジーLに〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_035_on_life_trigger_1893c592fd",
@@ -186,6 +246,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
+        "TEMP_BP",
         "COMPOSITE"
       ]
     }
@@ -357,8 +418,61 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -367,8 +481,7 @@
           "effect_box": "OUTER",
           "text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_038_on_life_trigger_91b04beda2",
@@ -399,7 +512,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_BP",
         "DRAW_1"
       ]
     }
@@ -762,8 +875,54 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 2
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -772,8 +931,7 @@
           "effect_box": "RAID_INNER",
           "text": "カードを2枚引き、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_041_on_leave_a080cb17f9",
@@ -823,6 +981,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
         "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
@@ -1710,9 +1869,66 @@
         "timing": {
           "event": "MAIN_ACTIVATE"
         },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "requirements": [
+          {
+            "type": "SOURCE_ENTERED_THIS_TURN"
+          }
+        ],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "IMPACT",
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -1721,8 +1937,7 @@
           "effect_box": "OUTER",
           "text": "このキャラが登場したターン中のみ発動できる。自分の場の他のキャラを1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_049_on_life_trigger_bab7196d2b",
@@ -1795,7 +2010,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_KEYWORD",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -2080,9 +2295,19 @@
         "timing": {
           "event": "MAIN_ACTIVATE"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "SOURCE_BP_GTE",
+            "value": 5000
+          }
+        ],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_CARD",
+            "target_uid": "SOURCE_CARD"
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -2091,15 +2316,14 @@
           "effect_box": "OUTER",
           "text": "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -2213,9 +2437,102 @@
         "timing": {
           "event": "MAIN_ACTIVATE"
         },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "requirements": [
+          {
+            "type": "SOURCE_STATE_IS_ACTIVE"
+          }
+        ],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "AND",
+                      "filters": [
+                        {
+                          "type": "HAS_TRAIT",
+                          "value": "ピュエラ・マギ・ホーリー・クインテット"
+                        },
+                        {
+                          "type": "NOT_SOURCE_CARD"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "百江 なぎさ"
+                    },
+                    {
+                      "type": "AND",
+                      "filters": [
+                        {
+                          "type": "HAS_TRAIT",
+                          "value": "ピュエラ・マギ・ホーリー・クインテット"
+                        },
+                        {
+                          "type": "NOT_SOURCE_CARD"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -2224,8 +2541,7 @@
           "effect_box": "OUTER",
           "text": "このキャラがアクティブの場合のみ発動できる。自分の場の〈百江 なぎさ〉か他の［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚選び、このターン中、BP+1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_055_on_life_trigger_1893c592fd",
@@ -2342,7 +2658,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_BP",
         "COMPOSITE"
       ]
     }
@@ -2951,8 +3267,68 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_outside_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_outside_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "PURPLE"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_card",
+            "to": "HAND"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2961,8 +3337,7 @@
           "effect_box": "OUTER",
           "text": "自分の場外から紫の［特徴：魔法少女］を1枚まで手札に加える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_060_on_life_trigger_bab7196d2b",
@@ -3035,7 +3410,7 @@
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -3233,8 +3608,67 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 2000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "IMPACT_PLUS_1",
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "DRAW",
+            "value": 1,
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "暁美 ほむら"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3243,8 +3677,7 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -3252,7 +3685,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
-        "UNSUPPORTED"
+        "TEMP_BP"
       ]
     }
   },
@@ -3444,8 +3877,70 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED",
+                    "value": 2000,
+                    "trait": "ピュエラ・マギ・ホーリー・クインテット",
+                    "multiplier": 1000
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED",
+                    "value": 2000,
+                    "trait": "ピュエラ・マギ・ホーリー・クインテット",
+                    "multiplier": 1000
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3454,16 +3949,14 @@
           "effect_box": "OUTER",
           "text": "『BP2000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場の［特徴：ピュエラ・マギ・ホーリー・クインテット］1枚につき、この効果で選べるキャラのBPの範囲+1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -3714,8 +4207,92 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "暁美 ほむら"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "暁美 ほむら"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3724,16 +4301,14 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -3854,8 +4429,57 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "DOUBLE_ATTACK",
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3864,8 +4488,7 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLのキャラを1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -3873,7 +4496,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "UNSUPPORTED",
+        "TEMP_BP"
       ]
     }
   },

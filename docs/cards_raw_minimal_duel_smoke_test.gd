@@ -45,6 +45,17 @@ const RAW_ACTIVE_FIELD := "UA31BT_MMM_1_091"
 const RAW_SOUL_GEM_FINAL_BT := "UA31BT_MMM_1_096"
 const RAW_LIFE_TO_HAND_DOUBLE_ATTACK_RAID := "UA31BT_MMM_1_083"
 const RAW_MULTI_NAME_RAID := "UA31ST_MMM_1_104"
+const RAW_ATTACK_BP_DOWN_035 := "UA31BT_MMM_1_035"
+const RAW_OTHER_BUFF_038 := "UA31BT_MMM_1_038"
+const RAW_DRAW_TWO_DISCARD_041 := "UA31BT_MMM_1_041"
+const RAW_ENTERED_TURN_IMPACT_049 := "UA31BT_MMM_1_049"
+const RAW_BP_GATE_READY_052 := "UA31BT_MMM_1_052"
+const RAW_ACTIVE_TARGET_BUFF_055 := "UA31BT_MMM_1_055"
+const RAW_OUTSIDE_SEARCH_060 := "UA31BT_MMM_1_060"
+const RAW_EVENT_IMPACT_PLUS_062 := "UA31BT_MMM_1_062"
+const RAW_EVENT_DYNAMIC_QUINTET_064 := "UA31BT_MMM_1_064"
+const RAW_EVENT_DYNAMIC_HOMURA_066 := "UA31BT_MMM_1_066"
+const RAW_EVENT_DOUBLE_ATTACK_067 := "UA31BT_MMM_1_067"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -100,6 +111,16 @@ func _init() -> void:
 	_run_test("Raw Soul Gem Final Restores Life Only When Empty", _test_raw_soul_gem_final_restores_life_only_when_empty)
 	_run_test("Raw Raid Gains Double Attack After Life To Hand This Turn", _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn)
 	_run_test("Raw Raid Gains Tiered Bonuses From Unique Name Count", _test_raw_raid_gains_tiered_bonuses_from_unique_name_count)
+	_run_test("Raw Attack BP Down Requires Named Energy", _test_raw_attack_bp_down_requires_named_energy)
+	_run_test("Raw Draw Two Then Discard Uses Explicit Choice 041", _test_raw_draw_two_then_discard_041)
+	_run_test("Raw Entered This Turn Grants Impact Only Same Turn", _test_raw_entered_this_turn_grants_impact_only_same_turn)
+	_run_test("Raw Main Activate BP Threshold 052", _test_raw_main_activate_bp_threshold_052)
+	_run_test("Raw Active Source Target Buff 055", _test_raw_active_source_target_buff_055)
+	_run_test("Raw Outside Search 060", _test_raw_outside_search_060)
+	_run_test("Raw Event Impact Plus Draw 062", _test_raw_event_impact_plus_draw_062)
+	_run_test("Raw Event Dynamic Quintet Threshold 064", _test_raw_event_dynamic_quintet_threshold_064)
+	_run_test("Raw Event Dynamic Homura Threshold 066", _test_raw_event_dynamic_homura_threshold_066)
+	_run_test("Raw Event Double Attack Buff 067", _test_raw_event_double_attack_buff_067)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -2490,6 +2511,322 @@ func _test_raw_preview_summon_056_with_bonus() -> Dictionary:
 	manager.effect_resolver.cleanup_turn_expirations(manager.game_state, player_id)
 	if (source_card.flags.get("temp_keywords", []) as Array).has("IMPACT"):
 		return _fail("Raw 056 bonus sample should remove the temporary IMPACT keyword at end of turn.")
+	return _ok()
+
+func _test_raw_attack_bp_down_requires_named_energy() -> Dictionary:
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	var manager_fail := _new_manager()
+	var source_fail_uid := _move_or_spawn_card_to_zone(manager_fail, player_id, RAW_ATTACK_BP_DOWN_035, UATypes.Zone.FRONT_LINE)
+	var fail_target_uid := _spawn_named_character(manager_fail, opponent_id, "035减攻失败目标", [], 3000, UATypes.Zone.FRONT_LINE)
+	manager_fail.game_state.phase = UATypes.Phase.ATTACK
+	manager_fail.effect_resolver.resolve_trigger(source_fail_uid, UATypes.TriggerType.ON_ATTACK, manager_fail.game_state, {"target_player_id": opponent_id})
+	if not manager_fail.game_state.pending_decisions.is_empty():
+		return _fail("Raw 035 fail sample should not request target selection without Madoka in energy.")
+	var fail_target = manager_fail.game_state.get_card(fail_target_uid)
+	if fail_target == null or int(fail_target.current_bp) != 3000:
+		return _fail("Raw 035 fail sample should leave the enemy target BP unchanged without Madoka in energy.")
+
+	var manager_success := _new_manager()
+	var source_success_uid := _move_or_spawn_card_to_zone(manager_success, player_id, RAW_ATTACK_BP_DOWN_035, UATypes.Zone.FRONT_LINE)
+	var success_target_uid := _spawn_named_character(manager_success, opponent_id, "035减攻成功目标", [], 3000, UATypes.Zone.FRONT_LINE)
+	_spawn_named_character(manager_success, player_id, "鹿目 まどか", ["魔法少女"], 1500, UATypes.Zone.ENERGY_LINE)
+	manager_success.game_state.phase = UATypes.Phase.ATTACK
+	manager_success.effect_resolver.resolve_trigger(source_success_uid, UATypes.TriggerType.ON_ATTACK, manager_success.game_state, {"target_player_id": opponent_id})
+	if manager_success.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 035 success sample should request explicit enemy target selection when Madoka is in energy.")
+	var decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": success_target_uid,
+	})
+	var success_target = manager_success.game_state.get_card(success_target_uid)
+	if success_target == null or int(success_target.current_bp) != 2000:
+		return _fail("Raw 035 success sample should apply BP-1000 to the chosen enemy front-line target.")
+	return _ok()
+
+func _test_raw_draw_two_then_discard_041() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_DRAW_TWO_DISCARD_041, UATypes.Zone.FRONT_LINE)
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card != null:
+		source_card.flags["entered_via_raid"] = true
+	var draw_a := _spawn_named_character(manager, player_id, "041抽到A", [], 1000, UATypes.Zone.DECK)
+	var draw_b := _spawn_named_character(manager, player_id, "041抽到B", [], 1000, UATypes.Zone.DECK)
+	var discard_uid := _spawn_named_character(manager, player_id, "041弃牌候选", [], 1000, UATypes.Zone.HAND)
+	_set_deck_top_order(manager, player_id, [draw_a, draw_b])
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var outside_before := player.outside.size()
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 041 sample should request an explicit discard choice after drawing 2.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choice_values := _extract_choice_values(decision.get("choices", []))
+	if not choice_values.has(discard_uid):
+		return _fail("Raw 041 sample should expose the hand card chosen to discard.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": discard_uid,
+	})
+	if player.hand.size() != hand_before + 1:
+		return _fail("Raw 041 sample should net +1 hand after drawing 2 then discarding 1.")
+	if player.outside.size() != outside_before + 1 or not player.outside.has(discard_uid):
+		return _fail("Raw 041 sample should move the chosen discard card to outside.")
+	return _ok()
+
+func _test_raw_entered_this_turn_grants_impact_only_same_turn() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 3):
+		return _fail("Raw 049 sample should prepare 3 purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ENTERED_TURN_IMPACT_049, UATypes.Zone.HAND)
+	var target_uid := _spawn_named_character(manager, player_id, "049授冲击目标", [], 2000, UATypes.Zone.FRONT_LINE)
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	manager.request_main_activate(source_uid)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 049 same-turn sample should request explicit allied target selection.")
+	var same_turn_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(same_turn_decision.get("resolution_id", "")),
+		"choice": target_uid,
+	})
+	var target_card = manager.game_state.get_card(target_uid)
+	if target_card == null or not (target_card.flags.get("temp_keywords", []) as Array).has("IMPACT"):
+		return _fail("Raw 049 same-turn sample should grant temporary IMPACT to the selected other ally.")
+	manager.zone_manager.reset_turn_flags(manager.game_state, player_id)
+	var logs: Array[String] = manager.effect_resolver.activate_main_effect(manager.game_state, player_id, source_uid, 0)
+	if logs.is_empty() or str(logs[0]) != "Main activate failed: requirements not met.":
+		return _fail("Raw 049 next-turn sample should fail once the entered_this_turn window has expired.")
+	return _ok()
+
+func _test_raw_main_activate_bp_threshold_052() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_BP_GATE_READY_052, UATypes.Zone.FRONT_LINE)
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw 052 sample source card should exist.")
+	source_card.state = UATypes.CardState.RESTED
+	source_card.current_bp = 4000
+	manager.request_main_activate(source_uid)
+	if source_card.state != UATypes.CardState.RESTED:
+		return _fail("Raw 052 fail sample should keep the source rested below 5000 BP.")
+	source_card.current_bp = 5000
+	manager.request_main_activate(source_uid)
+	if source_card.state != UATypes.CardState.ACTIVE:
+		return _fail("Raw 052 success sample should activate the source card once it reaches 5000 BP.")
+	return _ok()
+
+func _test_raw_active_source_target_buff_055() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ACTIVE_TARGET_BUFF_055, UATypes.Zone.FRONT_LINE)
+	var nagisa_uid := _spawn_named_character(manager, player_id, "百江 なぎさ", ["ピュエラ・マギ・ホーリー・クインテット"], 2000, UATypes.Zone.ENERGY_LINE)
+	var quintet_uid := _spawn_named_character(manager, player_id, "055其他五色", ["ピュエラ・マギ・ホーリー・クインテット"], 1500, UATypes.Zone.FRONT_LINE)
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw 055 sample source card should exist.")
+	source_card.state = UATypes.CardState.RESTED
+	manager.request_main_activate(source_uid)
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw 055 fail sample should not open target selection while the source is rested.")
+	source_card.state = UATypes.CardState.ACTIVE
+	manager.request_main_activate(source_uid)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 055 success sample should request explicit ally target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choices := _extract_choice_values(decision.get("choices", []))
+	if not choices.has(nagisa_uid) or not choices.has(quintet_uid):
+		return _fail("Raw 055 success sample should expose Nagisa and another quintet ally as legal targets.")
+	if choices.has(source_uid):
+		return _fail("Raw 055 success sample should not expose the source as the 'other quintet' branch target.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": quintet_uid,
+	})
+	var quintet_card = manager.game_state.get_card(quintet_uid)
+	if quintet_card == null or int(quintet_card.current_bp) != 2500:
+		return _fail("Raw 055 success sample should grant BP+1000 to the selected target.")
+	return _ok()
+
+func _test_raw_outside_search_060() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_OUTSIDE_SEARCH_060, UATypes.Zone.FRONT_LINE)
+	var legal_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_060_PURPLE_MAGIC",
+		"name": "060合法紫魔法少女",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-060-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"PURPLE": 1},
+		"cost_ap": 1,
+		"energy_provided": {"PURPLE": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	var illegal_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_060_RED_MAGIC",
+		"name": "060非法红魔法少女",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-060-2",
+		"traits": ["魔法少女"],
+		"cost_energy": {"RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"RED": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 060 sample should request explicit outside-card selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choices := _extract_choice_values(decision.get("choices", []))
+	if not choices.has(legal_uid) or choices.has(illegal_uid):
+		return _fail("Raw 060 sample should expose only purple magic-girl cards in outside.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": legal_uid,
+	})
+	if not _player(manager, player_id).hand.has(legal_uid):
+		return _fail("Raw 060 sample should move the chosen outside card to hand.")
+	return _ok()
+
+func _test_raw_event_impact_plus_draw_062() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 3):
+		return _fail("Raw 062 sample should prepare 3 purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_IMPACT_PLUS_062, UATypes.Zone.HAND)
+	var target_uid := _spawn_named_character(manager, player_id, "062前线目标", [], 2000, UATypes.Zone.FRONT_LINE)
+	_spawn_named_character(manager, player_id, "暁美 ほむら", ["魔法少女"], 1500, UATypes.Zone.ENERGY_LINE)
+	var hand_before := _player(manager, player_id).hand.size()
+	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 062 sample should request explicit front-line target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": target_uid,
+	})
+	var target_card = manager.game_state.get_card(target_uid)
+	if target_card == null or int(target_card.current_bp) != 4000:
+		return _fail("Raw 062 sample should grant BP+2000 to the selected front-line character.")
+	if not (target_card.flags.get("temp_keywords", []) as Array).has("IMPACT_PLUS_1"):
+		return _fail("Raw 062 sample should grant IMPACT_PLUS_1 to the selected front-line character.")
+	if _player(manager, player_id).hand.size() != hand_before:
+		return _fail("Raw 062 sample should draw 1 after using the event when Homura is on the field.")
+	return _ok()
+
+func _test_raw_event_dynamic_quintet_threshold_064() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 1)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 4):
+		return _fail("Raw 064 sample should prepare 4 purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_DYNAMIC_QUINTET_064, UATypes.Zone.HAND)
+	_spawn_named_character(manager, player_id, "064五色支援1", ["ピュエラ・マギ・ホーリー・クインテット"], 1000, UATypes.Zone.FRONT_LINE)
+	_spawn_named_character(manager, player_id, "064五色支援2", ["ピュエラ・マギ・ホーリー・クインテット"], 1000, UATypes.Zone.ENERGY_LINE)
+	var target_uid := _spawn_named_character(manager, opponent_id, "064四千目标", [], 4000, UATypes.Zone.FRONT_LINE)
+	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 064 sample should request explicit enemy target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choices := _extract_choice_values(decision.get("choices", []))
+	if not choices.has(target_uid):
+		return _fail("Raw 064 sample should expose a 4000-BP target after two quintet supports raise the threshold to 4000.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": target_uid,
+	})
+	var target_card = manager.game_state.get_card(target_uid)
+	if target_card == null or target_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw 064 sample should move the chosen legal target to outside.")
+	return _ok()
+
+func _test_raw_event_dynamic_homura_threshold_066() -> Dictionary:
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	var manager_default := _new_manager()
+	manager_default.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_default, player_id), 1)
+	if not _ensure_color_energy(manager_default, player_id, "PURPLE", 4):
+		return _fail("Raw 066 default sample should prepare 4 purple energy.")
+	var source_default_uid := _move_or_spawn_card_to_zone(manager_default, player_id, RAW_EVENT_DYNAMIC_HOMURA_066, UATypes.Zone.HAND)
+	var illegal_default_uid := _spawn_named_character(manager_default, opponent_id, "066默认4000目标", [], 4000, UATypes.Zone.FRONT_LINE)
+	manager_default.play_card(source_default_uid, UATypes.Zone.OUTSIDE)
+	if not manager_default.game_state.pending_decisions.is_empty():
+		return _fail("Raw 066 default sample should not open target selection when every enemy target is above the default 3000 threshold.")
+	var illegal_default = manager_default.game_state.get_card(illegal_default_uid)
+	if illegal_default == null or illegal_default.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw 066 default sample should leave the 4000-BP enemy on the field without Homura.")
+
+	var manager_upgraded := _new_manager()
+	manager_upgraded.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_upgraded, player_id), 1)
+	if not _ensure_color_energy(manager_upgraded, player_id, "PURPLE", 4):
+		return _fail("Raw 066 upgraded sample should prepare 4 purple energy.")
+	var source_upgraded_uid := _move_or_spawn_card_to_zone(manager_upgraded, player_id, RAW_EVENT_DYNAMIC_HOMURA_066, UATypes.Zone.HAND)
+	_spawn_named_character(manager_upgraded, player_id, "暁美 ほむら", ["魔法少女"], 1500, UATypes.Zone.FRONT_LINE)
+	var legal_target_uid := _spawn_named_character(manager_upgraded, opponent_id, "066升级5000目标", [], 5000, UATypes.Zone.FRONT_LINE)
+	manager_upgraded.play_card(source_upgraded_uid, UATypes.Zone.OUTSIDE)
+	if manager_upgraded.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 066 upgraded sample should request explicit enemy target selection.")
+	var upgraded_decision: Dictionary = manager_upgraded.game_state.pending_decisions[0]
+	var upgraded_choices := _extract_choice_values(upgraded_decision.get("choices", []))
+	if not upgraded_choices.has(legal_target_uid):
+		return _fail("Raw 066 upgraded sample should expose a 5000-BP target once Homura is on the field.")
+	manager_upgraded.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(upgraded_decision.get("resolution_id", "")),
+		"choice": legal_target_uid,
+	})
+	var legal_target = manager_upgraded.game_state.get_card(legal_target_uid)
+	if legal_target == null or legal_target.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw 066 upgraded sample should move the chosen 5000-BP target to outside.")
+	return _ok()
+
+func _test_raw_event_double_attack_buff_067() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	if not _ensure_color_energy(manager, player_id, "PURPLE", 3):
+		return _fail("Raw 067 sample should prepare 3 purple energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_DOUBLE_ATTACK_067, UATypes.Zone.HAND)
+	var target_uid := _spawn_named_character(manager, player_id, "067双击目标", [], 2000, UATypes.Zone.FRONT_LINE)
+	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 067 sample should request explicit front-line target selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": target_uid,
+	})
+	var target_card = manager.game_state.get_card(target_uid)
+	if target_card == null or int(target_card.current_bp) != 3000:
+		return _fail("Raw 067 sample should grant BP+1000 to the chosen front-line target.")
+	if not (target_card.flags.get("temp_keywords", []) as Array).has("DOUBLE_ATTACK"):
+		return _fail("Raw 067 sample should grant temporary DOUBLE_ATTACK to the chosen front-line target.")
+	manager.effect_resolver.cleanup_turn_expirations(manager.game_state, player_id)
+	if (target_card.flags.get("temp_keywords", []) as Array).has("DOUBLE_ATTACK"):
+		return _fail("Raw 067 sample should remove temporary DOUBLE_ATTACK at end of turn.")
 	return _ok()
 
 func _player(manager: GameManager, player_id: String) -> PlayerState:
