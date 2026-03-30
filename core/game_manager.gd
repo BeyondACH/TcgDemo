@@ -262,6 +262,9 @@ func request_attack(attacker_uid: String, options: Dictionary = {}) -> Dictionar
 		_apply_logs(["Cannot attack: %s" % result.get("reason", "unknown")])
 		emit_state_changed()
 		return result
+	var attack_log := str(result.get("attack_log", "")).strip_edges()
+	if attack_log != "":
+		_apply_logs([attack_log])
 	# Entering the block window changes priority to the defender, so the UI must
 	# receive a fresh snapshot before it decides whether human input is allowed.
 	emit_state_changed()
@@ -473,11 +476,13 @@ func acknowledge_life_reveal(card_uid: String) -> Dictionary:
 func get_snapshot() -> Dictionary:
 	# Return a UI-facing snapshot instead of exposing raw runtime state.
 	var action_player_id := _current_priority_player_id()
+	var display_hand_player_id := _current_display_hand_player_id(action_player_id)
 	var legal_actions := rules_engine.get_legal_actions(game_state, action_player_id)
 	return {
 		"turn_number": game_state.turn_number,
 		"active_player_id": game_state.active_player_id,
 		"priority_player_id": action_player_id,
+		"display_hand_player_id": display_hand_player_id,
 		"phase": UATypes.phase_to_text(game_state.phase),
 		"opening_complete": game_state.opening_complete,
 		"can_bonus_draw": _can_active_player_bonus_draw(),
@@ -904,6 +909,14 @@ func _current_priority_player_id() -> String:
 			return str(battle_context.get("defender_player_id", game_state.active_player_id))
 	return game_state.active_player_id
 
+func _current_display_hand_player_id(action_player_id: String) -> String:
+	if get_controller_type(action_player_id) == PlayerController.CONTROLLER_HUMAN:
+		return action_player_id
+	for player_id in [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]:
+		if get_controller_type(player_id) == PlayerController.CONTROLLER_HUMAN:
+			return player_id
+	return action_player_id
+
 func _queue_controller_drive() -> void:
 	if _controller_drive_in_progress or _controller_drive_pending:
 		return
@@ -1042,6 +1055,11 @@ func _energy_pool_for_player(player: PlayerState) -> Dictionary:
 			continue
 		for color in card_def.energy_provided.keys():
 			pool[color] = int(pool.get(color, 0)) + int(card_def.energy_provided.get(color, 0))
+		for passive_bonus in _passive_energy_bonus_modifiers(card, card_def):
+			var passive_color := str(passive_bonus.get("color", ""))
+			var passive_value := int(passive_bonus.get("value", 0))
+			if passive_color != "" and passive_value != 0:
+				pool[passive_color] = int(pool.get(passive_color, 0)) + passive_value
 	for modifier_variant in game_state.static_modifiers:
 		var modifier: Dictionary = modifier_variant
 		if str(modifier.get("modifier_type", "")) != "ENERGY_BONUS":
@@ -1059,6 +1077,27 @@ func _energy_pool_for_player(player: PlayerState) -> Dictionary:
 		if color != "" and value != 0:
 			pool[color] = int(pool.get(color, 0)) + value
 	return pool
+
+func _passive_energy_bonus_modifiers(card: CardInstance, card_def: CardDef) -> Array[Dictionary]:
+	var modifiers: Array[Dictionary] = []
+	if card == null or card_def == null:
+		return modifiers
+	for ability_variant in card_def.abilities:
+		var ability: Dictionary = ability_variant
+		var event_name := str(ability.get("timing", {}).get("event", ""))
+		var kind := str(ability.get("kind", ""))
+		if event_name != "PASSIVE" and kind != "STATIC":
+			continue
+		for step_variant in ability.get("steps", []):
+			var step: Dictionary = step_variant
+			if str(step.get("type", "")) != "REGISTER_STATIC_MODIFIER":
+				continue
+			if str(step.get("modifier_type", "")) != "ENERGY_BONUS":
+				continue
+			if not _check_energy_bonus_condition(step, card.uid):
+				continue
+			modifiers.append(step)
+	return modifiers
 
 func _check_energy_bonus_condition(modifier: Dictionary, source_uid: String) -> bool:
 	var while_reqs: Array = modifier.get("while", [])
@@ -1088,6 +1127,9 @@ func _check_energy_bonus_condition(modifier: Dictionary, source_uid: String) -> 
 					if d != null and d.traits.has(trait_value):
 						unique_names[d.name] = true
 			if unique_names.size() < min_count:
+				return false
+		elif str(req.get("type", "")) == "SOURCE_STATE_IS_ACTIVE":
+			if source_card.state != UATypes.CardState.ACTIVE:
 				return false
 	return true
 

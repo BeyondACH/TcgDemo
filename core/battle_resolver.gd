@@ -22,6 +22,9 @@ func declare_attack(state: GameState, attacker_uid: String, options: Dictionary 
 	var attacker := state.get_card(attacker_uid)
 	if attacker == null:
 		return {"ok": false, "reason": "missing_attacker"}
+	var attacker_def: CardDef = state.get_card_def(attacker.def_id)
+	if attacker_def == null:
+		return {"ok": false, "reason": "missing_attacker_definition"}
 	var result := rules_engine.can_attack(state, attacker.controller_player_id, attacker_uid, options)
 	if not bool(result.get("ok", false)):
 		return result
@@ -47,6 +50,7 @@ func declare_attack(state: GameState, attacker_uid: String, options: Dictionary 
 	return {
 		"ok": true,
 		"attacker_uid": attacker_uid,
+		"attack_log": _format_attack_log(attacker, attacker_def),
 		"defender_player_id": defender_player_id,
 		"target_kind": target_kind,
 		"target_uid": target_uid,
@@ -73,7 +77,6 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 	var was_repeat_attack := bool(attacker.flags.get("attacked_this_turn", false))
 	attacker.state = UATypes.CardState.RESTED
 	attacker.flags["attacked_this_turn"] = true
-	logs.append(_format_attack_log(attacker_def))
 	logs.append_array(effect_resolver.resolve_trigger(attacker_uid, UATypes.TriggerType.ON_ATTACK, state, {
 		"target_player_id": defender_player_id,
 		"attacker_uid": attacker_uid,
@@ -286,10 +289,16 @@ func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -
 	var temp_keywords: Array = card.flags.get("temp_keywords", [])
 	return temp_keywords.has(keyword)
 
-func _format_attack_log(attacker_def: CardDef) -> String:
-	if attacker_def == null:
+func _format_attack_log(attacker: CardInstance, attacker_def: CardDef) -> String:
+	if attacker == null or attacker_def == null:
 		return "Unknown attacker attacks."
+	var labels: Array[String] = []
+	var instance_uid := attacker.uid.strip_edges()
+	if instance_uid != "":
+		labels.append(instance_uid)
 	var card_number := attacker_def.number.strip_edges()
 	if card_number != "":
-		return "%s [%s] attacks." % [attacker_def.name, card_number]
+		labels.append(card_number)
+	if not labels.is_empty():
+		return "%s [%s] attacks." % [attacker_def.name, " | ".join(labels)]
 	return "%s attacks." % attacker_def.name

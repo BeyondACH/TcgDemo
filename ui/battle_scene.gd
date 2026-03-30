@@ -272,33 +272,35 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	if _zone_cards_popup != null and _zone_cards_popup.visible:
 		_zone_cards_popup.hide_popup()
 	var active_player_id := str(snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var display_hand_player_id := _display_hand_player_id()
 	var priority_player_id := str(snapshot.get("priority_player_id", active_player_id))
 	var controller_types: Dictionary = snapshot.get("controller_types", {})
 	var players: Dictionary = snapshot.get("players", {})
 	var p1: Dictionary = players.get(UATypes.PLAYER_ONE, {})
 	var p2: Dictionary = players.get(UATypes.PLAYER_TWO, {})
 	var active_player_data: Dictionary = p1 if active_player_id == UATypes.PLAYER_ONE else p2
+	var display_hand_player_data: Dictionary = p1 if display_hand_player_id == UATypes.PLAYER_ONE else p2
 	var action_controller_type := str(controller_types.get(priority_player_id, snapshot.get("action_player_controller", "HUMAN")))
 	turn_label.text = "Turn %d" % int(snapshot.get("turn_number", 1))
 	active_player_label.text = "Action: %s (%s)" % [priority_player_id, action_controller_type]
 	phase_indicator.set_phase_text(str(snapshot.get("phase", "START")))
-	hand_count_label.text = "Hand: %d" % int(active_player_data.get("hand_count", 0))
+	hand_count_label.text = "Hand: %d" % int(display_hand_player_data.get("hand_count", 0))
 	energy_label.text = "Energy: %s" % _format_energy_total(active_player_data.get("available_energy", {}))
 	ap_label.text = "AP: %d/%d" % [int(active_player_data.get("ap_active", 0)), int(active_player_data.get("ap_total", 0))]
 	winner_label.text = "Winner: %s" % str(snapshot.get("winner_player_id", "-"))
 	opponent_board.set_board(UATypes.PLAYER_TWO, "Player 2", p2)
 	player_board.set_board(UATypes.PLAYER_ONE, "Player 1", p1)
 	var active_hand: Array = p2.get("hand", [])
-	if active_player_id == UATypes.PLAYER_ONE:
+	if display_hand_player_id == UATypes.PLAYER_ONE:
 		active_hand = p1.get("hand", [])
-	hand_view.set_hand(active_player_id, active_hand)
-	_update_hand_playable_states(active_player_id, active_hand)
+	hand_view.set_hand(display_hand_player_id, active_hand)
+	_update_hand_playable_states(display_hand_player_id, active_hand)
 	_sync_pending_decision_controls()
 	_sync_preview_selection_modal()
 	_sync_life_reveal_modal()
 	_sync_life_trigger_controls()
 	_sync_preview_panel()
-	selected_card_label.text = _selected_label_text(active_player_id)
+	selected_card_label.text = _selected_label_text(display_hand_player_id)
 	_update_action_buttons()
 	log_panel.set_logs(snapshot.get("logs", []))
 	var has_winner := str(snapshot.get("winner_player_id", "")) != ""
@@ -407,9 +409,9 @@ func _on_hand_card_selected(card_uid: String) -> void:
 	_selected_board_zone_name = ""
 	_sniper_attack_source_uid = ""
 	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
-	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-	var card_data := _find_hand_card(active_player_id, card_uid)
+	var display_hand_player_id := _display_hand_player_id()
+	selected_card_label.text = _selected_label_text(display_hand_player_id)
+	var card_data := _find_hand_card(display_hand_player_id, card_uid)
 	if not card_data.is_empty():
 		_set_preview_card(card_data, {
 			"relation_label": "己方",
@@ -421,8 +423,8 @@ func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
 	if _selected_hand_card_uid == "":
 		return
 	if not is_hovered and card_uid == _selected_hand_card_uid:
-		var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-		var card_data := _find_hand_card(active_player_id, _selected_hand_card_uid)
+		var display_hand_player_id := _display_hand_player_id()
+		var card_data := _find_hand_card(display_hand_player_id, _selected_hand_card_uid)
 		if not card_data.is_empty():
 			_set_preview_card(card_data, {
 				"relation_label": "己方",
@@ -463,14 +465,14 @@ func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_da
 		_selected_board_zone_name = ""
 		_selected_hand_card_uid = ""
 		_update_action_buttons()
-		selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+		selected_card_label.text = _selected_label_text(_display_hand_player_id())
 		return
 	_clear_raid_selection()
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "front_line"
 	_selected_hand_card_uid = ""
 	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 	if phase == "ATTACK" and player_id == active_player_id:
 		if board_actions.has("SNIPER_ATTACK"):
 			_sniper_attack_source_uid = card_uid
@@ -499,14 +501,14 @@ func _on_energy_card_pressed(player_id: String, card_uid: String, pressed_card_d
 		_selected_board_zone_name = ""
 		_selected_hand_card_uid = ""
 		_update_action_buttons()
-		selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+		selected_card_label.text = _selected_label_text(_display_hand_player_id())
 		return
 	_clear_raid_selection()
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "energy_line"
 	_selected_hand_card_uid = ""
 	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 	var card_name := str(card_data.get("name", card_uid))
 	var action_text := ", ".join(card_data.get("available_actions", []) as Array)
 	if action_text == "":
@@ -662,7 +664,7 @@ func _on_life_trigger_selected(index: int) -> void:
 		_selected_life_trigger_uid = ""
 		return
 	_selected_life_trigger_uid = str((pending[index] as Dictionary).get("card_uid", ""))
-	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 
 func _clear_selection() -> void:
 	_selected_hand_card_uid = ""
@@ -672,7 +674,7 @@ func _clear_selection() -> void:
 	_clear_preview_card()
 	_clear_raid_selection()
 	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 
 func _clear_pending_attack() -> void:
 	_pending_attack_uid = ""
@@ -796,13 +798,14 @@ func _on_zone_stack_requested(player_id: String, zone_name: String) -> void:
 
 func _sync_preview_panel() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var display_hand_player_id := _display_hand_player_id()
 	if _selected_hand_card_uid != "":
-		var hand_card := _find_hand_card(active_player_id, _selected_hand_card_uid)
+		var hand_card := _find_hand_card(display_hand_player_id, _selected_hand_card_uid)
 		if not hand_card.is_empty():
 			_set_preview_card(hand_card, {
 				"relation_label": "己方",
 				"zone_label": "手牌",
-			}, active_player_id, "hand")
+			}, display_hand_player_id, "hand")
 			return
 		_selected_hand_card_uid = ""
 	if _selected_board_card_uid != "":
@@ -817,7 +820,7 @@ func _sync_preview_panel() -> void:
 		if not preview_card.is_empty():
 			if _preview_zone_name == "hand":
 				_set_preview_card(preview_card, {
-					"relation_label": "己方" if _preview_player_id == active_player_id else "对手",
+					"relation_label": "己方" if _preview_player_id == display_hand_player_id else "对手",
 					"zone_label": "手牌",
 				}, _preview_player_id, _preview_zone_name)
 			else:
@@ -827,8 +830,9 @@ func _sync_preview_panel() -> void:
 
 func _update_action_buttons() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var display_hand_player_id := _display_hand_player_id()
 	var input_enabled := _human_input_enabled()
-	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
+	var card_data: Dictionary = _find_hand_card(display_hand_player_id, _selected_hand_card_uid)
 	var card_type := str(card_data.get("card_type", ""))
 	var available_actions: Array = card_data.get("available_actions", [])
 	var special_play_rule: Dictionary = card_data.get("special_play_rule", {})
@@ -927,7 +931,7 @@ func _on_pending_decision_selected(index: int) -> void:
 	_selected_pending_decision_choice_index = 0
 	_rebuild_pending_decision_choices()
 	_sync_preview_selection_modal()
-	selected_card_label.text = _selected_label_text(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)))
+	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 
 func _on_pending_decision_choice_selected(index: int) -> void:
 	_selected_pending_decision_choice_index = index
@@ -1046,6 +1050,110 @@ func _update_hand_playable_states(_player_id: String, hand_cards: Array) -> void
 
 func _human_input_enabled() -> bool:
 	return not _opening_setup_pending and bool(_snapshot.get("human_input_enabled", true))
+
+func _display_hand_player_id() -> String:
+	return str(_snapshot.get("display_hand_player_id", _snapshot.get("priority_player_id", UATypes.PLAYER_ONE)))
+
+func _decorate_board_targets(player_id: String, player_data_variant) -> Dictionary:
+	var player_data: Dictionary = (player_data_variant as Dictionary).duplicate(true)
+	var selectable_uids := _current_board_target_uid_set()
+	if selectable_uids.is_empty():
+		return player_data
+	for zone_name in ["front_line", "energy_line"]:
+		var cards: Array = player_data.get(zone_name, [])
+		var decorated_cards: Array = []
+		for card_variant in cards:
+			var card_data: Dictionary = (card_variant as Dictionary).duplicate(true)
+			var card_uid := str(card_data.get("uid", ""))
+			var target_meta := _board_target_meta_for(card_uid)
+			card_data["pending_target_selectable"] = selectable_uids.has(card_uid) \
+				and str(target_meta.get("player_id", player_id)) == player_id \
+				and str(target_meta.get("zone", zone_name)) == zone_name
+			decorated_cards.append(card_data)
+		player_data[zone_name] = decorated_cards
+	return player_data
+
+func _current_board_target_selection() -> Dictionary:
+	if not _human_input_enabled():
+		return {}
+	var decision := _current_pending_decision()
+	if decision.is_empty():
+		return {}
+	if not _is_board_target_selection_pending(decision):
+		return {}
+	return decision
+
+func _is_board_target_selection_pending(decision: Dictionary) -> bool:
+	if decision.is_empty():
+		return false
+	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
+		return false
+	if _is_preview_pending_decision(decision):
+		return false
+	return bool(decision.get("ui_allows_board_selection", false)) or not _current_board_target_uid_set_for(decision).is_empty()
+
+func _current_board_target_uid_set() -> Dictionary:
+	return _current_board_target_uid_set_for(_current_pending_decision())
+
+func _current_board_target_uid_set_for(decision: Dictionary) -> Dictionary:
+	var result := {}
+	if decision.is_empty():
+		return result
+	for target_uid_variant in decision.get("board_target_uids", []):
+		var target_uid := str(target_uid_variant)
+		if target_uid != "":
+			result[target_uid] = true
+	if not result.is_empty():
+		return result
+	for choice_variant in decision.get("choices", []):
+		var choice: Dictionary = choice_variant
+		var target_uid := str(choice.get("value", ""))
+		if _find_board_target_info(target_uid).is_empty():
+			continue
+		result[target_uid] = true
+	return result
+
+func _board_target_meta_for(card_uid: String) -> Dictionary:
+	var decision := _current_pending_decision()
+	if decision.is_empty():
+		return {}
+	for target_variant in decision.get("board_targets", []):
+		var target: Dictionary = target_variant
+		if str(target.get("uid", "")) == card_uid:
+			return target
+	return _find_board_target_info(card_uid)
+
+func _find_board_target_info(card_uid: String) -> Dictionary:
+	if card_uid == "":
+		return {}
+	var players: Dictionary = _snapshot.get("players", {})
+	for player_id_variant in players.keys():
+		var player_id := str(player_id_variant)
+		var player_data: Dictionary = players.get(player_id_variant, {})
+		for zone_name in ["front_line", "energy_line"]:
+			for card_variant in player_data.get(zone_name, []):
+				var card_data: Dictionary = card_variant
+				if str(card_data.get("uid", "")) == card_uid:
+					return {
+						"uid": card_uid,
+						"player_id": player_id,
+						"zone": zone_name,
+					}
+	return {}
+
+func _resolve_board_target_selection_from_card(player_id: String, card_uid: String, zone_name: String) -> bool:
+	return BoardTargetSelectionHelper.resolve_pending_click(
+		game_manager,
+		_snapshot,
+		_opening_setup_pending,
+		player_id,
+		card_uid,
+		zone_name,
+		_selected_pending_decision_index
+	)
+
+func _should_allow_board_selection_passthrough() -> bool:
+	return not _current_board_target_selection().is_empty()
 
 func _run_layout_probe_if_requested() -> void:
 	if not OS.get_cmdline_user_args().has("--layout-probe"):

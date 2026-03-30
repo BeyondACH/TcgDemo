@@ -1962,11 +1962,45 @@
       "cost_modifiers": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_046_passive_7dbbcaedd2",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "PURPLE",
+            "value": 1,
+            "while": [
+              {
+                "type": "SOURCE_STATE_IS_ACTIVE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "紫",
+          "effect_box": "OUTER",
+          "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -6052,11 +6086,45 @@
       "cost_modifiers": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_081_passive_7dbbcaedd2",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "while": [
+              {
+                "type": "SOURCE_STATE_IS_ACTIVE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "赤",
+          "effect_box": "OUTER",
+          "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -9084,11 +9152,45 @@
       "cost_modifiers": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_081_passive_7dbbcaedd2",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "while": [
+              {
+                "type": "SOURCE_STATE_IS_ACTIVE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "赤",
+          "effect_box": "OUTER",
+          "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
     "analysis": {
       "source": "cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {

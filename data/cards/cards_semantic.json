@@ -303,12 +303,21 @@
     "card_id": "UA31BT_MMM_1_046",
     "source": "cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
-    ]
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_046_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_047",
@@ -1099,12 +1108,21 @@
     "card_id": "UA31BT_MMM_1_081",
     "source": "cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
-    ]
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31BT_MMM_1_081_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_082",
@@ -1715,12 +1733,21 @@
     "card_id": "UA31ST_MMM_1_081",
     "source": "cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
-    ]
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA31ST_MMM_1_081_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31ST_MMM_1_085",

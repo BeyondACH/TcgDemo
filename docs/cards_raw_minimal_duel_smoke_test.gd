@@ -38,6 +38,9 @@ const RAW_RETURN_OTHER_OR_SELF_ST := "UA31ST_MMM_1_085"
 const RAW_PREVIEW_MAGIC_GIRL_REWARD := "UA31BT_MMM_1_098"
 const RAW_TEMP_ENERGY_SELF_LEAVE_BT := "UA31BT_MMM_1_070"
 const RAW_TEMP_ENERGY_SELF_LEAVE_ST := "UA31ST_MMM_1_070"
+const RAW_ACTIVE_ENERGY_PURPLE := "UA31BT_MMM_1_046"
+const RAW_ACTIVE_ENERGY_RED_BT := "UA31BT_MMM_1_081"
+const RAW_ACTIVE_ENERGY_RED_ST := "UA31ST_MMM_1_081"
 const RAW_SELF_SPECIAL_PLAY_PERMISSION := "UA31BT_MMM_1_090"
 const RAW_CONDITIONAL_ENERGY_DISCOUNT := "UA31BT_MMM_1_068"
 const RAW_DRAW_THEN_DISCARD := "UA31ST_MMM_1_101"
@@ -96,6 +99,7 @@ func _init() -> void:
 	_run_test("Raw Temporary Energy Bonus Then Self Leave", _test_raw_temporary_energy_bonus_then_self_leave)
 	_run_test("Raw Temporary Energy Bonus Enables Followup Play", _test_raw_temporary_energy_bonus_enables_followup_play)
 	_run_test("Raw Temporary Energy Bonus Expires Before Next Turn Play", _test_raw_temporary_energy_bonus_expires_before_next_turn_play)
+	_run_test("Raw Active State Energy Bonus Requires Active State", _test_raw_active_state_energy_bonus_requires_active_state)
 	_run_test("Raw Delayed Self Leave Removes Energy Contribution", _test_raw_delayed_self_leave_removes_energy_contribution)
 	_run_test("Raw Delayed Self Leave Preserves Followup Chain", _test_raw_delayed_self_leave_does_not_break_followup_trigger_chain)
 	_run_test("Raw Self Special Play Permission After Leave", _test_raw_self_special_play_permission_after_leave)
@@ -3130,6 +3134,52 @@ func _test_raw_temporary_energy_bonus_expires_before_next_turn_play() -> Diction
 	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, followup_uid)
 	if expired_actions.has("PLAY_FRONT") or expired_actions.has("PLAY_ENERGY"):
 		return _fail("Raw temporary energy expiry sample should lose the extra play permission after the turn-end expiry cleanup.")
+	return _ok()
+
+func _test_raw_active_state_energy_bonus_requires_active_state() -> Dictionary:
+	var purple_manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	purple_manager.game_state.active_player_id = player_id
+	purple_manager.game_state.phase = UATypes.Phase.MAIN
+	var purple_uid := _move_or_spawn_card_to_zone(purple_manager, player_id, RAW_ACTIVE_ENERGY_PURPLE, UATypes.Zone.ENERGY_LINE)
+	if purple_uid == "":
+		return _fail("Raw active-state purple energy sample card should be available.")
+	var purple_card = purple_manager.game_state.get_card(purple_uid)
+	if purple_card == null or purple_card.zone != UATypes.Zone.ENERGY_LINE:
+		return _fail("Raw active-state purple energy sample should start in the energy line.")
+	purple_card.state = UATypes.CardState.ACTIVE
+	var purple_active_snapshot := purple_manager.get_snapshot()
+	var purple_active_energy := int(purple_active_snapshot.get("players", {}).get(player_id, {}).get("available_energy", {}).get("PURPLE", 0))
+	if purple_active_energy != 2:
+		return _fail("Raw active-state purple energy sample should provide 2 purple energy while ACTIVE.")
+	purple_card.state = UATypes.CardState.RESTED
+	var purple_rested_snapshot := purple_manager.get_snapshot()
+	var purple_rested_energy := int(purple_rested_snapshot.get("players", {}).get(player_id, {}).get("available_energy", {}).get("PURPLE", 0))
+	if purple_rested_energy != 1:
+		return _fail("Raw active-state purple energy sample should only provide its base 1 purple energy while RESTED.")
+
+	var red_manager := _new_manager()
+	red_manager.game_state.active_player_id = player_id
+	red_manager.game_state.phase = UATypes.Phase.MAIN
+	var red_bt_uid := _move_or_spawn_card_to_zone(red_manager, player_id, RAW_ACTIVE_ENERGY_RED_BT, UATypes.Zone.ENERGY_LINE)
+	var red_st_uid := _move_or_spawn_card_to_zone(red_manager, player_id, RAW_ACTIVE_ENERGY_RED_ST, UATypes.Zone.ENERGY_LINE)
+	if red_bt_uid == "" or red_st_uid == "":
+		return _fail("Raw active-state red energy sample cards should both be available.")
+	var red_bt_card = red_manager.game_state.get_card(red_bt_uid)
+	var red_st_card = red_manager.game_state.get_card(red_st_uid)
+	if red_bt_card == null or red_st_card == null:
+		return _fail("Raw active-state red energy sample cards should resolve to runtime instances.")
+	red_bt_card.state = UATypes.CardState.ACTIVE
+	red_st_card.state = UATypes.CardState.RESTED
+	var red_mixed_snapshot := red_manager.get_snapshot()
+	var red_mixed_energy := int(red_mixed_snapshot.get("players", {}).get(player_id, {}).get("available_energy", {}).get("RED", 0))
+	if red_mixed_energy != 3:
+		return _fail("Raw active-state red energy sample should total 3 red energy when one copy is ACTIVE and the other is RESTED.")
+	red_st_card.state = UATypes.CardState.ACTIVE
+	var red_active_snapshot := red_manager.get_snapshot()
+	var red_active_energy := int(red_active_snapshot.get("players", {}).get(player_id, {}).get("available_energy", {}).get("RED", 0))
+	if red_active_energy != 4:
+		return _fail("Raw active-state red energy sample should total 4 red energy when both copies are ACTIVE.")
 	return _ok()
 
 func _test_raw_delayed_self_leave_removes_energy_contribution() -> Dictionary:

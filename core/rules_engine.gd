@@ -646,6 +646,11 @@ func _has_required_energy(state: GameState, player: PlayerState, cost: Dictionar
 			continue
 		for color in card_def.energy_provided.keys():
 			pool[color] = int(pool.get(color, 0)) + int(card_def.energy_provided.get(color, 0))
+		for passive_bonus in _passive_energy_bonus_modifiers(state, card, card_def):
+			var passive_color := str(passive_bonus.get("color", ""))
+			var passive_value := int(passive_bonus.get("value", 0))
+			if passive_color != "" and passive_value != 0:
+				pool[passive_color] = int(pool.get(passive_color, 0)) + passive_value
 	for modifier_variant in state.static_modifiers:
 		var modifier: Dictionary = modifier_variant
 		if str(modifier.get("modifier_type", "")) != "ENERGY_BONUS":
@@ -666,6 +671,27 @@ func _has_required_energy(state: GameState, player: PlayerState, cost: Dictionar
 		if int(pool.get(color, 0)) < int(cost.get(color, 0)):
 			return false
 	return true
+
+func _passive_energy_bonus_modifiers(state: GameState, card: CardInstance, card_def: CardDef) -> Array[Dictionary]:
+	var modifiers: Array[Dictionary] = []
+	if card == null or card_def == null:
+		return modifiers
+	for ability_variant in card_def.abilities:
+		var ability: Dictionary = ability_variant
+		var event_name := str(ability.get("timing", {}).get("event", ""))
+		var kind := str(ability.get("kind", ""))
+		if event_name != "PASSIVE" and kind != "STATIC":
+			continue
+		for step_variant in ability.get("steps", []):
+			var step: Dictionary = step_variant
+			if str(step.get("type", "")) != "REGISTER_STATIC_MODIFIER":
+				continue
+			if str(step.get("modifier_type", "")) != "ENERGY_BONUS":
+				continue
+			if not _check_energy_bonus_condition(state, step, card.uid):
+				continue
+			modifiers.append(step)
+	return modifiers
 
 func _check_energy_bonus_condition(state: GameState, modifier: Dictionary, source_uid: String) -> bool:
 	var while_reqs: Array = modifier.get("while", [])
@@ -695,6 +721,9 @@ func _check_energy_bonus_condition(state: GameState, modifier: Dictionary, sourc
 					if d != null and d.traits.has(trait_value):
 						unique_names[d.name] = true
 			if unique_names.size() < min_count:
+				return false
+		elif str(req.get("type", "")) == "SOURCE_STATE_IS_ACTIVE":
+			if source_card.state != UATypes.CardState.ACTIVE:
 				return false
 	return true
 

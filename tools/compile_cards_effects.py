@@ -1624,6 +1624,26 @@ def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
             ],
         )
 
+    if text == "このキャラがアクティブの場合、このキャラの発生エナジー+。":
+        pseudo_trigger["trigger"] = "PASSIVE"
+        return _supported_ability(
+            card,
+            "PASSIVE",
+            pseudo_trigger,
+            [],
+            [],
+            [
+                {
+                    "type": "REGISTER_STATIC_MODIFIER",
+                    "modifier_type": "ENERGY_BONUS",
+                    "color": _primary_energy_color(card),
+                    "value": 1,
+                    "while": [{"type": "SOURCE_STATE_IS_ACTIVE"}],
+                }
+            ],
+            "STATIC",
+        )
+
     return None
 
 
