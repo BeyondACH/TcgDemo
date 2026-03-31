@@ -5,6 +5,7 @@ const UATypes = preload("res://core/ua_types.gd")
 const RulesEngine = preload("res://core/rules_engine.gd")
 const ZoneManager = preload("res://core/zone_manager.gd")
 const EffectResolver = preload("res://core/effect_resolver.gd")
+const PlayerUtils = preload("res://core/player_utils.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
@@ -28,7 +29,7 @@ func declare_attack(state: GameState, attacker_uid: String, options: Dictionary 
 	var result := rules_engine.can_attack(state, attacker.controller_player_id, attacker_uid, options)
 	if not bool(result.get("ok", false)):
 		return result
-	var defender_player_id := _opponent_of(attacker.controller_player_id)
+	var defender_player_id := PlayerUtils.opponent_of(attacker.controller_player_id)
 	var target_kind := str(result.get("target_kind", "PLAYER"))
 	var blockers: Array[String] = []
 	if target_kind == "PLAYER" and not bool(result.get("is_sniper_attack", false)):
@@ -69,7 +70,7 @@ func resolve_attack(state: GameState, attacker_uid: String, blocker_uid := "") -
 	var battle_context: Dictionary = state.battle_context.duplicate(true)
 	if battle_context.is_empty():
 		return ["Attack failed: missing battle context."]
-	var defender_player_id := str(battle_context.get("defender_player_id", _opponent_of(attacker.controller_player_id)))
+	var defender_player_id := str(battle_context.get("defender_player_id", PlayerUtils.opponent_of(attacker.controller_player_id)))
 	var target_kind := str(battle_context.get("target_kind", "PLAYER"))
 	var target_uid := str(battle_context.get("target_uid", ""))
 	var is_sniper_attack := bool(battle_context.get("is_sniper_attack", false))
@@ -277,11 +278,6 @@ func _after_block_state_change(blocker: CardInstance, blocker_def: CardDef, was_
 		blocker.flags["double_block_consumed"] = true
 	else:
 		blocker.state = UATypes.CardState.ACTIVE
-
-func _opponent_of(player_id: String) -> String:
-	if player_id == UATypes.PLAYER_ONE:
-		return UATypes.PLAYER_TWO
-	return UATypes.PLAYER_ONE
 
 func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
 	if card_def.keywords.has(keyword):

@@ -9,6 +9,7 @@ const RulesEngine = preload("res://core/rules_engine.gd")
 const EffectResolver = preload("res://core/effect_resolver.gd")
 const BattleResolver = preload("res://core/battle_resolver.gd")
 const TurnManager = preload("res://core/turn_manager.gd")
+const DecisionManager = preload("res://core/decision_manager.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
@@ -16,6 +17,9 @@ const ActionTypes = preload("res://core/actions/action_types.gd")
 const PlayerController = preload("res://core/controllers/player_controller.gd")
 const HumanController = preload("res://core/controllers/human_controller.gd")
 const AIController = preload("res://core/controllers/ai_controller.gd")
+const ControllerManager = preload("res://core/controllers/controller_manager.gd")
+const SnapshotSerializer = preload("res://core/ui/snapshot_serializer.gd")
+const LifeTriggerManager = preload("res://core/life_trigger_manager.gd")
 
 signal state_changed(snapshot: Dictionary)
 signal blockers_requested(request: Dictionary)
@@ -36,19 +40,68 @@ var rules_engine := RulesEngine.new(zone_manager)
 var effect_resolver := EffectResolver.new(zone_manager, victory_checker, rules_engine)
 var battle_resolver := BattleResolver.new(rules_engine, zone_manager, effect_resolver)
 var turn_manager := TurnManager.new(zone_manager, victory_checker, effect_resolver)
+var decision_manager := DecisionManager.new()
+var controller_manager := ControllerManager.new()
+var snapshot_serializer: SnapshotSerializer
+var life_trigger_manager: LifeTriggerManager
 var _deck_card_lookup := {}
-var _controller_config := {}
-var _controllers := {}
-var _controller_drive_pending := false
-var _controller_drive_in_progress := false
 
 func _ready() -> void:
 	randomize()
+	_initialize_extracted_managers()
+	_initialize_controller_manager()
+
+
+func _initialize_extracted_managers() -> void:
+	snapshot_serializer = SnapshotSerializer.new(rules_engine, self)
+	life_trigger_manager = LifeTriggerManager.new(effect_resolver, zone_manager, rules_engine, self)
+	life_trigger_manager.set_callbacks(
+		_enqueue_pending_decision,
+		_play_card_for_life_trigger
+	)
+
+
+func _play_card_for_life_trigger(card_uid: String, target_zone: int, options: Dictionary) -> Dictionary:
+	return play_card(card_uid, target_zone, options)
+
+
+func _ensure_extracted_managers_initialized() -> void:
+	if snapshot_serializer == null or life_trigger_manager == null:
+		_initialize_extracted_managers()
+
+
+func _initialize_controller_manager() -> void:
+	controller_manager.player_one_controller_type = player_one_controller_type
+	controller_manager.player_two_controller_type = player_two_controller_type
+	controller_manager.game_state = game_state
+	controller_manager.action_executor = _execute_controller_action
+	controller_manager.legal_actions_provider = _get_controller_legal_actions
+	controller_manager.snapshot_provider = get_snapshot
+	controller_manager.winner_checker = _has_winner
+	controller_manager.pending_gate_checker = _has_pending_gate
+	controller_manager.priority_player_provider = _current_priority_player_id
+	controller_manager.pending_context_provider = _current_pending_context
+	controller_manager.life_reveal_refresher = _refresh_life_reveal_waiting_for_player
+	controller_manager.life_reveal_waiting_checker = _is_life_reveal_waiting_for_player
+
+
+func _execute_controller_action(action: Dictionary) -> void:
+	execute_action(action)
+
+
+func _get_controller_legal_actions(_game_state, player_id: String) -> Array[Dictionary]:
+	return rules_engine.get_legal_actions(game_state, player_id)
+
+
+func _is_life_reveal_waiting_for_player() -> bool:
+	return life_trigger_manager.is_life_reveal_waiting_for_player(game_state)
 
 # Initialize a fresh game state, decks, starting hands, and opening turn.
 func setup_game(setup_config: Dictionary = {}) -> void:
+	_ensure_extracted_managers_initialized()
 	game_state = GameState.new()
-	_reset_controller_state(_extract_controller_config(setup_config))
+	controller_manager.game_state = game_state
+	controller_manager.reset_state(_extract_controller_config(setup_config))
 	_load_card_defs()
 	var player_deck_paths := _extract_player_deck_paths(setup_config)
 	var starter_a: Array = _load_deck_list(str(player_deck_paths.get(UATypes.PLAYER_ONE, STARTER_A_PATH)))
@@ -78,26 +131,10 @@ func get_available_decks() -> Array[Dictionary]:
 	return decks
 
 func set_controller_config(controller_config: Dictionary) -> void:
-	_reset_controller_state(controller_config)
+	controller_manager.reset_state(controller_config)
 
 func get_controller_type(player_id: String) -> String:
-	var controller: PlayerController = _controllers.get(player_id)
-	if controller == null:
-		return PlayerController.CONTROLLER_HUMAN
-	return controller.controller_type
-
-func _reset_controller_state(controller_config: Dictionary = {}) -> void:
-	_controller_config = {
-		UATypes.PLAYER_ONE: {"controller": player_one_controller_type},
-		UATypes.PLAYER_TWO: {"controller": player_two_controller_type},
-	}
-	for player_id in controller_config.keys():
-		_controller_config[player_id] = (controller_config[player_id] as Dictionary).duplicate(true)
-	_controllers.clear()
-	_controllers[UATypes.PLAYER_ONE] = _build_controller_for(UATypes.PLAYER_ONE)
-	_controllers[UATypes.PLAYER_TWO] = _build_controller_for(UATypes.PLAYER_TWO)
-	_controller_drive_pending = false
-	_controller_drive_in_progress = false
+	return controller_manager.get_controller_type(player_id)
 
 func _extract_controller_config(setup_config: Dictionary) -> Dictionary:
 	var controller_config := {}
@@ -118,19 +155,6 @@ func _extract_player_deck_paths(setup_config: Dictionary) -> Dictionary:
 		if configured_path != "":
 			player_deck_paths[player_id] = configured_path
 	return player_deck_paths
-
-func _build_controller_for(player_id: String) -> PlayerController:
-	var config: Dictionary = _controller_config.get(player_id, {})
-	var controller_type := str(config.get("controller", PlayerController.CONTROLLER_HUMAN))
-	match controller_type:
-		PlayerController.CONTROLLER_AI_SIMPLE:
-			var ai_controller := AIController.new()
-			ai_controller.controller_type = PlayerController.CONTROLLER_AI_SIMPLE
-			return ai_controller
-		_:
-			var human_controller := HumanController.new()
-			human_controller.controller_type = PlayerController.CONTROLLER_HUMAN
-			return human_controller
 
 func advance_phase() -> Dictionary:
 	if _has_winner() or _has_pending_gate():
@@ -455,7 +479,7 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 func resolve_life_trigger_decision(card_uid: String, activate: bool) -> Dictionary:
 	if _has_winner():
 		return {"ok": false, "reason": "winner_exists"}
-	_apply_logs(effect_resolver.resolve_life_trigger_decision(game_state, card_uid, activate))
+	_apply_logs(life_trigger_manager.resolve_life_trigger_decision(game_state, card_uid, activate))
 	_resume_effect_queue_if_possible()
 	emit_state_changed()
 	return {"ok": true}
@@ -463,12 +487,11 @@ func resolve_life_trigger_decision(card_uid: String, activate: bool) -> Dictiona
 func acknowledge_life_reveal(card_uid: String) -> Dictionary:
 	if _has_winner():
 		return {"ok": false, "reason": "winner_exists"}
-	if _life_reveal_requires_continue_then_ai(card_uid):
-		_mark_life_reveal_view_confirmed(card_uid)
-		game_state.pending_life_reveal_waiting_for_player = false
+	var logs := life_trigger_manager.acknowledge_life_reveal(game_state, card_uid, controller_manager.is_human)
+	_apply_logs(logs)
+	if logs.is_empty() and life_trigger_manager.is_life_reveal_waiting_for_player(game_state):
 		emit_state_changed()
 		return {"ok": true}
-	_apply_logs(effect_resolver.acknowledge_life_reveal(game_state, card_uid))
 	_resume_effect_queue_if_possible()
 	emit_state_changed()
 	return {"ok": true}
@@ -478,39 +501,12 @@ func get_snapshot() -> Dictionary:
 	var action_player_id := _current_priority_player_id()
 	var display_hand_player_id := _current_display_hand_player_id(action_player_id)
 	var legal_actions := rules_engine.get_legal_actions(game_state, action_player_id)
-	return {
-		"turn_number": game_state.turn_number,
-		"active_player_id": game_state.active_player_id,
-		"priority_player_id": action_player_id,
-		"display_hand_player_id": display_hand_player_id,
-		"phase": UATypes.phase_to_text(game_state.phase),
-		"opening_complete": game_state.opening_complete,
-		"can_bonus_draw": _can_active_player_bonus_draw(),
-		"winner_player_id": game_state.winner_player_id,
-		"battle_context": game_state.battle_context.duplicate(true),
-		"last_battle_result": game_state.last_battle_result.duplicate(true),
-		"effect_queue_count": game_state.effect_queue.size(),
-		"pending_decisions": _serialize_pending_decisions(action_player_id),
-		"pending_life_triggers": game_state.pending_life_triggers.duplicate(true),
-		"life_reveal_modal": _serialize_life_reveal_modal(action_player_id),
-		"controller_types": {
-			UATypes.PLAYER_ONE: get_controller_type(UATypes.PLAYER_ONE),
-			UATypes.PLAYER_TWO: get_controller_type(UATypes.PLAYER_TWO),
-		},
-		"action_player_controller": get_controller_type(action_player_id),
-		"human_input_enabled": get_controller_type(action_player_id) == PlayerController.CONTROLLER_HUMAN,
-		"legal_actions": legal_actions.duplicate(true),
-		"players": {
-			UATypes.PLAYER_ONE: _serialize_player(UATypes.PLAYER_ONE, action_player_id),
-			UATypes.PLAYER_TWO: _serialize_player(UATypes.PLAYER_TWO, action_player_id)
-		},
-		"logs": game_state.logs.duplicate(),
-	}
+	return snapshot_serializer.get_snapshot(game_state, action_player_id, display_hand_player_id, legal_actions)
 
 func emit_state_changed() -> void:
 	_refresh_life_reveal_waiting_for_player()
 	emit_signal("state_changed", get_snapshot())
-	_queue_controller_drive()
+	controller_manager.queue_drive()
 
 func append_ui_log(text: String) -> void:
 	_apply_logs([text])
@@ -635,175 +631,6 @@ func _place_starting_life(player_id: String) -> Array[String]:
 	logs.append("%s starts with %d hand and %d life." % [player_id, player.hand.size(), player.life.size()])
 	return logs
 
-func _serialize_player(player_id: String, action_player_id: String) -> Dictionary:
-	var player: PlayerState = game_state.get_player(player_id)
-	if player == null:
-		return {}
-	return {
-		"player_id": player.player_id,
-		"controller_type": get_controller_type(player_id),
-		"deck_count": player.deck.size(),
-		"hand_count": player.hand.size(),
-		"life_count": player.life.size(),
-		"ap_total": player.ap_total(),
-		"ap_active": player.ap_active_count(),
-		"used_bonus_draw": player.used_bonus_draw,
-		"available_energy": _energy_pool_for_player(player),
-		"hand": _serialize_cards(player.hand, action_player_id),
-		"life": _serialize_life_cards(player.life),
-		"front_line": _serialize_cards(player.front_line, action_player_id),
-		"energy_line": _serialize_cards(player.energy_line, action_player_id),
-		"outside": _serialize_cards(player.outside, action_player_id),
-		"removed": _serialize_cards(player.removed, action_player_id),
-		"outside_count": player.outside.size(),
-		"removed_count": player.removed.size(),
-	}
-
-func _serialize_cards(card_uids: Array[String], action_player_id: String) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for card_uid in card_uids:
-		var serialized := _serialize_card(card_uid, action_player_id, true)
-		if not serialized.is_empty():
-			result.append(serialized)
-	return result
-
-func _serialize_pending_decisions(action_player_id: String) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for pending_variant in game_state.pending_decisions:
-		var pending: Dictionary = (pending_variant as Dictionary).duplicate(true)
-		var preview_card_uids: Array = pending.get("preview_card_uids", [])
-		if not preview_card_uids.is_empty():
-			pending["preview_cards"] = _serialize_card_list_for_ui(preview_card_uids, action_player_id)
-		if str(pending.get("type", "")) == "ABILITY_TARGET_SELECTION":
-			var board_targets: Array[Dictionary] = []
-			var board_target_uids: Array[String] = []
-			for choice_variant in pending.get("choices", []):
-				var choice: Dictionary = choice_variant
-				var card_uid := str(choice.get("value", ""))
-				if card_uid == "":
-					continue
-				var card: CardInstance = game_state.get_card(card_uid)
-				if card == null:
-					continue
-				if card.zone != UATypes.Zone.FRONT_LINE and card.zone != UATypes.Zone.ENERGY_LINE:
-					continue
-				board_target_uids.append(card_uid)
-				board_targets.append({
-					"uid": card_uid,
-					"player_id": card.controller_player_id,
-					"zone": UATypes.zone_to_key(card.zone),
-				})
-			pending["ui_allows_board_selection"] = not board_targets.is_empty()
-			pending["board_target_uids"] = board_target_uids
-			pending["board_targets"] = board_targets
-		result.append(pending)
-	return result
-
-func _serialize_card_list_for_ui(card_uids: Array, action_player_id: String) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for card_uid_variant in card_uids:
-		var serialized := _serialize_card(str(card_uid_variant), action_player_id, false)
-		if not serialized.is_empty():
-			result.append(serialized)
-	return result
-
-func _serialize_life_reveal_modal(action_player_id: String) -> Dictionary:
-	if game_state.pending_life_reveal.is_empty():
-		return {
-			"visible": false,
-			"player_id": "",
-			"current_card_uid": "",
-			"revealed_cards": [],
-			"can_activate": false,
-			"can_skip": false,
-			"can_acknowledge": false,
-			"awaiting_player_confirmation": false,
-			"ai_resolves_after_confirmation": false,
-			"waiting_for_ai_resolution": false,
-		}
-	var reveal: Dictionary = game_state.pending_life_reveal
-	var current_card_uid := str(reveal.get("current_card_uid", ""))
-	var result_cards: Array[Dictionary] = []
-	var current_view_confirmed := false
-	for entry_variant in reveal.get("revealed_cards", []):
-		var entry: Dictionary = entry_variant
-		var card_uid := str(entry.get("card_uid", ""))
-		var serialized := _serialize_card(card_uid, action_player_id, false)
-		if serialized.is_empty():
-			continue
-		serialized["has_life_trigger"] = bool(entry.get("has_life_trigger", false))
-		serialized["view_confirmed"] = bool(entry.get("view_confirmed", false))
-		serialized["resolved"] = bool(entry.get("resolved", false))
-		serialized["order_index"] = int(entry.get("order_index", result_cards.size()))
-		serialized["is_current"] = card_uid == current_card_uid
-		if card_uid == current_card_uid:
-			current_view_confirmed = bool(entry.get("view_confirmed", false))
-		result_cards.append(serialized)
-	var current_has_trigger := false
-	for card_data_variant in result_cards:
-		var card_data: Dictionary = card_data_variant
-		if str(card_data.get("uid", "")) != current_card_uid:
-			continue
-		current_has_trigger = bool(card_data.get("has_life_trigger", false))
-		break
-	var reveal_player_id := str(reveal.get("player_id", ""))
-	var reveal_controller_is_human := get_controller_type(reveal_player_id) == PlayerController.CONTROLLER_HUMAN
-	var awaiting_player_confirmation := current_card_uid != "" and _life_reveal_requires_view_confirmation(current_card_uid)
-	var ai_resolves_after_confirmation := current_card_uid != "" and current_has_trigger and not reveal_controller_is_human
-	var waiting_for_ai_resolution := current_card_uid != "" and current_has_trigger and ai_resolves_after_confirmation and current_view_confirmed
-	return {
-		"visible": true,
-		"player_id": reveal_player_id,
-		"current_card_uid": current_card_uid,
-		"revealed_cards": result_cards,
-		"can_activate": current_card_uid != "" and current_has_trigger and reveal_controller_is_human,
-		"can_skip": current_card_uid != "" and current_has_trigger and reveal_controller_is_human,
-		"can_acknowledge": current_card_uid != "" and (not current_has_trigger or awaiting_player_confirmation),
-		"awaiting_player_confirmation": awaiting_player_confirmation,
-		"ai_resolves_after_confirmation": ai_resolves_after_confirmation,
-		"waiting_for_ai_resolution": waiting_for_ai_resolution,
-	}
-
-func _serialize_card(card_uid: String, action_player_id: String, include_actions: bool) -> Dictionary:
-	var card: CardInstance = game_state.get_card(card_uid)
-	var card_def: CardDef = null
-	if card != null:
-		card_def = game_state.get_card_def(card.def_id)
-	if card == null or card_def == null:
-		return {}
-	var serialized := {
-		"uid": card.uid,
-		"name": card_def.name,
-		"card_type": UATypes.card_type_to_text(card_def.card_type),
-		"number": card_def.number,
-		"source_image": card_def.source_image,
-		"zone": UATypes.zone_to_key(card.zone),
-		"state": UATypes.state_to_text(card.state),
-		"base_bp": card_def.bp,
-		"bp": card.current_bp,
-		"cost_ap": card_def.cost_ap,
-		"cost_energy": card_def.cost_energy.duplicate(true),
-		"energy_provided": card_def.energy_provided.duplicate(true),
-		"keywords": _runtime_keywords_for(card, card_def),
-		"special_play_rule": card_def.special_play_rule.duplicate(true),
-		"stacked_under": card.stacked_under.duplicate(),
-		"flags": card.flags.duplicate(true),
-	}
-	if include_actions:
-		serialized["available_actions"] = rules_engine.get_card_available_actions(game_state, action_player_id, card.uid)
-	return serialized
-
-func _serialize_life_cards(card_uids: Array[String]) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for i in range(card_uids.size()):
-		result.append({
-			"uid": str(card_uids[i]),
-			"zone": "life",
-			"is_face_down": true,
-			"index": i,
-		})
-	return result
-
 func _apply_logs(logs: Array[String]) -> void:
 	for line in logs:
 		game_state.add_log(line)
@@ -885,22 +712,16 @@ func _has_winner() -> bool:
 	return game_state.winner_player_id != ""
 
 func _has_pending_life_triggers() -> bool:
-	return not game_state.pending_life_triggers.is_empty()
+	return life_trigger_manager.has_pending_life_triggers(game_state)
 
 func _has_pending_life_reveal() -> bool:
-	return not game_state.pending_life_reveal.is_empty()
+	return life_trigger_manager.has_pending_life_reveal(game_state)
 
 func _has_pending_decisions() -> bool:
-	return not game_state.pending_decisions.is_empty()
+	return decision_manager.has_pending_decisions(game_state)
 
 func _life_reveal_fully_resolved() -> bool:
-	if game_state.pending_life_reveal.is_empty():
-		return true
-	for entry_variant in game_state.pending_life_reveal.get("revealed_cards", []):
-		var entry: Dictionary = entry_variant
-		if not bool(entry.get("resolved", false)):
-			return false
-	return true
+	return life_trigger_manager.life_reveal_fully_resolved(game_state)
 
 func _maybe_finalize_life_damage_after_pending_resolution() -> void:
 	if not _life_reveal_fully_resolved():
@@ -932,57 +753,18 @@ func _current_priority_player_id() -> String:
 	return game_state.active_player_id
 
 func _current_display_hand_player_id(action_player_id: String) -> String:
-	if get_controller_type(action_player_id) == PlayerController.CONTROLLER_HUMAN:
+	if controller_manager.is_human(action_player_id):
 		return action_player_id
 	for player_id in [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]:
-		if get_controller_type(player_id) == PlayerController.CONTROLLER_HUMAN:
+		if controller_manager.is_human(player_id):
 			return player_id
 	return action_player_id
 
 func _queue_controller_drive() -> void:
-	if _controller_drive_in_progress or _controller_drive_pending:
-		return
-	_controller_drive_pending = true
-	call_deferred("_process_controller_drive")
+	controller_manager.queue_drive()
 
 func drive_controllers(max_steps := 64) -> void:
-	_drive_controllers(max_steps)
-
-func _process_controller_drive() -> void:
-	if _controller_drive_in_progress:
-		return
-	_controller_drive_pending = false
-	_drive_controllers(64)
-
-func _drive_controllers(max_steps: int) -> void:
-	_controller_drive_in_progress = true
-	var safety := max_steps
-	while safety > 0:
-		if _has_winner():
-			break
-		_refresh_life_reveal_waiting_for_player()
-		if game_state.pending_life_reveal_waiting_for_player:
-			break
-		var player_id := _current_priority_player_id()
-		var controller: PlayerController = _controllers.get(player_id)
-		if controller == null or controller.is_human():
-			break
-		var legal_actions := rules_engine.get_legal_actions(game_state, player_id)
-		if legal_actions.is_empty():
-			break
-		var snapshot := get_snapshot()
-		var chosen_action := {}
-		if _has_pending_gate() or not game_state.battle_context.is_empty():
-			chosen_action = controller.request_pending_decision(game_state, snapshot, _current_pending_context(), legal_actions)
-		else:
-			chosen_action = controller.request_action(game_state, snapshot, legal_actions)
-		if chosen_action.is_empty():
-			break
-		execute_action(chosen_action)
-		safety -= 1
-	_controller_drive_in_progress = false
-	if _controller_drive_pending and not _has_winner():
-		call_deferred("_process_controller_drive")
+	controller_manager.drive_controllers(max_steps)
 
 func _current_pending_context() -> Dictionary:
 	if not game_state.pending_decisions.is_empty():
@@ -995,52 +777,8 @@ func _current_pending_context() -> Dictionary:
 		return game_state.battle_context.duplicate(true)
 	return {}
 
-func _life_reveal_requires_view_confirmation(card_uid: String) -> bool:
-	if game_state.pending_life_reveal.is_empty() or card_uid == "":
-		return false
-	var reveal_player_id := str(game_state.pending_life_reveal.get("player_id", ""))
-	var reveal_controller_is_human := get_controller_type(reveal_player_id) == PlayerController.CONTROLLER_HUMAN
-	for entry_variant in game_state.pending_life_reveal.get("revealed_cards", []):
-		var entry: Dictionary = entry_variant
-		if str(entry.get("card_uid", "")) != card_uid:
-			continue
-		if bool(entry.get("resolved", false)) or bool(entry.get("view_confirmed", false)):
-			return false
-		var has_trigger := bool(entry.get("has_life_trigger", false))
-		if not has_trigger:
-			return true
-		return not reveal_controller_is_human
-	return false
-
-func _mark_life_reveal_view_confirmed(card_uid: String) -> void:
-	if game_state.pending_life_reveal.is_empty() or card_uid == "":
-		return
-	var entries: Array = game_state.pending_life_reveal.get("revealed_cards", [])
-	for i in range(entries.size()):
-		var entry: Dictionary = entries[i]
-		if str(entry.get("card_uid", "")) != card_uid:
-			continue
-		entry["view_confirmed"] = true
-		entries[i] = entry
-		game_state.pending_life_reveal["revealed_cards"] = entries
-		return
-
-func _life_reveal_requires_continue_then_ai(card_uid: String) -> bool:
-	if not _life_reveal_requires_view_confirmation(card_uid):
-		return false
-	for entry_variant in game_state.pending_life_reveal.get("revealed_cards", []):
-		var entry: Dictionary = entry_variant
-		if str(entry.get("card_uid", "")) != card_uid:
-			continue
-		return bool(entry.get("has_life_trigger", false))
-	return false
-
 func _refresh_life_reveal_waiting_for_player() -> void:
-	if game_state.pending_life_reveal.is_empty():
-		game_state.pending_life_reveal_waiting_for_player = false
-		return
-	var current_card_uid := str(game_state.pending_life_reveal.get("current_card_uid", ""))
-	game_state.pending_life_reveal_waiting_for_player = _life_reveal_requires_view_confirmation(current_card_uid)
+	life_trigger_manager.refresh_life_reveal_waiting_for_player(game_state, controller_manager.is_human)
 
 func _can_active_player_bonus_draw() -> bool:
 	if game_state.phase != UATypes.Phase.DRAW:
@@ -1051,109 +789,10 @@ func _can_active_player_bonus_draw() -> bool:
 	return not player.used_bonus_draw and player.ap_active_count() >= 1
 
 func _enqueue_pending_decision(decision: Dictionary) -> void:
-	game_state.pending_decisions.append(decision)
+	decision_manager.enqueue_decision(game_state, decision)
 
 func _take_pending_decision(decision_type: String, payload: Dictionary) -> Dictionary:
-	var source_card_uid := str(payload.get("source_card_uid", ""))
-	var resolution_id := str(payload.get("resolution_id", ""))
-	for i in range(game_state.pending_decisions.size()):
-		var decision: Dictionary = game_state.pending_decisions[i]
-		if str(decision.get("type", "")) != decision_type:
-			continue
-		if resolution_id != "" and str(decision.get("resolution_id", "")) != resolution_id:
-			continue
-		if source_card_uid != "" and str(decision.get("source_card_uid", "")) != source_card_uid:
-			continue
-		game_state.pending_decisions.remove_at(i)
-		return decision
-	return {}
-
-func _energy_pool_for_player(player: PlayerState) -> Dictionary:
-	var pool := {}
-	for card_uid in player.energy_line:
-		var card: CardInstance = game_state.get_card(card_uid)
-		var card_def: CardDef = game_state.get_card_def(card.def_id) if card != null else null
-		if card_def == null:
-			continue
-		for color in card_def.energy_provided.keys():
-			pool[color] = int(pool.get(color, 0)) + int(card_def.energy_provided.get(color, 0))
-		for passive_bonus in _passive_energy_bonus_modifiers(card, card_def):
-			var passive_color := str(passive_bonus.get("color", ""))
-			var passive_value := int(passive_bonus.get("value", 0))
-			if passive_color != "" and passive_value != 0:
-				pool[passive_color] = int(pool.get(passive_color, 0)) + passive_value
-	for modifier_variant in game_state.static_modifiers:
-		var modifier: Dictionary = modifier_variant
-		if str(modifier.get("modifier_type", "")) != "ENERGY_BONUS":
-			continue
-		if str(modifier.get("owner_player_id", "")) != player.player_id:
-			continue
-		var source_uid := str(modifier.get("source_card_uid", ""))
-		var source_card: CardInstance = game_state.get_card(source_uid)
-		if source_card == null or source_card.zone != UATypes.Zone.ENERGY_LINE:
-			continue
-		if not _check_energy_bonus_condition(modifier, source_uid):
-			continue
-		var color := str(modifier.get("color", ""))
-		var value := int(modifier.get("value", 0))
-		if color != "" and value != 0:
-			pool[color] = int(pool.get(color, 0)) + value
-	return pool
-
-func _passive_energy_bonus_modifiers(card: CardInstance, card_def: CardDef) -> Array[Dictionary]:
-	var modifiers: Array[Dictionary] = []
-	if card == null or card_def == null:
-		return modifiers
-	for ability_variant in card_def.abilities:
-		var ability: Dictionary = ability_variant
-		var event_name := str(ability.get("timing", {}).get("event", ""))
-		var kind := str(ability.get("kind", ""))
-		if event_name != "PASSIVE" and kind != "STATIC":
-			continue
-		for step_variant in ability.get("steps", []):
-			var step: Dictionary = step_variant
-			if str(step.get("type", "")) != "REGISTER_STATIC_MODIFIER":
-				continue
-			if str(step.get("modifier_type", "")) != "ENERGY_BONUS":
-				continue
-			if not _check_energy_bonus_condition(step, card.uid):
-				continue
-			modifiers.append(step)
-	return modifiers
-
-func _check_energy_bonus_condition(modifier: Dictionary, source_uid: String) -> bool:
-	var while_reqs: Array = modifier.get("while", [])
-	if while_reqs.is_empty():
-		return true
-	var source_card: CardInstance = game_state.get_card(source_uid)
-	if source_card == null:
-		return false
-	var player = game_state.get_player(source_card.controller_player_id)
-	if player == null:
-		return false
-	for req_variant in while_reqs:
-		var req: Dictionary = req_variant
-		if str(req.get("type", "")) == "CONTROLLER_TRAIT_NAME_COUNT_GTE":
-			var trait_value := str(req.get("trait", ""))
-			var min_count := int(req.get("value", 0))
-			var unique_names: Dictionary = {}
-			for zone_cards in [player.front_line, player.energy_line]:
-				for cuid_v in zone_cards:
-					var cuid := str(cuid_v)
-					if cuid == source_uid:
-						continue
-					var c = game_state.get_card(cuid)
-					if c == null:
-						continue
-					var d = game_state.get_card_def(c.def_id)
-					if d != null and d.traits.has(trait_value):
-						unique_names[d.name] = true
-			if unique_names.size() < min_count:
-				return false
-		elif str(req.get("type", "")) == "SOURCE_STATE_IS_ACTIVE":
-			if source_card.state != UATypes.CardState.ACTIVE:
-				return false
-	return true
+	return decision_manager.take_decision(game_state, decision_type, payload)
 
 func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array[String]:
 	var actions: Array[String] = []
@@ -1202,152 +841,10 @@ func _available_actions_for_card(card: CardInstance, card_def: CardDef) -> Array
 	return actions
 
 func _resolve_life_trigger_raid_choice(decision: Dictionary, choice: String) -> Array[String]:
-	var logs: Array[String] = []
-	var card_uid := str(decision.get("source_card_uid", ""))
-	var owner_player_id := str(decision.get("owner_player_id", ""))
-	if card_uid == "" or owner_player_id == "":
-		return ["Life trigger raid choice failed: missing card or owner."]
-	if choice == "ADD_TO_HAND":
-		return _fallback_life_trigger_raid_to_hand(card_uid, owner_player_id)
-	if choice != "RAID_NOW":
-		return ["Life trigger raid choice failed: unsupported choice."]
-	var raid_choices := _build_life_trigger_raid_target_choices(card_uid, owner_player_id)
-	var enabled_choices: Array[Dictionary] = []
-	for choice_variant in raid_choices:
-		var raid_choice: Dictionary = choice_variant
-		if bool(raid_choice.get("enabled", true)):
-			enabled_choices.append(raid_choice)
-	if enabled_choices.is_empty():
-		logs.append("%s cannot raid now because requirements are not met, so the card is added to hand instead." % owner_player_id)
-		logs.append_array(_fallback_life_trigger_raid_to_hand(card_uid, owner_player_id))
-		return logs
-	_enqueue_pending_decision({
-		"type": "LIFE_TRIGGER_RAID_TARGET",
-		"owner_player_id": owner_player_id,
-		"source_card_uid": card_uid,
-		"choices": raid_choices,
-		"context": {
-			"allow_raid_play": true,
-		},
-	})
-	logs.append("Choose a raid target.")
-	return logs
+	return life_trigger_manager.resolve_life_trigger_raid_choice(game_state, decision, choice)
 
 func _resolve_life_trigger_raid_target(decision: Dictionary, raid_target_uid: String) -> Array[String]:
-	var logs: Array[String] = []
-	var card_uid := str(decision.get("source_card_uid", ""))
-	var owner_player_id := str(decision.get("owner_player_id", ""))
-	if card_uid == "" or raid_target_uid == "":
-		return ["Life trigger raid target failed: missing card or target."]
-	var raid_target = game_state.get_card(raid_target_uid)
-	if raid_target == null:
-		logs.append("%s cannot complete raid now because the selected target is no longer legal, so the card is added to hand instead." % owner_player_id)
-		logs.append_array(_fallback_life_trigger_raid_to_hand(card_uid, owner_player_id))
-		return logs
-	if raid_target.zone == UATypes.Zone.ENERGY_LINE:
-		_move_pending_life_card_to_hand(card_uid, str(decision.get("owner_player_id", "")))
-		_enqueue_pending_decision({
-			"type": "RAID_ZONE_CHOICE",
-			"owner_player_id": str(decision.get("owner_player_id", "")),
-			"source_card_uid": card_uid,
-			"choices": [
-				{"label": "Stay Energy", "value": UATypes.Zone.ENERGY_LINE},
-				{"label": "Move Front", "value": UATypes.Zone.FRONT_LINE},
-			],
-			"context": {
-				"target_zone": UATypes.Zone.ENERGY_LINE,
-				"raid_target_uid": raid_target_uid,
-				"allow_raid_play": true,
-				"force_allow_current_zone": true,
-				"ignore_pending_gate": true,
-				"ignore_play_timing": true,
-				"player_id": str(decision.get("owner_player_id", "")),
-				"finalize_life_damage": true,
-			}
-		})
-		logs.append("Choose raid destination.")
-		return logs
-	_move_pending_life_card_to_hand(card_uid, str(decision.get("owner_player_id", "")))
-	var play_result := play_card(card_uid, UATypes.Zone.FRONT_LINE, {
-		"raid_target_uid": raid_target_uid,
-		"raid_target_zone_choice": UATypes.Zone.FRONT_LINE,
-		"allow_raid_play": true,
-		"force_allow_current_zone": true,
-		"ignore_pending_gate": true,
-		"ignore_play_timing": true,
-		"player_id": str(decision.get("owner_player_id", "")),
-	})
-	if not bool(play_result.get("ok", false)):
-		zone_manager.move_card(game_state, card_uid, UATypes.Zone.HAND, owner_player_id)
-		logs.append("%s cannot complete raid now because requirements are not met, so the card is added to hand instead." % owner_player_id)
-		if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
-			logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
-		return logs
-	if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
-		logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
-	return logs
-
-func _build_life_trigger_raid_target_choices(card_uid: String, owner_player_id: String) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	var card = game_state.get_card(card_uid)
-	var card_def = game_state.get_card_def(card.def_id) if card != null else null
-	if card == null or card_def == null:
-		return result
-	var required_name := str(card_def.special_play_rule.get("raid_target_name", ""))
-	var player: PlayerState = game_state.get_player(owner_player_id)
-	if player == null:
-		return result
-	for zone_cards in [player.front_line, player.energy_line]:
-		for candidate_uid_variant in zone_cards:
-			var candidate_uid := str(candidate_uid_variant)
-			var candidate_card = game_state.get_card(candidate_uid)
-			var candidate_def = game_state.get_card_def(candidate_card.def_id) if candidate_card != null else null
-			if candidate_card == null or candidate_def == null:
-				continue
-			if candidate_def.card_type != UATypes.CardType.CHARACTER:
-				continue
-			if required_name != "" and not candidate_def.matches_reference_name(required_name):
-				continue
-			var validation := rules_engine.can_play_card(game_state, owner_player_id, card_uid, UATypes.Zone.FRONT_LINE, {"allow_current_zone": true}, {
-				"raid_target_uid": candidate_uid,
-				"raid_target_zone_choice": UATypes.Zone.FRONT_LINE if candidate_card.zone == UATypes.Zone.FRONT_LINE else UATypes.Zone.ENERGY_LINE,
-				"allow_raid_play": true,
-				"ignore_play_timing": true,
-			})
-			result.append({
-				"label": candidate_def.name,
-				"value": candidate_uid,
-				"enabled": bool(validation.get("ok", false)),
-				"reason": "" if bool(validation.get("ok", false)) else str(validation.get("reason", "")),
-			})
-	return result
-
-func _move_pending_life_card_to_hand(card_uid: String, owner_player_id: String) -> void:
-	for i in range(game_state.pending_life_damage_cards.size()):
-		var entry: Dictionary = game_state.pending_life_damage_cards[i]
-		if str(entry.get("card_uid", "")) != card_uid:
-			continue
-		game_state.pending_life_damage_cards.remove_at(i)
-		break
-	zone_manager.move_card(game_state, card_uid, UATypes.Zone.HAND, owner_player_id)
-
-func _fallback_life_trigger_raid_to_hand(card_uid: String, owner_player_id: String) -> Array[String]:
-	var logs: Array[String] = []
-	_move_pending_life_card_to_hand(card_uid, owner_player_id)
-	var card = game_state.get_card(card_uid)
-	var card_def = game_state.get_card_def(card.def_id) if card != null else null
-	logs.append("%s adds %s to hand." % [owner_player_id, card_def.name if card_def != null else card_uid])
-	if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
-		logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
-	return logs
-
-func _runtime_keywords_for(card: CardInstance, card_def: CardDef) -> Array:
-	var keywords: Array = card_def.keywords.duplicate()
-	for value in card.flags.get("temp_keywords", []):
-		var keyword := str(value)
-		if keyword != "" and not keywords.has(keyword):
-			keywords.append(keyword)
-	return keywords
+	return life_trigger_manager.resolve_life_trigger_raid_target(game_state, decision, raid_target_uid)
 
 func _card_has_runtime_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
 	if card_def.keywords.has(keyword):

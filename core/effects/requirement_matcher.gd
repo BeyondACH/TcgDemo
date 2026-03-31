@@ -8,6 +8,7 @@ const UATypes = preload("res://core/ua_types.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const RulesEngine = preload("res://core/rules_engine.gd")
+const PlayerUtils = preload("res://core/player_utils.gd")
 
 var _zone_manager
 var _rules_engine: RulesEngine
@@ -181,7 +182,7 @@ func _req_controller_has_name_in_zone(state: GameState, requirement: Dictionary,
 	var player_mode_zone := str(requirement.get("owner", "SELF"))
 	var player_id_zone: String = source_card.controller_player_id
 	if player_mode_zone == "OPPONENT":
-		player_id_zone = _opponent_of(source_card.controller_player_id)
+		player_id_zone = PlayerUtils.opponent_of(source_card.controller_player_id)
 	var zone_player = state.get_player(player_id_zone)
 	if zone_player == null:
 		return false
@@ -219,7 +220,7 @@ func _req_controller_field_all_names_in_set(state: GameState, requirement: Dicti
 	var player_mode_names := str(requirement.get("owner", "SELF"))
 	var player_id_names: String = source_card.controller_player_id
 	if player_mode_names == "OPPONENT":
-		player_id_names = _opponent_of(source_card.controller_player_id)
+		player_id_names = PlayerUtils.opponent_of(source_card.controller_player_id)
 	var names_player = state.get_player(player_id_names)
 	if names_player == null:
 		return false
@@ -298,7 +299,7 @@ func _req_player_life_is_empty(state: GameState, requirement: Dictionary, contex
 	if player_mode == "SELF" and source_card != null:
 		player_id = source_card.controller_player_id
 	elif player_mode == "OPPONENT" and source_card != null:
-		player_id = _opponent_of(source_card.controller_player_id)
+		player_id = PlayerUtils.opponent_of(source_card.controller_player_id)
 	var player_state = state.get_player(player_id)
 	return player_state != null and player_state.life.is_empty()
 
@@ -309,7 +310,7 @@ func _req_player_turn_flag_true(state: GameState, requirement: Dictionary, conte
 	if player_mode_flag == "SELF":
 		player_id_flag = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
 	elif player_mode_flag == "OPPONENT":
-		player_id_flag = _opponent_of(source_card.controller_player_id) if source_card != null else ""
+		player_id_flag = PlayerUtils.opponent_of(source_card.controller_player_id) if source_card != null else ""
 	else:
 		player_id_flag = str(context.get("target_player_id", context.get("source_player_id", "")))
 	var flags: Dictionary = state.player_turn_flags.get(player_id_flag, {})
@@ -322,7 +323,7 @@ func _req_player_has_color_in_field(state: GameState, requirement: Dictionary, c
 	if player_mode_color == "SELF":
 		player_id_color = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
 	elif player_mode_color == "OPPONENT":
-		player_id_color = _opponent_of(source_card.controller_player_id) if source_card != null else ""
+		player_id_color = PlayerUtils.opponent_of(source_card.controller_player_id) if source_card != null else ""
 	else:
 		player_id_color = str(context.get("target_player_id", context.get("source_player_id", "")))
 	var color_player = state.get_player(player_id_color)
@@ -420,7 +421,7 @@ func _req_player_life_lte(state: GameState, requirement: Dictionary, context: Di
 	if player_mode == "SELF":
 		player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
 	elif player_mode == "OPPONENT":
-		player_id = _opponent_of(source_card.controller_player_id) if source_card != null else ""
+		player_id = PlayerUtils.opponent_of(source_card.controller_player_id) if source_card != null else ""
 	elif player_mode == "TARGET":
 		player_id = str(context.get("target_player_id", ""))
 	else:
@@ -499,11 +500,6 @@ func _req_controller_other_trait_card_count_gte(state: GameState, requirement: D
 # ============================================================
 # 辅助函数
 # ============================================================
-
-func _opponent_of(player_id: String) -> String:
-	if player_id == UATypes.PLAYER_ONE:
-		return UATypes.PLAYER_TWO
-	return UATypes.PLAYER_ONE
 
 func _parse_zone(value) -> int:
 	if value is int:

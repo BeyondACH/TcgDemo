@@ -15,15 +15,16 @@
 
 ## 2. 当前总体结论
 
-当前仓库已经完成从“可开局原型”到“可持续迭代的规则原型”的第一轮收口，项目状态可以概括为：
+当前仓库已经完成从”可开局原型”到”可持续迭代的规则原型”的第一轮收口，项目状态可以概括为：
 
 - 基础对局闭环已实现，核心区域、阶段流转、资源支付、战斗与胜负判断具备稳定主路径。
 - 高风险规则区已补齐一轮专项回归，规则主链路已不再依赖临时说明文档来补语义。
 - 统一 DSL/IR 已完成对当前正式 raw 卡池的首轮收口，当前编译结果为 `128` 个已支持能力、`0` 个未支持能力。
-- 正式 raw 样例验证已形成独立基线，当前重点已从“补能力缺口”转为“维持规则稳定性 + 推进 UI 视觉正式落地”的双主线。
-- `SimpleAI` 已从静态优先级选择器升级为轻量评分式 `v2`，AI 对局基线已形成“行为专项 smoke + 整体流程 smoke”的双层验证。
+- 正式 raw 样例验证已形成独立基线，当前重点已从”补能力缺口”转为”维持规则稳定性 + 推进 UI 视觉正式落地”的双主线。
+- `SimpleAI` 已从静态优先级选择器升级为轻量评分式 `v2`，AI 对局基线已形成”行为专项 smoke + 整体流程 smoke”的双层验证。
 - UI 已完成战场区、堆叠区、预览区、待决策交互和底部手牌区的第一轮收口，能支撑规则验证与日常调试。
-- UI 美术风格规范文档已冻结，下一阶段可以从“可用型界面”切换到“正式视觉落地”。
+- UI 美术风格规范文档已冻结，下一阶段可以从”可用型界面”切换到”正式视觉落地”。
+- **架构重构已完成**：GameManager 从”上帝对象”（1467 行，10+ 职责）重构为协调器模式（1060 行），提取 7 个专用管理器，遵循 SOLID 单一职责原则。
 
 ## 3. 里程碑状态
 
@@ -197,6 +198,50 @@
 
 - 当前阶段暂不进行 UI 相关调整。
 - `docs/plan/ui_art_style_guide.md` 作为后续阶段的冻结基线保留，但不作为当前迭代主线。
+
+## 里程碑 M7：架构重构与 SOLID 合规
+
+状态：已完成
+
+已确认能力：
+
+- GameManager 从"上帝对象"（1467 行，10+ 职责）重构为协调器模式（1060 行，单一职责）。
+- 提取 7 个专用管理器：
+  - `PlayerUtils` - 共享助手 (`opponent_of`)
+  - `GameGateChecker` - 状态门检查
+  - `DeckLoader` - 卡组/卡牌加载
+  - `SnapshotSerializer` - UI 序列化
+  - `DecisionManager` - 决策队列管理
+  - `LifeTriggerManager` - 生命触发/揭示
+  - `ControllerManager` - 控制器管理
+- 移除代码重复：
+  - `_opponent_of()` - 6 处重复合并为 1 处共享
+  - `_energy_pool_for_player()` - 80 行重复代码删除
+  - `_available_actions_for_card()` - 50 行重复代码删除
+
+架构改进：
+
+- GameManager 成为纯粹的协调器，委托职责给专用管理器
+- 遵循 SOLID 单一职责原则 (SRP)
+- 遵循 DRY 原则，消除重复逻辑
+- 保持向后兼容的公共 API
+
+验证结果：
+
+- `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
+- 所有规则语义保持不变
+- API 兼容性验证通过
+
+对应实现位置：
+
+- `core/game_manager.gd` - 协调器
+- `core/player_utils.gd` - 共享助手
+- `core/game_gate_checker.gd` - 门检查
+- `core/deck_loader.gd` - 加载器
+- `core/ui/snapshot_serializer.gd` - 序列化器
+- `core/decision_manager.gd` - 决策管理
+- `core/life_trigger_manager.gd` - 生命触发管理
+- `core/controllers/controller_manager.gd` - 控制器管理
 
 ## 4. 当前主线与风险
 

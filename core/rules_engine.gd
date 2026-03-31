@@ -3,6 +3,7 @@ class_name RulesEngine
 
 const UATypes = preload("res://core/ua_types.gd")
 const ZoneManager = preload("res://core/zone_manager.gd")
+const PlayerUtils = preload("res://core/player_utils.gd")
 const GameState = preload("res://data/game_state.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
@@ -212,6 +213,44 @@ func get_available_blockers(state: GameState, defender_player_id: String) -> Arr
 			blockers.append(card_uid)
 	return blockers
 
+# Returns the energy pool dictionary for a player (used by UI serialization)
+func get_energy_pool_for_player(state: GameState, player: PlayerState) -> Dictionary:
+	return _compute_energy_pool(state, player)
+
+func _compute_energy_pool(state: GameState, player: PlayerState) -> Dictionary:
+	var pool := {}
+	for card_uid in player.energy_line:
+		var card: CardInstance = state.get_card(card_uid)
+		var card_def: CardDef = null
+		if card != null:
+			card_def = state.get_card_def(card.def_id)
+		if card_def == null:
+			continue
+		for color in card_def.energy_provided.keys():
+			pool[color] = int(pool.get(color, 0)) + int(card_def.energy_provided.get(color, 0))
+		for passive_bonus in _passive_energy_bonus_modifiers(state, card, card_def):
+			var passive_color := str(passive_bonus.get("color", ""))
+			var passive_value := int(passive_bonus.get("value", 0))
+			if passive_color != "" and passive_value != 0:
+				pool[passive_color] = int(pool.get(passive_color, 0)) + passive_value
+	for modifier_variant in state.static_modifiers:
+		var modifier: Dictionary = modifier_variant
+		if str(modifier.get("modifier_type", "")) != "ENERGY_BONUS":
+			continue
+		if str(modifier.get("owner_player_id", "")) != player.player_id:
+			continue
+		var source_uid := str(modifier.get("source_card_uid", ""))
+		var source_card: CardInstance = state.get_card(source_uid)
+		if source_card == null or source_card.zone != UATypes.Zone.ENERGY_LINE:
+			continue
+		if not _check_energy_bonus_condition(state, modifier, source_uid):
+			continue
+		var color := str(modifier.get("color", ""))
+		var value := int(modifier.get("value", 0))
+		if color != "" and value != 0:
+			pool[color] = int(pool.get(color, 0)) + value
+	return pool
+
 func _build_draw_actions(state: GameState, player_id: String) -> Array[Dictionary]:
 	var actions: Array[Dictionary] = []
 	var player: PlayerState = state.get_player(player_id)
@@ -329,7 +368,7 @@ func _build_attack_actions(state: GameState, player_id: String) -> Array[Diction
 	var player: PlayerState = state.get_player(player_id)
 	if player == null:
 		return actions
-	var opponent_id := _opponent_of(player_id)
+	var opponent_id := PlayerUtils.opponent_of(player_id)
 	var opponent: PlayerState = state.get_player(opponent_id)
 	for card_uid in player.front_line:
 		var card: CardInstance = state.get_card(card_uid)
@@ -624,49 +663,13 @@ func _project_action_name(action: Dictionary) -> String:
 			return "MAIN_ACTIVATE"
 	return ""
 
-func _opponent_of(player_id: String) -> String:
-	if player_id == UATypes.PLAYER_ONE:
-		return UATypes.PLAYER_TWO
-	return UATypes.PLAYER_ONE
-
 func _can_pay_ap(player: PlayerState, amount: int) -> bool:
 	return player.ap_active_count() >= amount
 
 func _has_required_energy(state: GameState, player: PlayerState, cost: Dictionary) -> bool:
 	if cost.is_empty():
 		return true
-	var pool := {}
-	# 当前按能量区已提供的颜色做静态汇总，不区分横置消耗或更复杂的支付方式。
-	for card_uid in player.energy_line:
-		var card: CardInstance = state.get_card(card_uid)
-		var card_def: CardDef = null
-		if card != null:
-			card_def = state.get_card_def(card.def_id)
-		if card_def == null:
-			continue
-		for color in card_def.energy_provided.keys():
-			pool[color] = int(pool.get(color, 0)) + int(card_def.energy_provided.get(color, 0))
-		for passive_bonus in _passive_energy_bonus_modifiers(state, card, card_def):
-			var passive_color := str(passive_bonus.get("color", ""))
-			var passive_value := int(passive_bonus.get("value", 0))
-			if passive_color != "" and passive_value != 0:
-				pool[passive_color] = int(pool.get(passive_color, 0)) + passive_value
-	for modifier_variant in state.static_modifiers:
-		var modifier: Dictionary = modifier_variant
-		if str(modifier.get("modifier_type", "")) != "ENERGY_BONUS":
-			continue
-		if str(modifier.get("owner_player_id", "")) != player.player_id:
-			continue
-		var source_uid := str(modifier.get("source_card_uid", ""))
-		var source_card: CardInstance = state.get_card(source_uid)
-		if source_card == null or source_card.zone != UATypes.Zone.ENERGY_LINE:
-			continue
-		if not _check_energy_bonus_condition(state, modifier, source_uid):
-			continue
-		var color := str(modifier.get("color", ""))
-		var value := int(modifier.get("value", 0))
-		if color != "" and value != 0:
-			pool[color] = int(pool.get(color, 0)) + value
+	var pool := _compute_energy_pool(state, player)
 	for color in cost.keys():
 		if int(pool.get(color, 0)) < int(cost.get(color, 0)):
 			return false

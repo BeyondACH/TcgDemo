@@ -8,6 +8,7 @@ const UATypes = preload("res://core/ua_types.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const ZoneManager = preload("res://core/zone_manager.gd")
+const PlayerUtils = preload("res://core/player_utils.gd")
 
 var _zone_manager: ZoneManager
 var _requirement_matcher  # RequirementMatcher 引用
@@ -197,7 +198,7 @@ func resolve_owner_player_ids(state: GameState, owner_mode: String, source_playe
 	if owner_mode == "SELF":
 		return [source_player_id]
 	if owner_mode == "OPPONENT":
-		return [_opponent_of(source_player_id)]
+		return [PlayerUtils.opponent_of(source_player_id)]
 	if owner_mode == "ANY":
 		return [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]
 	if owner_mode == "ACTIVE_PLAYER":
@@ -358,8 +359,3 @@ func _ensure_array(value) -> Array:
 	if value is Array:
 		return value
 	return []
-
-func _opponent_of(player_id: String) -> String:
-	if player_id == UATypes.PLAYER_ONE:
-		return UATypes.PLAYER_TWO
-	return UATypes.PLAYER_ONE

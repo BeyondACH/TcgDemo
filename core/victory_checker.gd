@@ -3,6 +3,7 @@ class_name VictoryChecker
 
 const UATypes = preload("res://core/ua_types.gd")
 const GameState = preload("res://data/game_state.gd")
+const PlayerUtils = preload("res://core/player_utils.gd")
 
 # 常规胜负检查：任意一方生命归零则对手获胜。
 func check_victory(state: GameState) -> Dictionary:
@@ -12,7 +13,7 @@ func check_victory(state: GameState) -> Dictionary:
 			continue
 		if player.life.is_empty():
 			return {
-				"winner": _opponent_of(player_id),
+				"winner": PlayerUtils.opponent_of(player_id),
 				"loser": player_id,
 				"reason": "life_zero"
 			}
@@ -22,13 +23,8 @@ func check_deck_out_loss(state: GameState, player_id: String) -> Dictionary:
 	var player := state.get_player(player_id)
 	if player != null and player.deck.is_empty():
 		return {
-			"winner": _opponent_of(player_id),
+			"winner": PlayerUtils.opponent_of(player_id),
 			"loser": player_id,
 			"reason": "deck_out"
 		}
 	return {}
-
-func _opponent_of(player_id: String) -> String:
-	if player_id == UATypes.PLAYER_ONE:
-		return UATypes.PLAYER_TWO
-	return UATypes.PLAYER_ONE

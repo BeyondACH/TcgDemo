@@ -4,6 +4,7 @@ class_name EffectResolver
 const UATypes = preload("res://core/ua_types.gd")
 const ZoneManager = preload("res://core/zone_manager.gd")
 const VictoryChecker = preload("res://core/victory_checker.gd")
+const PlayerUtils = preload("res://core/player_utils.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const RequirementMatcher = preload("res://core/effects/requirement_matcher.gd")
@@ -1164,11 +1165,6 @@ func _card_has_trigger(state: GameState, card_uid: String, trigger_type: int) ->
 		if _trigger_matches(effect, trigger_type) and _is_effect_enabled_for_card(source_card, effect):
 			return true
 	return false
-
-func _opponent_of(player_id: String) -> String:
-	if player_id == UATypes.PLAYER_ONE:
-		return UATypes.PLAYER_TWO
-	return UATypes.PLAYER_ONE
 
 func _get_source_card_uid(modifier: Dictionary) -> String:
 	return str(modifier.get("source_card_uid", ""))
