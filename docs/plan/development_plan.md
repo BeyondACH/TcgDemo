@@ -4,28 +4,30 @@
 
 ## 1. 计划摘要
 
-当前仓库已经完成基础对局闭环、主要高风险规则区、统一效果队列主链路，以及一轮正式 `cards_raw.json` 样例回归。项目现阶段不再以“继续快速铺能力面”为首要目标，而是转向以下主线：
+当前仓库已经完成基础对局闭环、主要高风险规则区、统一效果队列主链路、正式 `cards_raw.json` 样例回归，以及 UI 美术规范文档的首轮冻结。项目现阶段不再以“继续快速铺能力面”为首要目标，而是转向以下主线：
 
 1. 保持 `docs/rules/rule.md` 与实际实现持续一致。
 2. 以统一 DSL/IR 为唯一正式运行时来源，禁止回退到按卡硬编码。
 3. 继续补强正式 raw 样例、规则专项回归和布局/交互验收，降低后续新增卡牌或新模板时的回归风险。
+4. 在暂不调整 UI 的前提下，继续压实规则稳定性、回归覆盖与调试可见性。
 
 涉及 `core + data + ui` 的联动需求，必须先冻结接口和数据契约，再按 `core`、`docs/tests`、`ui` 三线拆分实施。
 
 ## 2. 当前基线
 
-截至 2026-03-27，当前仓库基线如下：
+截至 2026-03-30，当前仓库基线如下：
 
 - 基础规则闭环已具备：开局、抽牌、AP 成长、阶段推进、出牌、移动、攻击/阻挡、伤害、胜负判定、显式弃牌与生命触发决策均已落地。
 - 高风险规则区已覆盖：攻击失败攻击方不退场、AP 在结束阶段不恢复、生命触发可选发动、同时触发顺序按规则处理。
 - 关键词与特殊登场已覆盖一批核心能力：`STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`IMPACT_PLUS_1`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`。
 - 效果系统已统一接入 `effect_queue` 执行链，并接入显式决策、目标续执行、延迟效果与静态修正。
-- 统一 DSL/IR 当前达到 `112` 个已支持能力、`17` 个未支持能力，未支持项集中在 `13` 张卡上。
+- 统一 DSL/IR 当前达到 `128` 个已支持能力、`0` 个未支持能力，正式 raw 当前已无遗留未支持项。
 - 验证资产当前基线：
-  - `docs/milestone_smoke_test.gd`：31 项通过、0 项失败
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：50 项通过、0 项失败
+  - `docs/milestone_smoke_test.gd`：32 项通过、0 项失败
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：66 项通过、0 项失败
   - `docs/draw_phase_smoke_test.gd`：当前环境稳定通过，可作为 DRAW 阶段专项回归入口
-- 当前主要风险已转为“两条主线并行观察”：一是正式 raw 样例覆盖面和长期稳定性仍需继续压实；二是剩余 `13` 张卡上的 requirement / step 高耦合模板仍待继续收口。
+  - `docs/runtime_residue_smoke_test.gd`：4 项通过、0 项失败
+- 当前主要风险已从“能力缺口”转为两类稳定性问题：一是规则运行时的跨回合 residue / 生命周期稳定性仍需持续压实；二是完整卡池级别回归与更长链路自动验证仍未建立。
 
 ## 3. 开发阶段规划
 
@@ -75,28 +77,25 @@
 - 所有新增高风险规则改动至少补 1 条专项断言。
 - 规则主冒烟持续保持通过，且不混入只属于正式卡编号的数据样例验证。
 
-## 阶段 C：正式 raw 样例扩充
+## 阶段 C：正式 raw 样例扩充与稳定性维护
 
-状态：当前主线
+状态：已完成首轮扩充，转入维护
 
 目标：
 
-- 继续把正式 `cards_raw.json` 中更多模板和组合效果压到统一 IR 主链路上。
+- 保持正式 `cards_raw.json` 持续走统一 IR 主链路，不回退到按卡特判。
 - 保持 `docs/cards_raw_minimal_duel_smoke_test.gd` 作为正式 raw 样例稳定性验证入口。
 
-当前优先补强方向：
+当前维护重点：
 
-- 更复杂的预览链与“看牌堆顶后再做条件追加结算”
-- 多目标并行结算
 - 连续回合生命周期
 - 离场触发链与延迟效果叠加
-- 更复杂的费用组合与公开信息驱动奖励
-- 预览链后追加临时能力、精确计数 requirement 与复杂多段结算的组合模板
+- 预览链、公开信息链与多段条件追加结算的长期稳定性
 - 当前已固定观察入口：规则层放在 `docs/milestone_smoke_test.gd`，正式模板组合链放在 `docs/cards_raw_minimal_duel_smoke_test.gd`。
 
 实施要求：
 
-- 每新增一类 raw 模板，必须同步更新 `tools/compile_cards_effects.py`、重新生成 `data/cards/cards_effects.json`，并补最小样例验证。
+- 若后续新增 raw 模板，必须同步更新 `tools/compile_cards_effects.py`、重新生成 `data/cards/cards_effects.json`，并补最小样例验证。
 - 不允许通过对单一编号写特判来“通过样例”。
 
 完成判据：
@@ -120,6 +119,38 @@
 - `docs/deck_importer.gd` / `docs/import_deck.gd` 与正式数据字段保持同步。
 - UI 继续只消费快照，不反向承担规则判断。
 - 若改动 UI 布局或交互，必须补 layout probe 或等价布局验收记录，确认手牌区域不遮挡战场。
+
+## 阶段 E：规则稳定性与验证资产深化
+
+状态：下一阶段主线
+
+目标：
+
+- 在暂不调整 `ui/` 的前提下，继续压实规则主链、正式 raw 组合链与 residue 专项回归的长期稳定性。
+- 逐步补强完整卡池视角下的自动验证、阶段衔接验证和长链路对局验证，避免当前验证入口长期停留在最小样例层面。
+- 保持现有调试可见性与日志可观察性，为后续真正进入 UI 阶段前先把规则底座和验证资产打稳。
+
+本阶段范围：
+
+- `docs/milestone_smoke_test.gd`
+- `docs/cards_raw_minimal_duel_smoke_test.gd`
+- `docs/runtime_residue_smoke_test.gd`
+- 需要时新增的规则专项 smoke / 长链路回归脚本
+- 与验证链路直接相关的 `core/`、`data/`、`tools/` 最小必要修正
+
+本阶段约束：
+
+- 暂不进行 UI 视觉、布局和交互层改造；`ui/` 与 `scenes/` 仅允许为验证阻塞做最小必要修正。
+- 若新增验证发现 `rule.md` 冲突，优先修正规则实现与回归，不把问题转移到文档描述或样例特判。
+- 新增自动验证时继续坚持“规则主冒烟 / 正式 raw 样例 / residue 专项”职责分层，不混淆入口职责。
+- 若需要补调试字段，优先落在日志、脚本断言或最小必要快照字段，不为尚未开始的 UI 落地提前扩接口。
+
+完成判据：
+
+- `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 持续稳定通过。
+- 至少新增一类比当前最小样例更长链的自动验证，覆盖连续回合、延迟效果清理、离场链或 AI 对局流程中的一种高风险组合。
+- 若本阶段触及 `core/` 或 `data/`，对应变更必须同步落日志并附验证结果。
+- 文档、日志与验证基线口径保持一致。
 
 ## 4. 关键接口冻结项
 
@@ -186,15 +217,16 @@
 
 ## 7. 近期执行顺序
 
-1. 继续维护 `docs/milestone_smoke_test.gd` 的规则主冒烟职责，不把正式卡编号样例混进去。
-2. 继续扩 `docs/cards_raw_minimal_duel_smoke_test.gd`，优先覆盖更复杂的预览链、多段条件追加结算，以及跨完整回合的生命周期 / 离场触发链组合。
-3. 若继续推进当前未支持能力，优先处理 requirement / step 高耦合的组合模板，再逐步扩到其余未支持文本模式。
+1. 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三个入口稳定通过，作为当前阶段规则冻结基线。
+2. 下一阶段优先补更长链路的自动验证，重点放在连续回合生命周期、延迟效果过期、离场触发链衔接和完整对局推进稳定性。
+3. 暂不推进 UI 视觉规范落地；若无验证阻塞，不修改 `ui/` 与 `scenes/`。
 4. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定。
-5. 若后续需求触及 UI 待决策流、预览流或布局消费，同步执行 `--layout-probe` 验收并记录结果。
+5. 若后续需要重新开启 UI 阶段，再以 `docs/plan/ui_art_style_guide.md` 为冻结基线单独立项推进。
 
 ## 8. 实施假设
 
 - 当前版本仍以本地 1v1 原型为目标，不规划网络同步。
-- 短期内不引入大规模美术或动画重构，UI 优先服务规则可见性和验证效率。
+- 短期内不引入大规模美术或动画重构，且暂不进行 UI 相关调整；当前仍以规则可见性和验证效率为优先。
 - `docs/rules/rule.md` 高于 README、旧计划文档和现有实现；若存在冲突，以 `docs/rules/rule.md` 为准。
 - 所有功能更新和 bugfix 必须同步记录到 `docs/logs/log_yyyy-MM-dd.md` 当日日志，且内容使用中文。
+- 后续每次功能更新完成后，必须同步统一 `docs/plan/development_plan.md`、`docs/plan/mile_stone.md`、`README.md` 与当日日志中的阶段口径、统计基线、验证结果和下一步方向；若其中任一文档仍停留在旧口径，则该次更新视为未完成。

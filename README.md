@@ -1,6 +1,6 @@
 # TcgDemo
 
-基于 Godot 4.6 的本地 1v1 卡牌对战原型项目，玩法设计参考 UNION ARENA 风格。当前仓库已完成基础对局闭环、主要高风险规则区、统一 DSL/IR 执行链与一轮正式 raw 样例回归，开发重点已转入“回归覆盖与稳定性建设”。
+基于 Godot 4.6 的本地 1v1 卡牌对战原型项目，玩法设计参考 UNION ARENA 风格。当前仓库已完成基础对局闭环、主要高风险规则区、统一 DSL/IR 执行链与正式 raw 首轮收口，当前开发重点已转入“规则稳定性、长链路验证与回归资产建设”。
 
 ## 项目定位
 
@@ -17,7 +17,7 @@
   - 规则、区域限制、结算顺序、状态机和数据映射的最高权威来源
 - `AGENTS.md`
   - 多 agent 协作规范、边界、日志要求和验收标准
-- `docs/plan/project_development_plan.md`
+- `docs/plan/development_plan.md`
   - 当前正式开发计划与阶段安排
 - `docs/plan/mile_stone.md`
   - 当前仓库已经实现到哪里的盘点
@@ -75,9 +75,9 @@
 - 默认通过显式待决策流处理目标选择
 - 新增模板先扩 DSL/IR，再扩编译链与运行时
 
-截至 2026-03-27，正式 raw 编译结果为：
+截至 2026-03-30，正式 raw 编译结果为：
 
-- 已支持能力：`73`
+- 已支持能力：`128`
 - 未支持能力：`0`
 
 ## 验证基线
@@ -85,9 +85,11 @@
 当前关键验证入口与结果：
 
 - `docs/milestone_smoke_test.gd`
-  - 27 项通过，0 项失败
+  - 32 项通过，0 项失败
 - `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - 31 项通过，0 项失败
+  - 66 项通过，0 项失败
+- `docs/runtime_residue_smoke_test.gd`
+  - 4 项通过，0 项失败
 - `docs/draw_phase_smoke_test.gd`
   - 当前环境稳定通过，可作为 DRAW 阶段专项回归入口
 
@@ -160,6 +162,7 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 
 按当前里程碑，下一阶段最值得继续推进的是：
 
-- 扩正式 raw 样例，优先覆盖更复杂的预览链、多段条件追加结算、连续回合生命周期与离场触发链
-- 继续保持 `docs/milestone_smoke_test.gd` 与 `docs/cards_raw_minimal_duel_smoke_test.gd` 的职责分离
+- 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三个入口稳定通过
+- 继续补比当前最小样例更长链的自动验证，优先覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进
+- 暂不进行 UI 相关调整，`docs/plan/ui_art_style_guide.md` 保留为后续阶段的冻结基线
 - 持续观察 Godot 退出时既有资源告警是否影响长期回归稳定性

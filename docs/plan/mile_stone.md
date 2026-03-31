@@ -19,10 +19,11 @@
 
 - 基础对局闭环已实现，核心区域、阶段流转、资源支付、战斗与胜负判断具备稳定主路径。
 - 高风险规则区已补齐一轮专项回归，规则主链路已不再依赖临时说明文档来补语义。
-- 统一 DSL/IR 已扩展到 `112` 个已支持能力、`17` 个未支持能力；当前运行时已具备继续吸收正式 raw 卡模板的基础，但仍有 `13` 张卡存在未支持能力待收口。
-- 正式 raw 样例验证已形成独立基线，当前重点转为“两条线并行推进”：继续扩覆盖面与稳定性，同时针对剩余 requirement / step 高耦合缺口做定点收口。
+- 统一 DSL/IR 已完成对当前正式 raw 卡池的首轮收口，当前编译结果为 `128` 个已支持能力、`0` 个未支持能力。
+- 正式 raw 样例验证已形成独立基线，当前重点已从“补能力缺口”转为“维持规则稳定性 + 推进 UI 视觉正式落地”的双主线。
 - `SimpleAI` 已从静态优先级选择器升级为轻量评分式 `v2`，AI 对局基线已形成“行为专项 smoke + 整体流程 smoke”的双层验证。
 - UI 已完成战场区、堆叠区、预览区、待决策交互和底部手牌区的第一轮收口，能支撑规则验证与日常调试。
+- UI 美术风格规范文档已冻结，下一阶段可以从“可用型界面”切换到“正式视觉落地”。
 
 ## 3. 里程碑状态
 
@@ -100,15 +101,14 @@
 - `resolve_effect`、`resolve_trigger`、`MAIN_ACTIVATE` 与手动目标续执行已统一接入队列消费链。
 - `trigger_effects` 已支持 `ON_ENTER`、`ON_LEAVE`、`ON_ATTACK`、`ON_BLOCK`、`ON_LIFE_TRIGGER`、`MAIN_ACTIVATE`、`ON_BATTLE_WIN`、`ON_BATTLE_LOSE`、`ON_BATTLE_END`。
 - 已支持显式目标、基础费用、步骤式结算、静态修正、延迟效果与出牌前修饰消费。
-- 正式 raw 编译结果当前为 `112` 个已支持能力、`17` 个未支持能力。
+- 正式 raw 编译结果当前为 `128` 个已支持能力、`0` 个未支持能力。
 - 已覆盖高阶模板：临时产能修饰、延迟自退场、绑定自身的临时特殊登场 / `RAID` 许可、动态 BP 阈值、条件化阈值替换、公开结果奖励与 fallback 主链/后备链。
 
 当前剩余重点：
 
-- 继续补更复杂的正式 raw 组合样例。
 - 继续围绕 `docs/milestone_smoke_test.gd` 观察共性生命周期语义，重点确认 `UNTIL_NEXT_SELF_TURN_START` 只在来源方下个回合开始失效、多个 `ON_END_MAIN_PHASE` / `END_OF_TURN` 延迟效果不会残留 `pending_decisions`、`effect_queue` 或 `battle_context` 脏状态。
 - 继续围绕 `docs/cards_raw_minimal_duel_smoke_test.gd` 观察正式 raw 组合链路，重点确认跨完整回合的临时特殊登场许可过期、`ON_LEAVE` 回手链与战斗/阶段推进衔接稳定，以及叠放离场后的区域与标记一致性。
-- `UA31BT_MMM_1_056` 已完成收口；若继续推进未支持能力，应优先围绕同类“预览链 + 条件追加授予临时能力 / 精确计数 requirement”模板继续收口。
+- 保持统一 IR 口径稳定，后续新增正式卡文或模板时继续坚持“先扩可复用 requirement / step，再接入数据与回归”的原则，避免回退到按卡硬编码。
 
 ## 里程碑 M5：数据、导入与验证资产
 
@@ -130,8 +130,9 @@
 
 当前验证基线：
 
-- `docs/milestone_smoke_test.gd`：31 项通过、0 项失败
-- `docs/cards_raw_minimal_duel_smoke_test.gd`：50 项通过、0 项失败
+- `docs/milestone_smoke_test.gd`：32 项通过、0 项失败
+- `docs/cards_raw_minimal_duel_smoke_test.gd`：66 项通过、0 项失败
+- `docs/runtime_residue_smoke_test.gd`：4 项通过、0 项失败
 - `docs/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
 - `docs/vs_ai_smoke_test.gd`：2 项通过、0 项失败
 
@@ -176,28 +177,54 @@
 - `ui/zone_stack_summary_view.gd`
 - `scenes/battle_scene.tscn`
 
+## 里程碑 M6.5：UI 美术规范冻结
+
+状态：已实现，暂缓落地
+
+已确认能力：
+
+- `docs/plan/ui_art_style_guide.md` 已作为正式视觉规范文档创建完成。
+- 当前视觉方向已锁定为“红色竞技桌垫感 + 轻量数字界面感”，不再继续在抽象风格层面反复摇摆。
+- 七个核心区域、槽位轮廓、标题承托、卡牌展示、面板、按钮、标签、Tooltip、字体、间距、圆角、阴影与动效基线均已形成统一书面规范。
+- 后续 UI 改动可以直接以该文档为依据推进，不需要再次从零定义视觉语言。
+
+当前未完成项：
+
+- 规范已冻结，但尚未完整落地到 `battle_scene`、`board_view`、`hand_view`、`card_view` 和预览面板的实际实现中。
+- 视觉资源、主题常量与局部样式仍有分散现象，尚未完成第一轮统一收口。
+
+当前决策：
+
+- 当前阶段暂不进行 UI 相关调整。
+- `docs/plan/ui_art_style_guide.md` 作为后续阶段的冻结基线保留，但不作为当前迭代主线。
+
 ## 4. 当前主线与风险
 
 当前主线：
 
-- 继续扩 `docs/cards_raw_minimal_duel_smoke_test.gd` 的正式 raw 模板覆盖面。
-- 保持 `docs/milestone_smoke_test.gd` 的规则主冒烟职责不漂移。
-- 继续把“连续回合生命周期与离场触发链”的观察落到固定回归入口，而不是停留在抽象风险描述。
-- 若继续推进未支持能力，优先从剩余 requirement / step 高耦合模板切入，而不是围绕过期计划清单空转。
+- 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三条规则验证入口稳定通过。
+- 暂不推进 UI 视觉落地，当前主线改为继续压实连续回合生命周期、离场触发链与更长链路自动验证。
 - 保持 `docs/simple_ai_v2_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 的 AI 验证分层，逐步压实 AI 节奏判断而不污染规则主冒烟。
 - 保持规则、计划、README 与日志描述一致，避免再次出现文档口径滞后。
 
 当前主要风险：
 
-- 正式 raw 样例覆盖仍偏最小样例，尚不能替代完整卡池回归。
+- 当前正式 raw 已全部进入统一 IR 主链路，但完整卡池级别回归仍未建立，样例脚本不能替代更大规模回归。
 - Godot 退出时仍保留既有 `ObjectDB` / resource 泄漏告警，虽未影响断言结果，但仍需持续观察。
 - `SimpleAI v2` 目前仍是轻量启发式，`EVENT / ACTIVATE_EFFECT / 关键阻挡位` 的判断更多依赖近似策略，后续若继续增强 AI，需要在不破坏接口冻结的前提下补充更明确的动作上下文字段。
-- 若后续快照结构或待决策流继续扩展，`ui/` 与 `core/` 的接口冻结需要更严格执行，避免并行接入时漂移。
+- 当前验证入口仍偏专项与最小样例，若迟迟不补更长链路自动验证，后续新增改动仍可能在完整流程上暴露迟发问题。
 
 ## 5. 下一阶段建议
 
-1. 继续补正式 raw 样例，优先覆盖更复杂的预览链、多段条件追加结算、连续回合生命周期与离场触发链。
-2. 若继续推进未支持能力，优先处理 requirement / step 高耦合的真实技术缺口，并先冻结 IR 契约与 requirement/step 边界。
-3. 若新增需求触及高风险规则区，先补规则主冒烟，再扩 raw 样例，不要反过来用样例脚本替代规则验证。
-4. 若继续提升 AI 质量，优先补动作上下文参数与更多 AI 专项 smoke，而不是直接把 `SimpleAI` 推向复杂搜索。
-5. 若后续改动触及 UI 预览流、待决策流或布局消费，执行 `battle_scene --layout-probe` 并把结果同步写入当日日志。
+1. 下一阶段继续聚焦规则稳定性与验证资产，优先补比当前最小样例更长链的自动验证，覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进。
+2. 把 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
+3. 暂不进行 UI 相关调整，`docs/plan/ui_art_style_guide.md` 保留为后续阶段的视觉冻结文档，不纳入当前执行范围。
+4. 若继续提升 AI 质量，优先补动作上下文参数与 AI 专项 smoke，而不是直接扩大 UI 或搜索式策略改造。
+5. 待规则稳定性与长链路验证进一步压实后，再单独评估 UI 视觉落地的启动时机。
+
+## 6. 文档同步要求
+
+- 后续每次功能更新或 bugfix，都必须同步统一`docs/plan/development_plan.md`、`docs/plan/mile_stone.md`、`README.md` 与 `docs/logs/log_yyyy-MM-dd.md` 的描述口径。
+- 若本轮改动未触及规则语义，也至少要同步复核并更新计划、README 与日志中的统计基线、验证结果、当前主线和下一步方向。
+- 若发现实现、规则、计划、README、日志之间存在旧口径并存，主 agent 必须在同一轮改动中一并收敛，不得把文档对齐留到后续。
+- 文档未统一口径的功能更新，不应视为完成。
