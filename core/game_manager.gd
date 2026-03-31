@@ -1208,13 +1208,7 @@ func _resolve_life_trigger_raid_choice(decision: Dictionary, choice: String) -> 
 	if card_uid == "" or owner_player_id == "":
 		return ["Life trigger raid choice failed: missing card or owner."]
 	if choice == "ADD_TO_HAND":
-		_move_pending_life_card_to_hand(card_uid, owner_player_id)
-		var card = game_state.get_card(card_uid)
-		var card_def = game_state.get_card_def(card.def_id) if card != null else null
-		logs.append("%s adds %s to hand." % [owner_player_id, card_def.name if card_def != null else card_uid])
-		if game_state.pending_life_triggers.is_empty() and _life_reveal_fully_resolved():
-			logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
-		return logs
+		return _fallback_life_trigger_raid_to_hand(card_uid, owner_player_id)
 	if choice != "RAID_NOW":
 		return ["Life trigger raid choice failed: unsupported choice."]
 	var raid_choices := _build_life_trigger_raid_target_choices(card_uid, owner_player_id)
@@ -1224,7 +1218,9 @@ func _resolve_life_trigger_raid_choice(decision: Dictionary, choice: String) -> 
 		if bool(raid_choice.get("enabled", true)):
 			enabled_choices.append(raid_choice)
 	if enabled_choices.is_empty():
-		return ["Life trigger raid choice failed: no legal raid target."]
+		logs.append("%s cannot raid now because requirements are not met, so the card is added to hand instead." % owner_player_id)
+		logs.append_array(_fallback_life_trigger_raid_to_hand(card_uid, owner_player_id))
+		return logs
 	_enqueue_pending_decision({
 		"type": "LIFE_TRIGGER_RAID_TARGET",
 		"owner_player_id": owner_player_id,
@@ -1240,11 +1236,14 @@ func _resolve_life_trigger_raid_choice(decision: Dictionary, choice: String) -> 
 func _resolve_life_trigger_raid_target(decision: Dictionary, raid_target_uid: String) -> Array[String]:
 	var logs: Array[String] = []
 	var card_uid := str(decision.get("source_card_uid", ""))
+	var owner_player_id := str(decision.get("owner_player_id", ""))
 	if card_uid == "" or raid_target_uid == "":
 		return ["Life trigger raid target failed: missing card or target."]
 	var raid_target = game_state.get_card(raid_target_uid)
 	if raid_target == null:
-		return ["Life trigger raid target failed: target not found."]
+		logs.append("%s cannot complete raid now because the selected target is no longer legal, so the card is added to hand instead." % owner_player_id)
+		logs.append_array(_fallback_life_trigger_raid_to_hand(card_uid, owner_player_id))
+		return logs
 	if raid_target.zone == UATypes.Zone.ENERGY_LINE:
 		_move_pending_life_card_to_hand(card_uid, str(decision.get("owner_player_id", "")))
 		_enqueue_pending_decision({
@@ -1269,7 +1268,7 @@ func _resolve_life_trigger_raid_target(decision: Dictionary, raid_target_uid: St
 		logs.append("Choose raid destination.")
 		return logs
 	_move_pending_life_card_to_hand(card_uid, str(decision.get("owner_player_id", "")))
-	play_card(card_uid, UATypes.Zone.FRONT_LINE, {
+	var play_result := play_card(card_uid, UATypes.Zone.FRONT_LINE, {
 		"raid_target_uid": raid_target_uid,
 		"raid_target_zone_choice": UATypes.Zone.FRONT_LINE,
 		"allow_raid_play": true,
@@ -1278,6 +1277,12 @@ func _resolve_life_trigger_raid_target(decision: Dictionary, raid_target_uid: St
 		"ignore_play_timing": true,
 		"player_id": str(decision.get("owner_player_id", "")),
 	})
+	if not bool(play_result.get("ok", false)):
+		zone_manager.move_card(game_state, card_uid, UATypes.Zone.HAND, owner_player_id)
+		logs.append("%s cannot complete raid now because requirements are not met, so the card is added to hand instead." % owner_player_id)
+		if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
+			logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
+		return logs
 	if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
 		logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
 	return logs
@@ -1325,6 +1330,16 @@ func _move_pending_life_card_to_hand(card_uid: String, owner_player_id: String) 
 		game_state.pending_life_damage_cards.remove_at(i)
 		break
 	zone_manager.move_card(game_state, card_uid, UATypes.Zone.HAND, owner_player_id)
+
+func _fallback_life_trigger_raid_to_hand(card_uid: String, owner_player_id: String) -> Array[String]:
+	var logs: Array[String] = []
+	_move_pending_life_card_to_hand(card_uid, owner_player_id)
+	var card = game_state.get_card(card_uid)
+	var card_def = game_state.get_card_def(card.def_id) if card != null else null
+	logs.append("%s adds %s to hand." % [owner_player_id, card_def.name if card_def != null else card_uid])
+	if game_state.pending_life_triggers.is_empty() and game_state.pending_decisions.is_empty() and _life_reveal_fully_resolved():
+		logs.append_array(effect_resolver.finalize_pending_life_damage(game_state))
+	return logs
 
 func _runtime_keywords_for(card: CardInstance, card_def: CardDef) -> Array:
 	var keywords: Array = card_def.keywords.duplicate()

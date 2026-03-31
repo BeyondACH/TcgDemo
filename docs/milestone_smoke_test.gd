@@ -38,6 +38,7 @@ func _init() -> void:
 	_run_test("多个结束主阶段延迟效果不会残留运行时脏状态", _test_multiple_end_main_delayed_effects_leave_no_runtime_residue)
 	_run_test("RAID 显式落点选择", _test_raid_zone_choice)
 	_run_test("RAID 生命触发二选一", _test_life_trigger_raid_choice)
+	_run_test("RAID 生命触发不满足条件时自动加入手牌", _test_life_trigger_raid_choice_falls_back_to_hand_when_raid_is_illegal)
 	_run_test("生命归零胜负", _test_life_zero_victory)
 	_run_test("空牌库抽牌败北", _test_deck_out_loss)
 	_run_test("RAID 突进叠放", _test_raid_stack_play)
@@ -1639,6 +1640,76 @@ func _test_life_trigger_raid_choice() -> Dictionary:
 		return _fail("生命触发直接RAID后应标记 entered_via_raid")
 	if not raid_card.stacked_under.has(raid_target_uid):
 		return _fail("生命触发直接RAID后应保留叠放关系")
+	return _ok()
+
+func _test_life_trigger_raid_choice_falls_back_to_hand_when_raid_is_illegal() -> Dictionary:
+	var manager := _new_manager()
+	var player := _player(manager, UATypes.PLAYER_TWO)
+	player.life.clear()
+	player.ap_area = []
+	var invalid_base_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_LIFE_RAID_INVALID_BASE",
+		"name": "生命触发RAID非法底座",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LR-INVALID-BASE",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var raid_life_uid := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {
+		"id": "TMP_LIFE_RAID_FALLBACK_CARD",
+		"name": "生命触发RAID失败回手牌",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LR-FALLBACK",
+		"traits": ["测试角色"],
+		"cost_energy": {"GREEN": 1},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 5000,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [
+			{
+				"trigger": "ON_LIFE_TRIGGER",
+				"effect_box": "OUTER",
+				"text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+				"steps": [{"type": "LIFE_TRIGGER_RAID_CHOICE"}]
+			}
+		],
+		"special_play_rule": {
+			"type": "RAID",
+			"raid_target_name": "生命触发RAID非法底座",
+			"allow_from_hand": true,
+			"require_full_energy": true,
+			"life_trigger_only": true
+		}
+	}, UATypes.Zone.LIFE, true)
+	player.life = [raid_life_uid]
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
+	manager.resolve_life_trigger_decision(raid_life_uid, true)
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"source_card_uid": raid_life_uid, "choice": "RAID_NOW"})
+	var raid_card = manager.game_state.get_card(raid_life_uid)
+	if invalid_base_uid == "":
+		return _fail("生命触发RAID非法底座测试卡创建失败")
+	if raid_card == null or raid_card.zone != UATypes.Zone.HAND:
+		return _fail("生命触发RAID在不满足条件时应自动加入手牌")
+	if not player.hand.has(raid_life_uid):
+		return _fail("生命触发RAID在不满足条件时，玩家手牌中应包含该牌")
+	if not manager.game_state.pending_life_triggers.is_empty():
+		return _fail("生命触发RAID失败回手后不应残留 pending_life_triggers")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("生命触发RAID失败回手后不应残留 pending_decisions")
+	if not manager.game_state.pending_life_damage_cards.is_empty():
+		return _fail("生命触发RAID失败回手后不应残留 pending_life_damage_cards")
+	if not manager.game_state.pending_life_reveal.is_empty():
+		return _fail("生命触发RAID失败回手后不应残留 pending_life_reveal")
 	return _ok()
 
 func _test_life_zero_victory() -> Dictionary:

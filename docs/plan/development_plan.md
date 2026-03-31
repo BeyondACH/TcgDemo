@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-03-30
+更新时间：2026-03-31
 
 ## 1. 计划摘要
 
@@ -15,16 +15,16 @@
 
 ## 2. 当前基线
 
-截至 2026-03-30，当前仓库基线如下：
+截至 2026-03-31，当前仓库基线如下：
 
 - 基础规则闭环已具备：开局、抽牌、AP 成长、阶段推进、出牌、移动、攻击/阻挡、伤害、胜负判定、显式弃牌与生命触发决策均已落地。
-- 高风险规则区已覆盖：攻击失败攻击方不退场、AP 在结束阶段不恢复、生命触发可选发动、同时触发顺序按规则处理。
+- 高风险规则区已覆盖：攻击失败攻击方不退场、AP 在结束阶段不恢复、生命触发可选发动、生命触发 `RAID` 在当前不满足条件时自动回手、同时触发顺序按规则处理。
 - 关键词与特殊登场已覆盖一批核心能力：`STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`IMPACT_PLUS_1`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`。
 - 效果系统已统一接入 `effect_queue` 执行链，并接入显式决策、目标续执行、延迟效果与静态修正。
 - 统一 DSL/IR 当前达到 `128` 个已支持能力、`0` 个未支持能力，正式 raw 当前已无遗留未支持项。
 - 验证资产当前基线：
-  - `docs/milestone_smoke_test.gd`：32 项通过、0 项失败
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：66 项通过、0 项失败
+  - `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：69 项通过、0 项失败
   - `docs/draw_phase_smoke_test.gd`：当前环境稳定通过，可作为 DRAW 阶段专项回归入口
   - `docs/runtime_residue_smoke_test.gd`：4 项通过、0 项失败
 - 当前主要风险已从“能力缺口”转为两类稳定性问题：一是规则运行时的跨回合 residue / 生命周期稳定性仍需持续压实；二是完整卡池级别回归与更长链路自动验证仍未建立。

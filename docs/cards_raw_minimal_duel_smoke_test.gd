@@ -117,6 +117,7 @@ func _init() -> void:
 	_run_test("Raw Soul Gem Ready AP Supports Explicit 0 To 2 Choice", _test_raw_soul_gem_ready_ap_supports_explicit_zero_to_two_choice)
 	_run_test("Raw Soul Gem Final Restores Life Only When Empty", _test_raw_soul_gem_final_restores_life_only_when_empty)
 	_run_test("Raw Raid Gains Double Attack After Life To Hand This Turn", _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn)
+	_run_test("Raw Life Trigger Raid Falls Back To Hand When Illegal", _test_raw_life_trigger_raid_falls_back_to_hand_when_illegal)
 	_run_test("Raw Raid Gains Tiered Bonuses From Unique Name Count", _test_raw_raid_gains_tiered_bonuses_from_unique_name_count)
 	_run_test("Raw Battle Scene Resolves P1 Life Trigger Board Target Click", _test_raw_battle_scene_resolves_p1_life_trigger_board_target_click)
 	_run_test("Raw Attack BP Down Requires Named Energy", _test_raw_attack_bp_down_requires_named_energy)
@@ -3984,6 +3985,37 @@ func _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn() -> Dictio
 		return _fail("Raw life-to-hand RAID sample should allow a second attack after gaining DOUBLE_ATTACK.")
 	return _ok()
 
+func _test_raw_life_trigger_raid_falls_back_to_hand_when_illegal() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var wrong_base_uid := _spawn_magic_girl_named_card(manager, player_id, "巴 マミ", 2000, UATypes.Zone.FRONT_LINE)
+	var source_uid := _move_card_to_life_top(manager, player_id, RAW_LIFE_TO_HAND_DOUBLE_ATTACK_RAID)
+	if wrong_base_uid == "" or source_uid == "":
+		return _fail("Raw illegal life-trigger RAID sample should prepare the source card and an invalid base.")
+	_trim_life_to_count(manager, player_id, 2)
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
+	manager.resolve_life_trigger_decision(source_uid, true)
+	if manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw illegal life-trigger RAID sample should still enter the add-to-hand or raid-now choice after activation.")
+	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
+	var source_card = manager.game_state.get_card(source_uid)
+	var player := _player(manager, player_id)
+	if source_card == null or source_card.zone != UATypes.Zone.HAND:
+		return _fail("Raw illegal life-trigger RAID sample should move the card to hand when RAID is currently illegal.")
+	if not player.hand.has(source_uid):
+		return _fail("Raw illegal life-trigger RAID sample should leave the source card in hand after fallback.")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("Raw illegal life-trigger RAID sample should not leave pending_decisions after fallback.")
+	if not manager.game_state.pending_life_triggers.is_empty():
+		return _fail("Raw illegal life-trigger RAID sample should not leave pending_life_triggers after fallback.")
+	if not manager.game_state.pending_life_damage_cards.is_empty():
+		return _fail("Raw illegal life-trigger RAID sample should not leave pending_life_damage_cards after fallback.")
+	if not manager.game_state.pending_life_reveal.is_empty():
+		return _fail("Raw illegal life-trigger RAID sample should not leave pending_life_reveal after fallback.")
+	return _ok()
+
 func _test_raw_raid_gains_tiered_bonuses_from_unique_name_count() -> Dictionary:
 	var player_id := UATypes.PLAYER_ONE
 	var opponent_id := UATypes.PLAYER_TWO
@@ -4072,15 +4104,15 @@ func _test_raw_battle_scene_resolves_p1_life_trigger_board_target_click() -> Dic
 	var decision: Dictionary = pending[0]
 	if not bool(decision.get("ui_allows_board_selection", false)):
 		return _fail("Battle scene snapshot should flag the pending target selection as board-clickable.")
-	if BoardTargetSelectionHelper.resolve_pending_click(manager, snapshot, false, attacker_id, enemy_target_uid, "front_line"):
+	if BoardTargetSelectionHelper.resolve_pending_click(manager, snapshot, false, defender_id, ally_target_uid, "front_line"):
 		return _fail("Battle scene helper should reject non-candidate board clicks from the wrong side.")
-	if not BoardTargetSelectionHelper.resolve_pending_click(manager, snapshot, false, defender_id, ally_target_uid, "front_line"):
-		return _fail("Battle scene helper should accept the pending P1 board target selection click.")
+	if not BoardTargetSelectionHelper.resolve_pending_click(manager, snapshot, false, attacker_id, enemy_target_uid, "front_line"):
+		return _fail("Battle scene helper should accept the pending opponent board target selection click.")
 	if not manager.game_state.pending_decisions.is_empty():
 		return _fail("Battle scene helper should consume the pending target selection after a legal board click.")
-	var target_card := manager.game_state.get_card(ally_target_uid)
+	var target_card := manager.game_state.get_card(enemy_target_uid)
 	if target_card == null or target_card.zone != UATypes.Zone.OUTSIDE:
-		return _fail("Battle scene helper should resolve the clicked P1 battlefield target through the existing decision pipeline.")
+		return _fail("Battle scene helper should resolve the clicked opponent battlefield target through the existing decision pipeline.")
 	return _ok()
 
 func _fill_ap(player: PlayerState, total: int) -> void:

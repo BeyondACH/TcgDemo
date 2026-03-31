@@ -1,6 +1,6 @@
 # 当前项目里程碑盘点
 
-更新时间：2026-03-30
+更新时间：2026-03-31
 
 ## 1. 盘点依据
 
@@ -82,7 +82,7 @@
 - `RAID` 目标在能量线时，玩家可决定叠放后留在能量线或转到前线。
 - `RAID` 已记录 `stacked_under`，离场时下层卡会被一并释放到场外。
 - `RAID_INNER` 效果门控已接入，只在通过 `RAID` 登场时启用。
-- `life_trigger_only` 仅表示该卡在生命触发时会出现“加手 / 立即 RAID”二选一，不会取消该卡在主阶段满足条件时的手牌 `RAID` 能力。
+- `life_trigger_only` 仅表示该卡在生命触发时会出现“加手 / 立即 RAID”二选一，不会取消该卡在主阶段满足条件时的手牌 `RAID` 能力；若生命触发里选择立即 `RAID` 但当前不满足条件，现会自动回退为加入手牌并完成生命伤害收尾。
 
 对应实现位置：
 
@@ -130,8 +130,8 @@
 
 当前验证基线：
 
-- `docs/milestone_smoke_test.gd`：32 项通过、0 项失败
-- `docs/cards_raw_minimal_duel_smoke_test.gd`：66 项通过、0 项失败
+- `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
+- `docs/cards_raw_minimal_duel_smoke_test.gd`：69 项通过、0 项失败
 - `docs/runtime_residue_smoke_test.gd`：4 项通过、0 项失败
 - `docs/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
 - `docs/vs_ai_smoke_test.gd`：2 项通过、0 项失败

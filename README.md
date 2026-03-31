@@ -35,7 +35,7 @@
 - AP 成长、支付、额外抽牌与结束阶段不恢复 AP
 - 前线/能量线/生命区/AP/场外/除外等核心区域管理
 - 基础出牌、移动、攻击、阻挡、伤害与胜负判断
-- 生命触发显式决策与结束阶段显式弃牌决策
+- 生命触发显式决策、生命触发 `RAID` 失败自动回手与结束阶段显式弃牌决策
 
 ### 已覆盖的关键规则能力
 
@@ -85,9 +85,9 @@
 当前关键验证入口与结果：
 
 - `docs/milestone_smoke_test.gd`
-  - 32 项通过，0 项失败
+  - 33 项通过，0 项失败
 - `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - 66 项通过，0 项失败
+  - 69 项通过，0 项失败
 - `docs/runtime_residue_smoke_test.gd`
   - 4 项通过，0 项失败
 - `docs/draw_phase_smoke_test.gd`
