@@ -191,7 +191,7 @@ func serialize_life_reveal_modal(state: GameState, action_player_id: String) -> 
 		break
 	var reveal_player_id := str(reveal.get("player_id", ""))
 	var reveal_controller_is_human: bool = _game_manager.controller_manager.is_human(reveal_player_id)
-	var awaiting_player_confirmation: bool = current_card_uid != "" and _game_manager._life_reveal_requires_view_confirmation(current_card_uid)
+	var awaiting_player_confirmation: bool = current_card_uid != "" and _game_manager.life_reveal_requires_view_confirmation(current_card_uid)
 	var ai_resolves_after_confirmation: bool = current_card_uid != "" and current_has_trigger and not reveal_controller_is_human
 	var waiting_for_ai_resolution: bool = current_card_uid != "" and current_has_trigger and ai_resolves_after_confirmation and current_view_confirmed
 	return {

@@ -96,6 +96,10 @@ func _get_controller_legal_actions(_game_state, player_id: String) -> Array[Dict
 func _is_life_reveal_waiting_for_player() -> bool:
 	return life_trigger_manager.is_life_reveal_waiting_for_player(game_state)
 
+
+func life_reveal_requires_view_confirmation(card_uid: String) -> bool:
+	return life_trigger_manager.life_reveal_requires_view_confirmation(game_state, card_uid, controller_manager.is_human)
+
 # Initialize a fresh game state, decks, starting hands, and opening turn.
 func setup_game(setup_config: Dictionary = {}) -> void:
 	_ensure_extracted_managers_initialized()

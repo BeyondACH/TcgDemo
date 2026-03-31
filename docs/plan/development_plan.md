@@ -29,6 +29,8 @@
   - `docs/draw_phase_smoke_test.gd`：当前环境稳定通过，可作为 DRAW 阶段专项回归入口
   - `docs/runtime_residue_smoke_test.gd`：4 项通过、0 项失败
 - 当前主要风险已从”能力缺口”转为两类稳定性问题：一是规则运行时的跨回合 residue / 生命周期稳定性仍需持续压实；二是完整卡池级别回归与更长链路自动验证仍未建立。
+- 2026-03-31 已补一处快照兼容性 bugfix：`SnapshotSerializer` 不再依赖 `GameManager` 已移除的生命翻开私有方法，生命翻开期间的 `get_snapshot()` 恢复稳定，可继续作为 UI 与冒烟脚本的正式读取入口。
+- 2026-03-31 已为 `tools/import_cards_raw_from_pic.ps1` 补浏览器请求头（含 `User-Agent` / `Referer` / `Accept-Language`）；复跑后 `UA31BT-MMM-1-001` 到 `034` 仍全部失败，当前导入链路剩余问题已收敛到脚本网络环境或官网返回差异排查，而不是单纯缺少浏览器头。
 
 ## 3. 开发阶段规划
 
@@ -229,6 +231,7 @@
 - DRAW 阶段专项：`docs/draw_phase_smoke_test.gd`
 - 导入链路：`docs/deck_import_smoke_test.gd`
 - 手牌动作合法性：`docs/hand_available_actions_smoke_test.gd`
+- 生命翻开弹窗：`docs/life_reveal_modal_smoke_test.gd`
 
 ## 7. 近期执行顺序
 

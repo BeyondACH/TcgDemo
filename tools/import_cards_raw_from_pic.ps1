@@ -6,6 +6,19 @@ $ErrorActionPreference = "Stop"
 
 Add-Type -AssemblyName System.Web
 
+$BrowserRequestHeaders = @{
+  "Accept" = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+  "Accept-Language" = "ja,en-US;q=0.9,en;q=0.8"
+  "Cache-Control" = "no-cache"
+  "Pragma" = "no-cache"
+  "Referer" = "https://www.unionarena-tcg.com/jp/cardlist/"
+  "Sec-Fetch-Dest" = "iframe"
+  "Sec-Fetch-Mode" = "navigate"
+  "Sec-Fetch-Site" = "same-origin"
+  "Upgrade-Insecure-Requests" = "1"
+  "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+
 function U([string]$value) {
   return [regex]::Unescape($value)
 }
@@ -431,7 +444,7 @@ foreach ($file in $files) {
     $encoded = [uri]::EscapeDataString($candidate)
     $url = "https://www.unionarena-tcg.com/jp/cardlist/detail_iframe.php?card_no=$encoded"
     try {
-      $response = Invoke-WebRequest -UseBasicParsing $url
+      $response = Invoke-WebRequest -UseBasicParsing -Headers $BrowserRequestHeaders $url
       if ($response.Content -notmatch "cardNumData") { continue }
       $parsedNumber = Get-SingleMatch $response.Content '<span class="cardNumData">(.*?)</span>'
       if ($parsedNumber -ne $candidate) { continue }

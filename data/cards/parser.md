@@ -37,12 +37,17 @@
 - 数据源固定为 Union Arena 官网单卡详情页。
 - 当前抓取地址为：
   - `https://www.unionarena-tcg.com/jp/cardlist/detail_iframe.php?card_no=...`
+- 请求时会补一组浏览器头，至少包含 `User-Agent`、`Accept`、`Accept-Language` 与 `Referer`，尽量与浏览器访问口径保持一致。
 - 写入 `cards_raw.json` 时，`source_url` 固定保存为详情页地址：
   - `https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=...`
 - 不接第三方 API。
 - 不依赖 OCR 文本识别。
 
 如果官网页面抓不到、页面结构不符合预期、关键字段缺失、或返回页中的卡号与目标卡号不一致，则该卡不应写入 `cards_raw.json`。
+
+补充说明：
+
+- 若浏览器可直接访问目标 URL，但脚本仍失败，不应先假定卡号错误；应继续检查 PowerShell 网络环境、站点返回内容差异，或脚本是否把请求异常误归类为 `official_page_not_found`。
 
 ## 4. 写入与去重规则
 
