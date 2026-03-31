@@ -6,15 +6,27 @@ const ZoneManager = preload("res://core/zone_manager.gd")
 const VictoryChecker = preload("res://core/victory_checker.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
+const RequirementMatcher = preload("res://core/effects/requirement_matcher.gd")
+const StepExecutor = preload("res://core/effects/step_executor.gd")
+const LifeDamageHandler = preload("res://core/effects/life_damage_handler.gd")
+const TargetSelector = preload("res://core/effects/target_selector.gd")
 
 var zone_manager
 var victory_checker
 var rules_engine
+var _requirement_matcher: RequirementMatcher
+var _step_executor: StepExecutor
+var _life_damage_handler: LifeDamageHandler
+var _target_selector: TargetSelector
 
 func _init(p_zone_manager, p_victory_checker, p_rules_engine = null) -> void:
 	zone_manager = p_zone_manager
 	victory_checker = p_victory_checker
 	rules_engine = p_rules_engine
+	_requirement_matcher = RequirementMatcher.new(zone_manager, rules_engine, self)
+	_target_selector = TargetSelector.new(zone_manager, _requirement_matcher, self)
+	_step_executor = StepExecutor.new(zone_manager, victory_checker, rules_engine, self)
+	_life_damage_handler = LifeDamageHandler.new(victory_checker, self)
 
 func resolve_operations(state: GameState, source_card_uid: String, effect_list: Array, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
@@ -326,70 +338,16 @@ func cleanup_start_turn_expirations(state: GameState, starting_player_id: String
 	state.static_modifiers = _filter_unexpired_modifiers(state.static_modifiers, starting_player_id, "UNTIL_NEXT_SELF_TURN_START")
 
 func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> Array[String]:
-	var logs: Array[String] = []
-	if player_id == "":
-		return logs
-	var moved: Array[String] = _collect_life_damage_cards(state, player_id, amount)
-	logs.append("%s takes %d damage." % [player_id, amount])
-	if moved.is_empty():
-		var defeat_now: Dictionary = victory_checker.check_victory(state)
-		if not defeat_now.is_empty():
-			_apply_victory(state, defeat_now)
-		return logs
-	_begin_life_reveal_batch(state, player_id, moved)
-	var queued_count := 0
-	for life_uid in moved:
-		if _card_has_trigger(state, life_uid, UATypes.TriggerType.ON_LIFE_TRIGGER):
-			var entry := _build_life_trigger_entry(state, player_id, life_uid)
-			state.pending_life_triggers.append(entry)
-			queued_count += 1
-	if queued_count > 0:
-		logs.append("%s may resolve %d life trigger(s) in any order." % [player_id, queued_count])
-	return logs
+	return _life_damage_handler.deal_damage_to_player(state, player_id, amount)
 
 func resolve_life_trigger_decision(state: GameState, card_uid: String, activate: bool) -> Array[String]:
-	var logs: Array[String] = []
-	var pending_index := -1
-	var pending_entry := {}
-	for i in range(state.pending_life_triggers.size()):
-		var candidate: Dictionary = state.pending_life_triggers[i]
-		if str(candidate.get("card_uid", "")) == card_uid:
-			pending_index = i
-			pending_entry = candidate
-			break
-	if pending_index == -1:
-		return ["Life trigger decision failed: missing pending card."]
-	state.pending_life_triggers.remove_at(pending_index)
-	_mark_life_reveal_resolved(state, card_uid)
-	var owner_player_id := str(pending_entry.get("player_id", ""))
-	var card_name := str(pending_entry.get("card_name", card_uid))
-	if activate:
-		logs.append("%s activates life trigger of %s." % [owner_player_id, card_name])
-		logs.append_array(resolve_trigger(card_uid, UATypes.TriggerType.ON_LIFE_TRIGGER, state, {"target_player_id": owner_player_id}))
-	else:
-		logs.append("%s skips life trigger of %s." % [owner_player_id, card_name])
-	_advance_life_reveal_cursor(state)
-	if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty() and _life_reveal_fully_resolved(state):
-		logs.append_array(_finalize_pending_life_damage(state))
-	return logs
+	return _life_damage_handler.resolve_life_trigger_decision(state, card_uid, activate)
 
 func acknowledge_life_reveal(state: GameState, card_uid: String) -> Array[String]:
-	var logs: Array[String] = []
-	if state.pending_life_reveal.is_empty():
-		return logs
-	var current_card_uid := _current_life_reveal_card_uid(state)
-	if current_card_uid == "" or current_card_uid != card_uid:
-		return ["Life reveal acknowledgement failed: current card mismatch."]
-	if _life_reveal_current_has_trigger(state):
-		return ["Life reveal acknowledgement failed: current card still requires a trigger decision."]
-	_mark_life_reveal_resolved(state, card_uid)
-	_advance_life_reveal_cursor(state)
-	if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty() and _life_reveal_fully_resolved(state):
-		logs.append_array(_finalize_pending_life_damage(state))
-	return logs
+	return _life_damage_handler.acknowledge_life_reveal(state, card_uid)
 
 func finalize_pending_life_damage(state: GameState) -> Array[String]:
-	return _finalize_pending_life_damage(state)
+	return _life_damage_handler.finalize_pending_life_damage(state)
 
 func _consume_queue_entry(state: GameState, entry: Dictionary) -> Array[String]:
 	if str(entry.get("kind", "")) != "RESOLVE_EFFECT":
@@ -428,178 +386,10 @@ func _resolve_effect_now(state: GameState, source_card_uid: String, effect: Dict
 	return logs
 
 func _execute_steps(state: GameState, source_card_uid: String, steps: Array, context: Dictionary, effect: Dictionary = {}) -> Dictionary:
-	var logs: Array[String] = []
-	for step_index in range(steps.size()):
-		var step: Dictionary = steps[step_index]
-		var step_result := _execute_step(state, source_card_uid, step, context, steps.slice(step_index + 1), effect)
-		logs.append_array(step_result.get("logs", []))
-		if bool(step_result.get("paused", false)):
-			return {"logs": logs, "paused": true}
-	return {"logs": logs, "paused": false}
+	return _step_executor.execute_steps(state, source_card_uid, steps, context, effect)
 
 func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array = [], effect: Dictionary = {}) -> Dictionary:
-	var step_type := str(step.get("type", ""))
-	var step_requirements: Array = step.get("requirements", [])
-	if not step_requirements.is_empty() and not _requirements_met(state, source_card_uid, step_requirements, context):
-		return {"logs": [], "paused": false}
-	if step_type == "PREVIEW_TOP_DECK":
-		var preview_logs: Array[String] = []
-		var player_mode := str(step.get("player", "SOURCE"))
-		var source_card = state.get_card(source_card_uid)
-		var player_id: String = str(context.get("source_player_id", ""))
-		if source_card != null:
-			player_id = source_card.controller_player_id
-		if player_mode == "TARGET":
-			player_id = str(context.get("target_player_id", player_id))
-		elif player_mode == "ACTIVE":
-			player_id = state.active_player_id
-		var player = state.get_player(player_id)
-		var preview_var := str(step.get("var", "preview_cards"))
-		var count := int(step.get("count", 0))
-		var preview_cards: Array = []
-		if player != null and count > 0:
-			var preview_count := mini(count, player.deck.size())
-			preview_cards = player.deck.slice(0, preview_count)
-		context[preview_var] = preview_cards
-		_register_preview_ui_meta(context, preview_var, {
-			"title": str(step.get("title", "查看牌堆顶")),
-			"player_id": player_id,
-			"count": count,
-		})
-		preview_logs.append("%s previews %d card(s) from the top of the deck." % [player_id, preview_cards.size()])
-		return {"logs": preview_logs, "paused": false}
-	if step_type == "SELECT_TARGETS":
-		var target: Dictionary = step.get("target", {})
-		var selected := _resolve_target_set(state, source_card_uid, target, context)
-		var selected_var := str(step.get("var", "selected_targets"))
-		if bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL":
-			if context.has(selected_var):
-				return {"logs": [], "paused": false}
-			if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, remaining_steps, false, _build_preview_pick_ui_meta(target, context)):
-				return {"logs": [], "paused": true}
-		if int(target.get("max", selected.size())) == 1:
-			context[selected_var] = selected[0] if not selected.is_empty() else ""
-		else:
-			context[selected_var] = selected
-		return {"logs": [], "paused": false}
-	if step_type == "SET_CONTEXT_FLAG":
-		var flag_var := str(step.get("var", ""))
-		if flag_var == "":
-			return {"logs": [], "paused": false}
-		if step.has("value"):
-			context[flag_var] = bool(step.get("value", false))
-			return {"logs": [], "paused": false}
-		var source_var := str(step.get("from_var", ""))
-		context[flag_var] = _context_value_is_non_empty(context.get(source_var, null))
-		return {"logs": [], "paused": false}
-	if step_type == "REMOVE_CONTEXT_VALUES":
-		var remove_source_var := str(step.get("from_var", ""))
-		var remove_target_var := str(step.get("target_var", remove_source_var))
-		var values_to_remove: Array = _ensure_array(context.get(remove_source_var, []))
-		context[remove_target_var] = _array_without_values(_ensure_array(context.get(remove_target_var, [])), values_to_remove)
-		return {"logs": [], "paused": false}
-	if step_type == "MOVE_SELECTED_CARDS":
-		var move_logs: Array[String] = []
-		var selected_cards: Array = _ensure_array(context.get(str(step.get("from_var", "")), []))
-		var to_zone := _parse_zone(step.get("to_zone", step.get("to", UATypes.Zone.OUTSIDE)))
-		var target_player_mode := str(step.get("target_player_mode", ""))
-		var target_player_id := str(step.get("target_player_id", context.get("target_player_id", "")))
-		if target_player_mode == "SOURCE":
-			var move_source_card = state.get_card(source_card_uid)
-			target_player_id = move_source_card.controller_player_id if move_source_card != null else str(context.get("source_player_id", target_player_id))
-		elif target_player_mode == "TARGET":
-			target_player_id = str(context.get("target_player_id", target_player_id))
-		var to_position := str(step.get("to_position", context.get(str(step.get("to_position_from_var", "")), "")))
-		for card_uid_variant in selected_cards:
-			var card_uid := str(card_uid_variant)
-			if card_uid == "":
-				continue
-			zone_manager.move_card(state, card_uid, to_zone, target_player_id, to_position)
-			move_logs.append("Moved card %s to %s." % [card_uid, UATypes.zone_to_key(to_zone)])
-		var remove_from_var := str(step.get("remove_from_var", ""))
-		if remove_from_var != "":
-			context[remove_from_var] = _array_without_values(_ensure_array(context.get(remove_from_var, [])), selected_cards)
-		return {"logs": move_logs, "paused": false}
-	if step_type == "PLAY_SELECTED_CARDS":
-		return {"logs": _play_selected_cards(state, source_card_uid, step, context), "paused": false}
-	if step_type == "REORDER_CONTEXT_CARDS":
-		var source_var := str(step.get("from_var", "preview_cards"))
-		var ordered_var := str(step.get("var", source_var))
-		var candidates: Array = _ensure_array(context.get(source_var, []))
-		if context.has(ordered_var):
-			return {"logs": [], "paused": false}
-		if candidates.is_empty():
-			context[ordered_var] = []
-			return {"logs": [], "paused": false}
-		var reorder_target := {
-			"type": "CONTEXT_CARD_SET",
-			"source_var": source_var,
-			"filters": step.get("filters", []).duplicate(true),
-			"requirements": step.get("requirements", []).duplicate(true),
-			"min": candidates.size(),
-			"max": candidates.size(),
-			"selection_mode": "MANUAL",
-			"manual": true,
-		}
-		if _enqueue_target_selection(state, source_card_uid, effect, ordered_var, reorder_target, candidates, context, remaining_steps, false, _build_preview_reorder_ui_meta(source_var, candidates, context)):
-			return {"logs": [], "paused": true}
-		return {"logs": [], "paused": false}
-	if step_type == "MOVE_TOP_DECK_TO_LIFE":
-		var life_logs: Array[String] = []
-		var player_id := str(context.get("target_player_id", context.get("source_player_id", "")))
-		var player = state.get_player(player_id)
-		if player != null and not player.deck.is_empty():
-			var top_uid: String = player.deck.pop_front()
-			player.life.append(top_uid)
-			var top_card = state.get_card(top_uid)
-			if top_card != null:
-				top_card.zone = UATypes.Zone.LIFE
-			life_logs.append("%s moves the top card of the deck to life." % player_id)
-		return {"logs": life_logs, "paused": false}
-	if step_type == "ACTIVATE_AP_SLOTS":
-		var ap_logs: Array[String] = []
-		var ap_player_id := str(context.get("target_player_id", context.get("source_player_id", "")))
-		var ap_player = state.get_player(ap_player_id)
-		if ap_player != null:
-			var remaining := int(step.get("value", 1))
-			for i in range(ap_player.ap_area.size()):
-				if remaining <= 0:
-					break
-				if bool(ap_player.ap_area[i].get("active", false)):
-					continue
-				ap_player.ap_area[i]["active"] = true
-				remaining -= 1
-			ap_logs.append("%s readies up to %d AP slot(s)." % [ap_player_id, int(step.get("value", 1))])
-		return {"logs": ap_logs, "paused": false}
-	if step_type == "LIFE_TRIGGER_RAID_CHOICE":
-		return {"logs": _enqueue_life_trigger_raid_choice(state, source_card_uid), "paused": false}
-	if step_type == "ADD_TEMP_BP_MODIFIER":
-		return {"logs": _apply_temporary_bp_modifier(state, source_card_uid, step, context), "paused": false}
-	if step_type == "ADD_TEMP_KEYWORD":
-		return {"logs": _apply_temporary_keyword_modifier(state, source_card_uid, step, context), "paused": false}
-	if step_type == "SWAP_SOURCE_WITH_SELECTED_CARD":
-		return {"logs": _swap_source_with_selected_card(state, source_card_uid, step, context), "paused": false}
-	if step_type == "MOVE_SOURCE_STACKED_UNDER_TO_ZONE":
-		return {"logs": _move_source_stacked_under_to_zone(state, source_card_uid, step), "paused": false}
-	if step_type == "FOR_EACH":
-		var logs: Array[String] = []
-		var values: Array = _ensure_array(context.get(str(step.get("items_var", "")), []))
-		var current_var := str(step.get("current_var", "current_item"))
-		for item in values:
-			context[current_var] = item
-			var nested_result := _execute_steps(state, source_card_uid, step.get("steps", []), context, effect)
-			logs.append_array(nested_result.get("logs", []))
-			if bool(nested_result.get("paused", false)):
-				return {"logs": logs, "paused": true}
-		context.erase(current_var)
-		return {"logs": logs, "paused": false}
-	if step_type == "REGISTER_DELAYED_EFFECT":
-		_register_delayed_effect(state, source_card_uid, step)
-		return {"logs": [], "paused": false}
-	if step_type == "REGISTER_STATIC_MODIFIER":
-		_register_static_modifier(state, source_card_uid, step)
-		return {"logs": [], "paused": false}
-	return {"logs": _execute_operation(state, source_card_uid, step, context), "paused": false}
+	return _step_executor.execute(state, source_card_uid, step, context, remaining_steps, effect)
 
 func _execute_operation(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
@@ -678,124 +468,6 @@ func _execute_operation(state: GameState, source_card_uid: String, effect: Dicti
 		return logs
 	logs.append("Reserved unsupported effect type: %s" % effect_type)
 	return logs
-
-func _collect_life_damage_cards(state: GameState, player_id: String, amount: int) -> Array[String]:
-	var moved: Array[String] = []
-	var player = state.get_player(player_id)
-	if player == null:
-		return moved
-	for i in range(amount):
-		if player.life.is_empty():
-			break
-		var card_uid: String = player.life.pop_front()
-		moved.append(card_uid)
-		state.pending_life_damage_cards.append({
-			"player_id": player_id,
-			"card_uid": card_uid,
-		})
-	return moved
-
-func _begin_life_reveal_batch(state: GameState, player_id: String, card_uids: Array[String]) -> void:
-	var entries: Array[Dictionary] = []
-	for i in range(card_uids.size()):
-		var card_uid := str(card_uids[i])
-		entries.append({
-			"player_id": player_id,
-			"card_uid": card_uid,
-			"has_life_trigger": _card_has_trigger(state, card_uid, UATypes.TriggerType.ON_LIFE_TRIGGER),
-			"view_confirmed": false,
-			"resolved": false,
-			"order_index": i,
-		})
-	state.pending_life_reveal = {
-		"player_id": player_id,
-		"revealed_cards": entries,
-	}
-	_advance_life_reveal_cursor(state)
-
-func _finalize_pending_life_damage(state: GameState) -> Array[String]:
-	var logs: Array[String] = []
-	for entry_variant in state.pending_life_damage_cards:
-		var entry: Dictionary = entry_variant
-		var player_id := str(entry.get("player_id", ""))
-		var card_uid := str(entry.get("card_uid", ""))
-		var player = state.get_player(player_id)
-		if player == null or card_uid == "":
-			continue
-		if not player.outside.has(card_uid):
-			player.outside.append(card_uid)
-		var card = state.get_card(card_uid)
-		if card != null:
-			card.zone = UATypes.Zone.OUTSIDE
-	state.pending_life_damage_cards.clear()
-	state.pending_life_reveal = {}
-	state.pending_life_reveal_waiting_for_player = false
-	var defeat: Dictionary = victory_checker.check_victory(state)
-	if not defeat.is_empty():
-		_apply_victory(state, defeat)
-	return logs
-
-func _build_life_trigger_entry(state: GameState, player_id: String, card_uid: String) -> Dictionary:
-	var card_name := card_uid
-	var card = state.get_card(card_uid)
-	if card != null:
-		var card_def = state.get_card_def(card.def_id)
-		if card_def != null:
-			card_name = card_def.name
-	return {
-		"player_id": player_id,
-		"card_uid": card_uid,
-		"card_name": card_name,
-	}
-
-func _advance_life_reveal_cursor(state: GameState) -> void:
-	if state.pending_life_reveal.is_empty():
-		return
-	var entries: Array = state.pending_life_reveal.get("revealed_cards", [])
-	var current_card_uid := ""
-	for entry_variant in entries:
-		var entry: Dictionary = entry_variant
-		if not bool(entry.get("resolved", false)):
-			current_card_uid = str(entry.get("card_uid", ""))
-			break
-	state.pending_life_reveal["current_card_uid"] = current_card_uid
-
-func _mark_life_reveal_resolved(state: GameState, card_uid: String) -> void:
-	if state.pending_life_reveal.is_empty():
-		return
-	var entries: Array = state.pending_life_reveal.get("revealed_cards", [])
-	for i in range(entries.size()):
-		var entry: Dictionary = entries[i]
-		if str(entry.get("card_uid", "")) != card_uid:
-			continue
-		entry["resolved"] = true
-		entries[i] = entry
-		state.pending_life_reveal["revealed_cards"] = entries
-		return
-
-func _current_life_reveal_card_uid(state: GameState) -> String:
-	if state.pending_life_reveal.is_empty():
-		return ""
-	return str(state.pending_life_reveal.get("current_card_uid", ""))
-
-func _life_reveal_current_has_trigger(state: GameState) -> bool:
-	var current_card_uid := _current_life_reveal_card_uid(state)
-	if current_card_uid == "":
-		return false
-	for entry_variant in state.pending_life_reveal.get("revealed_cards", []):
-		var entry: Dictionary = entry_variant
-		if str(entry.get("card_uid", "")) == current_card_uid:
-			return bool(entry.get("has_life_trigger", false))
-	return false
-
-func _life_reveal_fully_resolved(state: GameState) -> bool:
-	if state.pending_life_reveal.is_empty():
-		return true
-	for entry_variant in state.pending_life_reveal.get("revealed_cards", []):
-		var entry: Dictionary = entry_variant
-		if not bool(entry.get("resolved", false)):
-			return false
-	return true
 
 func _register_delayed_effect(state: GameState, source_card_uid: String, step: Dictionary) -> void:
 	var source_card = state.get_card(source_card_uid)
@@ -917,48 +589,6 @@ func _apply_temporary_keyword_modifier(state: GameState, source_card_uid: String
 		"expires": expires,
 	})
 	logs.append("%s gains %s %s." % [target_uid, keyword, _format_modifier_expiry_text(expires)])
-	return logs
-
-func _enqueue_life_trigger_raid_choice(state: GameState, source_card_uid: String) -> Array[String]:
-	var logs: Array[String] = []
-	var source_card: CardInstance = state.get_card(source_card_uid)
-	if source_card == null:
-		return logs
-	var source_def = state.get_card_def(source_card.def_id)
-	var owner_player_id: String = source_card.controller_player_id
-	var raid_enabled := false
-	var raid_reason := "raid_not_available"
-	if source_def != null and str(source_def.special_play_rule.get("type", "")) == "RAID":
-		raid_reason = "no_legal_raid_target"
-		var player = state.get_player(owner_player_id)
-		var required_name := str(source_def.special_play_rule.get("raid_target_name", ""))
-		if player != null:
-			for zone_cards in [player.front_line, player.energy_line]:
-				for candidate_uid_variant in zone_cards:
-					var candidate_card = state.get_card(str(candidate_uid_variant))
-					var candidate_def = state.get_card_def(candidate_card.def_id) if candidate_card != null else null
-					if candidate_card == null or candidate_def == null:
-						continue
-					if candidate_def.card_type != UATypes.CardType.CHARACTER:
-						continue
-					if required_name != "" and not candidate_def.matches_reference_name(required_name):
-						continue
-					raid_enabled = true
-					raid_reason = ""
-					break
-				if raid_enabled:
-					break
-	state.pending_decisions.append({
-		"type": "LIFE_TRIGGER_RAID_CHOICE",
-		"owner_player_id": owner_player_id,
-		"source_card_uid": source_card_uid,
-		"choices": [
-			{"label": "Add To Hand", "value": "ADD_TO_HAND", "enabled": true, "reason": ""},
-			{"label": "Raid Now", "value": "RAID_NOW", "enabled": raid_enabled, "reason": raid_reason},
-		],
-		"context": {},
-	})
-	logs.append("%s may add the card to hand or raid immediately." % owner_player_id)
 	return logs
 
 func _resolve_trigger_owner_groups(state: GameState, owner_groups: Array) -> Array[String]:
@@ -1157,89 +787,10 @@ func _cost_player_id(state: GameState, source_card_uid: String, context: Diction
 	return source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
 
 func _resolve_target_set(state: GameState, source_card_uid: String, target: Dictionary, context: Dictionary) -> Array:
-	var result: Array = []
-	var target_type := str(target.get("type", ""))
-	if target_type == "CONTEXT_CARD_SET":
-		var source_var := str(target.get("source_var", ""))
-		var context_candidates: Array = _ensure_array(context.get(source_var, []))
-		var filters: Array = target.get("filters", [])
-		var requirements: Array = target.get("requirements", [])
-		for candidate_uid_variant in context_candidates:
-			var candidate_uid := str(candidate_uid_variant)
-			if candidate_uid == "":
-				continue
-			if not _matches_filter_list(state, filters, context, candidate_uid, source_card_uid):
-				continue
-			if not _requirements_met(state, source_card_uid, requirements, context, candidate_uid):
-				continue
-			result.append(candidate_uid)
-		var min_count := int(target.get("min", 0))
-		if result.size() < min_count:
-			return []
-		var max_count := int(target.get("max", result.size()))
-		if (bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL"):
-			return result
-		if max_count >= 0 and result.size() > max_count:
-			return result.slice(0, max_count)
-		return result
-	if target_type == "OPTION_SET":
-		for option_variant in target.get("options", []):
-			var option_value := str(option_variant)
-			if option_value == "":
-				continue
-			result.append(option_value)
-		return result
-	if target_type != "CARD_SET":
-		return result
-	var source_card = state.get_card(source_card_uid)
-	if source_card == null:
-		return result
-	var zones: Array = []
-	if target.has("zones"):
-		for zone_variant in target.get("zones", []):
-			zones.append(_parse_zone(zone_variant))
-	else:
-		zones.append(_parse_zone(target.get("from_zone", UATypes.Zone.OUTSIDE)))
-	var owner_mode := str(target.get("owner", "SELF"))
-	var owner_player_ids := _resolve_owner_player_ids(state, owner_mode, source_card.controller_player_id)
-	var filters: Array = target.get("filters", [])
-	var requirements: Array = target.get("requirements", [])
-	for player_id in owner_player_ids:
-		var player = state.get_player(player_id)
-		if player == null:
-			continue
-		for zone in zones:
-			var zone_cards = zone_manager.get_zone_array(player, zone)
-			if zone_cards == null:
-				continue
-			for card_uid in zone_cards:
-				if not _matches_filter_list(state, filters, context, str(card_uid), source_card_uid):
-					continue
-				if not _requirements_met(state, source_card_uid, requirements, context, str(card_uid)):
-					continue
-				result.append(card_uid)
-	var min_count := int(target.get("min", 0))
-	if result.size() < min_count:
-		return []
-	var max_count := int(target.get("max", result.size()))
-	if (bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL"):
-		return result
-	if max_count >= 0 and result.size() > max_count:
-		return result.slice(0, max_count)
-	return result
+	return _target_selector.resolve_target_set(state, source_card_uid, target, context)
 
 func _resolve_owner_player_ids(state: GameState, owner_mode: String, source_player_id: String) -> Array:
-	if owner_mode == "SELF":
-		return [source_player_id]
-	if owner_mode == "OPPONENT":
-		return [_opponent_of(source_player_id)]
-	if owner_mode == "ANY":
-		return [UATypes.PLAYER_ONE, UATypes.PLAYER_TWO]
-	if owner_mode == "ACTIVE_PLAYER":
-		return [state.active_player_id]
-	if owner_mode == "TARGET_PLAYER":
-		return [str(state.battle_context.get("defender_player_id", source_player_id))]
-	return [source_player_id]
+	return _target_selector.resolve_owner_player_ids(state, owner_mode, source_player_id)
 
 func _matches_play_permission_modifier(state: GameState, modifier: Dictionary, context: Dictionary) -> bool:
 	var source_card_uid := _get_source_card_uid(modifier)
@@ -1251,370 +802,16 @@ func _matches_play_permission_modifier(state: GameState, modifier: Dictionary, c
 	return _matches_filter_list(state, modifier.get("filters", []), context, str(context.get("played_card_uid", "")), source_card_uid)
 
 func _matches_filter_list(state: GameState, filters: Array, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
-	for filter_variant in filters:
-		if not _matches_filter(state, filter_variant, context, candidate_card_uid, source_card_uid):
-			return false
-	return true
+	return _requirement_matcher.matches_filter_list(state, filters, context, candidate_card_uid, source_card_uid)
 
 func _matches_filter(state: GameState, filter_variant, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
-	var filter: Dictionary = filter_variant
-	var filter_type := str(filter.get("type", ""))
-	var candidate_card = state.get_card(candidate_card_uid)
-	var candidate_def = null
-	if candidate_card != null:
-		candidate_def = state.get_card_def(candidate_card.def_id)
-	var source_card = state.get_card(source_card_uid)
-
-	if filter_type == "CARD_TYPE_IS":
-		return candidate_def != null and UATypes.card_type_to_text(candidate_def.card_type) == str(filter.get("value", ""))
-	if filter_type == "NAME_IS":
-		return candidate_def != null and candidate_def.name == str(filter.get("value", ""))
-	if filter_type == "NAME_NOT":
-		return candidate_def != null and candidate_def.name != str(filter.get("value", ""))
-	if filter_type == "NOT_SOURCE_CARD":
-		return candidate_card_uid != "" and candidate_card_uid != source_card_uid
-	if filter_type == "NOT_HAS_KEYWORD":
-		return candidate_def != null and not candidate_def.keywords.has(str(filter.get("value", "")))
-	if filter_type == "HAS_TRAIT":
-		return candidate_def != null and candidate_def.traits.has(str(filter.get("value", "")))
-	if filter_type == "CARD_COST_ENERGY_LTE":
-		return candidate_def != null and _card_energy_cost_total(candidate_def) <= int(filter.get("value", 0))
-	if filter_type == "CARD_COST_AP_EQ":
-		return candidate_def != null and int(candidate_def.cost_ap) == int(filter.get("value", 0))
-	if filter_type == "CARD_COLOR_IS":
-		return candidate_def != null and _card_matches_color(candidate_def, str(filter.get("value", "")))
-	if filter_type == "TITLE_IS":
-		return candidate_def != null and candidate_def.title_code == str(filter.get("value", ""))
-	if filter_type == "PLAYED_FROM_ZONE_IS":
-		return int(context.get("played_from_zone", -1)) == _parse_zone(filter.get("value", -1))
-	if filter_type == "OWNER_IS":
-		if candidate_card == null or source_card == null:
-			return false
-		var owner_value := str(filter.get("value", ""))
-		if owner_value == "SELF":
-			return candidate_card.owner_player_id == source_card.owner_player_id
-		if owner_value == "OPPONENT":
-			return candidate_card.owner_player_id != source_card.owner_player_id
-		if owner_value == "ACTIVE_PLAYER":
-			return candidate_card.owner_player_id == str(context.get("player_id", state.active_player_id))
-		return false
-	if filter_type == "OR":
-		for nested in filter.get("filters", []):
-			if _matches_filter(state, nested, context, candidate_card_uid, source_card_uid):
-				return true
-		return false
-	if filter_type == "AND":
-		for nested in filter.get("filters", []):
-			if not _matches_filter(state, nested, context, candidate_card_uid, source_card_uid):
-				return false
-		return true
-	if filter_type == "SELF_IN_ZONE":
-		return source_card != null and source_card.zone == _parse_zone(filter.get("zone", filter.get("value", -1)))
-	return true
+	return _requirement_matcher.matches_filter(state, filter_variant, context, candidate_card_uid, source_card_uid)
 
 func _requirements_met(state: GameState, source_card_uid: String, requirements: Array, context: Dictionary, candidate_card_uid := "") -> bool:
-	for requirement_variant in requirements:
-		if not _matches_requirement(state, requirement_variant, context, candidate_card_uid, source_card_uid):
-			return false
-	return true
+	return _requirement_matcher.all_met(state, source_card_uid, requirements, context, candidate_card_uid)
 
 func _matches_requirement(state: GameState, requirement_variant, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
-	var requirement: Dictionary = requirement_variant
-	var requirement_type := str(requirement.get("type", ""))
-	var candidate_card = state.get_card(candidate_card_uid)
-	var candidate_def = null
-	if candidate_card != null:
-		candidate_def = state.get_card_def(candidate_card.def_id)
-	var source_card = state.get_card(source_card_uid)
-	var source_def = null
-	if source_card != null:
-		source_def = state.get_card_def(source_card.def_id)
-	if requirement_type == "":
-		return true
-	if requirement_type == "OR":
-		for nested in requirement.get("requirements", requirement.get("filters", [])):
-			if _matches_requirement(state, nested, context, candidate_card_uid, source_card_uid):
-				return true
-		return false
-	if requirement_type == "CONTROLLER_HAS_NAME_IN_FIELD":
-		if source_card == null:
-			return false
-		var player = state.get_player(source_card.controller_player_id)
-		if player == null:
-			return false
-		var required_name := str(requirement.get("value", ""))
-		for zone_cards in [player.front_line, player.energy_line]:
-			for card_uid in zone_cards:
-				var field_card = state.get_card(str(card_uid))
-				if field_card == null:
-					continue
-				var field_def = state.get_card_def(field_card.def_id)
-				if field_def != null and field_def.name == required_name:
-					return true
-		return false
-	if requirement_type == "CONTROLLER_HAS_NAME_IN_ZONE":
-		if source_card == null:
-			return false
-		var player_mode_zone := str(requirement.get("owner", "SELF"))
-		var player_id_zone: String = source_card.controller_player_id
-		if player_mode_zone == "OPPONENT":
-			player_id_zone = _opponent_of(source_card.controller_player_id)
-		var zone_player = state.get_player(player_id_zone)
-		if zone_player == null:
-			return false
-		var required_zone_name := str(requirement.get("value", ""))
-		var zones: Array = requirement.get("zones", [])
-		for zone_variant in zones:
-			var zone_key := str(zone_variant)
-			var zone_cards: Array = []
-			match zone_key:
-				"FRONT_LINE":
-					zone_cards = zone_player.front_line
-				"ENERGY_LINE":
-					zone_cards = zone_player.energy_line
-				"HAND":
-					zone_cards = zone_player.hand
-				"LIFE":
-					zone_cards = zone_player.life
-				"OUTSIDE":
-					zone_cards = zone_player.outside
-				"REMOVED":
-					zone_cards = zone_player.removed
-				_:
-					zone_cards = []
-			for zone_card_uid in zone_cards:
-				var zone_card = state.get_card(str(zone_card_uid))
-				var zone_def = state.get_card_def(zone_card.def_id) if zone_card != null else null
-				if zone_def != null and zone_def.name == required_zone_name:
-					return true
-		return false
-	if requirement_type == "CONTROLLER_FIELD_ALL_NAMES_IN_SET":
-		if source_card == null:
-			return false
-		var player_mode_names := str(requirement.get("owner", "SELF"))
-		var player_id_names: String = source_card.controller_player_id
-		if player_mode_names == "OPPONENT":
-			player_id_names = _opponent_of(source_card.controller_player_id)
-		var names_player = state.get_player(player_id_names)
-		if names_player == null:
-			return false
-		var allowed_names: Dictionary = {}
-		for name_variant in requirement.get("names", []):
-			var allowed_name := str(name_variant)
-			if allowed_name != "":
-				allowed_names[allowed_name] = true
-		for zone_cards in [names_player.front_line, names_player.energy_line]:
-			for field_uid_variant in zone_cards:
-				var field_uid := str(field_uid_variant)
-				if field_uid == "":
-					continue
-				var field_card = state.get_card(field_uid)
-				var field_def = state.get_card_def(field_card.def_id) if field_card != null else null
-				if field_def == null:
-					continue
-				if field_def.card_type != UATypes.CardType.CHARACTER:
-					continue
-				var matched_allowed := false
-				for allowed_name_variant in allowed_names.keys():
-					var allowed_name := str(allowed_name_variant)
-					if field_def.matches_reference_name(allowed_name):
-						matched_allowed = true
-						break
-				if not matched_allowed:
-					return false
-		return true
-	if requirement_type == "CARD_BP_LTE":
-		var compare_card = candidate_card if candidate_card != null else source_card
-		if compare_card == null:
-			return false
-		return int(compare_card.current_bp) <= int(requirement.get("value", 0))
-	if requirement_type == "SOURCE_BP_GTE":
-		return source_card != null and int(source_card.current_bp) >= int(requirement.get("value", 0))
-	if requirement_type == "CARD_BP_LTE_DYNAMIC":
-		var compare_dynamic = candidate_card if candidate_card != null else source_card
-		if compare_dynamic == null:
-			return false
-		var dynamic_limit := _resolve_numeric_value(
-			state,
-			requirement.get("value_provider", requirement.get("value", 0)),
-			context,
-			source_card_uid,
-			candidate_card_uid,
-		)
-		return int(compare_dynamic.current_bp) <= dynamic_limit
-	if requirement_type == "CARD_BP_LTE_CONTEXT_CARD":
-		var compare_card = candidate_card if candidate_card != null else source_card
-		if compare_card == null:
-			return false
-		var context_var := str(requirement.get("context_var", ""))
-		if context_var == "":
-			return false
-		var reference_uid := str(context.get(context_var, ""))
-		var reference_card = state.get_card(reference_uid)
-		if reference_card == null:
-			return false
-		return int(compare_card.current_bp) <= int(reference_card.current_bp)
-	if requirement_type == "PLAYER_LIFE_IS_EMPTY":
-		var player_mode := str(requirement.get("player", "SELF"))
-		var player_id := str(context.get("target_player_id", context.get("source_player_id", "")))
-		if player_mode == "SELF" and source_card != null:
-			player_id = source_card.controller_player_id
-		elif player_mode == "OPPONENT" and source_card != null:
-			player_id = _opponent_of(source_card.controller_player_id)
-		var player_state = state.get_player(player_id)
-		return player_state != null and player_state.life.is_empty()
-	if requirement_type == "PLAYER_TURN_FLAG_TRUE":
-		var player_mode_flag := str(requirement.get("player", "SELF"))
-		var player_id_flag := ""
-		if player_mode_flag == "SELF":
-			player_id_flag = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
-		elif player_mode_flag == "OPPONENT":
-			player_id_flag = _opponent_of(source_card.controller_player_id) if source_card != null else ""
-		else:
-			player_id_flag = str(context.get("target_player_id", context.get("source_player_id", "")))
-		var flags: Dictionary = state.player_turn_flags.get(player_id_flag, {})
-		return bool(flags.get(str(requirement.get("flag", "")), false))
-	if requirement_type == "PLAYER_HAS_COLOR_IN_FIELD":
-		var player_mode_color := str(requirement.get("player", "SELF"))
-		var player_id_color := ""
-		if player_mode_color == "SELF":
-			player_id_color = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
-		elif player_mode_color == "OPPONENT":
-			player_id_color = _opponent_of(source_card.controller_player_id) if source_card != null else ""
-		else:
-			player_id_color = str(context.get("target_player_id", context.get("source_player_id", "")))
-		var color_player = state.get_player(player_id_color)
-		if color_player == null:
-			return false
-		var colors: Array[String] = []
-		for color_variant in requirement.get("colors", []):
-			colors.append(str(color_variant))
-		if colors.is_empty():
-			var fallback_color := str(requirement.get("value", ""))
-			if fallback_color != "":
-				colors.append(fallback_color)
-		for zone_cards in [color_player.front_line, color_player.energy_line]:
-			for color_card_uid_variant in zone_cards:
-				var color_card = state.get_card(str(color_card_uid_variant))
-				var color_def = state.get_card_def(color_card.def_id) if color_card != null else null
-				if color_def == null:
-					continue
-				for color_name in colors:
-					if _card_matches_color(color_def, color_name):
-						return true
-		return false
-	if requirement_type == "CONTEXT_BATTLE_OUTCOME_IS":
-		return str(context.get("battle_outcome", "")) == str(requirement.get("value", ""))
-	if requirement_type == "CARD_NAME_IS":
-		return candidate_def != null and candidate_def.name == str(requirement.get("value", ""))
-	if requirement_type == "CARD_TYPE_IS":
-		return candidate_def != null and UATypes.card_type_to_text(candidate_def.card_type) == str(requirement.get("value", ""))
-	if requirement_type == "CARD_HAS_TRAIT":
-		return candidate_def != null and candidate_def.traits.has(str(requirement.get("value", "")))
-	if requirement_type == "CARD_COST_ENERGY_LTE":
-		return candidate_def != null and _card_energy_cost_total(candidate_def) <= int(requirement.get("value", 0))
-	if requirement_type == "CARD_COST_AP_EQ":
-		return candidate_def != null and int(candidate_def.cost_ap) == int(requirement.get("value", 0))
-	if requirement_type == "CARD_COLOR_IS":
-		return candidate_def != null and _card_matches_color(candidate_def, str(requirement.get("value", "")))
-	if requirement_type == "CARD_CAN_PLAY_TO_ZONE":
-		if candidate_card == null or rules_engine == null:
-			return false
-		var controller_player_id: String = candidate_card.controller_player_id
-		var target_zone := _parse_zone(requirement.get("zone", requirement.get("target_zone", UATypes.Zone.FRONT_LINE)))
-		var play_modifiers := preview_play_modifiers(state, controller_player_id, candidate_card.uid, {
-			"target_player_id": controller_player_id,
-			"target_zone": target_zone,
-		})
-		if bool(requirement.get("allow_current_zone", false)):
-			play_modifiers["allow_current_zone"] = true
-		var validation: Dictionary = rules_engine.can_play_card(state, controller_player_id, candidate_card.uid, target_zone, play_modifiers, {
-			"ignore_play_timing": bool(requirement.get("ignore_play_timing", true)),
-		})
-		return bool(validation.get("ok", false))
-	if requirement_type == "CONTEXT_VAR_NON_EMPTY":
-		return not _ensure_array(context.get(str(requirement.get("var", "")), [])).is_empty()
-	if requirement_type == "CONTEXT_FLAG_TRUE":
-		return bool(context.get(str(requirement.get("var", "")), false))
-	if requirement_type == "CONTEXT_FLAG_FALSE":
-		return not bool(context.get(str(requirement.get("var", "")), false))
-	if requirement_type == "CONTEXT_SELECTED_CARD_HAS_TRAIT":
-		var selected_uid := str(context.get(str(requirement.get("context_var", "")), ""))
-		var selected_card = state.get_card(selected_uid)
-		var selected_def = state.get_card_def(selected_card.def_id) if selected_card != null else null
-		return selected_def != null and selected_def.traits.has(str(requirement.get("value", "")))
-	if requirement_type == "PLAYER_LIFE_LTE":
-		var player_mode := str(requirement.get("player", "SELF"))
-		var player_id := ""
-		if player_mode == "SELF":
-			player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
-		elif player_mode == "OPPONENT":
-			player_id = _opponent_of(source_card.controller_player_id) if source_card != null else ""
-		elif player_mode == "TARGET":
-			player_id = str(context.get("target_player_id", ""))
-		else:
-			player_id = str(context.get("player_id", context.get("source_player_id", "")))
-		var life_player = state.get_player(player_id)
-		return life_player != null and life_player.life.size() <= int(requirement.get("value", 0))
-	if requirement_type == "CONTEXT_SELECTED_CARD_TYPE_IS":
-		var selected_uid_type := str(context.get(str(requirement.get("context_var", "")), ""))
-		var selected_card_type = state.get_card(selected_uid_type)
-		var selected_def_type = state.get_card_def(selected_card_type.def_id) if selected_card_type != null else null
-		return selected_def_type != null and UATypes.card_type_to_text(selected_def_type.card_type) == str(requirement.get("value", ""))
-	if requirement_type == "CONTEXT_TARGET_NAME_IS":
-		var target_uid := str(context.get("target_uid", ""))
-		if target_uid == "":
-			return false
-		var target_card = state.get_card(target_uid)
-		var target_def = state.get_card_def(target_card.def_id) if target_card != null else null
-		return target_def != null and target_def.name == str(requirement.get("value", ""))
-	if requirement_type == "SOURCE_STATE_IS_ACTIVE":
-		return source_card != null and source_card.state == UATypes.CardState.ACTIVE
-	if requirement_type == "SOURCE_ENTERED_THIS_TURN":
-		return source_card != null and bool(source_card.flags.get("entered_this_turn", false))
-	if requirement_type == "CONTROLLER_TRAIT_NAME_COUNT_GTE":
-		if source_card == null:
-			return false
-		var player = state.get_player(source_card.controller_player_id)
-		if player == null:
-			return false
-		var trait_value := str(requirement.get("trait", ""))
-		var min_count := int(requirement.get("value", 0))
-		var unique_names: Dictionary = {}
-		for zone_cards in [player.front_line, player.energy_line]:
-			for card_uid_v in zone_cards:
-				var cuid := str(card_uid_v)
-				if cuid == source_card_uid:
-					continue
-				var c = state.get_card(cuid)
-				if c == null:
-					continue
-				var d = state.get_card_def(c.def_id)
-				if d != null and d.traits.has(trait_value):
-					unique_names[d.name] = true
-		return unique_names.size() >= min_count
-	if requirement_type == "CONTROLLER_OTHER_TRAIT_CARD_COUNT_GTE":
-		if source_card == null:
-			return false
-		var count_player = state.get_player(source_card.controller_player_id)
-		if count_player == null:
-			return false
-		var count_trait := str(requirement.get("trait", ""))
-		var count_min := int(requirement.get("value", 0))
-		var matched_count := 0
-		for zone_cards in [count_player.front_line, count_player.energy_line]:
-			for card_uid_v in zone_cards:
-				var count_uid := str(card_uid_v)
-				if count_uid == "" or count_uid == source_card_uid:
-					continue
-				var count_card = state.get_card(count_uid)
-				if count_card == null:
-					continue
-				var count_def = state.get_card_def(count_card.def_id)
-				if count_def != null and count_def.traits.has(count_trait):
-					matched_count += 1
-		return matched_count >= count_min
-	return _matches_filter(state, requirement, context, candidate_card_uid, source_card_uid)
+	return _requirement_matcher.matches(state, requirement_variant, context, candidate_card_uid, source_card_uid)
 
 func _resolve_numeric_value(state: GameState, provider_variant, context: Dictionary, source_card_uid: String, candidate_card_uid := "") -> int:
 	if provider_variant is int or provider_variant is float:
@@ -1689,190 +886,34 @@ func _apply_energy_delta_map(cost_map: Dictionary, delta_map: Dictionary) -> Dic
 	return result
 
 func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false, ui_meta: Dictionary = {}) -> bool:
-	var min_count := int(target.get("min", 0))
-	var max_count := int(target.get("max", 1))
-	if candidates.is_empty():
-		if min_count <= 0:
-			context[selected_var] = [] if max_count != 1 else ""
-			return false
-		return false
-	var source_card = state.get_card(source_card_uid)
-	var owner_player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
-	var resolution_id := state.next_runtime_id("target_select")
-	var choices: Array[Dictionary] = []
-	var candidate_values: Array[String] = []
-	for candidate_uid_variant in candidates:
-		var candidate_uid := str(candidate_uid_variant)
-		var label := candidate_uid
-		var candidate_card = state.get_card(candidate_uid)
-		if candidate_card != null:
-			var candidate_def = state.get_card_def(candidate_card.def_id)
-			if candidate_def != null:
-				label = _format_target_choice_label(candidate_def)
-		choices.append({"label": label, "value": candidate_uid})
-		candidate_values.append(candidate_uid)
-	state.effect_queue.append({
-		"kind": "TARGET_SELECTION",
-		"id": resolution_id,
-		"source_card_uid": source_card_uid,
-		"target_var": selected_var,
-		"min": min_count,
-		"max": max_count,
-		"steps": remaining_steps.duplicate(true),
-		"context": context.duplicate(true),
-		"effect": effect.duplicate(true),
-		"resume_as_effect": resume_as_effect,
-		"candidate_values": candidate_values,
-		"selection_constraints": target.get("selection_constraints", {}).duplicate(true),
-	})
-	state.pending_decisions.append({
-		"type": "ABILITY_TARGET_SELECTION",
-		"owner_player_id": owner_player_id,
-		"source_card_uid": source_card_uid,
-		"resolution_id": resolution_id,
-		"target_var": selected_var,
-		"choices": choices,
-		"min": min_count,
-		"max": max_count,
-		"selection_constraints": target.get("selection_constraints", {}).duplicate(true),
-		"ui_mode": str(ui_meta.get("ui_mode", "")),
-		"preview_card_uids": _ensure_array(ui_meta.get("preview_card_uids", [])).duplicate(),
-		"title": str(ui_meta.get("title", "")),
-	})
-	return true
+	return _target_selector.enqueue_target_selection(state, source_card_uid, effect, selected_var, target, candidates, context, remaining_steps, resume_as_effect, ui_meta)
 
 func _enqueue_value_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, choices: Array[Dictionary], candidate_values: Array[String], min_count: int, max_count: int, context: Dictionary, remaining_steps: Array, resume_as_effect := false) -> bool:
-	var source_card = state.get_card(source_card_uid)
-	var owner_player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
-	var resolution_id := state.next_runtime_id("target_select")
-	state.effect_queue.append({
-		"kind": "TARGET_SELECTION",
-		"id": resolution_id,
-		"source_card_uid": source_card_uid,
-		"target_var": selected_var,
-		"min": min_count,
-		"max": max_count,
-		"steps": remaining_steps.duplicate(true),
-		"context": context.duplicate(true),
-		"effect": effect.duplicate(true),
-		"resume_as_effect": resume_as_effect,
-		"candidate_values": candidate_values.duplicate(),
-		"selection_constraints": {},
-	})
-	state.pending_decisions.append({
-		"type": "ABILITY_TARGET_SELECTION",
-		"owner_player_id": owner_player_id,
-		"source_card_uid": source_card_uid,
-		"resolution_id": resolution_id,
-		"target_var": selected_var,
-		"choices": choices.duplicate(true),
-		"min": min_count,
-		"max": max_count,
-	})
-	return true
+	return _target_selector.enqueue_value_selection(state, source_card_uid, effect, selected_var, choices, candidate_values, min_count, max_count, context, remaining_steps, resume_as_effect)
 
 func _format_target_choice_label(card_def) -> String:
-	if card_def == null:
-		return ""
-	var parts: Array[String] = [str(card_def.name)]
-	var number := str(card_def.number)
-	if number != "":
-		parts.append("编号:%s" % number)
-	parts.append("所需能量:%s" % _format_energy_cost_text(card_def.cost_energy))
-	return " | ".join(parts)
+	return _target_selector._format_target_choice_label(card_def)
 
 func _format_energy_cost_text(energy_map: Dictionary) -> String:
-	if energy_map.is_empty():
-		return "0"
-	var parts: Array[String] = []
-	var ordered_colors := ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "BLACK", "WHITE", "COLORLESS"]
-	for color in ordered_colors:
-		var amount := int(energy_map.get(color, 0))
-		if amount > 0:
-			parts.append("%s:%d" % [color, amount])
-	for color_variant in energy_map.keys():
-		var color := str(color_variant)
-		if ordered_colors.has(color):
-			continue
-		var amount := int(energy_map.get(color_variant, 0))
-		if amount > 0:
-			parts.append("%s:%d" % [color, amount])
-	return ", ".join(parts) if not parts.is_empty() else "0"
+	return _target_selector._format_energy_cost_text(energy_map)
 
 func _register_preview_ui_meta(context: Dictionary, preview_var: String, meta: Dictionary) -> void:
-	var preview_ui_meta: Dictionary = context.get("_preview_ui_meta", {})
-	preview_ui_meta = preview_ui_meta.duplicate(true)
-	preview_ui_meta[preview_var] = meta.duplicate(true)
-	context["_preview_ui_meta"] = preview_ui_meta
+	_target_selector.register_preview_ui_meta(context, preview_var, meta)
 
 func _get_preview_ui_meta(context: Dictionary, preview_var: String) -> Dictionary:
-	var preview_ui_meta: Dictionary = context.get("_preview_ui_meta", {})
-	if not preview_ui_meta.has(preview_var):
-		return {}
-	return (preview_ui_meta.get(preview_var, {}) as Dictionary).duplicate(true)
+	return _target_selector.get_preview_ui_meta(context, preview_var)
 
 func _build_preview_pick_ui_meta(target: Dictionary, context: Dictionary) -> Dictionary:
-	if str(target.get("type", "")) != "CONTEXT_CARD_SET":
-		return {}
-	var source_var := str(target.get("source_var", ""))
-	if source_var == "":
-		return {}
-	var preview_meta := _get_preview_ui_meta(context, source_var)
-	if preview_meta.is_empty():
-		return {}
-	return {
-		"ui_mode": "PREVIEW_PICK",
-		"preview_card_uids": _ensure_array(context.get(source_var, [])).duplicate(),
-		"title": str(preview_meta.get("title", "查看牌堆顶")),
-	}
+	return _target_selector.build_preview_pick_ui_meta(target, context)
 
 func _build_preview_reorder_ui_meta(source_var: String, candidates: Array, context: Dictionary) -> Dictionary:
-	if source_var == "":
-		return {}
-	var preview_meta := _get_preview_ui_meta(context, source_var)
-	if preview_meta.is_empty():
-		return {}
-	return {
-		"ui_mode": "PREVIEW_REORDER",
-		"preview_card_uids": candidates.duplicate(),
-		"title": "调整剩余卡牌回到底部的顺序",
-	}
+	return _target_selector.build_preview_reorder_ui_meta(source_var, candidates, context)
 
 func _normalize_selection_payload(selected_values, max_count: int) -> Array:
-	var result: Array = []
-	if selected_values is Array:
-		for value_variant in selected_values:
-			var value := str(value_variant)
-			if value != "":
-				result.append(value)
-	else:
-		var single := str(selected_values)
-		if single != "":
-			result.append(single)
-	if max_count >= 0 and result.size() > max_count:
-		return result.slice(0, max_count)
-	return result
+	return _target_selector.normalize_selection_payload(selected_values, max_count)
 
 func _validate_selection_payload(state: GameState, normalized: Array, queued_effect: Dictionary) -> String:
-	var candidate_values: Array = queued_effect.get("candidate_values", [])
-	for value_variant in normalized:
-		var value := str(value_variant)
-		if not candidate_values.has(value):
-			return "invalid_choice"
-	var constraints: Dictionary = queued_effect.get("selection_constraints", {})
-	if str(constraints.get("distinct_by", "")) == "CARD_NAME":
-		var seen_names: Dictionary = {}
-		for value_variant in normalized:
-			var value := str(value_variant)
-			var card = state.get_card(value)
-			var card_def = state.get_card_def(card.def_id) if card != null else null
-			var card_name: String = value
-			if card_def != null:
-				card_name = str(card_def.name)
-			if seen_names.has(card_name):
-				return "duplicate_card_name"
-			seen_names[card_name] = true
-	return ""
+	return _target_selector.validate_selection_payload(state, normalized, queued_effect)
 
 func _array_without_values(source: Array, values_to_remove: Array) -> Array:
 	var result: Array = []
