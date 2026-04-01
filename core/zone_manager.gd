@@ -170,11 +170,17 @@ func ready_field_cards(state: GameState, player_id: String) -> void:
 	for card_uid in player.front_line:
 		var card: CardInstance = state.get_card(card_uid)
 		if card != null:
-			card.state = UATypes.CardState.ACTIVE
+			if bool(card.flags.get("skip_next_ready_once", false)):
+				card.flags["skip_next_ready_once"] = false
+			else:
+				card.state = UATypes.CardState.ACTIVE
 	for card_uid in player.energy_line:
 		var card: CardInstance = state.get_card(card_uid)
 		if card != null:
-			card.state = UATypes.CardState.ACTIVE
+			if bool(card.flags.get("skip_next_ready_once", false)):
+				card.flags["skip_next_ready_once"] = false
+			else:
+				card.state = UATypes.CardState.ACTIVE
 
 func reset_turn_flags(state: GameState, player_id: String) -> void:
 	var player: PlayerState = state.get_player(player_id)

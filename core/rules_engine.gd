@@ -36,6 +36,8 @@ func can_play_card(state: GameState, player_id: String, card_uid: String, target
 	var raid_validation := _validate_special_play_rule(state, player_id, card, card_def, target_zone, options)
 	if not bool(raid_validation.get("ok", false)):
 		return raid_validation
+	if not _play_requirements_met(state, player_id, card, card_def):
+		return {"ok": false, "reason": "play_requirements_not_met"}
 	var is_raid_play := str(raid_validation.get("mode", "NORMAL")) == "RAID"
 	var effective_cost_ap := int(play_modifiers.get("cost_ap", card_def.cost_ap))
 	var effective_cost_energy: Dictionary = play_modifiers.get("cost_energy", card_def.cost_energy)
@@ -60,6 +62,48 @@ func can_play_card(state: GameState, player_id: String, card_uid: String, target
 			if target_zone != UATypes.Zone.OUTSIDE:
 				return {"ok": false, "reason": "event_resolves_to_outside"}
 	return {"ok": true, "cost_ap": effective_cost_ap, "special_play": raid_validation}
+
+func _play_requirements_met(state: GameState, player_id: String, card: CardInstance, card_def: CardDef) -> bool:
+	var requirements: Array = card_def.play_rule.get("requirements", [])
+	for requirement_variant in requirements:
+		if not _matches_play_requirement(state, player_id, card, card_def, requirement_variant):
+			return false
+	return true
+
+func _matches_play_requirement(state: GameState, player_id: String, card: CardInstance, card_def: CardDef, requirement_variant) -> bool:
+	var requirement: Dictionary = requirement_variant
+	var requirement_type := str(requirement.get("type", ""))
+	match requirement_type:
+		"":
+			return true
+		"OR":
+			for nested in requirement.get("requirements", requirement.get("filters", [])):
+				if _matches_play_requirement(state, player_id, card, card_def, nested):
+					return true
+			return false
+		"NOT":
+			var nested = requirement.get("requirement", {})
+			if nested.is_empty():
+				var nested_list: Array = requirement.get("requirements", [])
+				if nested_list.size() == 1:
+					nested = nested_list[0]
+			return not _matches_play_requirement(state, player_id, card, card_def, nested)
+		"CONTROLLER_HAS_NAME_IN_FIELD":
+			var player: PlayerState = state.get_player(player_id)
+			if player == null:
+				return false
+			var required_name := str(requirement.get("value", ""))
+			for zone_cards in [player.front_line, player.energy_line]:
+				for card_uid in zone_cards:
+					var field_card = state.get_card(str(card_uid))
+					var field_def = state.get_card_def(field_card.def_id) if field_card != null else null
+					if field_def != null and field_def.matches_reference_name(required_name):
+						return true
+			return false
+		"PLAYER_TURN_FLAG_TRUE":
+			var flags: Dictionary = state.player_turn_flags.get(player_id, {})
+			return bool(flags.get(str(requirement.get("flag", "")), false))
+	return true
 
 # 移动阶段允许把能量区里的角色移到前线，场地牌和事件牌都不适用该规则。
 func can_move_energy_to_front(state: GameState, player_id: String, card_uid: String) -> Dictionary:

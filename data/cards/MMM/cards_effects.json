@@ -27,6 +27,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -37,8 +38,62 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_outside_cards",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_outside_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_cards",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_cards",
+            "to": "REMOVED"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -47,8 +102,7 @@
           "effect_box": "OUTER",
           "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_001_on_leave_b0a2383fc6",
@@ -57,8 +111,129 @@
           "event": "ON_LEAVE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_removed_summons",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "REMOVED"
+              ],
+              "filters": [
+                {
+                  "type": "NAME_NOT",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            },
+            "store_as": "selected_removed_summons"
+          }
+        ],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "REMOVED"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_removed_summons",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "REMOVED"
+              ],
+              "filters": [
+                {
+                  "type": "NAME_NOT",
+                  "value": "鹿目 まどか"
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                },
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "魔法少女"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": true
+                }
+              ],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_removed_summons",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true,
+            "allow_current_zone": true,
+            "ignore_play_costs": true
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -67,8 +242,7 @@
           "effect_box": "OUTER",
           "text": "このキャラをリムーブエリアに置き、自分のリムーブエリアから〈鹿目 まどか〉以外の必要エナジーが3以下で消費APが1の異なるカード名の黄の［特徴：魔法少女］を2枚まで自分の場にレストで登場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_001_on_life_trigger_0a3e81b9d0",
@@ -99,7 +273,8 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
+        "COMPOSITE",
         "MOVE_SELF"
       ]
     }
@@ -142,6 +317,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -152,8 +328,80 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_outside_cards",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_outside_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_cards",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_cards",
+            "to": "REMOVED"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_PLAY_CARD",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "PLAYED_FROM_ZONE_IS",
+                "value": "REMOVED"
+              }
+            ],
+            "steps": [
+              {
+                "type": "MODIFY_PLAY_COST_AP",
+                "value": -1
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -162,8 +410,7 @@
           "effect_box": "RAID_INNER",
           "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_002_on_leave_e07490ca19",
@@ -173,7 +420,13 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "REMOVED"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -182,8 +435,7 @@
           "effect_box": "RAID_INNER",
           "text": "このキャラをリムーブエリアに置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_002_on_life_trigger_a342b2ffe2",
@@ -213,7 +465,8 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
+        "MOVE_SELF",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -246,6 +499,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -256,8 +510,132 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "EVENT"
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          },
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 4,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "EVENT"
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -266,15 +644,14 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から4枚見る。その中から黄のイベントカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -304,6 +681,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -485,6 +863,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -495,8 +874,84 @@
           "event": "ON_ATTACK"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_removed_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "REMOVED"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "アルティメットまどか"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_removed_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_removed_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "REMOVED"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "アルティメットまどか"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_removed_card",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_uid": "SOURCE_CARD",
+            "value": 1000,
+            "expires": "END_OF_TURN",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_removed_card"
+              }
+            ]
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_uid": "SOURCE_CARD",
+            "keyword": "IMPACT",
+            "expires": "END_OF_TURN",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_removed_card"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -505,8 +960,7 @@
           "effect_box": "OUTER",
           "text": "自分のリムーブエリアにある〈アルティメットまどか〉を1枚場外に置いてもよい。そうした場合、このキャラはこのターン中、BP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_005_on_life_trigger_91b04beda2",
@@ -537,7 +991,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_BP",
         "DRAW_1"
       ]
     }
@@ -570,6 +1024,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -636,6 +1091,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -646,8 +1102,142 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "アルティメットまどか"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "魔法少女"
+                    }
+                  ]
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          },
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 3,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "アルティメットまどか"
+                    },
+                    {
+                      "type": "HAS_TRAIT",
+                      "value": "魔法少女"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -656,8 +1246,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から3枚見る。その中から〈アルティメットまどか〉か［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_007_on_life_trigger_bab7196d2b",
@@ -730,7 +1319,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -765,6 +1354,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -775,8 +1365,73 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_outside_card",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_outside_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 4,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_card",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_card",
+            "to": "OUTSIDE",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK",
+            "to_position": "TOP"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -785,8 +1440,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から4枚見る。その中からキャラカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_008_main_activate_b3e87cd3fa",
@@ -796,7 +1450,55 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 1,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_destination",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "OUTSIDE"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position": "TOP",
+            "target_player_mode": "SOURCE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VALUE_IS",
+                "var": "selected_preview_destination",
+                "value": "TOP"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "OUTSIDE",
+            "target_player_mode": "SOURCE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VALUE_IS",
+                "var": "selected_preview_destination",
+                "value": "OUTSIDE"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -805,8 +1507,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_008_on_life_trigger_8723e8b5cb",
@@ -815,8 +1516,55 @@
           "event": "ON_LIFE_TRIGGER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "SET_CARD_FLAG",
+            "target_var": "selected_target",
+            "flag": "skip_next_ready_once",
+            "value": true
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -825,15 +1573,15 @@
           "effect_box": "OUTER",
           "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE",
+        "COMPOSITE"
       ]
     }
   },
@@ -865,6 +1613,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -973,6 +1722,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -1014,6 +1764,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1124,6 +1875,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1234,6 +1986,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1298,6 +2051,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1362,6 +2116,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1494,6 +2249,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1505,7 +2261,55 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 1,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_destination",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "OUTSIDE"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position": "TOP",
+            "target_player_mode": "SOURCE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VALUE_IS",
+                "var": "selected_preview_destination",
+                "value": "TOP"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "OUTSIDE",
+            "target_player_mode": "SOURCE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VALUE_IS",
+                "var": "selected_preview_destination",
+                "value": "OUTSIDE"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1514,8 +2318,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_016_on_life_trigger_91b04beda2",
@@ -1546,7 +2349,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "DRAW_1"
       ]
     }
@@ -1581,6 +2384,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1689,6 +2493,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1761,6 +2566,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1847,6 +2653,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1857,8 +2664,55 @@
           "event": "ON_LIFE_TRIGGER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "SET_CARD_FLAG",
+            "target_var": "selected_target",
+            "flag": "skip_next_ready_once",
+            "value": true
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1867,15 +2721,14 @@
           "effect_box": "OUTER",
           "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -1910,6 +2763,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -1949,6 +2803,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -1958,26 +2813,35 @@
         "timing": {
           "event": "ON_ENTER"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "SOURCE_ENTERED_FROM_ZONE",
+            "value": "REMOVED"
+          }
+        ],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
         "limits": {
-          "once_per_turn": false
+          "once_per_turn": true
         },
         "ui": {
           "label": "登場時",
           "effect_box": "OUTER",
           "text": "このキャラがリムーブエリアから登場していた場合、カードを1枚引く。〈百江 なぎさ〉のこの効果は1ターンに1回のみ発動する。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "DRAW_1"
       ]
     }
   },
@@ -2009,6 +2873,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2106,6 +2971,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2115,9 +2981,64 @@
         "timing": {
           "event": "ON_ENTER"
         },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "requirements": [
+          {
+            "type": "SOURCE_ENTERED_FROM_ZONE",
+            "value": "REMOVED"
+          }
+        ],
+        "target_specs": [
+          {
+            "id": "selected_top_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_top_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 2,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_top_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_top_cards",
+            "to": "DECK",
+            "to_position": "TOP",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2126,8 +3047,7 @@
           "effect_box": "OUTER",
           "text": "このキャラがリムーブエリアから登場していた場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_024_on_life_trigger_bab7196d2b",
@@ -2200,7 +3120,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -2235,6 +3155,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2380,6 +3301,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2451,6 +3373,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2534,6 +3457,21 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [
+        {
+          "type": "OR",
+          "requirements": [
+            {
+              "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+              "value": "鹿目 まどか"
+            },
+            {
+              "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+              "value": "アルティメットまどか"
+            }
+          ]
+        }
+      ],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2604,7 +3542,21 @@
         "timing": {
           "event": "ON_PLAY"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "OR",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "鹿目 まどか"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "アルティメットまどか"
+              }
+            ]
+          }
+        ],
         "target_specs": [],
         "steps": [],
         "limits": {
@@ -2615,8 +3567,7 @@
           "effect_box": "OUTER",
           "text": "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_028_on_play_d8730c7af9",
@@ -2625,8 +3576,85 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "REMOVED"
+          },
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "DECK",
+            "requirements": [
+              {
+                "type": "SOURCE_ENTERED_FROM_ZONE",
+                "value": "REMOVED"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "REMOVED",
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "SOURCE_ENTERED_FROM_ZONE",
+                  "value": "REMOVED"
+                }
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2635,8 +3663,7 @@
           "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、選んだキャラとこのカードをリムーブエリアに置く。自分のリムーブエリアから使用されている場合、このカードはリムーブエリアに置く代わりに自分の山札の下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -2644,7 +3671,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "NO_OP"
       ]
     }
   },
@@ -2674,6 +3701,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2799,6 +3827,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2890,6 +3919,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2981,6 +4011,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -3052,8 +4083,94 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "巴 マミ"
+              }
+            ]
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target",
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                  "value": "巴 マミ"
+                }
+              }
+            ]
+          },
+          {
+            "type": "SET_CARD_FLAG",
+            "target_var": "selected_target",
+            "flag": "skip_next_ready_once",
+            "value": true,
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                  "value": "巴 マミ"
+                }
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3062,16 +4179,14 @@
           "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈巴 マミ〉がある場合、『退場させる』に代えてもよい。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -3101,6 +4216,16 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [
+        {
+          "type": "NOT",
+          "requirement": {
+            "type": "PLAYER_TURN_FLAG_TRUE",
+            "player": "SELF",
+            "flag": "event_used_もう何も恐くない"
+          }
+        }
+      ],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -3112,7 +4237,14 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "SET_PLAYER_TURN_FLAG",
+            "player": "SOURCE",
+            "flag": "event_used_もう何も恐くない",
+            "value": true
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3121,8 +4253,7 @@
           "effect_box": "OUTER",
           "text": "〈もう何も恐くない〉は1ターンに1枚のみ使用できる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA31BT_MMM_1_033_on_play_af70a9e264",
@@ -3131,8 +4262,70 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "SET_CARD_FLAG",
+            "target_var": "selected_target",
+            "flag": "skip_next_ready_once",
+            "value": true,
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "巴 マミ"
+              },
+              {
+                "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+                "player": "SELF",
+                "zones": [
+                  "OUTSIDE"
+                ],
+                "card_type": "EVENT",
+                "value": 2
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3141,15 +4334,14 @@
           "effect_box": "OUTER",
           "text": "相手のフロントLのキャラを1枚選び、『レストにする』。自分の場に〈巴 マミ〉があり、自分の場外にイベントカードが2枚以上ある場合、『レストにする。それは次の1回アクティブにならない』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -3179,6 +4371,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -3284,6 +4477,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -3595,6 +4789,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -3810,6 +5005,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -3845,6 +5041,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -3982,6 +5179,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -4048,6 +5246,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -4302,6 +5501,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -4464,6 +5664,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -4644,6 +5845,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -4849,6 +6051,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5150,6 +6353,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5217,6 +6421,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5289,6 +6494,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5422,6 +6628,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5534,6 +6741,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5718,6 +6926,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5827,6 +7036,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -5960,6 +7170,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -6035,6 +7246,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -6102,6 +7314,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -6378,6 +7591,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -6582,6 +7796,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -6680,6 +7895,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -6826,6 +8042,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -6931,6 +8148,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -7117,6 +8335,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -7206,6 +8425,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -7389,6 +8609,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -7480,6 +8701,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -7660,6 +8882,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -7810,6 +9033,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8028,6 +9252,7 @@
           }
         }
       ],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8220,6 +9445,7 @@
           }
         }
       ],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -8257,6 +9483,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8319,6 +9546,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8423,6 +9651,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8487,6 +9716,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8555,6 +9785,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8621,6 +9852,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8702,6 +9934,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8927,6 +10160,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -8993,6 +10227,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -9116,6 +10351,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -9261,6 +10497,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -9302,6 +10539,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -9341,6 +10579,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -9414,6 +10653,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -9601,6 +10841,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -9760,6 +11001,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -9934,6 +11176,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -10077,6 +11320,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -10143,6 +11387,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -10212,6 +11457,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -10320,6 +11566,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -10511,6 +11758,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -10657,6 +11905,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "ACTIVE"
     },
     "abilities": [
@@ -10794,6 +12043,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -10922,6 +12172,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -11134,6 +12385,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -11336,6 +12588,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -11427,6 +12680,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -11518,6 +12772,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -11611,6 +12866,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -11784,6 +13040,7 @@
           }
         }
       ],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -11954,6 +13211,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12143,6 +13401,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12205,6 +13464,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12300,6 +13560,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12368,6 +13629,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -12407,6 +13669,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12480,6 +13743,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12628,6 +13892,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12732,6 +13997,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -12934,6 +14200,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -13029,6 +14296,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -13136,6 +14404,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -13392,6 +14661,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -13589,6 +14859,7 @@
         }
       ],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -13728,6 +14999,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -13836,6 +15108,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -13967,6 +15240,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [],
@@ -14004,6 +15278,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -14211,6 +15486,7 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
+      "requirements": [],
       "enter_state": "RESTED"
     },
     "abilities": [

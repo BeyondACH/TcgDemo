@@ -2117,6 +2117,12 @@ func _test_raid_inner_effect_gate() -> Dictionary:
 		return _fail("突进后未找到 RAID 卡")
 	if not bool(raid_card.flags.get("entered_via_raid", false)):
 		return _fail("通过突进登场后应标记 entered_via_raid")
+	if manager_raid.game_state.pending_decisions.size() == 1:
+		var raid_decision: Dictionary = manager_raid.game_state.pending_decisions[0]
+		manager_raid.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+			"resolution_id": str(raid_decision.get("resolution_id", "")),
+			"choice": outside_uid_raid,
+		})
 	if not p1_raid.removed.has(outside_uid_raid):
 		return _fail("通过突进登场时，框内效果应把场外角色移到移除区")
 	return _ok()

@@ -25,6 +25,7 @@ func _init(zone_manager, rules_engine: RulesEngine = null, effect_resolver = nul
 
 func _init_handlers() -> void:
 	_handlers = {
+		"NOT": _req_not,
 		"OR": _req_or,
 		"CONTROLLER_HAS_NAME_IN_FIELD": _req_controller_has_name_in_field,
 		"CONTROLLER_HAS_NAME_IN_ZONE": _req_controller_has_name_in_zone,
@@ -45,6 +46,7 @@ func _init_handlers() -> void:
 		"CARD_COLOR_IS": _req_card_color_is,
 		"CARD_CAN_PLAY_TO_ZONE": _req_card_can_play_to_zone,
 		"CONTEXT_VAR_NON_EMPTY": _req_context_var_non_empty,
+		"CONTEXT_VALUE_IS": _req_context_value_is,
 		"CONTEXT_FLAG_TRUE": _req_context_flag_true,
 		"CONTEXT_FLAG_FALSE": _req_context_flag_false,
 		"CONTEXT_SELECTED_CARD_HAS_TRAIT": _req_context_selected_card_has_trait,
@@ -53,6 +55,8 @@ func _init_handlers() -> void:
 		"CONTEXT_TARGET_NAME_IS": _req_context_target_name_is,
 		"SOURCE_STATE_IS_ACTIVE": _req_source_state_is_active,
 		"SOURCE_ENTERED_THIS_TURN": _req_source_entered_this_turn,
+		"SOURCE_ENTERED_FROM_ZONE": _req_source_entered_from_zone,
+		"PLAYER_ZONE_CARD_COUNT_GTE": _req_player_zone_card_count_gte,
 		"CONTROLLER_TRAIT_NAME_COUNT_GTE": _req_controller_trait_name_count_gte,
 		"CONTROLLER_OTHER_TRAIT_CARD_COUNT_GTE": _req_controller_other_trait_card_count_gte,
 	}
@@ -156,6 +160,14 @@ func _req_or(state: GameState, requirement: Dictionary, context: Dictionary, can
 		if matches(state, nested, context, candidate_card_uid, source_card_uid):
 			return true
 	return false
+
+func _req_not(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var nested = requirement.get("requirement", {})
+	if nested.is_empty():
+		var nested_list: Array = requirement.get("requirements", [])
+		if nested_list.size() == 1:
+			nested = nested_list[0]
+	return not matches(state, nested, context, candidate_card_uid, source_card_uid)
 
 func _req_controller_has_name_in_field(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var source_card = state.get_card(source_card_uid)
@@ -402,6 +414,9 @@ func _req_card_can_play_to_zone(state: GameState, requirement: Dictionary, conte
 func _req_context_var_non_empty(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	return not _ensure_array(context.get(str(requirement.get("var", "")), [])).is_empty()
 
+func _req_context_value_is(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	return str(context.get(str(requirement.get("var", "")), "")) == str(requirement.get("value", ""))
+
 func _req_context_flag_true(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	return bool(context.get(str(requirement.get("var", "")), false))
 
@@ -450,6 +465,42 @@ func _req_source_state_is_active(state: GameState, requirement: Dictionary, cont
 func _req_source_entered_this_turn(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var source_card = state.get_card(source_card_uid)
 	return source_card != null and bool(source_card.flags.get("entered_this_turn", false))
+
+func _req_source_entered_from_zone(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return false
+	return int(source_card.flags.get("entered_from_zone_this_turn", -1)) == _parse_zone(requirement.get("value", requirement.get("zone", -1)))
+
+func _req_player_zone_card_count_gte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var source_card = state.get_card(source_card_uid)
+	var player_mode := str(requirement.get("player", "SELF"))
+	var player_id := ""
+	if player_mode == "SELF":
+		player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
+	elif player_mode == "OPPONENT":
+		player_id = PlayerUtils.opponent_of(source_card.controller_player_id) if source_card != null else ""
+	else:
+		player_id = str(context.get("target_player_id", context.get("source_player_id", "")))
+	var player = state.get_player(player_id)
+	if player == null:
+		return false
+	var count := 0
+	for zone_variant in requirement.get("zones", []):
+		var zone_cards = _zone_cards_for_player(player, str(zone_variant))
+		for card_uid_variant in zone_cards:
+			var card_uid := str(card_uid_variant)
+			if card_uid == "":
+				continue
+			var card = state.get_card(card_uid)
+			var card_def = state.get_card_def(card.def_id) if card != null else null
+			if card_def == null:
+				continue
+			var required_card_type := str(requirement.get("card_type", ""))
+			if required_card_type != "" and UATypes.card_type_to_text(card_def.card_type) != required_card_type:
+				continue
+			count += 1
+	return count >= int(requirement.get("value", 0))
 
 func _req_controller_trait_name_count_gte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var source_card = state.get_card(source_card_uid)
@@ -536,6 +587,24 @@ func _ensure_array(value) -> Array:
 	if value == null or str(value) == "":
 		return []
 	return [value]
+
+func _zone_cards_for_player(player: PlayerState, zone_key: String) -> Array:
+	match zone_key:
+		"FRONT_LINE":
+			return player.front_line
+		"ENERGY_LINE":
+			return player.energy_line
+		"HAND":
+			return player.hand
+		"LIFE":
+			return player.life
+		"OUTSIDE":
+			return player.outside
+		"REMOVED":
+			return player.removed
+		"DECK":
+			return player.deck
+	return []
 
 func _resolve_numeric_value(state: GameState, provider_variant, context: Dictionary, source_card_uid: String, candidate_card_uid := "") -> int:
 	# 委托给 effect_resolver 处理复杂逻辑

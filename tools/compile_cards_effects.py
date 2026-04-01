@@ -47,8 +47,37 @@ def _build_play_rule(card: dict) -> dict:
         "mode": "NORMAL",
         "special_modes": special_modes,
         "cost_modifiers": _build_play_cost_modifiers(card),
+        "requirements": _build_play_requirements(card),
         "enter_state": _build_enter_state(card),
     }
+
+
+def _build_play_requirements(card: dict) -> list[dict]:
+    requirements: list[dict] = []
+    for effect_entry in card.get("effects", []):
+        text = str(effect_entry.get("text", "")).strip()
+        if text == "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。":
+            requirements.append(
+                {
+                    "type": "OR",
+                    "requirements": [
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"},
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "アルティメットまどか"},
+                    ],
+                }
+            )
+        if text == "〈もう何も恐くない〉は1ターンに1枚のみ使用できる。":
+            requirements.append(
+                {
+                    "type": "NOT",
+                    "requirement": {
+                        "type": "PLAYER_TURN_FLAG_TRUE",
+                        "player": "SELF",
+                        "flag": "event_used_もう何も恐くない",
+                    },
+                }
+            )
+    return requirements
 
 
 def _build_play_cost_modifiers(card: dict) -> list[dict]:
@@ -201,6 +230,54 @@ def _manual_single_target(
                 "max": max_count,
                 "selection_mode": "MANUAL",
                 "manual": True,
+            },
+        }
+    ]
+    return [target_spec], steps
+
+
+def _manual_card_set(
+    owner: str,
+    zones: list[str],
+    requirements: list[dict] | None = None,
+    min_count: int = 0,
+    max_count: int = 1,
+    store_as: str = "selected_targets",
+    filters: list[dict] | None = None,
+    constraints: dict | None = None,
+) -> tuple[list[dict], list[dict]]:
+    target_spec = {
+        "id": store_as,
+        "scope": "CARD",
+        "candidate": {
+            "owner": owner,
+            "zones": zones,
+            "filters": filters or [],
+            "requirements": requirements or [],
+        },
+        "select": {
+            "min": min_count,
+            "max": max_count,
+            "mode": "MANUAL",
+            "constraints": constraints or {},
+        },
+        "store_as": store_as,
+    }
+    steps = [
+        {
+            "type": "SELECT_TARGETS",
+            "var": store_as,
+            "target": {
+                "type": "CARD_SET",
+                "owner": owner,
+                "zones": zones,
+                "filters": filters or [],
+                "requirements": requirements or [],
+                "min": min_count,
+                "max": max_count,
+                "selection_mode": "MANUAL",
+                "manual": True,
+                "selection_constraints": constraints or {},
             },
         }
     ]
@@ -525,9 +602,10 @@ def _supported_ability(
     target_specs: list[dict],
     steps: list[dict],
     kind: str | None = None,
+    once_per_turn: bool | None = None,
 ) -> dict:
     digest = hashlib.sha1(str(trigger_entry.get("text", "")).encode("utf-8")).hexdigest()[:10]
-    return {
+    ability = {
         "id": f"{card['id']}_{event_name.lower()}_{digest}",
         "kind": kind or ("ACTIVATED" if event_name == "MAIN_ACTIVATE" else "TRIGGERED"),
         "timing": {"event": event_name},
@@ -542,6 +620,9 @@ def _supported_ability(
         },
         "status": "SUPPORTED",
     }
+    if once_per_turn is not None:
+        ability["limits"]["once_per_turn"] = once_per_turn
+    return ability
 
 
 def _unsupported_ability(card: dict, event_name: str, trigger_entry: dict, reason: str) -> dict:
@@ -657,6 +738,167 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
             steps,
         )
 
+    if event_name == "ON_ENTER" and text == "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。":
+        target_specs, steps = _manual_card_set(
+            "SELF",
+            ["OUTSIDE"],
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=2,
+            store_as="selected_outside_cards",
+        )
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_outside_cards", "to": "REMOVED"})
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and text == "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。":
+        target_specs, steps = _manual_card_set(
+            "SELF",
+            ["OUTSIDE"],
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=2,
+            store_as="selected_outside_cards",
+        )
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_outside_cards", "to": "REMOVED"},
+                {
+                    "type": "REGISTER_DELAYED_EFFECT",
+                    "event": "ON_PLAY_CARD",
+                    "expires": "END_OF_TURN",
+                    "once": True,
+                    "filters": [{"type": "PLAYED_FROM_ZONE_IS", "value": "REMOVED"}],
+                    "steps": [{"type": "MODIFY_PLAY_COST_AP", "value": -1}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and text == "自分の山札の上から4枚見る。その中から黄のイベントカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=4,
+            requirements=[
+                {"type": "CARD_TYPE_IS", "value": "EVENT"},
+                {"type": "CARD_COLOR_IS", "value": "YELLOW"},
+            ],
+            discard_after_add=True,
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and text == "自分の山札の上から3枚見る。その中から〈アルティメットまどか〉か［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=3,
+            filters=[
+                {
+                    "type": "OR",
+                    "filters": [
+                        {"type": "NAME_IS", "value": "アルティメットまどか"},
+                        {"type": "HAS_TRAIT", "value": "魔法少女"},
+                    ],
+                }
+            ],
+            discard_after_add=True,
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and text == "自分の山札の上から4枚見る。その中からキャラカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。":
+        target_specs, select_steps = _manual_context_target(
+            "preview_cards",
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=1,
+            store_as="selected_outside_card",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            [
+                {"type": "PREVIEW_TOP_DECK", "count": 4, "var": "preview_cards"},
+            ]
+            + select_steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_outside_card", "to": "OUTSIDE", "remove_from_var": "preview_cards"},
+                {"type": "REORDER_CONTEXT_CARDS", "from_var": "preview_cards", "var": "ordered_preview_cards"},
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "ordered_preview_cards", "to": "DECK", "to_position": "TOP"},
+            ],
+        )
+
+    if event_name in ["ON_ENTER", "MAIN_ACTIVATE"] and text == "自分の山札の上から1枚見る。そのカードを自分の山札の上か場外に置く。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            [],
+            [
+                {"type": "PREVIEW_TOP_DECK", "count": 1, "var": "preview_cards"},
+                {
+                    "type": "SELECT_TARGETS",
+                    "var": "selected_preview_destination",
+                    "target": {
+                        "type": "OPTION_SET",
+                        "options": ["TOP", "OUTSIDE"],
+                        "min": 1,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": True,
+                    },
+                },
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "preview_cards",
+                    "to": "DECK",
+                    "to_position": "TOP",
+                    "target_player_mode": "SOURCE",
+                    "requirements": [{"type": "CONTEXT_VALUE_IS", "var": "selected_preview_destination", "value": "TOP"}],
+                },
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "preview_cards",
+                    "to": "OUTSIDE",
+                    "target_player_mode": "SOURCE",
+                    "requirements": [{"type": "CONTEXT_VALUE_IS", "var": "selected_preview_destination", "value": "OUTSIDE"}],
+                },
+            ],
+        )
+
+    if event_name == "ON_ENTER" and text == "このキャラがリムーブエリアから登場していた場合、カードを1枚引く。〈百江 なぎさ〉のこの効果は1ターンに1回のみ発動する。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [{"type": "SOURCE_ENTERED_FROM_ZONE", "value": "REMOVED"}],
+            [],
+            [{"type": "DRAW", "value": 1}],
+            once_per_turn=True,
+        )
+
+    if event_name == "ON_ENTER" and text == "このキャラがリムーブエリアから登場していた場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。":
+        target_specs, select_steps = _manual_context_target(
+            "preview_cards",
+            min_count=0,
+            max_count=2,
+            store_as="selected_top_cards",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [{"type": "SOURCE_ENTERED_FROM_ZONE", "value": "REMOVED"}],
+            target_specs,
+            [
+                {"type": "PREVIEW_TOP_DECK", "count": 2, "var": "preview_cards"},
+            ]
+            + select_steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_top_cards", "to": "DECK", "to_position": "TOP", "remove_from_var": "preview_cards"},
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "preview_cards", "to": "OUTSIDE"},
+            ],
+        )
+
     if event_name == "RAID_RULE" and text == "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。":
         var_ability = _supported_ability(
             card,
@@ -677,6 +919,88 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
 
     if text == "カードを2枚引く。":
         return _supported_ability(card, event_name, trigger_entry, [], [], [{"type": "DRAW", "value": 2}])
+
+    if event_name == "ON_ATTACK" and text == "自分のリムーブエリアにある〈アルティメットまどか〉を1枚場外に置いてもよい。そうした場合、このキャラはこのターン中、BP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["REMOVED"],
+            [{"type": "CARD_NAME_IS", "value": "アルティメットまどか"}],
+            0,
+            1,
+            "selected_removed_card",
+        )
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_removed_card", "to": "OUTSIDE"},
+                {
+                    "type": "ADD_TEMP_BP_MODIFIER",
+                    "target_uid": "SOURCE_CARD",
+                    "value": 1000,
+                    "expires": "END_OF_TURN",
+                    "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_removed_card"}],
+                },
+                {
+                    "type": "ADD_TEMP_KEYWORD",
+                    "target_uid": "SOURCE_CARD",
+                    "keyword": "IMPACT",
+                    "expires": "END_OF_TURN",
+                    "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_removed_card"}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_LEAVE" and text == "このキャラをリムーブエリアに置く。":
+        return _supported_ability(card, event_name, trigger_entry, [], [], [{"type": "MOVE_CARD", "target_uid": "SOURCE_CARD", "to": "REMOVED"}])
+
+    if event_name == "ON_LEAVE" and text == "このキャラをリムーブエリアに置き、自分のリムーブエリアから〈鹿目 まどか〉以外の必要エナジーが3以下で消費APが1の異なるカード名の黄の［特徴：魔法少女］を2枚まで自分の場にレストで登場させる。":
+        target_specs, select_steps = _manual_card_set(
+            "SELF",
+            ["REMOVED"],
+            requirements=[
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_COST_ENERGY_LTE", "value": 3},
+                {"type": "CARD_COST_AP_EQ", "value": 1},
+                {"type": "CARD_COLOR_IS", "value": "YELLOW"},
+                {"type": "CARD_HAS_TRAIT", "value": "魔法少女"},
+                {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": True},
+            ],
+            filters=[{"type": "NAME_NOT", "value": "鹿目 まどか"}],
+            min_count=0,
+            max_count=2,
+            store_as="selected_removed_summons",
+            constraints={"distinct_by": "CARD_NAME"},
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            [{"type": "MOVE_CARD", "target_uid": "SOURCE_CARD", "to": "REMOVED"}]
+            + select_steps
+            + [
+                {
+                    "type": "PLAY_SELECTED_CARDS",
+                    "from_var": "selected_removed_summons",
+                    "to": "FRONT_LINE",
+                    "state": "RESTED",
+                    "ignore_play_timing": True,
+                    "allow_current_zone": True,
+                    "ignore_play_costs": True,
+                }
+            ],
+        )
+
+    if event_name == "ON_LIFE_TRIGGER" and text == "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。":
+        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"])
+        steps.extend(
+            [
+                {"type": "REST", "target_var": "selected_target"},
+                {"type": "SET_CARD_FLAG", "target_var": "selected_target", "flag": "skip_next_ready_once", "value": True},
+            ]
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
     match = re.fullmatch(r"自分の場に〈(.+)〉がある場合、カードを1枚引く。", text)
     if match:
@@ -1300,6 +1624,36 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
         )
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
+    if card_id == "UA31BT_MMM_1_028" and text == "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。":
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [
+                {
+                    "type": "OR",
+                    "requirements": [
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"},
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "アルティメットまどか"},
+                    ],
+                }
+            ],
+            [],
+            [],
+            "TRIGGERED",
+        )
+
+    if card_id == "UA31BT_MMM_1_033" and text == "〈もう何も恐くない〉は1ターンに1枚のみ使用できる。":
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            [],
+            [{"type": "SET_PLAYER_TURN_FLAG", "player": "SOURCE", "flag": "event_used_もう何も恐くない", "value": True}],
+            "TRIGGERED",
+        )
+
     match = re.fullmatch(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。", text)
     if match:
         requirements = [{"type": "CARD_BP_LTE", "value": int(match.group(1))}]
@@ -1369,6 +1723,72 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
 
     if text == "カードを2枚引く。":
         return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 2}], "TRIGGERED")
+
+    if text == "BP5000以下の相手のフロントLのキャラを1枚選び、選んだキャラとこのカードをリムーブエリアに置く。自分のリムーブエリアから使用されている場合、このカードはリムーブエリアに置く代わりに自分の山札の下に置く。":
+        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": 5000}], 1, 1, "selected_target")
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "REMOVED"},
+                {
+                    "type": "MOVE_CARD",
+                    "target_uid": "SOURCE_CARD",
+                    "to": "DECK",
+                    "requirements": [{"type": "SOURCE_ENTERED_FROM_ZONE", "value": "REMOVED"}],
+                },
+                {
+                    "type": "MOVE_CARD",
+                    "target_uid": "SOURCE_CARD",
+                    "to": "REMOVED",
+                    "requirements": [{"type": "NOT", "requirement": {"type": "SOURCE_ENTERED_FROM_ZONE", "value": "REMOVED"}}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈巴 マミ〉がある場合、『退場させる』に代えてもよい。":
+        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": 5000}], 1, 1, "selected_target")
+        steps.extend(
+            [
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "selected_target",
+                    "to": "OUTSIDE",
+                    "requirements": [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "巴 マミ"}],
+                },
+                {
+                    "type": "REST",
+                    "target_var": "selected_target",
+                    "requirements": [{"type": "NOT", "requirement": {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "巴 マミ"}}],
+                },
+                {
+                    "type": "SET_CARD_FLAG",
+                    "target_var": "selected_target",
+                    "flag": "skip_next_ready_once",
+                    "value": True,
+                    "requirements": [{"type": "NOT", "requirement": {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "巴 マミ"}}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "相手のフロントLのキャラを1枚選び、『レストにする』。自分の場に〈巴 マミ〉があり、自分の場外にイベントカードが2枚以上ある場合、『レストにする。それは次の1回アクティブにならない』に代わる。":
+        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [], 1, 1, "selected_target")
+        steps.extend(
+            [
+                {"type": "REST", "target_var": "selected_target"},
+                {
+                    "type": "SET_CARD_FLAG",
+                    "target_var": "selected_target",
+                    "flag": "skip_next_ready_once",
+                    "value": True,
+                    "requirements": [
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "巴 マミ"},
+                        {"type": "PLAYER_ZONE_CARD_COUNT_GTE", "player": "SELF", "zones": ["OUTSIDE"], "card_type": "EVENT", "value": 2},
+                    ],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
     if re.fullmatch(r"自分の場に〈(.+)〉がある場合、手札にあるこのカードの消費APを-1する。", text):
         return None

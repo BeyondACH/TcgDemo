@@ -189,6 +189,7 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 	var card: CardInstance = game_state.get_card(card_uid)
 	if card == null:
 		return {"ok": false, "reason": "missing_card"}
+	var played_from_zone := card.zone
 	var card_def: CardDef = game_state.get_card_def(card.def_id)
 	if card_def == null:
 		return {"ok": false, "reason": "missing_def"}
@@ -241,20 +242,24 @@ func play_card(card_uid: String, target_zone: int, options: Dictionary = {}) -> 
 					emit_state_changed()
 					return raid_result
 				card.flags["entered_this_turn"] = true
+				card.flags["entered_from_zone_this_turn"] = played_from_zone
 				card.flags["entered_via_raid"] = true
 				_apply_logs(["%s raids onto %s and stays in %s." % [card_def.name, raid_target_uid, UATypes.zone_to_key(raid_target_zone)]])
 			else:
 				zone_manager.move_card(game_state, card_uid, target_zone)
 				card.state = _play_enter_state_for(card_def)
 				card.flags["entered_this_turn"] = true
+				card.flags["entered_from_zone_this_turn"] = played_from_zone
 				card.flags["entered_via_raid"] = false
 				_apply_logs(["%s plays %s to %s." % [acting_player_id, card_def.name, UATypes.zone_to_key(target_zone)]])
 			_apply_logs(effect_resolver.resolve_trigger(card_uid, UATypes.TriggerType.ON_ENTER, game_state, {"target_player_id": acting_player_id}))
 		UATypes.CardType.EVENT:
+			card.flags["entered_from_zone_this_turn"] = played_from_zone
 			_apply_logs(["%s uses event %s." % [acting_player_id, card_def.name]])
 			for effect_variant in card_def.effects:
 				_apply_logs(effect_resolver.resolve_effect(game_state, card_uid, effect_variant, {"target_player_id": acting_player_id}))
-			zone_manager.move_card(game_state, card_uid, UATypes.Zone.OUTSIDE)
+			if card.zone == played_from_zone:
+				zone_manager.move_card(game_state, card_uid, UATypes.Zone.OUTSIDE)
 	effect_resolver.commit_play_modifiers(game_state, play_modifiers)
 	emit_state_changed()
 	return {"ok": true}

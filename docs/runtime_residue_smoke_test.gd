@@ -5,6 +5,8 @@ const GameManager = preload("res://core/game_manager.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
+const RAW_REMOVED_CHAIN_002 := "UA31BT_MMM_1_002"
+const RAW_ENTER_FROM_REMOVED_022 := "UA31BT_MMM_1_022"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -14,6 +16,9 @@ func _init() -> void:
 	_run_test("延迟效果过期与结算不残留", _test_delayed_effect_cleanup_and_expiration)
 	_run_test("战斗后离场与叠放离场不残留 battle_context", _test_battle_context_clears_after_battle_and_stack_leave)
 	_run_test("生命触发与显式决策混合链清空运行时状态", _test_life_trigger_and_target_selection_chain_clears_runtime_state)
+	_run_test("skip_next_ready_once 消费后不残留", _test_skip_next_ready_once_consumes_cleanly)
+	_run_test("触发式 once_per_turn 标记跨回合清空", _test_triggered_once_per_turn_flags_clear_on_next_turn)
+	_run_test("一次性移除区 AP 减免消费后不残留", _test_removed_ap_discount_does_not_residue)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
 
@@ -496,3 +501,207 @@ func _test_life_trigger_and_target_selection_chain_clears_runtime_state() -> Dic
 	if not manager.game_state.pending_life_reveal.is_empty():
 		return _fail("生命触发混合链完成后不应残留 pending_life_reveal")
 	return _ok()
+
+func _test_skip_next_ready_once_consumes_cleanly() -> Dictionary:
+	var manager := _new_manager()
+	var target_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_RESIDUE_SKIP_READY",
+		"name": "残留跳过起身目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, false)
+	var target_card = manager.game_state.get_card(target_uid)
+	if target_card == null:
+		return _fail("skip_next_ready_once 残留测试卡创建失败")
+	target_card.flags["skip_next_ready_once"] = true
+	manager.zone_manager.ready_field_cards(manager.game_state, UATypes.PLAYER_ONE)
+	if target_card.state != UATypes.CardState.RESTED:
+		return _fail("skip_next_ready_once 首次 ready 时应保持 RESTED")
+	if bool(target_card.flags.get("skip_next_ready_once", false)):
+		return _fail("skip_next_ready_once 首次 ready 后应立即清零")
+	manager.zone_manager.ready_field_cards(manager.game_state, UATypes.PLAYER_ONE)
+	if target_card.state != UATypes.CardState.ACTIVE:
+		return _fail("skip_next_ready_once 消费后下一次 ready 应恢复 ACTIVE")
+	return _ok()
+
+func _test_triggered_once_per_turn_flags_clear_on_next_turn() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 3):
+		return _fail("触发式 once_per_turn 残留测试应能准备足够黄能量")
+	var source_uid := _move_or_spawn_raw_card(manager, player_id, RAW_ENTER_FROM_REMOVED_022, UATypes.Zone.REMOVED)
+	if source_uid == "":
+		return _fail("触发式 once_per_turn 残留测试卡创建失败")
+	var play_result := manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {"force_allow_current_zone": true})
+	if not bool(play_result.get("ok", false)):
+		return _fail("触发式 once_per_turn 残留测试未能从 REMOVED 打出 022")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("触发式 once_per_turn 残留测试找不到已打出的 022")
+	var used_ids: Array = source_card.flags.get("used_triggered_ability_ids_this_turn", [])
+	if used_ids.is_empty():
+		return _fail("触发式 once_per_turn 首次结算后应写入 used_triggered_ability_ids_this_turn")
+	if not _advance_to_turn_draw(manager, player_id, 2):
+		return _fail("未能推进到下个己方回合开始以验证 once_per_turn 清理")
+	if not source_card.flags.get("used_triggered_ability_ids_this_turn", []).is_empty():
+		return _fail("used_triggered_ability_ids_this_turn 应在下个己方回合开始时清空")
+	if int(source_card.flags.get("entered_from_zone_this_turn", -1)) != -1:
+		return _fail("entered_from_zone_this_turn 也应在回合开始时重置")
+	return _ok()
+
+func _test_removed_ap_discount_does_not_residue() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	var source_uid := _move_or_spawn_raw_card(manager, player_id, RAW_REMOVED_CHAIN_002, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("移除区 AP 减免残留测试卡创建失败")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("移除区 AP 减免残留测试找不到 002 来源卡")
+	source_card.flags["entered_via_raid"] = true
+	var outside_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_RESIDUE_002_OUTSIDE",
+		"name": "残留测试场外角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-2",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("移除区 AP 减免残留测试应先出现一次场外选择决策")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": outside_uid,
+	})
+	if manager.game_state.delayed_effects.size() != 1:
+		return _fail("移除区 AP 减免残留测试应只登记一条 delayed_effect")
+	var discounted_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_RESIDUE_002_EVENT_A",
+		"name": "残留测试事件A",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-3",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 2,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.REMOVED, true)
+	var full_cost_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_RESIDUE_002_EVENT_B",
+		"name": "残留测试事件B",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-4",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 2,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.REMOVED, true)
+	var player := _player(manager, player_id)
+	manager.play_card(discounted_uid, UATypes.Zone.OUTSIDE, {"force_allow_current_zone": true})
+	if player.ap_active_count() != 2:
+		return _fail("移除区 AP 减免残留测试的首张 REMOVED 牌应只消耗 1 AP")
+	if not manager.game_state.delayed_effects.is_empty():
+		return _fail("一次性 REMOVED AP 减免在首张匹配牌后应被消费，不应残留 delayed_effect")
+	manager.play_card(full_cost_uid, UATypes.Zone.OUTSIDE, {"force_allow_current_zone": true})
+	if player.ap_active_count() != 0:
+		return _fail("一次性 REMOVED AP 减免消费后不应继续影响第二张牌")
+	return _ok()
+
+func _fill_ap(player: PlayerState, total: int) -> void:
+	player.ap_area.clear()
+	for i in range(total):
+		player.ap_area.append({"index": i, "active": true})
+
+func _count_color_energy(manager: GameManager, player_id: String, color: String) -> int:
+	var player: PlayerState = _player(manager, player_id)
+	if player == null:
+		return 0
+	var total := 0
+	for card_uid_variant in player.energy_line:
+		var card_uid := str(card_uid_variant)
+		var card = manager.game_state.get_card(card_uid)
+		var card_def = manager.game_state.get_card_def(card.def_id) if card != null else null
+		if card_def == null:
+			continue
+		total += int(card_def.energy_provided.get(color.to_upper(), 0))
+	return total
+
+func _spawn_generic_energy(manager: GameManager, player_id: String, color: String, temp_id: String) -> String:
+	return _spawn_temp_card(manager, player_id, {
+		"id": temp_id,
+		"name": "残留测试能量%s" % temp_id,
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-ENERGY-%s" % temp_id,
+		"traits": [],
+		"cost_energy": {color.to_upper(): 1},
+		"cost_ap": 1,
+		"energy_provided": {color.to_upper(): 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.ENERGY_LINE, false)
+
+func _ensure_color_energy(manager: GameManager, player_id: String, color: String, count: int) -> bool:
+	while _count_color_energy(manager, player_id, color) < count:
+		var uid := _spawn_generic_energy(manager, player_id, color, "RUNTIME_%s_%d" % [color.to_upper(), manager.game_state.cards.size()])
+		if uid == "":
+			break
+	return _count_color_energy(manager, player_id, color) >= count
+
+func _move_or_spawn_raw_card(manager: GameManager, player_id: String, def_id: String, zone: int, active := true) -> String:
+	var existing_uid := _find_card_in_zones(manager, player_id, def_id, ["hand", "deck", "life", "energy_line", "front_line", "outside", "removed"])
+	if existing_uid != "":
+		manager.zone_manager.move_card(manager.game_state, existing_uid, zone, player_id)
+		var existing_card = manager.game_state.get_card(existing_uid)
+		if existing_card != null and zone != UATypes.Zone.LIFE:
+			existing_card.state = UATypes.CardState.ACTIVE if active else UATypes.CardState.RESTED
+		return existing_uid
+	var card_def = manager.game_state.get_card_def(def_id)
+	if card_def == null:
+		return ""
+	var card := CardInstance.new()
+	card.uid = "%s_runtime_raw_%s_%d" % [player_id, def_id, manager.game_state.cards.size()]
+	card.def_id = def_id
+	card.owner_player_id = player_id
+	card.controller_player_id = player_id
+	card.zone = zone
+	card.state = UATypes.CardState.ACTIVE if active and zone != UATypes.Zone.LIFE else UATypes.CardState.RESTED
+	card.current_bp = int(card_def.bp)
+	manager.game_state.cards[card.uid] = card
+	var zone_cards: Array = manager.zone_manager.get_zone_array(_player(manager, player_id), zone)
+	if zone_cards != null:
+		zone_cards.append(card.uid)
+	return card.uid

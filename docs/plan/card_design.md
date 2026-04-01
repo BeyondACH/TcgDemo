@@ -1,101 +1,61 @@
-# cards_effects 当前真实缺口与优先级
+# cards_raw Unsupported Ability Status
 
-## 当前状态
+Updated: 2026-04-01
 
-- 统计基线以 `data/cards/cards_effects.json` 与 `data/cards/cards_semantic.json` 为准，而不是旧版计划文档。
-- 截至 2026-03-30 当前共编译 `99` 张卡，运行时能力统计为：
-  - `SUPPORTED`：`128`
-  - `UNSUPPORTED`：`0`
-- 当前已不存在未支持能力卡牌，Phase 1“补齐剩余未支持模板”的目标已完成。
-- 当前正式验证基线为：
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：`66 / 0`
-  - `docs/milestone_smoke_test.gd`：`32 / 0`
-- 本文件的职责不再是复述一整批已经过期的“历史待办”，而是记录当前真实缺口、优先级和验证入口。
+## Baseline
 
-## 复核结论
+- Scope: formal `cards_raw` only, excluding `data/cards/base_cards.json`.
+- Sources:
+  - `data/cards/MMM/cards_raw.json`
+  - `data/cards/MMM/cards_semantic.json`
+  - `data/cards/MMM/cards_effects.json`
+- Formal raw totals:
+  - cards: `117`
+  - abilities: `180`
+  - `SUPPORTED`: `174`
+  - `UNSUPPORTED`: `6`
+- `python tools/compile_cards_effects.py` terminal output is the runtime-total view including base sample cards, so it is `177 / 6` instead of the formal raw baseline.
 
-### `UA31BT_MMM_1_056` 已转为 `SUPPORTED`
+## Current Status
 
-- 已补齐“己方场上其他指定特征卡数量 >= 4”的精确 requirement。
-- 已把后半段统一表达为：条件满足时，为 `SOURCE_CARD` 追加本回合临时 `IMPACT`。
-- `056` 现已不再属于当前未支持能力集合；对应 raw 回归已补到 `docs/cards_raw_minimal_duel_smoke_test.gd`。
+- `P0` is complete.
+- The following cards were fully closed in this round: `UA31BT/MMM-1-001`, `002`, `003`, `005`, `007`, `008`, `016`, `020`, `022`, `024`, `028`, `032`, `033`.
+- Remaining unsupported abilities are now `P1` only.
 
-## 当前状态结论
+## Closed P0 Template Areas
 
-### Phase 1 已完成
+- Preview / search / reorder chains.
+- Add-to-hand then discard follow-up.
+- `OUTSIDE -> REMOVED` and `REMOVED -> play/summon` links.
+- Source-entered-from-zone requirements.
+- Conditional replacement branches via step-level requirement + `NOT`.
+- `skip_next_ready_once` / "skip the next ready" lifecycle.
+- Once-per-turn support for triggered abilities and event-card turn limits.
 
-- 已补齐最后一批高耦合模板，包括：
-  - 指定名称存在于指定区域
-  - 来源 `ACTIVE / entered_this_turn / BP` requirement
-  - 条件化 BP provider 与动态 BP 阈值
-  - 选择己方其他角色、批量己方目标、`OPTION_SET`
-  - 位置交换、raid 元卡回手、按本次目标减 AP
-  - `DRAW -> DISCARD`、临时 BP / 关键词、命中检索后继续结算
-- `cards_effects.json` 已不存在 `abilities[*].status == UNSUPPORTED`。
-- 当前计划主线应从“补模板”切换为“稳固共性回归 + 收尾 P2”。
+## Remaining Unsupported Abilities
 
-## 真实优先级
+- `UA31BT/MMM-1-018`
+  - `ON_ENTER`: if controller OUTSIDE has at least 2 event cards, draw 1.
+- `UA31BT/MMM-1-019`
+  - `ON_ENTER`: draw 1, discard 1, then bounce an opponent front-line character with dynamic BP threshold based on OUTSIDE event count.
+- `UA31BT/MMM-1-027`
+  - `MAIN_ACTIVATE`: discard an event card from hand, then reduce required energy for all `Mami` cards in hand this turn.
+- `UA31BT/MMM-1-029`
+  - event effect: rest one ACTIVE self front-line character, then draw 3.
+- `UA31BT/MMM-1-034`
+  - per-turn usage limit.
+  - draw 2, discard 1, then ready up to 1 AP card if the discarded card was an event card.
 
-### P0：复杂 raw 组合回归与剩余高耦合模板
+## Remaining P1 Themes
 
-- 该阶段已完成。
-- 目前 `docs/cards_raw_minimal_duel_smoke_test.gd` 已覆盖复杂组合链，包括：
-  - 跨完整回合生命周期
-  - 离场触发链与 raid 元卡回手
-  - 临时能力授予与过期
-  - 预览链 + 命中/未命中分支
-  - 事件按目标减费与位置交换
-- 后续若新增卡池或 DSL/IR 能力，仍应沿用同一原则：先补通用 requirement / target / step，再补正式 raw 样例。
+- Dynamic BP threshold driven by OUTSIDE event count.
+- Result-dependent follow-up after draw / discard / payment.
+- Hand-group energy reduction after discarding a specific card type.
+- Combined "once per turn" event restriction plus result-dependent reward.
 
-### P1：规则共性稳定性回归
+## Verification
 
-- 当前已完成第一轮专项化落地，不再只依赖 `docs/milestone_smoke_test.gd` 单入口。
-- 当前固定采用“两层入口”：
-  - 规则主冒烟：`docs/milestone_smoke_test.gd`
-  - 运行时脏状态专项：`docs/runtime_residue_smoke_test.gd`
-- 本阶段重点观察：
-  - `delayed_effects` 是否按回合正确过期
-  - `pending_decisions` 是否在复杂链后清空
-  - `effect_queue` 是否在显式决策后恢复并耗尽
-  - `battle_context` 是否在 ON_LEAVE / 延迟效果 / 叠放离场后不残留脏状态
-- 当前已补的共性断言至少包括：
-  - 本回合临时关键词结束时清理
-  - `entered_this_turn` 在下个自己回合开始时清理
-  - 多个结束主阶段延迟效果不残留脏状态
-  - 显式目标选择恢复后 `effect_queue` 耗尽且不残留待决策
-  - 延迟效果在 `ON_END_MAIN_PHASE / END_OF_TURN / UNTIL_NEXT_SELF_TURN_START` 的结算与过期不残留脏状态
-  - 战斗后离场与叠放离场不残留 `battle_context`
-  - 生命触发与显式目标选择混合链最终清空 `pending_life_triggers / pending_decisions / effect_queue / battle_context`
-- 当前验证基线已扩为：
-  - `docs/runtime_residue_smoke_test.gd`：`4 / 0`
-  - `docs/milestone_smoke_test.gd`：`32 / 0`
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：`66 / 0`
-- 若后续新增高风险规则修复，优先顺序调整为：先补主冒烟或专项稳定性回归，再补正式 raw 样例。
-
-### P2：非高风险收尾项
-
-- 现在可以开始处理低风险收尾，而不是继续围绕 `UNSUPPORTED` 展开：
-  - 更完整的日志输出
-  - 完善 `ui/card_preview_panel.gd`
-  - 复核“开始游戏前弹窗选择双方卡组”
-  - 复核“开始时的卡组打乱逻辑”
-- 若改动触及预览流、日志面板或布局消费，额外执行 `--layout-probe`，并记录“手牌区域不遮挡战场区域”的结果。
-
-## 接口冻结项
-
-- 若继续实现当前未支持能力，优先冻结 `tools/compile_cards_effects.py` 的 IR 输出，再改 `core/effect_resolver.gd` 的 requirement / target / step 解释器。
-- `GameManager.get_snapshot()` 与 UI 待决策流继续保持只读消费关系，UI 不反向承载规则判断。
-- `RAID` 元卡引用、位置交换、事件减费仍归规则层 / 出牌规则层处理，不回退到效果步骤按卡特判。
-
-## 验收要求
-
-- 每次计划口径调整后，都要重新以 `cards_effects.json` 的 `abilities[*].status` 统计结果作为文档基线。
-- 每次补新的 raw 模板、原子能力，或完成阶段性收口，都要同步更新：
-  - `tools/compile_cards_effects.py`
-  - `data/cards/cards_effects.json`
-  - 对应回归脚本
-- 当前推荐验证入口固定为：
-  - 规则主冒烟：`docs/milestone_smoke_test.gd`
-  - 规则稳定性专项：`docs/runtime_residue_smoke_test.gd`
-  - 正式 raw 样例：`docs/cards_raw_minimal_duel_smoke_test.gd`
-- 若改动触及预览流或布局消费，额外执行 `--layout-probe`，并记录“手牌区域不遮挡战场区域”的验收结果。
+- `python tools/compile_cards_effects.py`: runtime-total `177 / 6`, formal raw `174 / 6`.
+- `docs/milestone_smoke_test.gd`: `33 / 0`.
+- `docs/runtime_residue_smoke_test.gd`: `7 / 0`.
+- `docs/cards_raw_minimal_duel_smoke_test.gd`: `75 / 0`.

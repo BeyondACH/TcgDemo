@@ -31,6 +31,8 @@ func _init_handlers() -> void:
 		"PREVIEW_TOP_DECK": _step_preview_top_deck,
 		"SELECT_TARGETS": _step_select_targets,
 		"SET_CONTEXT_FLAG": _step_set_context_flag,
+		"SET_PLAYER_TURN_FLAG": _step_set_player_turn_flag,
+		"SET_CARD_FLAG": _step_set_card_flag,
 		"REMOVE_CONTEXT_VALUES": _step_remove_context_values,
 		"MOVE_SELECTED_CARDS": _step_move_selected_cards,
 		"PLAY_SELECTED_CARDS": _step_play_selected_cards,
@@ -135,6 +137,35 @@ func _step_set_context_flag(state: GameState, source_card_uid: String, step: Dic
 		return {"logs": [], "paused": false}
 	var source_var := str(step.get("from_var", ""))
 	context[flag_var] = _context_value_is_non_empty(context.get(source_var, null))
+	return {"logs": [], "paused": false}
+
+func _step_set_player_turn_flag(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var flag_name := str(step.get("flag", ""))
+	if flag_name == "":
+		return {"logs": [], "paused": false}
+	var source_card = state.get_card(source_card_uid)
+	var player_mode := str(step.get("player", "SOURCE"))
+	var player_id := str(context.get("source_player_id", ""))
+	if source_card != null:
+		player_id = source_card.controller_player_id
+	if player_mode == "TARGET":
+		player_id = str(context.get("target_player_id", player_id))
+	elif player_mode == "ACTIVE":
+		player_id = state.active_player_id
+	var flags: Dictionary = state.player_turn_flags.get(player_id, {})
+	flags[flag_name] = step.get("value", true)
+	state.player_turn_flags[player_id] = flags
+	return {"logs": [], "paused": false}
+
+func _step_set_card_flag(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var flag_name := str(step.get("flag", ""))
+	if flag_name == "":
+		return {"logs": [], "paused": false}
+	var target_uid := _resolve_step_target_uid(step, context, source_card_uid)
+	var target_card = state.get_card(target_uid)
+	if target_card == null:
+		return {"logs": [], "paused": false}
+	target_card.flags[flag_name] = step.get("value", true)
 	return {"logs": [], "paused": false}
 
 func _step_remove_context_values(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
@@ -550,6 +581,7 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 		var card = state.get_card(card_uid)
 		if card == null:
 			continue
+		var entered_from_zone: int = int(card.zone)
 		var controller_player_id: String = card.controller_player_id
 		var play_modifiers := {}
 		if _effect_resolver != null:
@@ -557,6 +589,9 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 				"target_player_id": controller_player_id,
 				"target_zone": target_zone,
 			})
+		if bool(step.get("ignore_play_costs", false)):
+			play_modifiers["cost_ap"] = 0
+			play_modifiers["cost_energy"] = {}
 		if bool(step.get("allow_current_zone", false)):
 			play_modifiers["allow_current_zone"] = true
 		var validation: Dictionary = _rules_engine.can_play_card(state, controller_player_id, card_uid, target_zone, play_modifiers, {
@@ -567,11 +602,12 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 			continue
 		var effective_cost_ap := int(validation.get("cost_ap", play_modifiers.get("cost_ap", 0)))
 		var player = state.get_player(controller_player_id)
-		if player != null and effective_cost_ap > 0:
+		if player != null and effective_cost_ap > 0 and not bool(step.get("ignore_play_costs", false)):
 			_zone_manager.spend_ap(player, effective_cost_ap)
 		_zone_manager.move_card(state, card_uid, target_zone)
 		card.state = target_state
 		card.flags["entered_this_turn"] = true
+		card.flags["entered_from_zone_this_turn"] = entered_from_zone
 		if _effect_resolver != null:
 			_effect_resolver.commit_play_modifiers(state, play_modifiers)
 		var card_def = state.get_card_def(card.def_id)

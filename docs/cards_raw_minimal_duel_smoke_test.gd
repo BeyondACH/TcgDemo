@@ -62,6 +62,16 @@ const RAW_EVENT_IMPACT_PLUS_062 := "UA31BT_MMM_1_062"
 const RAW_EVENT_DYNAMIC_QUINTET_064 := "UA31BT_MMM_1_064"
 const RAW_EVENT_DYNAMIC_HOMURA_066 := "UA31BT_MMM_1_066"
 const RAW_EVENT_DOUBLE_ATTACK_067 := "UA31BT_MMM_1_067"
+const RAW_REMOVED_CHAIN_001 := "UA31BT_MMM_1_001"
+const RAW_REMOVED_CHAIN_002 := "UA31BT_MMM_1_002"
+const RAW_SKIP_READY_008 := "UA31BT_MMM_1_008"
+const RAW_PREVIEW_TOP_016 := "UA31BT_MMM_1_016"
+const RAW_SKIP_READY_020 := "UA31BT_MMM_1_020"
+const RAW_ENTER_FROM_REMOVED_022 := "UA31BT_MMM_1_022"
+const RAW_REMOVED_PREVIEW_024 := "UA31BT_MMM_1_024"
+const RAW_REMOVED_EVENT_028 := "UA31BT_MMM_1_028"
+const RAW_CONDITIONAL_EVENT_032 := "UA31BT_MMM_1_032"
+const RAW_CONDITIONAL_EVENT_033 := "UA31BT_MMM_1_033"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -136,6 +146,12 @@ func _init() -> void:
 	_run_test("Raw Event Dynamic Homura Threshold 066", _test_raw_event_dynamic_homura_threshold_066)
 	_run_test("Raw Event Double Attack Buff 067", _test_raw_event_double_attack_buff_067)
 	_run_test("Raw Event Targeted Cost Discount 067", _test_raw_event_targeted_cost_discount_067)
+	_run_test("Raw Removed Batch And Dual Summon 001", _test_raw_removed_batch_and_dual_summon_001)
+	_run_test("Raw Removed AP Discount Consumes Once 002", _test_raw_removed_ap_discount_consumes_once_002)
+	_run_test("Raw Skip Next Ready Once 008 / 020", _test_raw_skip_next_ready_once_008_and_020)
+	_run_test("Raw Enter From Removed Once Per Turn 022", _test_raw_enter_from_removed_once_per_turn_022)
+	_run_test("Raw Removed Event Destination 028", _test_raw_removed_event_destination_028)
+	_run_test("Raw Conditional Event Branches 032 / 033", _test_raw_conditional_event_branches_032_and_033)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -3054,6 +3070,602 @@ func _test_raw_event_targeted_cost_discount_067() -> Dictionary:
 	})
 	if _player(manager, player_id).ap_active_count() != 0:
 		return _fail("Raw 067 discount sample should spend exactly 1 AP after the Homura-targeted discount.")
+	return _ok()
+
+func _test_raw_removed_batch_and_dual_summon_001() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 3):
+		return _fail("Raw 001 sample should prepare enough yellow energy for removed summon validation.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_REMOVED_CHAIN_001, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw 001 sample card should be available.")
+	var outside_a := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_001_OUTSIDE_A",
+		"name": "001场外角色A",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-001-OUTSIDE-1",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	var outside_b := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_001_OUTSIDE_B",
+		"name": "001场外角色B",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-001-OUTSIDE-2",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 001 on-enter should request explicit OUTSIDE to REMOVED selection.")
+	var enter_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(enter_decision.get("resolution_id", "")),
+		"choices": [outside_a, outside_b],
+	})
+	for moved_uid in [outside_a, outside_b]:
+		var moved_card = manager.game_state.get_card(moved_uid)
+		if moved_card == null or moved_card.zone != UATypes.Zone.REMOVED:
+			return _fail("Raw 001 on-enter should move selected OUTSIDE cards to REMOVED.")
+	var summon_a := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_001_SUMMON_A",
+		"name": "001黄魔法少女A",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-001-SUMMON-1",
+		"traits": ["魔法少女"],
+		"cost_energy": {"YELLOW": 3},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.REMOVED, true)
+	var summon_b := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_001_SUMMON_B",
+		"name": "001黄魔法少女B",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-001-SUMMON-2",
+		"traits": ["魔法少女"],
+		"cost_energy": {"YELLOW": 2},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.REMOVED, true)
+	var invalid_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_001_SUMMON_INVALID",
+		"name": "鹿目 まどか",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-001-SUMMON-3",
+		"traits": ["魔法少女"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 2500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.REMOVED, true)
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_LEAVE, manager.game_state, {"target_player_id": player_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 001 on-leave should request explicit removed summon selection.")
+	var leave_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var leave_choices := _extract_choice_values(leave_decision.get("choices", []))
+	if not leave_choices.has(summon_a) or not leave_choices.has(summon_b):
+		return _fail("Raw 001 on-leave should expose both valid yellow magic-girl summon targets.")
+	if leave_choices.has(invalid_uid):
+		return _fail("Raw 001 on-leave should not expose 鹿目 まどか as a valid removed summon target.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(leave_decision.get("resolution_id", "")),
+		"choices": [summon_a, summon_b],
+	})
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null or source_card.zone != UATypes.Zone.REMOVED:
+		return _fail("Raw 001 on-leave should move itself to REMOVED before summoning.")
+	for summon_uid in [summon_a, summon_b]:
+		var summon_card = manager.game_state.get_card(summon_uid)
+		if summon_card == null or summon_card.zone != UATypes.Zone.FRONT_LINE:
+			return _fail("Raw 001 on-leave should summon the selected removed cards to FRONT_LINE.")
+		if summon_card.state != UATypes.CardState.RESTED:
+			return _fail("Raw 001 on-leave should summon selected cards RESTED.")
+	return _ok()
+
+func _test_raw_removed_ap_discount_consumes_once_002() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_REMOVED_CHAIN_002, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw 002 sample card should be available.")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw 002 sample source card should exist.")
+	source_card.flags["entered_via_raid"] = true
+	var outside_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_002_OUTSIDE",
+		"name": "002场外角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-002-OUTSIDE-1",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, true)
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 002 on-enter should request explicit OUTSIDE to REMOVED selection.")
+	var enter_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(enter_decision.get("resolution_id", "")),
+		"choice": outside_uid,
+	})
+	if manager.game_state.delayed_effects.size() != 1:
+		return _fail("Raw 002 on-enter should register exactly one delayed AP discount effect.")
+	var discounted_event_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_002_EVENT_1",
+		"name": "002移除事件1",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-002-EVENT-1",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 2,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.REMOVED, true)
+	var full_cost_event_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_002_EVENT_2",
+		"name": "002移除事件2",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-002-EVENT-2",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 2,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.REMOVED, true)
+	var player := _player(manager, player_id)
+	manager.play_card(discounted_event_uid, UATypes.Zone.OUTSIDE, {"force_allow_current_zone": true})
+	if player.ap_active_count() != 2:
+		return _fail("Raw 002 delayed discount should reduce the first REMOVED play by exactly 1 AP.")
+	if not manager.game_state.delayed_effects.is_empty():
+		return _fail("Raw 002 delayed discount should be consumed after the first matching REMOVED play.")
+	manager.play_card(full_cost_event_uid, UATypes.Zone.OUTSIDE, {"force_allow_current_zone": true})
+	if player.ap_active_count() != 0:
+		return _fail("Raw 002 delayed discount should not affect the second REMOVED play.")
+	return _ok()
+
+func _test_raw_skip_next_ready_once_008_and_020() -> Dictionary:
+	for source_id in [RAW_SKIP_READY_008, RAW_SKIP_READY_020]:
+		var manager := _new_manager()
+		var player_id := UATypes.PLAYER_ONE
+		var opponent_id := UATypes.PLAYER_TWO
+		var source_uid := _move_card_to_life_top(manager, player_id, source_id)
+		if source_uid == "":
+			return _fail("Raw %s life-trigger sample card should be available." % source_id)
+		var target_uid := _spawn_temp_card(manager, opponent_id, {
+			"id": "TMP_SKIP_READY_TARGET_%s" % source_id,
+			"name": "跳过起身目标%s" % source_id,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-SKIP-READY-%s" % source_id,
+			"traits": ["测试角色"],
+			"cost_energy": {"YELLOW": 1},
+			"cost_ap": 1,
+			"energy_provided": {"YELLOW": 1},
+			"bp": 2000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.FRONT_LINE, true)
+		manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_LIFE_TRIGGER, manager.game_state, {"target_player_id": player_id})
+		if manager.game_state.pending_decisions.size() != 1:
+			return _fail("Raw %s life-trigger should request explicit opponent target selection." % source_id)
+		var decision: Dictionary = manager.game_state.pending_decisions[0]
+		manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+			"resolution_id": str(decision.get("resolution_id", "")),
+			"choice": target_uid,
+		})
+		var target_card = manager.game_state.get_card(target_uid)
+		if target_card == null or target_card.state != UATypes.CardState.RESTED:
+			return _fail("Raw %s life-trigger should rest the selected target." % source_id)
+		if not bool(target_card.flags.get("skip_next_ready_once", false)):
+			return _fail("Raw %s life-trigger should mark the selected target to skip the next ready." % source_id)
+		manager.zone_manager.ready_field_cards(manager.game_state, opponent_id)
+		if target_card.state != UATypes.CardState.RESTED:
+			return _fail("Raw %s skip-next-ready effect should keep the target rested on the next ready step." % source_id)
+		if bool(target_card.flags.get("skip_next_ready_once", false)):
+			return _fail("Raw %s skip-next-ready flag should be consumed after one ready step." % source_id)
+		manager.zone_manager.ready_field_cards(manager.game_state, opponent_id)
+		if target_card.state != UATypes.CardState.ACTIVE:
+			return _fail("Raw %s target should become active on the following ready step after the skip is consumed." % source_id)
+	return _ok()
+
+func _test_raw_enter_from_removed_once_per_turn_022() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 3):
+		return _fail("Raw 022 sample should prepare enough yellow energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ENTER_FROM_REMOVED_022, UATypes.Zone.REMOVED)
+	if source_uid == "":
+		return _fail("Raw 022 sample card should be available.")
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	var deck_before := player.deck.size()
+	var play_result := manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {"force_allow_current_zone": true})
+	if not bool(play_result.get("ok", false)):
+		return _fail("Raw 022 sample should be playable from REMOVED in the smoke setup.")
+	if player.hand.size() != hand_before + 1 or player.deck.size() != deck_before - 1:
+		return _fail("Raw 022 on-enter should draw exactly 1 card when entering from REMOVED.")
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw 022 sample source card should still exist after being played.")
+	var used_ids: Array = source_card.flags.get("used_triggered_ability_ids_this_turn", [])
+	if used_ids.size() != 1:
+		return _fail("Raw 022 should record its triggered once-per-turn ability after the first resolution.")
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
+	if player.hand.size() != hand_before + 1 or player.deck.size() != deck_before - 1:
+		return _fail("Raw 022 once-per-turn guard should prevent a second draw in the same turn.")
+	return _ok()
+
+func _test_raw_removed_event_destination_028() -> Dictionary:
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	var validation_manager := _new_manager()
+	validation_manager.game_state.phase = UATypes.Phase.MAIN
+	var blocked_uid := _move_or_spawn_card_to_zone(validation_manager, player_id, RAW_REMOVED_EVENT_028, UATypes.Zone.HAND)
+	if blocked_uid == "":
+		return _fail("Raw 028 sample card should be available.")
+	var blocked_validation := validation_manager.rules_engine.can_play_card(
+		validation_manager.game_state,
+		player_id,
+		blocked_uid,
+		UATypes.Zone.OUTSIDE,
+		{"cost_ap": 0, "cost_energy": {}}
+	)
+	if bool(blocked_validation.get("ok", false)) or str(blocked_validation.get("reason", "")) != "play_requirements_not_met":
+		return _fail("Raw 028 should reject play when neither 鹿目 まどか nor アルティメットまどか is on the field.")
+	var hand_manager := _new_manager()
+	hand_manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(hand_manager, player_id), 3)
+	var hand_source_uid := _move_or_spawn_card_to_zone(hand_manager, player_id, RAW_REMOVED_EVENT_028, UATypes.Zone.HAND)
+	for index in range(3):
+		_spawn_temp_card(hand_manager, player_id, {
+			"id": "TMP_028_ENERGY_HAND_%d" % index,
+			"name": "028手牌黄能量%d" % index,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-028-ENERGY-H-%d" % index,
+			"traits": [],
+			"cost_energy": {"YELLOW": 1},
+			"cost_ap": 1,
+			"energy_provided": {"YELLOW": 2},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.ENERGY_LINE, false)
+	_spawn_magic_girl_named_card(hand_manager, player_id, "鹿目 まどか", 2000, UATypes.Zone.FRONT_LINE)
+	var hand_target_uid := _spawn_temp_card(hand_manager, opponent_id, {
+		"id": "TMP_028_TARGET_HAND",
+		"name": "028手牌目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-028-1",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var hand_play := hand_manager.play_card(hand_source_uid, UATypes.Zone.OUTSIDE)
+	if not bool(hand_play.get("ok", false)):
+		return _fail("Raw 028 should be playable from hand when the named field requirement is met.")
+	if hand_manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 028 hand-use branch should request explicit enemy target selection.")
+	var hand_decision: Dictionary = hand_manager.game_state.pending_decisions[0]
+	hand_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(hand_decision.get("resolution_id", "")),
+		"choice": hand_target_uid,
+	})
+	var hand_source_card = hand_manager.game_state.get_card(hand_source_uid)
+	var hand_target_card = hand_manager.game_state.get_card(hand_target_uid)
+	if hand_target_card == null or hand_target_card.zone != UATypes.Zone.REMOVED:
+		return _fail("Raw 028 should always move the chosen target to REMOVED.")
+	if hand_source_card == null or hand_source_card.zone != UATypes.Zone.REMOVED:
+		return _fail("Raw 028 should move itself to REMOVED when used from hand.")
+	var removed_manager := _new_manager()
+	removed_manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(removed_manager, player_id), 3)
+	var removed_source_uid := _move_or_spawn_card_to_zone(removed_manager, player_id, RAW_REMOVED_EVENT_028, UATypes.Zone.REMOVED)
+	for index in range(3):
+		_spawn_temp_card(removed_manager, player_id, {
+			"id": "TMP_028_ENERGY_REMOVED_%d" % index,
+			"name": "028移除黄能量%d" % index,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-028-ENERGY-R-%d" % index,
+			"traits": [],
+			"cost_energy": {"YELLOW": 1},
+			"cost_ap": 1,
+			"energy_provided": {"YELLOW": 2},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.ENERGY_LINE, false)
+	_spawn_magic_girl_named_card(removed_manager, player_id, "アルティメットまどか", 5000, UATypes.Zone.FRONT_LINE)
+	var removed_target_uid := _spawn_temp_card(removed_manager, opponent_id, {
+		"id": "TMP_028_TARGET_REMOVED",
+		"name": "028移除目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-028-2",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var removed_source_card = removed_manager.game_state.get_card(removed_source_uid)
+	if removed_source_card == null:
+		return _fail("Raw 028 removed-use source card should exist.")
+	var removed_play := removed_manager.play_card(removed_source_uid, UATypes.Zone.OUTSIDE, {"force_allow_current_zone": true})
+	if not bool(removed_play.get("ok", false)):
+		return _fail("Raw 028 should be playable from REMOVED in the smoke setup.")
+	if removed_manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 028 removed-use branch should request explicit enemy target selection.")
+	var removed_decision: Dictionary = removed_manager.game_state.pending_decisions[0]
+	removed_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(removed_decision.get("resolution_id", "")),
+		"choice": removed_target_uid,
+	})
+	var removed_target_card = removed_manager.game_state.get_card(removed_target_uid)
+	if removed_target_card == null or removed_target_card.zone != UATypes.Zone.REMOVED:
+		return _fail("Raw 028 removed-use branch should still move the chosen target to REMOVED.")
+	if removed_source_card.zone != UATypes.Zone.DECK:
+		return _fail("Raw 028 should move itself to DECK when used from REMOVED.")
+	return _ok()
+
+func _test_raw_conditional_event_branches_032_and_033() -> Dictionary:
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	var manager_032_default := _new_manager()
+	manager_032_default.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_032_default, player_id), 3)
+	for index in range(2):
+		_spawn_temp_card(manager_032_default, player_id, {
+			"id": "TMP_032_ENERGY_DEFAULT_%d" % index,
+			"name": "032默认黄能量%d" % index,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-032-ENERGY-D-%d" % index,
+			"traits": [],
+			"cost_energy": {"YELLOW": 1},
+			"cost_ap": 1,
+			"energy_provided": {"YELLOW": 2},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.ENERGY_LINE, false)
+	var source_032_default := _move_or_spawn_card_to_zone(manager_032_default, player_id, RAW_CONDITIONAL_EVENT_032, UATypes.Zone.HAND)
+	var target_032_default := _spawn_temp_card(manager_032_default, opponent_id, {
+		"id": "TMP_032_DEFAULT_TARGET",
+		"name": "032默认目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-032-1",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var play_032_default := manager_032_default.play_card(source_032_default, UATypes.Zone.OUTSIDE)
+	if not bool(play_032_default.get("ok", false)):
+		return _fail("Raw 032 default branch should be playable in the smoke setup.")
+	if manager_032_default.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 032 default branch should request explicit enemy target selection.")
+	var decision_032_default: Dictionary = manager_032_default.game_state.pending_decisions[0]
+	manager_032_default.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision_032_default.get("resolution_id", "")),
+		"choice": target_032_default,
+	})
+	var target_card_032_default = manager_032_default.game_state.get_card(target_032_default)
+	if target_card_032_default == null or target_card_032_default.zone != UATypes.Zone.FRONT_LINE or target_card_032_default.state != UATypes.CardState.RESTED:
+		return _fail("Raw 032 default branch should rest the selected target and leave it on the field.")
+	if not bool(target_card_032_default.flags.get("skip_next_ready_once", false)):
+		return _fail("Raw 032 default branch should apply skip_next_ready_once.")
+	var manager_032_upgrade := _new_manager()
+	manager_032_upgrade.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_032_upgrade, player_id), 3)
+	for index in range(2):
+		_spawn_temp_card(manager_032_upgrade, player_id, {
+			"id": "TMP_032_ENERGY_UPGRADE_%d" % index,
+			"name": "032升级黄能量%d" % index,
+			"card_type": "CHARACTER",
+			"title_code": "TMP",
+			"number": "TMP-032-ENERGY-U-%d" % index,
+			"traits": [],
+			"cost_energy": {"YELLOW": 1},
+			"cost_ap": 1,
+			"energy_provided": {"YELLOW": 2},
+			"bp": 1000,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.ENERGY_LINE, false)
+	var source_032_upgrade := _move_or_spawn_card_to_zone(manager_032_upgrade, player_id, RAW_CONDITIONAL_EVENT_032, UATypes.Zone.HAND)
+	_spawn_named_character(manager_032_upgrade, player_id, "巴 マミ", ["魔法少女"], 2500, UATypes.Zone.FRONT_LINE)
+	var target_032_upgrade := _spawn_temp_card(manager_032_upgrade, opponent_id, {
+		"id": "TMP_032_UPGRADE_TARGET",
+		"name": "032升级目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-032-2",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 5000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var play_032_upgrade := manager_032_upgrade.play_card(source_032_upgrade, UATypes.Zone.OUTSIDE)
+	if not bool(play_032_upgrade.get("ok", false)):
+		return _fail("Raw 032 upgraded branch should be playable in the smoke setup.")
+	if manager_032_upgrade.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 032 upgraded branch should request explicit enemy target selection.")
+	var decision_032_upgrade: Dictionary = manager_032_upgrade.game_state.pending_decisions[0]
+	manager_032_upgrade.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision_032_upgrade.get("resolution_id", "")),
+		"choice": target_032_upgrade,
+	})
+	var target_card_032_upgrade = manager_032_upgrade.game_state.get_card(target_032_upgrade)
+	if target_card_032_upgrade == null or target_card_032_upgrade.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw 032 upgraded branch should move the selected target to OUTSIDE when 巴 マミ is on the field.")
+	var manager_033_default := _new_manager()
+	manager_033_default.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_033_default, player_id), 3)
+	if not _ensure_color_energy(manager_033_default, player_id, "YELLOW", 3):
+		return _fail("Raw 033 default branch should prepare enough yellow energy.")
+	var source_033_default := _move_or_spawn_card_to_zone(manager_033_default, player_id, RAW_CONDITIONAL_EVENT_033, UATypes.Zone.HAND)
+	var target_033_default := _spawn_temp_card(manager_033_default, opponent_id, {
+		"id": "TMP_033_DEFAULT_TARGET",
+		"name": "033默认目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-033-1",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var play_033_default := manager_033_default.play_card(source_033_default, UATypes.Zone.OUTSIDE)
+	if not bool(play_033_default.get("ok", false)):
+		return _fail("Raw 033 default branch should be playable in the smoke setup.")
+	if manager_033_default.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 033 default branch should request explicit enemy target selection.")
+	var decision_033_default: Dictionary = manager_033_default.game_state.pending_decisions[0]
+	manager_033_default.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision_033_default.get("resolution_id", "")),
+		"choice": target_033_default,
+	})
+	var target_card_033_default = manager_033_default.game_state.get_card(target_033_default)
+	if target_card_033_default == null or target_card_033_default.state != UATypes.CardState.RESTED:
+		return _fail("Raw 033 default branch should rest the selected target.")
+	if bool(target_card_033_default.flags.get("skip_next_ready_once", false)):
+		return _fail("Raw 033 default branch should not apply skip_next_ready_once without the branch condition.")
+	var blocked_033_uid := _move_or_spawn_card_to_zone(manager_033_default, player_id, RAW_CONDITIONAL_EVENT_033, UATypes.Zone.HAND)
+	var blocked_033 := manager_033_default.play_card(blocked_033_uid, UATypes.Zone.OUTSIDE)
+	if bool(blocked_033.get("ok", false)) or str(blocked_033.get("reason", "")) != "play_requirements_not_met":
+		return _fail("Raw 033 should be limited to one use per turn.")
+	var manager_033_upgrade := _new_manager()
+	manager_033_upgrade.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager_033_upgrade, player_id), 3)
+	if not _ensure_color_energy(manager_033_upgrade, player_id, "YELLOW", 3):
+		return _fail("Raw 033 upgraded branch should prepare enough yellow energy.")
+	var source_033_upgrade := _move_or_spawn_card_to_zone(manager_033_upgrade, player_id, RAW_CONDITIONAL_EVENT_033, UATypes.Zone.HAND)
+	_spawn_named_character(manager_033_upgrade, player_id, "巴 マミ", ["魔法少女"], 2500, UATypes.Zone.FRONT_LINE)
+	for index in range(2):
+		_spawn_temp_card(manager_033_upgrade, player_id, {
+			"id": "TMP_033_OUTSIDE_EVENT_%d" % index,
+			"name": "033场外事件%d" % index,
+			"card_type": "EVENT",
+			"title_code": "TMP",
+			"number": "TMP-033-OUTSIDE-%d" % index,
+			"traits": [],
+			"cost_energy": {},
+			"cost_ap": 1,
+			"energy_provided": {},
+			"bp": 0,
+			"keywords": [],
+			"effects": [],
+			"trigger_effects": []
+		}, UATypes.Zone.OUTSIDE, true)
+	var target_033_upgrade := _spawn_temp_card(manager_033_upgrade, opponent_id, {
+		"id": "TMP_033_UPGRADE_TARGET",
+		"name": "033升级目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-033-2",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var play_033_upgrade := manager_033_upgrade.play_card(source_033_upgrade, UATypes.Zone.OUTSIDE)
+	if not bool(play_033_upgrade.get("ok", false)):
+		return _fail("Raw 033 upgraded branch should be playable in the smoke setup.")
+	if manager_033_upgrade.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 033 upgraded branch should request explicit enemy target selection.")
+	var decision_033_upgrade: Dictionary = manager_033_upgrade.game_state.pending_decisions[0]
+	manager_033_upgrade.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision_033_upgrade.get("resolution_id", "")),
+		"choice": target_033_upgrade,
+	})
+	var target_card_033_upgrade = manager_033_upgrade.game_state.get_card(target_033_upgrade)
+	if target_card_033_upgrade == null or target_card_033_upgrade.state != UATypes.CardState.RESTED:
+		return _fail("Raw 033 upgraded branch should still rest the selected target.")
+	if not bool(target_card_033_upgrade.flags.get("skip_next_ready_once", false)):
+		return _fail("Raw 033 upgraded branch should apply skip_next_ready_once when 巴 マミ is on the field and OUTSIDE has at least two events.")
 	return _ok()
 
 func _player(manager: GameManager, player_id: String) -> PlayerState:

@@ -362,16 +362,21 @@ func _consume_queue_entry(state: GameState, entry: Dictionary) -> Array[String]:
 
 func _resolve_effect_now(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
+	if not _can_resolve_effect_once_per_turn(state, source_card_uid, effect):
+		return logs
 	var requirements: Array = effect.get("requirements", effect.get("condition", []))
 	if not _requirements_met(state, source_card_uid, requirements, context):
 		return logs
+	_mark_effect_once_per_turn_if_needed(state, source_card_uid, effect)
 	var target_result := _prepare_effect_targets(state, source_card_uid, effect, context)
 	logs.append_array(target_result.get("logs", []))
 	if bool(target_result.get("paused", false)) or not bool(target_result.get("ok", true)):
+		_unmark_effect_once_per_turn_if_needed(state, source_card_uid, effect)
 		return logs
 	var cost_result := _pay_effect_costs(state, source_card_uid, effect.get("costs", []), context)
 	logs.append_array(cost_result.get("logs", []))
 	if not bool(cost_result.get("ok", true)):
+		_unmark_effect_once_per_turn_if_needed(state, source_card_uid, effect)
 		return logs
 	if effect.has("steps"):
 		var step_result := _execute_steps(state, source_card_uid, effect.get("steps", []), context, effect)
@@ -412,14 +417,14 @@ func _execute_operation(state: GameState, source_card_uid: String, effect: Dicti
 		var target_uid := _resolve_step_target_uid(effect, context, source_card_uid)
 		var to_zone := _parse_zone(effect.get("to_zone", effect.get("to", UATypes.Zone.OUTSIDE)))
 		if target_uid != "":
-			zone_manager.move_card(state, target_uid, to_zone, str(context.get("target_player_id", "")))
+			zone_manager.move_card(state, target_uid, to_zone, str(context.get("target_player_id", "")), str(effect.get("to_position", "")))
 			logs.append("Moved card %s to %s." % [target_uid, UATypes.zone_to_key(to_zone)])
 		return logs
 	if effect_type == "MOVE_CARD":
 		var move_uid := _resolve_step_target_uid(effect, context, source_card_uid)
 		var move_to_zone := _parse_zone(effect.get("to_zone", effect.get("to", UATypes.Zone.OUTSIDE)))
 		if move_uid != "":
-			zone_manager.move_card(state, move_uid, move_to_zone, str(context.get("target_player_id", "")))
+			zone_manager.move_card(state, move_uid, move_to_zone, str(context.get("target_player_id", "")), str(effect.get("to_position", "")))
 			logs.append("Moved card %s to %s." % [move_uid, UATypes.zone_to_key(move_to_zone)])
 		return logs
 	if effect_type == "REST":
@@ -1026,11 +1031,15 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 		var card = state.get_card(card_uid)
 		if card == null:
 			continue
+		var entered_from_zone: int = int(card.zone)
 		var controller_player_id: String = card.controller_player_id
 		var play_modifiers := preview_play_modifiers(state, controller_player_id, card_uid, {
 			"target_player_id": controller_player_id,
 			"target_zone": target_zone,
 		})
+		if bool(step.get("ignore_play_costs", false)):
+			play_modifiers["cost_ap"] = 0
+			play_modifiers["cost_energy"] = {}
 		if bool(step.get("allow_current_zone", false)):
 			play_modifiers["allow_current_zone"] = true
 		var validation: Dictionary = rules_engine.can_play_card(state, controller_player_id, card_uid, target_zone, play_modifiers, {
@@ -1043,10 +1052,12 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 		if player == null:
 			continue
 		var effective_cost_ap := int(validation.get("cost_ap", play_modifiers.get("cost_ap", 0)))
-		zone_manager.spend_ap(player, effective_cost_ap)
+		if not bool(step.get("ignore_play_costs", false)):
+			zone_manager.spend_ap(player, effective_cost_ap)
 		zone_manager.move_card(state, card_uid, target_zone, controller_player_id)
 		card.state = target_state
 		card.flags["entered_this_turn"] = true
+		card.flags["entered_from_zone_this_turn"] = entered_from_zone
 		card.flags["entered_via_raid"] = false
 		var card_def = state.get_card_def(card.def_id)
 		logs.append("%s plays %s to %s." % [
@@ -1129,6 +1140,47 @@ func _is_effect_enabled_for_card(source_card, effect: Dictionary) -> bool:
 	if effect_box == "RAID_INNER":
 		return bool(source_card.flags.get("entered_via_raid", false))
 	return true
+
+func _can_resolve_effect_once_per_turn(state: GameState, source_card_uid: String, effect: Dictionary) -> bool:
+	if not bool(effect.get("once_per_turn", false)):
+		return true
+	var event_name := str(effect.get("trigger", effect.get("timing", {}).get("event", "")))
+	if event_name == "MAIN_ACTIVATE":
+		return true
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return false
+	var used_ids: Array = source_card.flags.get("used_triggered_ability_ids_this_turn", [])
+	return not used_ids.has(str(effect.get("id", "")))
+
+func _mark_effect_once_per_turn_if_needed(state: GameState, source_card_uid: String, effect: Dictionary) -> void:
+	if not bool(effect.get("once_per_turn", false)):
+		return
+	var event_name := str(effect.get("trigger", effect.get("timing", {}).get("event", "")))
+	if event_name == "MAIN_ACTIVATE":
+		return
+	var effect_id := str(effect.get("id", ""))
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null or effect_id == "":
+		return
+	var used_ids: Array = source_card.flags.get("used_triggered_ability_ids_this_turn", [])
+	if not used_ids.has(effect_id):
+		used_ids.append(effect_id)
+	source_card.flags["used_triggered_ability_ids_this_turn"] = used_ids
+
+func _unmark_effect_once_per_turn_if_needed(state: GameState, source_card_uid: String, effect: Dictionary) -> void:
+	if not bool(effect.get("once_per_turn", false)):
+		return
+	var event_name := str(effect.get("trigger", effect.get("timing", {}).get("event", "")))
+	if event_name == "MAIN_ACTIVATE":
+		return
+	var effect_id := str(effect.get("id", ""))
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null or effect_id == "":
+		return
+	var used_ids: Array = source_card.flags.get("used_triggered_ability_ids_this_turn", [])
+	used_ids.erase(effect_id)
+	source_card.flags["used_triggered_ability_ids_this_turn"] = used_ids
 
 func _trigger_matches(effect: Dictionary, trigger_type: int) -> bool:
 	var name := str(effect.get("trigger", ""))
