@@ -74,7 +74,7 @@
 - 严格区分“要求”和“步骤”
 - 默认通过显式待决策流处理目标选择
 - 新增模板先扩 DSL/IR，再扩编译链与运行时
-
+- 若后续重构 `tools/compile_cards_effects.py` 识别层，完成标准应是“同类文本参数化复用同一模板族”，而不是仅把逐句匹配搬进注册表
 截至 2026-04-01，正式 raw 基线为：
 
 - 已支持能力：`174`
@@ -87,9 +87,9 @@
 - `docs/milestone_smoke_test.gd`
   - 33 项通过，0 项失败
 - `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - 75 passed, 0 failed
+  - 75 项通过，0 项失败
 - `docs/runtime_residue_smoke_test.gd`
-  - 7 passed, 0 failed
+  - 7 项通过，0 项失败
 - `docs/draw_phase_smoke_test.gd`
   - 当前环境稳定通过，可作为 DRAW 阶段专项回归入口
 - `docs/life_reveal_modal_smoke_test.gd`
@@ -193,7 +193,7 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 按当前里程碑，下一阶段最值得继续推进的是：
 
 - 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三个入口稳定通过
-- Focus next on the remaining `6` formal raw unsupported abilities listed in `docs/plan/card_design.md`, still following the rule of extending reusable DSL/IR before data.
+- 优先继续收口 `docs/plan/card_design.md` 中剩余 `6` 条正式 raw 未支持能力，继续遵守“先扩可复用 DSL/IR，再接入数据”的原则
 - 继续补比当前最小样例更长链的自动验证，优先覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进
 - 暂不进行 UI 相关调整，`docs/plan/ui_art_style_guide.md` 保留为后续阶段的冻结基线
 - 持续观察 Godot 退出时既有资源告警是否影响长期回归稳定性

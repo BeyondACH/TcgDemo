@@ -20,11 +20,12 @@
 - 基础对局闭环已实现，核心区域、阶段流转、资源支付、战斗与胜负判断具备稳定主路径。
 - 高风险规则区已补齐一轮专项回归，规则主链路已不再依赖临时说明文档来补语义。
 - 统一 DSL/IR 已完成对当前正式 raw 卡池的首轮收口；截至 2026-04-01，本轮补录 `UA31BT/MMM-1-001` 到 `034` 并重新编译后，正式 `cards_raw` 口径结果为 `174` 个已支持能力、`6` 个未支持能力。若按编译器终端的运行时总量口径统计，则显示为 `177 / 6`，其中额外 `3` 个已支持能力来自 base sample。
-- 正式 raw 样例验证已形成独立基线，当前重点已从”补能力缺口”转为”维持规则稳定性 + 收敛新增正式卡导入后暴露的未支持能力”。
-- `SimpleAI` 已从静态优先级选择器升级为轻量评分式 `v2`，AI 对局基线已形成”行为专项 smoke + 整体流程 smoke”的双层验证。
+- 正式 raw 样例验证已形成独立基线，当前重点已从”补能力缺口“转为”维持规则稳定性 + 收敛新增正式卡导入后暴露的未支持能力”。
+- `SimpleAI` 已从静态优先级选择器升级为轻量评分式 `v2`，AI 对局基线已形成”行为专项 smoke + 整体流程 smoke“的双层验证。
 - UI 已完成战场区、堆叠区、预览区、待决策交互和底部手牌区的第一轮收口，能支撑规则验证与日常调试。
-- UI 美术风格规范文档已冻结，下一阶段可以从”可用型界面”切换到”正式视觉落地”。
-- **架构重构已完成**：GameManager 从”上帝对象”（1467 行，10+ 职责）重构为协调器模式（1060 行），提取 7 个专用管理器，遵循 SOLID 单一职责原则。
+- UI 美术风格规范文档已冻结，下一阶段可以从”可用型界面“切换到”正式视觉落地“。
+- **架构重构已完成**：GameManager 从”上帝对象“（1467 行，10+ 职责）重构为协调器模式（1060 行），提取 7 个专用管理器，遵循 SOLID 单一职责原则。
+- `compile_cards_effects.py` 的后续识别层重构方向已补充约束：对 `UA31BT_MMM_1_007` 一类同族文本，完成标准必须是参数化模板族复用，而不是仅把逐句匹配迁移到模板注册表。
 
 ## 3. 里程碑状态
 
@@ -110,6 +111,7 @@
 - 继续围绕 `docs/milestone_smoke_test.gd` 观察共性生命周期语义，重点确认 `UNTIL_NEXT_SELF_TURN_START` 只在来源方下个回合开始失效、多个 `ON_END_MAIN_PHASE` / `END_OF_TURN` 延迟效果不会残留 `pending_decisions`、`effect_queue` 或 `battle_context` 脏状态。
 - 继续围绕 `docs/cards_raw_minimal_duel_smoke_test.gd` 观察正式 raw 组合链路，重点确认跨完整回合的临时特殊登场许可过期、`ON_LEAVE` 回手链与战斗/阶段推进衔接稳定，以及叠放离场后的区域与标记一致性。
 - 保持统一 IR 口径稳定，后续新增正式卡文或模板时继续坚持“先扩可复用 requirement / step，再接入数据与回归”的原则，避免回退到按卡硬编码。
+- 若重构编译识别层，还需继续坚持“同类文本优先参数化模板化，而不是新增逐句模板”。
 
 ## 里程碑 M5：数据、导入与验证资产
 
@@ -265,7 +267,7 @@
 ## 5. 下一阶段建议
 
 1. 下一阶段继续聚焦规则稳定性与验证资产，优先补比当前最小样例更长链的自动验证，覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进。
-2. Prioritize the remaining `6` formal raw unsupported abilities listed in [docs/plan/card_design.md], still following the rule of extending reusable DSL/IR before data and regression.
+2. 优先继续收口 [docs/plan/card_design.md] 中剩余 `6` 条正式 raw 未支持能力，继续遵守“先扩可复用 DSL/IR，再接入数据与回归”的原则。
 3. 把 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
 4. 暂不进行 UI 相关调整，`docs/plan/ui_art_style_guide.md` 保留为后续阶段的视觉冻结文档，不纳入当前执行范围。
 5. 若继续提升 AI 质量，优先补动作上下文参数与 AI 专项 smoke，而不是直接扩大 UI 或搜索式策略改造。

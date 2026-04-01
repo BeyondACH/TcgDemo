@@ -10,24 +10,25 @@
 2. 以统一 DSL/IR 为唯一正式运行时来源，禁止回退到按卡硬编码。
 3. 继续补强正式 raw 样例、规则专项回归和布局/交互验收，降低后续新增卡牌或新模板时的回归风险。
 4. 在暂不调整 UI 的前提下，继续压实规则稳定性、回归覆盖与调试可见性。
+5. 对 `tools/compile_cards_effects.py` 的后续识别层重构，默认以“同类文本参数化复用同一模板族”为约束，不接受仅把逐句匹配搬入注册表的半重构状态。
+5. 对 `tools/compile_cards_effects.py` 的后续识别层重构，默认以“同类文本参数化复用同一模板族”为约束，不接受仅把逐句匹配搬入注册表的半重构状态。
 
 涉及 `core + data + ui` 的联动需求，必须先冻结接口和数据契约，再按 `core`、`docs/tests`、`ui` 三线拆分实施。
 
 ## 2. 当前基线
 
 截至 2026-04-01，当前仓库基线如下：
-
 - 基础规则闭环已具备：开局、抽牌、AP 成长、阶段推进、出牌、移动、攻击/阻挡、伤害、胜负判定、显式弃牌与生命触发决策均已落地。
 - 高风险规则区已覆盖：攻击失败攻击方不退场、AP 在结束阶段不恢复、生命触发可选发动、生命触发 `RAID` 在当前不满足条件时自动回手、同时触发顺序按规则处理。
 - 关键词与特殊登场已覆盖一批核心能力：`STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`IMPACT_PLUS_1`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`。
 - 效果系统已统一接入 `effect_queue` 执行链，并接入显式决策、目标续执行、延迟效果与静态修正。
-- Formal `cards_raw` baseline is now `174` supported abilities and `6` unsupported abilities; compiler terminal runtime-total view is `177 / 6` because it still includes `3` base-sample supported abilities. This round completed the `P0` template scope and only `P1` gaps remain.
-- **架构重构已完成**：GameManager 从”上帝对象”（1467 行）重构为协调器模式（1060 行），提取 7 个专用管理器，移除 130 行重复代码，遵循 SOLID 单一职责原则。
+- 正式 `cards_raw` 当前基线为 `174` 个已支持能力、`6` 个未支持能力；若按编译器终端的运行时总量口径统计，则显示为 `177 / 6`，其中额外 `3` 个已支持能力来自 base sample。本轮已完成 `P0` 模板范围，当前仅剩 `P1` 缺口继续维护。
+- **架构重构已完成**：GameManager 从”上帝对象“（1467 行）重构为协调器模式（1060 行），提取 7 个专用管理器，移除 130 行重复代码，遵循 SOLID 单一职责原则。
 - 验证资产当前基线：
   - `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`: 75 passed, 0 failed
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：75 项通过、0 项失败
   - `docs/draw_phase_smoke_test.gd`：当前环境稳定通过，可作为 DRAW 阶段专项回归入口
-  - `docs/runtime_residue_smoke_test.gd`: 7 passed, 0 failed
+  - `docs/runtime_residue_smoke_test.gd`：7 项通过、0 项失败
 - 当前主要风险已从”能力缺口”转为两类稳定性问题：一是规则运行时的跨回合 residue / 生命周期稳定性仍需持续压实；二是完整卡池级别回归与更长链路自动验证仍未建立。
 - 2026-03-31 已补一处快照兼容性 bugfix：`SnapshotSerializer` 不再依赖 `GameManager` 已移除的生命翻开私有方法，生命翻开期间的 `get_snapshot()` 恢复稳定，可继续作为 UI 与冒烟脚本的正式读取入口。
 - 2026-04-01 已确认 `tools/import_cards_raw_from_pic.ps1` 之前将沙箱内网络失败误归类为 `official_page_not_found`；当前脚本已补齐失败原因分类，能够区分 `network_error`、`request_failed`、`detail_structure_missing` 与 `card_number_mismatch`，并已验证 `UA31BT/MMM-1-001` 在沙箱外可正常解析，导入链路默认应在沙箱外执行。
@@ -43,6 +44,7 @@
 - 保持 `docs/rules/rule.md`、运行时规则实现、测试脚本三者一致。
 - 保持“要求/步骤”边界清晰，不让原始卡文或按卡特判进入运行时。
 - 新增能力时，优先扩原子要求、原子步骤、原子目标或原子费用模板。
+- 若后续重构 `compile_cards_effects.py` 识别层，必须把同类文本收口为参数化模板族；仅把 `if text == ...` 迁移到注册表，不视为完成。
 
 本阶段约束：
 
@@ -100,6 +102,7 @@
 
 - 若后续新增 raw 模板，必须同步更新 `tools/compile_cards_effects.py`、重新生成对应系列目录下的 `cards_effects.json` / `cards_semantic.json`，并补最小样例验证。
 - 不允许通过对单一编号写特判来“通过样例”。
+- 对 `UA31BT_MMM_1_007` 一类“预览牌库后按名称/特征加手并重排”的同族文本，后续新增正式卡时默认应复用同一模板族与同一原子步骤主链。
 
 完成判据：
 
