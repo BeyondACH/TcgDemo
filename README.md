@@ -124,6 +124,20 @@ python tools/compile_cards_effects.py
 
 脚本会扫描 `data/cards/*/cards_raw.json`，并逐系列生成对应的 `cards_effects.json` 与 `cards_semantic.json`。
 
+### 检查中文文档编码污染
+
+```powershell
+python tools/check_utf8_docs.py
+```
+
+可选地也可以传入文件或 glob，只扫描局部目标：
+
+```powershell
+python tools/check_utf8_docs.py README.md docs/plan/*.md
+```
+
+该脚本只做告警与定位，不会自动改写文件；当前会重点报告连续 `?`、Unicode 替代字符以及已知英文旧口径残留。
+
 ### 卡图补录到系列 `cards_raw.json`
 
 ```powershell
@@ -187,6 +201,8 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 - 修改脚本后优先做一次 headless 冒烟验证
 - 涉及界面布局改动后，要额外确认手牌区域没有遮挡战场区域
 - 读取中文规则、计划、日志时优先使用显式 UTF-8 方式，避免终端编码噪音误判
+- 修改中文文档时优先使用 `apply_patch`；若必须脚本写回，需显式指定 UTF-8 无 BOM，避免把 PowerShell 控制台当作文档中转层
+- 修改中文文档后，至少补做一次“UTF-8 显式复读 + `git diff` 静态复核”；若有需要，可补跑 `python tools/check_utf8_docs.py`
 
 ## 下一步重点
 

@@ -26,6 +26,7 @@
 - UI 美术风格规范文档已冻结，下一阶段可以从”可用型界面“切换到”正式视觉落地“。
 - **架构重构已完成**：GameManager 从”上帝对象“（1467 行，10+ 职责）重构为协调器模式（1060 行），提取 7 个专用管理器，遵循 SOLID 单一职责原则。
 - `compile_cards_effects.py` 的后续识别层重构方向已补充约束：对 `UA31BT_MMM_1_007` 一类同族文本，完成标准必须是参数化模板族复用，而不是仅把逐句匹配迁移到模板注册表。
+- 已补中文文档防污染流程，并新增 `tools/check_utf8_docs.py` 轻量检查工具。
 
 ## 3. 里程碑状态
 
@@ -136,8 +137,8 @@
 当前验证基线：
 
 - `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
-- `docs/cards_raw_minimal_duel_smoke_test.gd`: 75 passed, 0 failed
-- `docs/runtime_residue_smoke_test.gd`: 7 passed, 0 failed
+- `docs/cards_raw_minimal_duel_smoke_test.gd`：75 项通过、0 项失败
+- `docs/runtime_residue_smoke_test.gd`：7 项通过、0 项失败
 - `docs/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
 - `docs/vs_ai_smoke_test.gd`：2 项通过、0 项失败
 

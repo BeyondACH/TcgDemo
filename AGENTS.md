@@ -248,6 +248,29 @@
   - `docs/plan/mile_stone.md`
   - `docs/logs/log_yyyy-MM-dd.md` 这类按日日志文件
   - 含中文 UI 文案、提示文本或断言信息的 `.gd` 文件
+- 关键中文片段范围进一步扩大到：
+  - `docs/rules/*.md`
+  - `docs/plan/*.md`
+  - `docs/logs/*.md`
+  - `docs/refactor/*.md`
+  - 任何会被脚本读取或写回的中文 Markdown 文档
+- 禁止继续使用以下方式判断或回写中文正文：
+  - 直接依赖默认 `Get-Content` 输出做规则、计划、日志结论
+  - 先在 PowerShell 控制台中读取中文，再拼接字符串回写文件
+  - 用终端展示结果反推文件真实编码状态
+  - 依赖 `Out-File`、`Set-Content` 或未显式编码的 `WriteAllText` 回写中文文档
+  - 把中文正文塞进单行 `python -c "..."` 或 `powershell -Command "..."` 再直接写回文件
+- 中文文档编辑优先级固定为：
+  1. `apply_patch`
+  2. 多行 here-doc / here-string 配合显式 UTF-8 脚本处理
+  3. Python 显式 `encoding='utf-8'` 直接读写
+- 不再把 PowerShell 控制台当作文档编辑器；遇到中文文档批量修改时，应优先拆成小补丁，避免把“读取、替换、控制台检查、再写回”混成一条链路
+- 若 `apply_patch` 失败，优先切换到显式 UTF-8 的 Python / 脚本文件方案，不优先退回 PowerShell 文本替换
+- 每次修改中文文档后，必须立即做两类非展示型校验：
+  - 用显式 UTF-8 重新读取目标文件，确认未出现异常 `?`、`????`、替代字符或明显乱码片段
+  - 执行 `git diff` 静态复核，确认未把中文段落替换成问号串、旧英文口径或错位段落
+- 若仓库内存在 `tools/check_utf8_docs.py`，中文文档变更后应优先补跑一次；该脚本只做告警与定位，不自动改写文件
+- 一旦发现乱码已落盘，先停止继续编辑；必须先用显式 UTF-8 复读确认污染范围，再做最小修复，不允许在乱码状态下继续叠加修改
 
 ## 验收标准
 

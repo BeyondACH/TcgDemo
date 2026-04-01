@@ -127,6 +127,8 @@
 - UI 继续只消费快照，不反向承担规则判断。
 - `tools/generate_micro_card_images.ps1` 作为导入后的配套步骤维护，新增卡图补录成功后应顺带补齐 `pic/micro/` 缩略图。
 - 若改动 UI 布局或交互，必须补 layout probe 或等价布局验收记录，确认手牌区域不遮挡战场。
+- 关键中文文件统一按显式 UTF-8 读取与写回。
+- 文档改动后先做 UTF-8 复读、`git diff` 复核，并可补跑 `python tools/check_utf8_docs.py`。
 
 ## 阶段 E：规则稳定性与验证资产深化
 
