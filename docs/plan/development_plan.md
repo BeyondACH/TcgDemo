@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-03-31
+更新时间：2026-04-01
 
 ## 1. 计划摘要
 
@@ -15,13 +15,13 @@
 
 ## 2. 当前基线
 
-截至 2026-03-31，当前仓库基线如下：
+截至 2026-04-01，当前仓库基线如下：
 
 - 基础规则闭环已具备：开局、抽牌、AP 成长、阶段推进、出牌、移动、攻击/阻挡、伤害、胜负判定、显式弃牌与生命触发决策均已落地。
 - 高风险规则区已覆盖：攻击失败攻击方不退场、AP 在结束阶段不恢复、生命触发可选发动、生命触发 `RAID` 在当前不满足条件时自动回手、同时触发顺序按规则处理。
 - 关键词与特殊登场已覆盖一批核心能力：`STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`IMPACT_PLUS_1`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`。
 - 效果系统已统一接入 `effect_queue` 执行链，并接入显式决策、目标续执行、延迟效果与静态修正。
-- 统一 DSL/IR 当前达到 `128` 个已支持能力、`0` 个未支持能力，正式 raw 当前已无遗留未支持项。
+- 统一 DSL/IR 当前达到 `158` 个已支持能力、`25` 个未支持能力；本轮在沙箱外补录 `UA31BT/MMM-1-001` 到 `034` 后，正式 raw 能力覆盖面进一步扩大，但重新暴露出一批仍待收敛到统一模板的新增能力。
 - **架构重构已完成**：GameManager 从”上帝对象”（1467 行）重构为协调器模式（1060 行），提取 7 个专用管理器，移除 130 行重复代码，遵循 SOLID 单一职责原则。
 - 验证资产当前基线：
   - `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
@@ -30,7 +30,7 @@
   - `docs/runtime_residue_smoke_test.gd`：4 项通过、0 项失败
 - 当前主要风险已从”能力缺口”转为两类稳定性问题：一是规则运行时的跨回合 residue / 生命周期稳定性仍需持续压实；二是完整卡池级别回归与更长链路自动验证仍未建立。
 - 2026-03-31 已补一处快照兼容性 bugfix：`SnapshotSerializer` 不再依赖 `GameManager` 已移除的生命翻开私有方法，生命翻开期间的 `get_snapshot()` 恢复稳定，可继续作为 UI 与冒烟脚本的正式读取入口。
-- 2026-03-31 已为 `tools/import_cards_raw_from_pic.ps1` 补浏览器请求头（含 `User-Agent` / `Referer` / `Accept-Language`）；复跑后 `UA31BT-MMM-1-001` 到 `034` 仍全部失败，当前导入链路剩余问题已收敛到脚本网络环境或官网返回差异排查，而不是单纯缺少浏览器头。
+- 2026-04-01 已确认 `tools/import_cards_raw_from_pic.ps1` 之前将沙箱内网络失败误归类为 `official_page_not_found`；当前脚本已补齐失败原因分类，能够区分 `network_error`、`request_failed`、`detail_structure_missing` 与 `card_number_mismatch`，并已验证 `UA31BT/MMM-1-001` 在沙箱外可正常解析，导入链路默认应在沙箱外执行。
 
 ## 3. 开发阶段规划
 
@@ -120,7 +120,9 @@
 当前关注点：
 
 - `docs/deck_importer.gd` / `docs/import_deck.gd` 与正式数据字段保持同步。
+- `tools/import_cards_raw_from_pic.ps1` 的抓取与失败诊断默认按沙箱外执行口径维护；若在沙箱内运行出现 `network_error`，不再按官网缺卡结论处理。
 - UI 继续只消费快照，不反向承担规则判断。
+- `tools/generate_micro_card_images.ps1` 作为导入后的配套步骤维护，新增卡图补录成功后应顺带补齐 `pic/micro/` 缩略图。
 - 若改动 UI 布局或交互，必须补 layout probe 或等价布局验收记录，确认手牌区域不遮挡战场。
 
 ## 阶段 E：规则稳定性与验证资产深化

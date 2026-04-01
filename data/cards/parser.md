@@ -38,6 +38,7 @@
 - 当前抓取地址为：
   - `https://www.unionarena-tcg.com/jp/cardlist/detail_iframe.php?card_no=...`
 - 请求时会补一组浏览器头，至少包含 `User-Agent`、`Accept`、`Accept-Language` 与 `Referer`，尽量与浏览器访问口径保持一致。
+- 该脚本默认应在沙箱外执行；若在沙箱内运行，网络请求可能直接失败，此时不应把失败结果当成官网详情页不存在。
 - 写入 `cards_raw.json` 时，`source_url` 固定保存为详情页地址：
   - `https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=...`
 - 不接第三方 API。
@@ -47,7 +48,17 @@
 
 补充说明：
 
-- 若浏览器可直接访问目标 URL，但脚本仍失败，不应先假定卡号错误；应继续检查 PowerShell 网络环境、站点返回内容差异，或脚本是否把请求异常误归类为 `official_page_not_found`。
+- 当前脚本会尽量区分以下失败原因：
+  - `network_error`
+    - 通常表示 PowerShell 当前环境无法连到官网，常见于沙箱内或临时网络故障
+  - `request_failed`
+    - 请求已发出，但返回了非 404 的错误状态，或出现其他请求级异常
+  - `detail_structure_missing`
+    - 请求成功，但返回页缺少脚本当前依赖的详情结构
+  - `card_number_mismatch`
+    - 请求成功且能解析卡号，但返回卡号与目标候选编号不一致
+  - `official_page_not_found`
+    - 仅在请求成功但官方页明确不存在、或结构可解析但找不到目标卡时使用
 
 ## 4. 写入与去重规则
 
@@ -208,6 +219,8 @@
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_from_pic.ps1
 ```
 
+建议直接在沙箱外执行；若在沙箱内执行后看到 `network_error`，应先切换到沙箱外复跑，再判断是否存在真实缺卡。
+
 预期：
 
 - 已存在条目会跳过
@@ -231,11 +244,36 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_fro
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_from_pic.ps1 -RefreshExisting
 ```
 
+同样建议在沙箱外执行，避免把环境网络失败误判成官网数据问题。
+
 预期：
 
 - `pic/` 顶层图片对应的卡会全部重新抓取
 - 旧条目会按 `number` / `id` 替换
 - 可用于统一修复 `energy_provided` 等批量问题
+
+### 8.3 补录后同步生成缩略图
+
+适用于：
+
+- 本轮导入新增了 `pic/` 顶层卡图对应的数据
+- 希望 `pic/micro/` 缩略图目录与顶层卡图保持同步
+
+执行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_images.ps1
+```
+
+建议在导入成功后顺带执行一次。该脚本会读取 `pic/` 顶层 `.png` 卡图，并只为 `pic/micro/` 中当前缺失的文件生成缩略图，不会覆盖已有缩略图。
+
+预期：
+
+- 终端会输出：
+  - `scanned`
+  - `skipped_existing`
+  - `generated`
+  - `output_dir`
 
 ## 9. 导入后的检查项
 
@@ -264,6 +302,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_fro
 
 - `data/cards/cards_effects.json`
 - `data/cards/cards_semantic.json`
+- `pic/micro/` 缩略图目录
 
 当前编译入口仍是：
 
@@ -273,16 +312,22 @@ py tools/compile_cards_effects.py
 
 如需完成下游同步，允许在沙箱外调用 Python 执行该编译命令。
 
+缩略图同步入口为：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_images.ps1
+```
+
+推荐顺序：
+
+1. 先执行 `import_cards_raw_from_pic.ps1`
+2. 导入成功后执行 `generate_micro_card_images.ps1`
+3. 再执行 `compile_cards_effects.py`
+
 推荐优先使用已安装的明确解释器路径，例如：
 
 ```powershell
 C:\Users\ACH\AppData\Local\Programs\Python\Python311\python.exe tools\compile_cards_effects.py
-```
-
-若只确认到 `py.exe` 可用，也可在沙箱外执行：
-
-```powershell
-py tools/compile_cards_effects.py
 ```
 
 如果当前环境没有可用 Python，则：

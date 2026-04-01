@@ -392,6 +392,71 @@ function Get-SortKey([string]$number) {
   return $number.Replace("/", "-")
 }
 
+function Get-WebRequestFailureInfo($errorRecord) {
+  $exception = $errorRecord.Exception
+  $fallbackMessage = if ($null -ne $exception -and -not [string]::IsNullOrWhiteSpace($exception.Message)) {
+    Normalize-Space $exception.Message
+  } else {
+    "unknown_error"
+  }
+
+  if ($exception -is [System.Net.WebException]) {
+    $statusName = [string]$exception.Status
+    $statusMessage = if ([string]::IsNullOrWhiteSpace($statusName)) { "web_exception" } else { $statusName }
+
+    if ($null -ne $exception.Response) {
+      $statusCode = ""
+      try {
+        $statusCode = [string][int]$exception.Response.StatusCode.value__
+      } catch {
+        $statusCode = ""
+      }
+
+      if ($statusCode -eq "404") {
+        return [ordered]@{
+          reason = "official_page_not_found"
+          detail = "http_404"
+        }
+      }
+
+      $detail = if ($statusCode -ne "") { "http_${statusCode}_$statusMessage" } else { $statusMessage }
+      return [ordered]@{
+        reason = "request_failed"
+        detail = $detail
+      }
+    }
+
+    $networkStatuses = @(
+      [System.Net.WebExceptionStatus]::NameResolutionFailure,
+      [System.Net.WebExceptionStatus]::ConnectFailure,
+      [System.Net.WebExceptionStatus]::Timeout,
+      [System.Net.WebExceptionStatus]::ProxyNameResolutionFailure,
+      [System.Net.WebExceptionStatus]::ReceiveFailure,
+      [System.Net.WebExceptionStatus]::SendFailure,
+      [System.Net.WebExceptionStatus]::KeepAliveFailure,
+      [System.Net.WebExceptionStatus]::SecureChannelFailure,
+      [System.Net.WebExceptionStatus]::TrustFailure
+    )
+
+    if ($networkStatuses -contains $exception.Status) {
+      return [ordered]@{
+        reason = "network_error"
+        detail = $statusMessage
+      }
+    }
+
+    return [ordered]@{
+      reason = "request_failed"
+      detail = $statusMessage
+    }
+  }
+
+  return [ordered]@{
+    reason = "request_failed"
+    detail = $fallbackMessage
+  }
+}
+
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $picDir = Join-Path $repoRoot "pic"
 $rawPath = Join-Path $repoRoot "data\\cards\\cards_raw.json"
@@ -440,26 +505,91 @@ foreach ($file in $files) {
 
   $content = $null
   $matchedCandidate = ""
+  $candidateDiagnostics = [System.Collections.ArrayList]::new()
   foreach ($candidate in $candidates) {
     $encoded = [uri]::EscapeDataString($candidate)
     $url = "https://www.unionarena-tcg.com/jp/cardlist/detail_iframe.php?card_no=$encoded"
     try {
       $response = Invoke-WebRequest -UseBasicParsing -Headers $BrowserRequestHeaders $url
-      if ($response.Content -notmatch "cardNumData") { continue }
+      if ($response.Content -notmatch "cardNumData") {
+        [void]$candidateDiagnostics.Add([ordered]@{
+          candidate = $candidate
+          reason = "detail_structure_missing"
+          detail = "missing_cardNumData"
+        })
+        continue
+      }
+
       $parsedNumber = Get-SingleMatch $response.Content '<span class="cardNumData">(.*?)</span>'
-      if ($parsedNumber -ne $candidate) { continue }
+      if ([string]::IsNullOrWhiteSpace($parsedNumber)) {
+        [void]$candidateDiagnostics.Add([ordered]@{
+          candidate = $candidate
+          reason = "official_page_not_found"
+          detail = "empty_cardNumData"
+        })
+        continue
+      }
+
+      if ($parsedNumber -ne $candidate) {
+        [void]$candidateDiagnostics.Add([ordered]@{
+          candidate = $candidate
+          reason = "card_number_mismatch"
+          detail = "expected=$candidate actual=$parsedNumber"
+        })
+        continue
+      }
+
       $content = $response.Content
       $matchedCandidate = $candidate
       break
     } catch {
+      $failureInfo = Get-WebRequestFailureInfo $_
+      [void]$candidateDiagnostics.Add([ordered]@{
+        candidate = $candidate
+        reason = $failureInfo.reason
+        detail = $failureInfo.detail
+      })
       continue
     }
   }
 
   if ($null -eq $content) {
+    $finalReason = "official_page_not_found"
+    $finalDetail = ""
+    if ($candidateDiagnostics.Count -gt 0) {
+      $networkFailures = @($candidateDiagnostics | Where-Object { $_.reason -eq "network_error" })
+      $requestFailures = @($candidateDiagnostics | Where-Object { $_.reason -eq "request_failed" })
+      $structureFailures = @($candidateDiagnostics | Where-Object { $_.reason -eq "detail_structure_missing" })
+      $mismatchFailures = @($candidateDiagnostics | Where-Object { $_.reason -eq "card_number_mismatch" })
+      $notFoundFailures = @($candidateDiagnostics | Where-Object { $_.reason -eq "official_page_not_found" })
+
+      if ($networkFailures.Count -eq $candidateDiagnostics.Count) {
+        $finalReason = "network_error"
+      } elseif ($requestFailures.Count -gt 0 -and ($requestFailures.Count + $networkFailures.Count -eq $candidateDiagnostics.Count)) {
+        $finalReason = "request_failed"
+      } elseif ($structureFailures.Count -gt 0) {
+        $finalReason = "detail_structure_missing"
+      } elseif ($mismatchFailures.Count -gt 0) {
+        $finalReason = "card_number_mismatch"
+      } elseif ($notFoundFailures.Count -gt 0) {
+        $finalReason = "official_page_not_found"
+      }
+
+      $detailParts = @()
+      foreach ($diagnostic in $candidateDiagnostics) {
+        $detailPart = [string]$diagnostic.candidate + ":" + [string]$diagnostic.reason
+        if (-not [string]::IsNullOrWhiteSpace([string]$diagnostic.detail)) {
+          $detailPart += ":" + [string]$diagnostic.detail
+        }
+        $detailParts += $detailPart
+      }
+      $finalDetail = $detailParts -join "; "
+    }
+
     [void]$failures.Add([ordered]@{
       file = $file.Name
-      reason = "official_page_not_found"
+      reason = $finalReason
+      detail = $finalDetail
     })
     continue
   }
@@ -507,6 +637,13 @@ if ($added.Count -gt 0) {
 if ($failures.Count -gt 0) {
   Write-Output "failed_cards="
   foreach ($failure in $failures) {
-    Write-Output ("- " + $failure.file + ": " + $failure.reason + ($(if ($failure.number) { " (" + $failure.number + ")" } else { "" })))
+    $suffix = ""
+    if ($failure.number) {
+      $suffix += " (" + $failure.number + ")"
+    }
+    if ($failure.detail) {
+      $suffix += " [" + $failure.detail + "]"
+    }
+    Write-Output ("- " + $failure.file + ": " + $failure.reason + $suffix)
   }
 }

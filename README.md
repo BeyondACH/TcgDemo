@@ -75,10 +75,10 @@
 - 默认通过显式待决策流处理目标选择
 - 新增模板先扩 DSL/IR，再扩编译链与运行时
 
-截至 2026-03-31，正式 raw 编译结果为：
+截至 2026-04-01，正式 raw 编译结果为：
 
-- 已支持能力：`128`
-- 未支持能力：`0`
+- 已支持能力：`158`
+- 未支持能力：`25`
 
 ## 验证基线
 
@@ -97,7 +97,7 @@
 
 Godot 退出时仍存在既有 `ObjectDB` / resource 泄漏告警，但目前未影响断言结果。
 
-导入链路方面，`tools/import_cards_raw_from_pic.ps1` 已补浏览器请求头以贴近人工访问口径；截至 2026-03-31，`UA31BT-MMM-1-001` 到 `034` 仍未能通过脚本导入，当前剩余问题更偏向脚本网络环境或官网返回差异排查。
+导入链路方面，`tools/import_cards_raw_from_pic.ps1` 现已同时补齐浏览器请求头与失败原因分类；截至 2026-04-01，已确认 `UA31BT-MMM-1-001` 到 `034` 在沙箱外可正常访问官网详情页，之前批量报 `official_page_not_found` 的直接原因是沙箱内网络失败被脚本误归类。当前导入脚本默认应在沙箱外执行，若在沙箱内复现失败，优先按 `network_error` / `request_failed` 口径排查环境，而不是先假定官网缺卡。
 
 ## 目录说明
 
@@ -121,6 +121,22 @@ Godot 退出时仍存在既有 `ObjectDB` / resource 泄漏告警，但目前未
 ```powershell
 python tools/compile_cards_effects.py
 ```
+
+### 卡图补录到 `cards_raw.json`
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_from_pic.ps1
+```
+
+该抓取脚本默认应在沙箱外执行；若输出 `network_error` 或 `request_failed`，优先排查执行环境网络，而不是直接按 `official_page_not_found` 处理。
+
+### 生成 `pic/micro/` 缩略图
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_images.ps1
+```
+
+建议在卡图补录成功后顺带执行一次，用来为 `pic/` 顶层 `.png` 卡图补齐缺失的 micro 缩略图。
 
 ### 运行规则主冒烟
 
@@ -167,6 +183,7 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 按当前里程碑，下一阶段最值得继续推进的是：
 
 - 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三个入口稳定通过
+- 优先收敛本轮新增 34 张正式卡导入后重新暴露出的 `25` 个未支持能力，继续坚持“先扩可复用 DSL/IR，再接入数据”的原则
 - 继续补比当前最小样例更长链的自动验证，优先覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进
 - 暂不进行 UI 相关调整，`docs/plan/ui_art_style_guide.md` 保留为后续阶段的冻结基线
 - 持续观察 Godot 退出时既有资源告警是否影响长期回归稳定性
