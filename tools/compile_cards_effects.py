@@ -5,10 +5,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RAW_PATH = ROOT / "data" / "cards" / "cards_raw.json"
-SEMANTIC_PATH = ROOT / "data" / "cards" / "cards_semantic.json"
+CARDS_DIR = ROOT / "data" / "cards"
 LEGACY_SAMPLE_PATH = ROOT / "data" / "cards" / "base_cards.json"
-OUT_PATH = ROOT / "data" / "cards" / "cards_effects.json"
 
 
 def _load_json(path: Path):
@@ -1647,7 +1645,7 @@ def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
     return None
 
 
-def _build_card_effects(card: dict, semantic_map: dict[str, dict]) -> dict:
+def _build_card_effects(card: dict, semantic_map: dict[str, dict], source_label: str) -> dict:
     keywords = _infer_keywords(card)
     abilities = []
     if str(card.get("card_type", "")) != "EVENT":
@@ -1687,7 +1685,7 @@ def _build_card_effects(card: dict, semantic_map: dict[str, dict]) -> dict:
         "play_rule": _build_play_rule(card),
         "abilities": abilities,
         "analysis": {
-            "source": "cards_raw.json",
+            "source": source_label,
             "semantic_available": card["id"] in semantic_map,
             "semantic_template_types": semantic_entry.get("template_types", []),
         },
@@ -1844,32 +1842,64 @@ def _build_semantic_entry(card_effects: dict) -> dict:
     }
 
 
-def main() -> None:
-    raw_cards = _load_json(RAW_PATH)
-    legacy_samples = _load_json(LEGACY_SAMPLE_PATH)
+def _iter_series_raw_paths() -> list[Path]:
+    paths = []
+    if not CARDS_DIR.exists():
+        return paths
+    for child in sorted(CARDS_DIR.iterdir()):
+        if not child.is_dir():
+            continue
+        raw_path = child / "cards_raw.json"
+        if raw_path.exists():
+            paths.append(raw_path)
+    return paths
 
-    compiled = [_build_card_effects(card, {}) for card in raw_cards]
+
+def _source_label_for_path(raw_path: Path) -> str:
+    return raw_path.relative_to(CARDS_DIR).as_posix()
+
+
+def _compile_series_cards(raw_path: Path) -> tuple[list[dict], list[dict]]:
+    raw_cards = _load_json(raw_path)
+    source_label = _source_label_for_path(raw_path)
+
+    compiled = [_build_card_effects(card, {}, source_label) for card in raw_cards]
     semantic_entries = [_build_semantic_entry(card) for card in compiled]
     semantic_map = {entry.get("card_id", ""): entry for entry in semantic_entries if entry.get("card_id")}
 
-    compiled = [_build_card_effects(card, semantic_map) for card in raw_cards]
+    compiled = [_build_card_effects(card, semantic_map, source_label) for card in raw_cards]
     semantic_entries = [_build_semantic_entry(card) for card in compiled]
+    return compiled, semantic_entries
 
-    existing_ids = {card["id"] for card in compiled}
+
+def main() -> None:
+    compiled_all = []
+    semantic_all = []
+    series_raw_paths = _iter_series_raw_paths()
+    for raw_path in series_raw_paths:
+        compiled, semantic_entries = _compile_series_cards(raw_path)
+        semantic_path = raw_path.parent / "cards_semantic.json"
+        out_path = raw_path.parent / "cards_effects.json"
+        semantic_path.write_text(json.dumps(semantic_entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        out_path.write_text(json.dumps(compiled, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        compiled_all.extend(compiled)
+        semantic_all.extend(semantic_entries)
+
+    legacy_samples = _load_json(LEGACY_SAMPLE_PATH)
+    runtime_cards = list(compiled_all)
+    existing_ids = {card["id"] for card in runtime_cards}
     for sample in legacy_samples:
         sample_id = sample.get("id", "")
         if sample_id and sample_id not in existing_ids:
-            compiled.append(_legacy_to_effects(sample))
-    semantic_entries.extend(
-        _build_semantic_entry(card) for card in compiled if card.get("analysis", {}).get("source") == "base_cards.json"
+            runtime_cards.append(_legacy_to_effects(sample))
+    semantic_all.extend(
+        _build_semantic_entry(card) for card in runtime_cards if card.get("analysis", {}).get("source") == "base_cards.json"
     )
 
-    SEMANTIC_PATH.write_text(json.dumps(semantic_entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    OUT_PATH.write_text(json.dumps(compiled, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
-    supported = sum(1 for card in compiled for ability in card["abilities"] if ability.get("status") == "SUPPORTED")
-    unsupported = sum(1 for card in compiled for ability in card["abilities"] if ability.get("status") == "UNSUPPORTED")
-    print(f"Compiled {len(compiled)} cards -> {OUT_PATH.name}")
+    supported = sum(1 for card in runtime_cards for ability in card["abilities"] if ability.get("status") == "SUPPORTED")
+    unsupported = sum(1 for card in runtime_cards for ability in card["abilities"] if ability.get("status") == "UNSUPPORTED")
+    print(f"Compiled {len(compiled_all)} series cards across {len(series_raw_paths)} directories.")
+    print(f"Runtime card total with base samples: {len(runtime_cards)}")
     print(f"Supported abilities: {supported}")
     print(f"Unsupported abilities: {unsupported}")
 

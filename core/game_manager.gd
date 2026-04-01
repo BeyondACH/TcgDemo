@@ -13,6 +13,7 @@ const DecisionManager = preload("res://core/decision_manager.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
+const CardCatalog = preload("res://data/card_catalog.gd")
 const ActionTypes = preload("res://core/actions/action_types.gd")
 const PlayerController = preload("res://core/controllers/player_controller.gd")
 const HumanController = preload("res://core/controllers/human_controller.gd")
@@ -25,7 +26,6 @@ signal state_changed(snapshot: Dictionary)
 signal blockers_requested(request: Dictionary)
 signal log_added(text: String)
 
-const CARD_DATA_PATH := "res://data/cards/cards_effects.json"
 const STARTER_A_PATH := "res://data/decks/starter_a.txt"
 const STARTER_B_PATH := "res://data/decks/starter_b.txt"
 const DECKS_DIR_PATH := "res://data/decks"
@@ -45,6 +45,7 @@ var controller_manager := ControllerManager.new()
 var snapshot_serializer: SnapshotSerializer
 var life_trigger_manager: LifeTriggerManager
 var _deck_card_lookup := {}
+var _card_catalog := CardCatalog.new()
 
 func _ready() -> void:
 	randomize()
@@ -517,7 +518,7 @@ func append_ui_log(text: String) -> void:
 	emit_state_changed()
 func _load_card_defs() -> void:
 	_deck_card_lookup.clear()
-	var json: Array = _read_json(CARD_DATA_PATH)
+	var json: Array = _card_catalog.load_runtime_cards()
 	for item in json:
 		var item_dict: Dictionary = item
 		var card_def: CardDef = CardDef.new().from_dict(item_dict)
@@ -643,7 +644,7 @@ func _apply_logs(logs: Array[String]) -> void:
 func _load_deck_list(path: String) -> Array:
 	if path.get_extension().to_lower() == "txt":
 		return _read_text_deck(path)
-	return _read_json(path)
+	return _card_catalog.read_json_array(path)
 
 func _read_text_deck(path: String) -> Array:
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -699,18 +700,6 @@ func _register_deck_lookup(card_def: CardDef) -> void:
 		_deck_card_lookup[card_def.number] = card_def.id
 		_deck_card_lookup[card_def.number.replace("/", "_")] = card_def.id
 		_deck_card_lookup[card_def.number.replace("/", "_").replace("-", "_")] = card_def.id
-
-func _read_json(path: String):
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		push_error("Failed to open %s" % path)
-		return []
-	var data_text := file.get_as_text()
-	var parsed = JSON.parse_string(data_text)
-	if parsed == null:
-		push_error("Failed to parse JSON: %s" % path)
-		return []
-	return parsed
 
 func _has_winner() -> bool:
 	return game_state.winner_player_id != ""

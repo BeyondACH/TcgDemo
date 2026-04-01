@@ -1,6 +1,6 @@
 # `cards_raw` 卡图补录说明
 
-本文档记录当前仓库中“读取 `pic/` 卡图并补录到 `data/cards/cards_raw.json`”的实际操作逻辑、字段映射和已知注意点。后续如果需要继续补卡，默认先按本文档执行，再视情况调整脚本。
+本文档记录当前仓库中“读取 `pic/` 卡图并补录到 `data/cards/<series>/cards_raw.json`”的实际操作逻辑、字段映射和已知注意点。后续如果需要继续补卡，默认先按本文档执行，再视情况调整脚本。
 
 当前对应脚本为 `tools/import_cards_raw_from_pic.ps1`。
 
@@ -39,12 +39,12 @@
   - `https://www.unionarena-tcg.com/jp/cardlist/detail_iframe.php?card_no=...`
 - 请求时会补一组浏览器头，至少包含 `User-Agent`、`Accept`、`Accept-Language` 与 `Referer`，尽量与浏览器访问口径保持一致。
 - 该脚本默认应在沙箱外执行；若在沙箱内运行，网络请求可能直接失败，此时不应把失败结果当成官网详情页不存在。
-- 写入 `cards_raw.json` 时，`source_url` 固定保存为详情页地址：
+- 写入对应系列目录下的 `cards_raw.json` 时，`source_url` 固定保存为详情页地址：
   - `https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=...`
 - 不接第三方 API。
 - 不依赖 OCR 文本识别。
 
-如果官网页面抓不到、页面结构不符合预期、关键字段缺失、或返回页中的卡号与目标卡号不一致，则该卡不应写入 `cards_raw.json`。
+如果官网页面抓不到、页面结构不符合预期、关键字段缺失、或返回页中的卡号与目标卡号不一致，则该卡不应写入目标系列的 `cards_raw.json`。
 
 补充说明：
 
@@ -64,7 +64,7 @@
 
 默认模式：
 
-- 读取现有 `data/cards/cards_raw.json`
+- 按卡号中的系列码定位并读取现有 `data/cards/<series>/cards_raw.json`
 - 建立 `number` 和 `id` 两套索引
 - 若候选卡已存在，则跳过，不覆盖旧条目
 
@@ -72,14 +72,14 @@
 
 - 使用脚本参数 `-RefreshExisting`
 - 会重新抓取 `pic/` 顶层图片对应的官网页
-- 若 `cards_raw.json` 中已存在相同 `number` 或 `id`，会先移除旧条目，再写入新条目
+- 若目标系列 `cards_raw.json` 中已存在相同 `number` 或 `id`，会先移除旧条目，再写入新条目
 - 适合以下情况：
   - 官网字段解析逻辑修复后，需要批量回填旧数据
   - 之前导入成功，但某些字段解析错误或为空
 
-## 5. `cards_raw.json` 字段映射
+## 5. 系列 `cards_raw.json` 字段映射
 
-官网抓取结果按当前 `cards_raw.json` 契约写入以下字段：
+官网抓取结果按当前系列 `cards_raw.json` 契约写入以下字段：
 
 - `id`
 - `name`
@@ -211,7 +211,7 @@
 适用于：
 
 - `pic/` 顶层新增了卡图
-- `cards_raw.json` 中还没有这些卡
+- 对应系列 `cards_raw.json` 中还没有这些卡
 
 执行：
 
@@ -277,7 +277,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_
 
 ## 9. 导入后的检查项
 
-每次写入 `cards_raw.json` 后，至少检查以下内容：
+每次写入系列 `cards_raw.json` 后，至少检查以下内容：
 
 - 条目总数是否符合预期
 - 新增卡是否都有：
@@ -298,10 +298,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_
 
 ## 10. 下游同步
 
-按设计，`cards_raw.json` 更新后应继续同步：
+按设计，系列 `cards_raw.json` 更新后应继续同步：
 
-- `data/cards/cards_effects.json`
-- `data/cards/cards_semantic.json`
+- `data/cards/<series>/cards_effects.json`
+- `data/cards/<series>/cards_semantic.json`
 - `pic/micro/` 缩略图目录
 
 当前编译入口仍是：
@@ -332,7 +332,7 @@ C:\Users\ACH\AppData\Local\Programs\Python\Python311\python.exe tools\compile_ca
 
 如果当前环境没有可用 Python，则：
 
-- 先完成 `cards_raw.json` 写入
+- 先完成目标系列 `cards_raw.json` 写入
 - 在日志中明确记录下游编译被环境阻塞
 - 待环境补齐后再执行编译和相关回归
 

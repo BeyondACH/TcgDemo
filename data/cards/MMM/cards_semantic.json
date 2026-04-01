@@ -1,7 +1,7 @@
 [
   {
     "card_id": "UA31BT_MMM_1_001",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -40,7 +40,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_002",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -81,7 +81,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_003",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -103,7 +103,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_004",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -132,7 +132,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_005",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -163,7 +163,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_006",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -183,7 +183,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_007",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -214,7 +214,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_008",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -252,7 +252,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_009",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -272,7 +272,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_010",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
@@ -283,7 +283,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_011",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -305,7 +305,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_012",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "DOUBLE_BLOCK"
     ],
@@ -327,7 +327,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_013",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -349,7 +349,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_014",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -369,7 +369,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_015",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -398,7 +398,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_016",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -429,7 +429,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_017",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -449,7 +449,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_018",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -471,7 +471,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_019",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -504,7 +504,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_020",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -526,7 +526,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_021",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -540,7 +540,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_022",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -562,7 +562,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_023",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -582,7 +582,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_024",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -613,7 +613,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_025",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -633,7 +633,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_026",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -653,7 +653,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_027",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -684,7 +684,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_028",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -723,7 +723,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_029",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
@@ -754,7 +754,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_030",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -783,7 +783,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_031",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -812,7 +812,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_032",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -843,7 +843,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_033",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -873,7 +873,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_034",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -912,7 +912,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_035",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
@@ -949,7 +949,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_036",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -980,7 +980,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_037",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
@@ -991,7 +991,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_038",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -1020,7 +1020,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_039",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -1040,7 +1040,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_040",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -1069,7 +1069,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_041",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1109,7 +1109,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_042",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1129,7 +1129,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_043",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1149,7 +1149,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_044",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1189,7 +1189,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_045",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -1212,7 +1212,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_046",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1232,7 +1232,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_047",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -1261,7 +1261,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_048",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1281,7 +1281,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_049",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_KEYWORD",
@@ -1310,7 +1310,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_050",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -1330,7 +1330,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_051",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -1359,7 +1359,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_052",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1379,7 +1379,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_054",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -1402,7 +1402,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_055",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -1431,7 +1431,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_056",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1462,7 +1462,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_057",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1482,7 +1482,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_058",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1502,7 +1502,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_059",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP"
@@ -1522,7 +1522,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_060",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -1551,7 +1551,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_061",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -1580,7 +1580,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_062",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "IMPACT"
     ],
@@ -1611,7 +1611,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_063",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -1640,7 +1640,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_064",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1668,7 +1668,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_065",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -1697,7 +1697,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_066",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1725,7 +1725,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_067",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -1754,7 +1754,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_068",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
@@ -1765,7 +1765,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_069",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1785,7 +1785,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_070",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1805,7 +1805,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_071",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1827,7 +1827,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_072",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1847,7 +1847,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_073",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -1869,7 +1869,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_074",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -1889,7 +1889,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_075",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1920,7 +1920,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_076",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1940,7 +1940,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_077",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1960,7 +1960,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_078",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1991,7 +1991,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_079",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -2004,7 +2004,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_080",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -2017,7 +2017,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_081",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -2037,7 +2037,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_082",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
@@ -2066,7 +2066,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_083",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -2106,7 +2106,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_084",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -2135,7 +2135,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_085",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2155,7 +2155,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_086",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -2175,7 +2175,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_087",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -2195,7 +2195,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_088",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -2218,7 +2218,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_089",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "LIFE_TO_HAND_AND_READY_SOURCE",
@@ -2247,7 +2247,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_090",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID",
       "NEGATE_IMPACT",
@@ -2280,7 +2280,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_091",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -2309,7 +2309,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_092",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -2338,7 +2338,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_093",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2366,7 +2366,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_094",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2394,7 +2394,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_095",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2423,7 +2423,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_096",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2452,7 +2452,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_097",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2481,7 +2481,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_098",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -2512,7 +2512,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_099",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2540,7 +2540,7 @@
   },
   {
     "card_id": "UA31BT_MMM_1_100",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
@@ -2569,7 +2569,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_069",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -2589,7 +2589,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_070",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -2609,7 +2609,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_076",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -2629,7 +2629,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_080",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -2642,7 +2642,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_081",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -2662,7 +2662,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_085",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2682,7 +2682,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_088",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -2705,7 +2705,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_094",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2733,7 +2733,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_095",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2762,7 +2762,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_101",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE"
@@ -2782,7 +2782,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_102",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -2811,7 +2811,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_103",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2831,7 +2831,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_104",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -2871,7 +2871,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_105",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -2891,7 +2891,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_106",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_2",
@@ -2920,7 +2920,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_107",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
@@ -2929,7 +2929,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_108",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -2958,7 +2958,7 @@
   },
   {
     "card_id": "UA31ST_MMM_1_109",
-    "source": "cards_raw.json",
+    "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -2982,190 +2982,6 @@
         "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_BASIC",
-    "source": "base_cards.json",
-    "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_FIELD_BASIC",
-    "source": "base_cards.json",
-    "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_EVENT_DRAW",
-    "source": "base_cards.json",
-    "inferred_keywords": [],
-    "template_types": [
-      "LEGACY_PASSTHROUGH"
-    ],
-    "abilities": [
-      {
-        "id": "UA_EVENT_DRAW_on_play_0",
-        "timing": "ON_PLAY",
-        "status": "SUPPORTED",
-        "text": "",
-        "reason": "",
-        "template_type": "LEGACY_PASSTHROUGH"
-      }
-    ],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_HEAVY",
-    "source": "base_cards.json",
-    "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_LIFE_TRIGGER_DRAW",
-    "source": "base_cards.json",
-    "inferred_keywords": [],
-    "template_types": [
-      "LEGACY_PASSTHROUGH"
-    ],
-    "abilities": [
-      {
-        "id": "UA_LIFE_TRIGGER_DRAW_on_life_trigger_0",
-        "timing": "ON_LIFE_TRIGGER",
-        "status": "SUPPORTED",
-        "text": "",
-        "reason": "",
-        "template_type": "LEGACY_PASSTHROUGH"
-      }
-    ],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_MMM_BASE_MADOKA",
-    "source": "base_cards.json",
-    "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_MAIN_ACTIVATE",
-    "source": "base_cards.json",
-    "inferred_keywords": [],
-    "template_types": [
-      "LEGACY_PASSTHROUGH"
-    ],
-    "abilities": [
-      {
-        "id": "UA_CHAR_MAIN_ACTIVATE_main_activate_0",
-        "timing": "MAIN_ACTIVATE",
-        "status": "SUPPORTED",
-        "text": "1 回合 1 次：抽 1 张牌。",
-        "reason": "",
-        "template_type": "LEGACY_PASSTHROUGH"
-      }
-    ],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_STEP",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "STEP"
-    ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_SNIPER",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "SNIPER"
-    ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_DAMAGE_2",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "DAMAGE_2"
-    ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_IMPACT",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "IMPACT"
-    ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_IMPACT_PLUS_1",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "IMPACT_PLUS_1"
-    ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_NEGATE_IMPACT",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "NEGATE_IMPACT"
-    ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_DOUBLE_ATTACK",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "DOUBLE_ATTACK"
-    ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
-  },
-  {
-    "card_id": "UA_CHAR_DOUBLE_BLOCK",
-    "source": "base_cards.json",
-    "inferred_keywords": [
-      "DOUBLE_BLOCK"
-    ],
-    "template_types": [],
-    "abilities": [],
     "can_be_expressed_by_dsl": true,
     "missing_capabilities": []
   }

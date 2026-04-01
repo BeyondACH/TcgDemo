@@ -42,7 +42,7 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --pa
 ```powershell
 python tools/compile_cards_effects.py
 ```
-将 `data/cards/cards_raw.json` 编译为 `data/cards/cards_effects.json`，生成 DSL/IR 表示。
+将 `data/cards/<series>/cards_raw.json` 编译为对应系列目录下的 `cards_effects.json`，生成 DSL/IR 表示。
 
 ## 架构
 
@@ -114,8 +114,8 @@ python tools/compile_cards_effects.py
 `STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`IMPACT_PLUS_1`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`
 
 ## 数据文件
-- `data/cards/cards_raw.json`：官方源原始卡牌数据
-- `data/cards/cards_effects.json`：编译后 IR（由 `tools/compile_cards_effects.py` 生成）
+- `data/cards/<series>/cards_raw.json`：官方源原始卡牌数据
+- `data/cards/<series>/cards_effects.json`：编译后 IR（由 `tools/compile_cards_effects.py` 生成）
 - `data/cards/base_cards.json`：旧版样例卡牌（由编译器合并）
 - `data/decks/*.txt`：卡组列表，格式为 `Nx卡号`（如 `4xUA_BT01-001`）
 

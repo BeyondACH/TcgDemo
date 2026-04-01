@@ -384,12 +384,55 @@ function Read-JsonArray([string]$path) {
 }
 
 function Write-Utf8Json([string]$path, $data) {
+  $dir = Split-Path -Parent $path
+  if (-not [string]::IsNullOrWhiteSpace($dir)) {
+    [System.IO.Directory]::CreateDirectory($dir) | Out-Null
+  }
   $json = $data | ConvertTo-Json -Depth 20
   [System.IO.File]::WriteAllText($path, $json, [System.Text.UTF8Encoding]::new($false))
 }
 
 function Get-SortKey([string]$number) {
   return $number.Replace("/", "-")
+}
+
+function Get-SeriesCode([string]$number) {
+  if ($number -match '^UA\d+(?:BT|ST)/([A-Z0-9]+)-') {
+    return $matches[1]
+  }
+  if ($number -match '^[A-Z0-9]+-') {
+    return ($number -split '-', 2)[0]
+  }
+  return ""
+}
+
+function Get-SeriesRawPath([string]$cardsRoot, [string]$seriesCode) {
+  if ([string]::IsNullOrWhiteSpace($seriesCode)) {
+    throw "Series code is required."
+  }
+  return Join-Path (Join-Path $cardsRoot $seriesCode) "cards_raw.json"
+}
+
+function Ensure-SeriesStore([hashtable]$cardsBySeries, [hashtable]$existingNumbersBySeries, [hashtable]$existingIdsBySeries, [string]$cardsRoot, [string]$seriesCode) {
+  if ($cardsBySeries.ContainsKey($seriesCode)) {
+    return
+  }
+
+  $seriesCards = [System.Collections.ArrayList]::new()
+  foreach ($card in (Read-JsonArray (Get-SeriesRawPath -cardsRoot $cardsRoot -seriesCode $seriesCode))) {
+    [void]$seriesCards.Add($card)
+  }
+
+  $seriesNumbers = New-Object 'System.Collections.Generic.HashSet[string]'
+  $seriesIds = New-Object 'System.Collections.Generic.HashSet[string]'
+  foreach ($card in $seriesCards) {
+    $null = $seriesNumbers.Add([string]$card.number)
+    $null = $seriesIds.Add([string]$card.id)
+  }
+
+  $cardsBySeries[$seriesCode] = $seriesCards
+  $existingNumbersBySeries[$seriesCode] = $seriesNumbers
+  $existingIdsBySeries[$seriesCode] = $seriesIds
 }
 
 function Get-WebRequestFailureInfo($errorRecord) {
@@ -459,19 +502,10 @@ function Get-WebRequestFailureInfo($errorRecord) {
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $picDir = Join-Path $repoRoot "pic"
-$rawPath = Join-Path $repoRoot "data\\cards\\cards_raw.json"
-
-$cards = [System.Collections.ArrayList]::new()
-foreach ($card in (Read-JsonArray $rawPath)) {
-  [void]$cards.Add($card)
-}
-
-$existingNumbers = New-Object 'System.Collections.Generic.HashSet[string]'
-$existingIds = New-Object 'System.Collections.Generic.HashSet[string]'
-foreach ($card in $cards) {
-  $null = $existingNumbers.Add([string]$card.number)
-  $null = $existingIds.Add([string]$card.id)
-}
+$cardsRoot = Join-Path $repoRoot "data\\cards"
+$cardsBySeries = @{}
+$existingNumbersBySeries = @{}
+$existingIdsBySeries = @{}
 
 $files = Get-ChildItem -Path $picDir -File | Where-Object { $_.Extension.ToLowerInvariant() -in @(".png", ".jpg", ".jpeg", ".webp") } | Sort-Object Name
 $added = [System.Collections.ArrayList]::new()
@@ -480,18 +514,40 @@ $skippedExisting = [System.Collections.ArrayList]::new()
 
 foreach ($file in $files) {
   $candidates = @(Get-CardCandidates $file.BaseName)
+  $candidateSeriesByValue = @{}
+  foreach ($candidate in $candidates) {
+    $seriesCode = Get-SeriesCode ([string]$candidate)
+    if ([string]::IsNullOrWhiteSpace($seriesCode)) {
+      continue
+    }
+    $candidateSeriesByValue[[string]$candidate] = $seriesCode
+    Ensure-SeriesStore -cardsBySeries $cardsBySeries -existingNumbersBySeries $existingNumbersBySeries -existingIdsBySeries $existingIdsBySeries -cardsRoot $cardsRoot -seriesCode $seriesCode
+  }
   $candidateIds = @($candidates | ForEach-Object { Convert-NumberToId $_ })
   $alreadyExists = $false
   if (-not $RefreshExisting) {
-    foreach ($candidate in $candidates) {
-      if ($existingNumbers.Contains($candidate)) {
+    for ($candidateIndex = 0; $candidateIndex -lt $candidates.Count; $candidateIndex++) {
+      $candidate = [string]$candidates[$candidateIndex]
+      $seriesCode = [string]$candidateSeriesByValue[$candidate]
+      if ([string]::IsNullOrWhiteSpace($seriesCode)) {
+        continue
+      }
+      $seriesNumbers = $existingNumbersBySeries[$seriesCode]
+      if ($null -ne $seriesNumbers -and $seriesNumbers.Contains($candidate)) {
         $alreadyExists = $true
         break
       }
     }
     if (-not $alreadyExists) {
-      foreach ($candidateId in $candidateIds) {
-        if ($existingIds.Contains($candidateId)) {
+      for ($candidateIndex = 0; $candidateIndex -lt $candidateIds.Count; $candidateIndex++) {
+        $candidateId = [string]$candidateIds[$candidateIndex]
+        $candidate = [string]$candidates[$candidateIndex]
+        $seriesCode = Get-SeriesCode $candidate
+        if ([string]::IsNullOrWhiteSpace($seriesCode)) {
+          continue
+        }
+        $seriesIds = $existingIdsBySeries[$seriesCode]
+        if ($null -ne $seriesIds -and $seriesIds.Contains($candidateId)) {
           $alreadyExists = $true
           break
         }
@@ -604,6 +660,20 @@ foreach ($file in $files) {
     continue
   }
 
+  $seriesCode = Get-SeriesCode ([string]$card.number)
+  if ([string]::IsNullOrWhiteSpace($seriesCode)) {
+    [void]$failures.Add([ordered]@{
+      file = $file.Name
+      reason = "unrecognized_series"
+      detail = $card.number
+    })
+    continue
+  }
+  Ensure-SeriesStore -cardsBySeries $cardsBySeries -existingNumbersBySeries $existingNumbersBySeries -existingIdsBySeries $existingIdsBySeries -cardsRoot $cardsRoot -seriesCode $seriesCode
+  $cards = $cardsBySeries[$seriesCode]
+  $existingNumbers = $existingNumbersBySeries[$seriesCode]
+  $existingIds = $existingIdsBySeries[$seriesCode]
+
   if (-not $RefreshExisting -and ($existingNumbers.Contains([string]$card.number) -or $existingIds.Contains([string]$card.id))) {
     [void]$skippedExisting.Add($file.Name)
     continue
@@ -624,8 +694,11 @@ foreach ($file in $files) {
   $null = $existingIds.Add([string]$card.id)
 }
 
-$sortedCards = @($cards | Sort-Object @{ Expression = { Get-SortKey ([string]$_.number) } })
-Write-Utf8Json -path $rawPath -data $sortedCards
+foreach ($seriesCode in @($cardsBySeries.Keys | Sort-Object)) {
+  $sortedCards = @($cardsBySeries[$seriesCode] | Sort-Object @{ Expression = { Get-SortKey ([string]$_.number) } })
+  $seriesRawPath = Get-SeriesRawPath -cardsRoot $cardsRoot -seriesCode $seriesCode
+  Write-Utf8Json -path $seriesRawPath -data $sortedCards
+}
 
 Write-Output ("scanned=" + $files.Count)
 Write-Output ("skipped_existing=" + $skippedExisting.Count)

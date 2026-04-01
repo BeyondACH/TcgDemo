@@ -4,7 +4,7 @@
 
 ## 1. 计划摘要
 
-当前仓库已经完成基础对局闭环、主要高风险规则区、统一效果队列主链路、正式 `cards_raw.json` 样例回归，以及 UI 美术规范文档的首轮冻结。项目现阶段不再以“继续快速铺能力面”为首要目标，而是转向以下主线：
+当前仓库已经完成基础对局闭环、主要高风险规则区、统一效果队列主链路、正式系列 `cards_raw.json` 样例回归，以及 UI 美术规范文档的首轮冻结。项目现阶段不再以“继续快速铺能力面”为首要目标，而是转向以下主线：
 
 1. 保持 `docs/rules/rule.md` 与实际实现持续一致。
 2. 以统一 DSL/IR 为唯一正式运行时来源，禁止回退到按卡硬编码。
@@ -86,7 +86,7 @@
 
 目标：
 
-- 保持正式 `cards_raw.json` 持续走统一 IR 主链路，不回退到按卡特判。
+- 保持正式系列 `data/cards/<series>/cards_raw.json` 持续走统一 IR 主链路，不回退到按卡特判。
 - 保持 `docs/cards_raw_minimal_duel_smoke_test.gd` 作为正式 raw 样例稳定性验证入口。
 
 当前维护重点：
@@ -98,7 +98,7 @@
 
 实施要求：
 
-- 若后续新增 raw 模板，必须同步更新 `tools/compile_cards_effects.py`、重新生成 `data/cards/cards_effects.json`，并补最小样例验证。
+- 若后续新增 raw 模板，必须同步更新 `tools/compile_cards_effects.py`、重新生成对应系列目录下的 `cards_effects.json` / `cards_semantic.json`，并补最小样例验证。
 - 不允许通过对单一编号写特判来“通过样例”。
 
 完成判据：
@@ -113,7 +113,7 @@
 
 目标：
 
-- 保持 `cards_raw.json`、`cards_effects.json`、运行时数据结构和导入工具口径一致。
+- 保持 `data/cards/<series>/cards_raw.json`、`data/cards/<series>/cards_effects.json`、运行时数据结构和导入工具口径一致。
 - 继续完善 txt 卡组导入、错误提示、缺卡统计和调试可见性。
 - 维持 `GameManager.get_snapshot()`、日志面板、预览面板与待决策 UI 对当前规则状态的可观察性。
 
@@ -180,7 +180,7 @@
   - **已重构为协调器模式**：新增职责应提取为专用管理器，禁止回退到”上帝对象”模式
 - 卡牌编译链
   - `tools/compile_cards_effects.py`
-  - `data/cards/cards_effects.json`
+  - `data/cards/<series>/cards_effects.json`
   - 统一 IR 字段格式
 
 ## 4.1 架构原则（新增）

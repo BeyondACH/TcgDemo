@@ -1,15 +1,17 @@
 extends RefCounted
 class_name DeckImporter
 
-const BASE_CARDS_PATH := "res://data/cards/cards_effects.json"
+const CardCatalog = preload("res://data/card_catalog.gd")
+
+var _card_catalog := CardCatalog.new()
 
 func import_deck(deck_name: String, source_path: String, output_dir: String) -> Dictionary:
 	if deck_name.strip_edges().is_empty():
 		return {"ok": false, "error": "Deck name is required."}
 
-	var base_cards: Array = _read_json_array(BASE_CARDS_PATH)
-	if base_cards == null:
-		return {"ok": false, "error": "Failed to load base cards from %s." % BASE_CARDS_PATH}
+	var base_cards: Array = _card_catalog.load_runtime_cards()
+	if base_cards.is_empty():
+		return {"ok": false, "error": "Failed to load runtime cards from series directories."}
 
 	var import_lines: Array = _read_lines(source_path)
 	if import_lines == null:
@@ -156,15 +158,6 @@ func _read_lines(path: String):
 	if file == null:
 		return null
 	return file.get_as_text().split("\n")
-
-func _read_json_array(path: String):
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return null
-	var parsed = JSON.parse_string(file.get_as_text())
-	if parsed == null or not (parsed is Array):
-		return null
-	return parsed
 
 func _write_json_array(path: String, data: Array[String]) -> bool:
 	var absolute_dir := ProjectSettings.globalize_path(path.get_base_dir())

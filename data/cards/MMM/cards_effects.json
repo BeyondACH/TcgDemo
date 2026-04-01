@@ -96,7 +96,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -210,7 +210,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -271,7 +271,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED"
@@ -447,7 +447,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
@@ -534,7 +534,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -599,7 +599,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -727,7 +727,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -830,7 +830,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED"
@@ -936,7 +936,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -977,7 +977,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -1085,7 +1085,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -1195,7 +1195,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -1263,7 +1263,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1"
@@ -1327,7 +1327,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -1456,7 +1456,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
@@ -1543,7 +1543,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -1652,7 +1652,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -1714,7 +1714,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED"
@@ -1809,7 +1809,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -1872,7 +1872,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED"
@@ -1914,7 +1914,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -1974,7 +1974,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED"
@@ -2069,7 +2069,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -2197,7 +2197,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -2343,7 +2343,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -2416,7 +2416,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -2500,7 +2500,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
@@ -2640,7 +2640,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -2765,7 +2765,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
@@ -2856,7 +2856,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TOP_DECK_TO_LIFE",
@@ -2947,7 +2947,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TOP_DECK_TO_LIFE",
@@ -3067,7 +3067,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -3146,7 +3146,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED"
@@ -3248,7 +3248,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
@@ -3549,7 +3549,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
@@ -3774,7 +3774,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
@@ -3814,7 +3814,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -3946,7 +3946,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
@@ -4011,7 +4011,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1"
@@ -4254,7 +4254,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -4425,7 +4425,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
@@ -4607,7 +4607,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -4802,7 +4802,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -5109,7 +5109,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
@@ -5179,7 +5179,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1"
@@ -5253,7 +5253,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -5383,7 +5383,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
@@ -5496,7 +5496,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -5681,7 +5681,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_KEYWORD",
@@ -5789,7 +5789,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -5921,7 +5921,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
@@ -5994,7 +5994,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -6064,7 +6064,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1"
@@ -6329,7 +6329,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
@@ -6545,7 +6545,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_KEYWORD",
@@ -6642,7 +6642,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -6788,7 +6788,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -6893,7 +6893,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP"
@@ -7081,7 +7081,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -7170,7 +7170,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
@@ -7355,7 +7355,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
@@ -7446,7 +7446,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TOP_DECK_TO_LIFE",
@@ -7627,7 +7627,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -7776,7 +7776,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
@@ -7979,7 +7979,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -8162,7 +8162,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -8224,7 +8224,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -8286,7 +8286,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -8379,7 +8379,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -8452,7 +8452,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -8516,7 +8516,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -8584,7 +8584,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1"
@@ -8655,7 +8655,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1"
@@ -8891,7 +8891,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_KEYWORD",
@@ -8956,7 +8956,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -9069,7 +9069,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -9223,7 +9223,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -9265,7 +9265,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -9306,7 +9306,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -9377,7 +9377,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -9553,7 +9553,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
@@ -9723,7 +9723,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_KEYWORD",
@@ -9896,7 +9896,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
@@ -10042,7 +10042,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -10106,7 +10106,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -10172,7 +10172,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1"
@@ -10283,7 +10283,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -10461,7 +10461,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "LIFE_TO_HAND_AND_READY_SOURCE",
@@ -10621,7 +10621,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -10760,7 +10760,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
@@ -10888,7 +10888,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
@@ -11101,7 +11101,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -11303,7 +11303,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -11393,7 +11393,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TOP_DECK_TO_LIFE",
@@ -11484,7 +11484,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TOP_DECK_TO_LIFE",
@@ -11575,7 +11575,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TOP_DECK_TO_LIFE",
@@ -11734,7 +11734,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
@@ -11921,7 +11921,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -12107,7 +12107,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
@@ -12172,7 +12172,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -12265,7 +12265,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -12329,7 +12329,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "MOVE_SELF"
@@ -12372,7 +12372,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -12443,7 +12443,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE"
@@ -12588,7 +12588,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -12699,7 +12699,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -12901,7 +12901,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -12991,7 +12991,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "TOP_DECK_TO_LIFE",
@@ -13099,7 +13099,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE"
@@ -13354,7 +13354,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
@@ -13542,7 +13542,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE"
@@ -13689,7 +13689,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
@@ -13799,7 +13799,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP"
@@ -13931,7 +13931,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_2",
@@ -13971,7 +13971,7 @@
     },
     "abilities": [],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": []
     }
@@ -14177,7 +14177,7 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
@@ -14327,660 +14327,12 @@
       }
     ],
     "analysis": {
-      "source": "cards_raw.json",
+      "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
         "SELECT_AND_MOVE"
       ]
-    }
-  },
-  {
-    "id": "UA_CHAR_BASIC",
-    "card_meta": {
-      "name": "基础角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-1-001",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {},
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_FIELD_BASIC",
-    "card_meta": {
-      "name": "基础场地",
-      "card_type": "FIELD",
-      "title_code": "TST",
-      "number": "TST-1-002",
-      "source_image": "",
-      "traits": [
-        "测试场地"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 0,
-      "keywords": [],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_EVENT_DRAW",
-    "card_meta": {
-      "name": "基础事件",
-      "card_type": "EVENT",
-      "title_code": "TST",
-      "number": "TST-1-003",
-      "source_image": "",
-      "traits": [
-        "测试事件"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {},
-      "bp": 0,
-      "keywords": [],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [
-      {
-        "id": "UA_EVENT_DRAW_on_play_0",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
-        "limits": {},
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": ""
-        },
-        "status": "SUPPORTED",
-        "legacy_effect": {
-          "type": "DRAW",
-          "value": 1
-        }
-      }
-    ],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_HEAVY",
-    "card_meta": {
-      "name": "高BP角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-2-001",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 4000,
-      "keywords": [],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_LIFE_TRIGGER_DRAW",
-    "card_meta": {
-      "name": "生命触发抽牌角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-2-002",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {},
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 2000,
-      "keywords": [],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [
-      {
-        "id": "UA_LIFE_TRIGGER_DRAW_on_life_trigger_0",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_LIFE_TRIGGER"
-        },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": ""
-        },
-        "status": "SUPPORTED",
-        "legacy_effect": {
-          "trigger": "ON_LIFE_TRIGGER",
-          "operations": [
-            {
-              "type": "DRAW",
-              "value": 1
-            }
-          ]
-        }
-      }
-    ],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_MMM_BASE_MADOKA",
-    "card_meta": {
-      "name": "鹿目 まどか",
-      "card_type": "CHARACTER",
-      "title_code": "MMM",
-      "number": "UA31BT/MMM-0-001",
-      "source_image": "",
-      "traits": [
-        "鹿目 まどか",
-        "魔法少女"
-      ],
-      "cost_energy": {
-        "YELLOW": 2
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "YELLOW": 1
-      },
-      "bp": 3000,
-      "keywords": [],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_MAIN_ACTIVATE",
-    "card_meta": {
-      "name": "主动技测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-001",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [
-      {
-        "id": "UA_CHAR_MAIN_ACTIVATE_main_activate_0",
-        "kind": "ACTIVATED",
-        "timing": {
-          "event": "MAIN_ACTIVATE"
-        },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
-        "limits": {
-          "once_per_turn": true
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": "1 回合 1 次：抽 1 张牌。"
-        },
-        "status": "SUPPORTED",
-        "legacy_effect": {
-          "trigger": "MAIN_ACTIVATE",
-          "once_per_turn": true,
-          "operations": [
-            {
-              "type": "DRAW",
-              "value": 1
-            }
-          ],
-          "text": "1 回合 1 次：抽 1 张牌。"
-        }
-      }
-    ],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_STEP",
-    "card_meta": {
-      "name": "撤步测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-002",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "STEP"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_SNIPER",
-    "card_meta": {
-      "name": "狙击测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-003",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "SNIPER"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_DAMAGE_2",
-    "card_meta": {
-      "name": "二伤测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-004",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "DAMAGE_2"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_IMPACT",
-    "card_meta": {
-      "name": "冲击测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-005",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "IMPACT"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_IMPACT_PLUS_1",
-    "card_meta": {
-      "name": "强冲击测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-006",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "IMPACT_PLUS_1"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_NEGATE_IMPACT",
-    "card_meta": {
-      "name": "冲击无效测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-007",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "NEGATE_IMPACT"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_DOUBLE_ATTACK",
-    "card_meta": {
-      "name": "二次攻击测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-008",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "DOUBLE_ATTACK"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
-    }
-  },
-  {
-    "id": "UA_CHAR_DOUBLE_BLOCK",
-    "card_meta": {
-      "name": "二次阻挡测试角色",
-      "card_type": "CHARACTER",
-      "title_code": "TST",
-      "number": "TST-3-009",
-      "source_image": "",
-      "traits": [
-        "测试角色"
-      ],
-      "cost_energy": {
-        "GREEN": 1
-      },
-      "cost_ap": 1,
-      "energy_provided": {
-        "GREEN": 1
-      },
-      "bp": 3000,
-      "keywords": [
-        "DOUBLE_BLOCK"
-      ],
-      "text": {
-        "effect": "",
-        "trigger": "",
-        "rule": ""
-      }
-    },
-    "play_rule": {
-      "mode": "NORMAL",
-      "special_modes": []
-    },
-    "abilities": [],
-    "analysis": {
-      "source": "base_cards.json",
-      "semantic_available": false,
-      "semantic_template_types": []
     }
   }
 ]

@@ -117,7 +117,7 @@
 
 已确认能力：
 
-- 游戏启动优先加载 `data/cards/cards_raw.json`，并兼容补充 `data/cards/base_cards.json`。
+- 游戏启动优先聚合加载 `data/cards/*/cards_effects.json`，并兼容补充 `data/cards/base_cards.json`。
 - 双方起始卡组已切换到 txt 入口：`data/decks/starter_a.txt`、`data/decks/starter_b.txt`。
 - txt 卡组行格式支持 `数量 x 卡号`。
 - 导入工具已支持缺卡统计、非法行校验、输出 deck json。

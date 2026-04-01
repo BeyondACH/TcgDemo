@@ -3,17 +3,17 @@ class_name DeckLoader
 
 const UATypes = preload("res://core/ua_types.gd")
 const CardDef = preload("res://data/card_def.gd")
-
-const CARD_DATA_PATH := "res://data/cards/cards_effects.json"
+const CardCatalog = preload("res://data/card_catalog.gd")
 const DECKS_DIR_PATH := "res://data/decks"
 
 var _deck_card_lookup := {}
+var _card_catalog := CardCatalog.new()
 
 
 func load_card_defs() -> Dictionary:
 	var card_defs := {}
 	_deck_card_lookup.clear()
-	var json: Array = _read_json(CARD_DATA_PATH)
+	var json: Array = _card_catalog.load_runtime_cards()
 	for item in json:
 		var item_dict: Dictionary = item
 		var card_def: CardDef = CardDef.new().from_dict(item_dict)
@@ -25,7 +25,7 @@ func load_card_defs() -> Dictionary:
 func load_deck_list(path: String) -> Array:
 	if path.get_extension().to_lower() == "txt":
 		return _read_text_deck(path)
-	return _read_json(path)
+	return _card_catalog.read_json_array(path)
 
 
 func get_available_decks() -> Array[Dictionary]:
@@ -104,15 +104,3 @@ func _register_deck_lookup(card_def: CardDef) -> void:
 		_deck_card_lookup[card_def.number.replace("/", "_")] = card_def.id
 		_deck_card_lookup[card_def.number.replace("/", "_").replace("-", "_")] = card_def.id
 
-
-func _read_json(path: String):
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		push_error("Failed to open %s" % path)
-		return []
-	var data_text := file.get_as_text()
-	var parsed = JSON.parse_string(data_text)
-	if parsed == null:
-		push_error("Failed to parse JSON: %s" % path)
-		return []
-	return parsed

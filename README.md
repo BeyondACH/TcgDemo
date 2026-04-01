@@ -122,13 +122,23 @@ Godot 退出时仍存在既有 `ObjectDB` / resource 泄漏告警，但目前未
 python tools/compile_cards_effects.py
 ```
 
-### 卡图补录到 `cards_raw.json`
+脚本会扫描 `data/cards/*/cards_raw.json`，并逐系列生成对应的 `cards_effects.json` 与 `cards_semantic.json`。
+
+### 卡图补录到系列 `cards_raw.json`
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_from_pic.ps1
 ```
 
 该抓取脚本默认应在沙箱外执行；若输出 `network_error` 或 `request_failed`，优先排查执行环境网络，而不是直接按 `official_page_not_found` 处理。
+
+当前正式卡池已按系列目录存放，例如 `MMM` 系列使用：
+
+- `data/cards/MMM/cards_raw.json`
+- `data/cards/MMM/cards_semantic.json`
+- `data/cards/MMM/cards_effects.json`
+
+运行时会自动聚合扫描 `data/cards/*/cards_effects.json`，并额外补充根目录 `data/cards/base_cards.json`。
 
 ### 生成 `pic/micro/` 缩略图
 
