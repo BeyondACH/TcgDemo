@@ -7,6 +7,9 @@ const CardInstance = preload("res://data/card_instance.gd")
 const CardDef = preload("res://data/card_def.gd")
 const RAW_REMOVED_CHAIN_002 := "UA31BT_MMM_1_002"
 const RAW_ENTER_FROM_REMOVED_022 := "UA31BT_MMM_1_022"
+const RAW_MAIN_ACTIVATE_MAMI_DISCOUNT_027 := "UA31BT_MMM_1_027"
+const RAW_OUTSIDE_EVENT_BOUNCE_019 := "UA31BT_MMM_1_019"
+const RAW_EVENT_ONCE_DRAW_READY_034 := "UA31BT_MMM_1_034"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -18,6 +21,8 @@ func _init() -> void:
 	_run_test("生命触发与显式决策混合链清空运行时状态", _test_life_trigger_and_target_selection_chain_clears_runtime_state)
 	_run_test("skip_next_ready_once 消费后不残留", _test_skip_next_ready_once_consumes_cleanly)
 	_run_test("触发式 once_per_turn 标记跨回合清空", _test_triggered_once_per_turn_flags_clear_on_next_turn)
+	_run_test("手牌玛米减费跨回合清理", _test_hand_mami_discount_expires_on_next_turn)
+	_run_test("事件每回合限制跨回合清理", _test_event_once_per_turn_flag_clears_on_next_turn)
 	_run_test("一次性移除区 AP 减免消费后不残留", _test_removed_ap_discount_does_not_residue)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
@@ -560,6 +565,108 @@ func _test_triggered_once_per_turn_flags_clear_on_next_turn() -> Dictionary:
 		return _fail("entered_from_zone_this_turn 也应在回合开始时重置")
 	return _ok()
 
+func _test_hand_mami_discount_expires_on_next_turn() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _move_or_spawn_raw_card(manager, player_id, RAW_MAIN_ACTIVATE_MAMI_DISCOUNT_027, UATypes.Zone.FRONT_LINE)
+	var mami_uid := _move_or_spawn_raw_card(manager, player_id, RAW_OUTSIDE_EVENT_BOUNCE_019, UATypes.Zone.HAND)
+	var event_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_RESIDUE_027_EVENT",
+		"name": "残留测试027事件",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-027",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	if source_uid == "" or mami_uid == "" or event_uid == "":
+		return _fail("027 残留测试应能准备来源、玛米手牌和事件弃牌")
+	manager.request_main_activate(source_uid)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("027 残留测试应进入显式弃牌决策")
+	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(discard_decision.get("resolution_id", "")),
+		"choice": event_uid,
+	})
+	var discounted := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, mami_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	if int((discounted.get("cost_energy", {}) as Dictionary).get("YELLOW", 0)) != 3:
+		return _fail("027 残留测试应在本回合内看到玛米手牌减费生效")
+	if not _advance_to_turn_draw(manager, player_id, 2):
+		return _fail("未能推进到下个己方回合开始以验证 027 减费过期")
+	var reset_preview := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, mami_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	if int((reset_preview.get("cost_energy", {}) as Dictionary).get("YELLOW", 0)) != 4:
+		return _fail("027 的手牌减费应在下个己方回合开始前完全清理")
+	return _ok()
+
+func _test_event_once_per_turn_flag_clears_on_next_turn() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 3):
+		return _fail("034 残留测试应能准备足够黄能量")
+	var source_uid := _move_or_spawn_raw_card(manager, player_id, RAW_EVENT_ONCE_DRAW_READY_034, UATypes.Zone.HAND)
+	var second_uid := _spawn_raw_card_copy(manager, player_id, RAW_EVENT_ONCE_DRAW_READY_034, UATypes.Zone.HAND, true)
+	var discard_event_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_RESIDUE_034_EVENT",
+		"name": "残留测试034事件",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-034",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	if source_uid == "" or second_uid == "" or discard_event_uid == "":
+		return _fail("034 残留测试应能准备两张事件与弃牌事件")
+	for hand_uid_variant in _player(manager, player_id).hand.duplicate():
+		var hand_uid := str(hand_uid_variant)
+		if hand_uid in [source_uid, second_uid, discard_event_uid]:
+			continue
+		manager.zone_manager.move_card(manager.game_state, hand_uid, UATypes.Zone.OUTSIDE, player_id)
+	var play_result := manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if not bool(play_result.get("ok", false)):
+		return _fail("034 残留测试首张事件应能成功使用")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("034 残留测试应进入显式弃牌决策")
+	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(discard_decision.get("resolution_id", "")),
+		"choice": discard_event_uid,
+	})
+	var blocked_same_turn := manager.rules_engine.can_play_card(manager.game_state, player_id, second_uid, UATypes.Zone.OUTSIDE)
+	if bool(blocked_same_turn.get("ok", false)):
+		return _fail("034 在同一回合内应继续被每回合一次限制阻止")
+	if not _advance_to_turn_draw(manager, player_id, 2):
+		return _fail("未能推进到下个己方回合开始以验证 034 标记清理")
+	if not _advance_to_phase(manager, UATypes.Phase.MAIN):
+		return _fail("未能进入下个己方 MAIN 阶段以验证 034 可再次使用")
+	var allowed_next_turn := manager.rules_engine.can_play_card(manager.game_state, player_id, second_uid, UATypes.Zone.OUTSIDE)
+	if not bool(allowed_next_turn.get("ok", false)):
+		return _fail("034 在下个己方回合开始后应可再次使用")
+	return _ok()
+
 func _test_removed_ap_discount_does_not_residue() -> Dictionary:
 	var manager := _new_manager()
 	var player_id := UATypes.PLAYER_ONE
@@ -694,6 +801,24 @@ func _move_or_spawn_raw_card(manager: GameManager, player_id: String, def_id: St
 		return ""
 	var card := CardInstance.new()
 	card.uid = "%s_runtime_raw_%s_%d" % [player_id, def_id, manager.game_state.cards.size()]
+	card.def_id = def_id
+	card.owner_player_id = player_id
+	card.controller_player_id = player_id
+	card.zone = zone
+	card.state = UATypes.CardState.ACTIVE if active and zone != UATypes.Zone.LIFE else UATypes.CardState.RESTED
+	card.current_bp = int(card_def.bp)
+	manager.game_state.cards[card.uid] = card
+	var zone_cards: Array = manager.zone_manager.get_zone_array(_player(manager, player_id), zone)
+	if zone_cards != null:
+		zone_cards.append(card.uid)
+	return card.uid
+
+func _spawn_raw_card_copy(manager: GameManager, player_id: String, def_id: String, zone: int, active := true) -> String:
+	var card_def = manager.game_state.get_card_def(def_id)
+	if card_def == null:
+		return ""
+	var card := CardInstance.new()
+	card.uid = "%s_runtime_raw_copy_%s_%d" % [player_id, def_id, manager.game_state.cards.size()]
 	card.def_id = def_id
 	card.owner_player_id = player_id
 	card.controller_player_id = player_id

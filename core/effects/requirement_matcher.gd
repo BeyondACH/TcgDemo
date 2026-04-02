@@ -107,9 +107,13 @@ func matches_filter(state: GameState, filter_variant, context: Dictionary, candi
 	if filter_type == "CARD_TYPE_IS":
 		return candidate_def != null and UATypes.card_type_to_text(candidate_def.card_type) == str(filter.get("value", ""))
 	if filter_type == "NAME_IS":
-		return candidate_def != null and candidate_def.name == str(filter.get("value", ""))
+		return candidate_def != null and candidate_def.matches_reference_name(str(filter.get("value", "")))
 	if filter_type == "NAME_NOT":
 		return candidate_def != null and candidate_def.name != str(filter.get("value", ""))
+	if filter_type == "CARD_STATE_IS":
+		if candidate_card == null:
+			return false
+		return candidate_card.state == _parse_card_state(filter.get("value", filter.get("state", -1)))
 	if filter_type == "NOT_SOURCE_CARD":
 		return candidate_card_uid != "" and candidate_card_uid != source_card_uid
 	if filter_type == "NOT_HAS_KEYWORD":
@@ -365,7 +369,7 @@ func _req_context_battle_outcome_is(state: GameState, requirement: Dictionary, c
 func _req_card_name_is(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var candidate_card = state.get_card(candidate_card_uid)
 	var candidate_def = state.get_card_def(candidate_card.def_id) if candidate_card != null else null
-	return candidate_def != null and candidate_def.name == str(requirement.get("value", ""))
+	return candidate_def != null and candidate_def.matches_reference_name(str(requirement.get("value", "")))
 
 func _req_card_type_is(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var candidate_card = state.get_card(candidate_card_uid)
@@ -456,7 +460,7 @@ func _req_context_target_name_is(state: GameState, requirement: Dictionary, cont
 		return false
 	var target_card = state.get_card(target_uid)
 	var target_def = state.get_card_def(target_card.def_id) if target_card != null else null
-	return target_def != null and target_def.name == str(requirement.get("value", ""))
+	return target_def != null and target_def.matches_reference_name(str(requirement.get("value", "")))
 
 func _req_source_state_is_active(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var source_card = state.get_card(source_card_uid)
@@ -565,6 +569,17 @@ func _parse_zone(value) -> int:
 			"AP_AREA": return UATypes.Zone.AP_AREA
 			"OUTSIDE": return UATypes.Zone.OUTSIDE
 			"REMOVED": return UATypes.Zone.REMOVED
+	return -1
+
+func _parse_card_state(value) -> int:
+	if value is int:
+		return value
+	if value is String:
+		match value:
+			"ACTIVE":
+				return UATypes.CardState.ACTIVE
+			"RESTED":
+				return UATypes.CardState.RESTED
 	return -1
 
 func _card_energy_cost_total(card_def) -> int:

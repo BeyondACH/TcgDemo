@@ -47,6 +47,7 @@ func _init_handlers() -> void:
 		"FOR_EACH": _step_for_each,
 		"REGISTER_DELAYED_EFFECT": _step_register_delayed_effect,
 		"REGISTER_STATIC_MODIFIER": _step_register_static_modifier,
+		"STORE_CARD_INFO": _step_store_card_info,
 	}
 
 # ============================================================
@@ -191,7 +192,11 @@ func _step_move_selected_cards(state: GameState, source_card_uid: String, step: 
 		var card_uid := str(card_uid_variant)
 		if card_uid == "":
 			continue
-		_zone_manager.move_card(state, card_uid, to_zone, target_player_id, to_position)
+		var per_card_target_player_id := target_player_id
+		if target_player_mode == "CARD_CONTROLLER":
+			var target_card = state.get_card(card_uid)
+			per_card_target_player_id = target_card.controller_player_id if target_card != null else target_player_id
+		_zone_manager.move_card(state, card_uid, to_zone, per_card_target_player_id, to_position)
 		move_logs.append("Moved card %s to %s." % [card_uid, UATypes.zone_to_key(to_zone)])
 	var remove_from_var := str(step.get("remove_from_var", ""))
 	if remove_from_var != "":
@@ -287,6 +292,20 @@ func _step_register_delayed_effect(state: GameState, source_card_uid: String, st
 
 func _step_register_static_modifier(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
 	_register_static_modifier(state, source_card_uid, step)
+	return {"logs": [], "paused": false}
+
+func _step_store_card_info(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var card_uid := str(context.get(str(step.get("from_var", "")), ""))
+	if card_uid == "":
+		return {"logs": [], "paused": false}
+	var card = state.get_card(card_uid)
+	var card_def = state.get_card_def(card.def_id) if card != null else null
+	var info_var := str(step.get("var", "stored_card_info"))
+	context[info_var] = {
+		"uid": card_uid,
+		"card_type": UATypes.card_type_to_text(card_def.card_type) if card_def != null else "",
+		"name": card_def.name if card_def != null else "",
+	}
 	return {"logs": [], "paused": false}
 
 # ============================================================
@@ -511,6 +530,7 @@ func _register_static_modifier(state: GameState, source_card_uid: String, step: 
 		"expires": str(step.get("expires", "")),
 		"color": str(step.get("color", "")),
 		"value": step.get("value", 0),
+		"energy_delta": step.get("energy_delta", {}).duplicate(true),
 		"granted_card_uid": granted_card_uid,
 		"allowed_modes": allowed_modes,
 	})

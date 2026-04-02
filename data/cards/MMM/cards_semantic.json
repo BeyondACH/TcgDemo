@@ -441,22 +441,20 @@
     "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "DRAW_1"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_018_on_enter_f571e0d55e",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場外にイベントカードが2枚以上ある場合、カードを1枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_019",
@@ -465,17 +463,17 @@
       "RAID"
     ],
     "template_types": [
-      "UNSUPPORTED",
+      "DRAW_THEN_SELECT_AND_MOVE",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_019_on_enter_6951ad6e4e",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外にあるイベントカードの枚数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、手札に戻す。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
       },
       {
         "id": "UA31BT_MMM_1_019_on_life_trigger_a342b2ffe2",
@@ -486,10 +484,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_020",
@@ -639,17 +635,17 @@
     "source": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "SELECT_AND_MOVE",
       "MOVE_SELF"
     ],
     "abilities": [
       {
         "id": "UA31BT_MMM_1_027_main_activate_4194cf94c0",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の手札のイベントカードを1枚場外に置く。そうした場合、このターン中、自分の手札にある全ての〈巴 マミ〉の必要エナジーを減らす。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       },
       {
         "id": "UA31BT_MMM_1_027_on_life_trigger_0a3e81b9d0",
@@ -660,10 +656,8 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_028",
@@ -708,7 +702,7 @@
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
-      "UNSUPPORTED"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -722,16 +716,14 @@
       {
         "id": "UA31BT_MMM_1_029_on_play_6e04231061",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、カードを3枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "COMPOSITE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_030",
@@ -853,7 +845,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "COMPOSITE",
+      "DRAW_THEN_SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -867,24 +860,22 @@
       {
         "id": "UA31BT_MMM_1_034_on_play_42a2213fcd",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "〈訳が分からないよ〉は1ターンに1枚のみ使用できる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31BT_MMM_1_034_on_play_df8aae2814",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを2枚引き、自分の手札を1枚場外に置く。この効果でイベントカードを場外に置いた場合、自分のAPカードを1枚まで選び、アクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
   },
   {
     "card_id": "UA31BT_MMM_1_035",

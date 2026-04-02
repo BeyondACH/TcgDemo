@@ -72,6 +72,11 @@ const RAW_REMOVED_PREVIEW_024 := "UA31BT_MMM_1_024"
 const RAW_REMOVED_EVENT_028 := "UA31BT_MMM_1_028"
 const RAW_CONDITIONAL_EVENT_032 := "UA31BT_MMM_1_032"
 const RAW_CONDITIONAL_EVENT_033 := "UA31BT_MMM_1_033"
+const RAW_OUTSIDE_EVENT_DRAW_018 := "UA31BT_MMM_1_018"
+const RAW_OUTSIDE_EVENT_BOUNCE_019 := "UA31BT_MMM_1_019"
+const RAW_MAIN_ACTIVATE_MAMI_DISCOUNT_027 := "UA31BT_MMM_1_027"
+const RAW_EVENT_REST_DRAW_029 := "UA31BT_MMM_1_029"
+const RAW_EVENT_ONCE_DRAW_READY_034 := "UA31BT_MMM_1_034"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -152,6 +157,11 @@ func _init() -> void:
 	_run_test("Raw Enter From Removed Once Per Turn 022", _test_raw_enter_from_removed_once_per_turn_022)
 	_run_test("Raw Removed Event Destination 028", _test_raw_removed_event_destination_028)
 	_run_test("Raw Conditional Event Branches 032 / 033", _test_raw_conditional_event_branches_032_and_033)
+	_run_test("Raw Outside Event Count Draw 018", _test_raw_outside_event_count_draw_018)
+	_run_test("Raw Raid Draw Discard Dynamic Bounce 019", _test_raw_raid_draw_discard_dynamic_bounce_019)
+	_run_test("Raw Main Activate Mami Discount 027", _test_raw_main_activate_mami_discount_027)
+	_run_test("Raw Event Rest Then Draw 029", _test_raw_event_rest_then_draw_029)
+	_run_test("Raw Event Once Draw Ready 034", _test_raw_event_once_draw_ready_034)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -3666,6 +3676,280 @@ func _test_raw_conditional_event_branches_032_and_033() -> Dictionary:
 		return _fail("Raw 033 upgraded branch should still rest the selected target.")
 	if not bool(target_card_033_upgrade.flags.get("skip_next_ready_once", false)):
 		return _fail("Raw 033 upgraded branch should apply skip_next_ready_once when 巴 マミ is on the field and OUTSIDE has at least two events.")
+	return _ok()
+
+func _test_raw_outside_event_count_draw_018() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 2):
+		return _fail("Raw 018 should prepare exactly 2 yellow energy.")
+	var player := _player(manager, player_id)
+	var deck_before_without := player.deck.size()
+	var source_without := _move_or_spawn_card_to_zone(manager, player_id, RAW_OUTSIDE_EVENT_DRAW_018, UATypes.Zone.HAND)
+	if source_without == "":
+		return _fail("Raw 018 card should be available.")
+	manager.play_card(source_without, UATypes.Zone.FRONT_LINE)
+	if player.deck.size() != deck_before_without:
+		return _fail("Raw 018 should not draw without at least 2 event cards in OUTSIDE.")
+	var source_with := _spawn_raw_card_copy(manager, player_id, RAW_OUTSIDE_EVENT_DRAW_018, UATypes.Zone.HAND, true)
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_018_EVENT_A",
+		"name": "018事件A",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-018-EVT-A",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, false)
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_018_EVENT_B",
+		"name": "018事件B",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-018-EVT-B",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, false)
+	var deck_before_with := player.deck.size()
+	manager.play_card(source_with, UATypes.Zone.FRONT_LINE)
+	if player.deck.size() != deck_before_with - 1:
+		return _fail("Raw 018 should draw exactly 1 card when OUTSIDE has at least 2 event cards.")
+	return _ok()
+
+func _test_raw_raid_draw_discard_dynamic_bounce_019() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 4):
+		return _fail("Raw 019 should prepare exactly 4 yellow energy.")
+	var raid_base_uid := _spawn_named_character(manager, player_id, "巴 マミ", ["魔法少女"], 2000, UATypes.Zone.FRONT_LINE)
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_OUTSIDE_EVENT_BOUNCE_019, UATypes.Zone.HAND)
+	var discard_event_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_019_HAND_EVENT",
+		"name": "019手牌事件",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-019-HAND-EVENT",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_019_EVENT_A",
+		"name": "019事件A",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-019-EVT-A",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, false)
+	_spawn_temp_card(manager, player_id, {
+		"id": "TMP_019_EVENT_B",
+		"name": "019事件B",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-019-EVT-B",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.OUTSIDE, false)
+	if raid_base_uid == "" or source_uid == "" or discard_event_uid == "":
+		return _fail("Raw 019 should prepare its RAID base and source card.")
+	var opponent_target_uid := _spawn_temp_card(manager, opponent_id, {
+		"id": "TMP_019_OPP_TARGET",
+		"name": "019对手目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-019-TARGET",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.FRONT_LINE, true)
+	var play_result := manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {"raid_target_uid": raid_base_uid})
+	if not bool(play_result.get("ok", false)):
+		return _fail("Raw 019 should be playable as RAID in the smoke setup.")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 019 should request an explicit discard choice after drawing.")
+	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(discard_decision.get("resolution_id", "")),
+		"choice": discard_event_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 019 should request an explicit opponent target after the discard resolves.")
+	var target_decision: Dictionary = manager.game_state.pending_decisions[0]
+	if not _extract_choice_values(target_decision.get("choices", [])).has(opponent_target_uid):
+		return _fail("Raw 019 should expose legal opponent targets within its dynamic BP threshold.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(target_decision.get("resolution_id", "")),
+		"choice": opponent_target_uid,
+	})
+	if not _player(manager, opponent_id).hand.has(opponent_target_uid):
+		return _fail("Raw 019 should return the selected opponent target to hand.")
+	return _ok()
+
+func _test_raw_main_activate_mami_discount_027() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_MAIN_ACTIVATE_MAMI_DISCOUNT_027, UATypes.Zone.FRONT_LINE)
+	var mami_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_OUTSIDE_EVENT_BOUNCE_019, UATypes.Zone.HAND)
+	var event_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_027_EVENT_COST",
+		"name": "027弃牌事件",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-027-EVENT",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	if source_uid == "" or mami_uid == "" or event_uid == "":
+		return _fail("Raw 027 should prepare source, target Mami card, and event discard.")
+	var before_preview := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, mami_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	if int((before_preview.get("cost_energy", {}) as Dictionary).get("YELLOW", 0)) != 4:
+		return _fail("Raw 027 should keep the base required energy before activation.")
+	manager.request_main_activate(source_uid)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 027 should request an explicit event discard choice.")
+	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	if not _extract_choice_values(discard_decision.get("choices", [])).has(event_uid):
+		return _fail("Raw 027 should expose the hand event card as a legal discard choice.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(discard_decision.get("resolution_id", "")),
+		"choice": event_uid,
+	})
+	var after_preview := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, mami_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	if int((after_preview.get("cost_energy", {}) as Dictionary).get("YELLOW", 0)) != 3:
+		return _fail("Raw 027 should reduce the required energy of hand Mami cards by exactly 1 this turn.")
+	return _ok()
+
+func _test_raw_event_rest_then_draw_029() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 2)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 4):
+		return _fail("Raw 029 should prepare exactly 4 yellow energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_REST_DRAW_029, UATypes.Zone.HAND)
+	var active_target_uid := _spawn_magic_girl_named_card(manager, player_id, "029激活目标", 2000, UATypes.Zone.FRONT_LINE)
+	if source_uid == "" or active_target_uid == "":
+		return _fail("Raw 029 should prepare its event card and an active front-line target.")
+	var deck_before := _player(manager, player_id).deck.size()
+	var play_result := manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if not bool(play_result.get("ok", false)):
+		return _fail("Raw 029 should be playable in the smoke setup.")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 029 should request an explicit active front-line target.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choice": active_target_uid,
+	})
+	var target_card = manager.game_state.get_card(active_target_uid)
+	if target_card == null or target_card.state != UATypes.CardState.RESTED:
+		return _fail("Raw 029 should rest the chosen active front-line character.")
+	if _player(manager, player_id).deck.size() != deck_before - 3:
+		return _fail("Raw 029 should draw exactly 3 cards after resting the target.")
+	return _ok()
+
+func _test_raw_event_once_draw_ready_034() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var player := _player(manager, player_id)
+	_fill_ap(player, 3)
+	_set_ap_active(player, 2)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 3):
+		return _fail("Raw 034 should prepare exactly 3 yellow energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_ONCE_DRAW_READY_034, UATypes.Zone.HAND)
+	var second_uid := _spawn_raw_card_copy(manager, player_id, RAW_EVENT_ONCE_DRAW_READY_034, UATypes.Zone.HAND, true)
+	var discard_event_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_034_EVENT_DISCARD",
+		"name": "034事件弃牌",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-034-EVENT",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	if source_uid == "" or second_uid == "" or discard_event_uid == "":
+		return _fail("Raw 034 should prepare two copies and an event discard card.")
+	var active_before := player.ap_active_count()
+	var play_result := manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
+	if not bool(play_result.get("ok", false)):
+		return _fail("Raw 034 should be playable in the smoke setup.")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw 034 should request an explicit discard choice after drawing 2.")
+	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(discard_decision.get("resolution_id", "")),
+		"choice": discard_event_uid,
+	})
+	if player.ap_active_count() != active_before:
+		return _fail("Raw 034 should ready exactly 1 AP when the discarded card is an event card.")
+	var blocked := manager.rules_engine.can_play_card(manager.game_state, player_id, second_uid, UATypes.Zone.OUTSIDE)
+	if bool(blocked.get("ok", false)):
+		return _fail("Raw 034 should only be playable once per turn.")
 	return _ok()
 
 func _player(manager: GameManager, player_id: String) -> PlayerState:

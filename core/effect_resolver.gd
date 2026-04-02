@@ -248,12 +248,25 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 		var modifier: Dictionary = modifier_variant
 		if not _is_modifier_active(state, modifier):
 			continue
-		if str(modifier.get("modifier_type", "")) != "PLAY_PERMISSION":
-			continue
 		if str(modifier.get("owner_player_id", "")) != player_id:
 			continue
-		if _matches_play_permission_modifier(state, modifier, play_context):
-			allow_current_zone = true
+		var modifier_type := str(modifier.get("modifier_type", ""))
+		if modifier_type == "PLAY_PERMISSION":
+			if _matches_play_permission_modifier(state, modifier, play_context):
+				allow_current_zone = true
+			continue
+		if modifier_type != "HAND_PLAY_COST_ENERGY_DELTA":
+			continue
+		var from_zone := _parse_zone(modifier.get("from_zone", -1))
+		if from_zone != -1 and card.zone != from_zone:
+			continue
+		if not _matches_filter_list(state, modifier.get("filters", []), play_context, card_uid, _get_source_card_uid(modifier)):
+			continue
+		var energy_delta: Dictionary = modifier.get("energy_delta", {})
+		if not energy_delta.is_empty():
+			effective_cost_energy = _apply_energy_delta_map(effective_cost_energy, energy_delta)
+		else:
+			effective_cost_energy = _apply_energy_scalar_delta(effective_cost_energy, int(modifier.get("value", 0)))
 
 	for delayed_variant in state.delayed_effects:
 		var delayed_effect: Dictionary = delayed_variant
@@ -512,6 +525,7 @@ func _register_static_modifier(state: GameState, source_card_uid: String, step: 
 		"expires": str(step.get("expires", "")),
 		"color": str(step.get("color", "")),
 		"value": step.get("value", 0),
+		"energy_delta": step.get("energy_delta", {}).duplicate(true),
 		"granted_card_uid": granted_card_uid,
 		"allowed_modes": allowed_modes,
 	})
@@ -881,6 +895,35 @@ func _resolve_numeric_value(state: GameState, provider_variant, context: Diction
 					continue
 				count += 1
 		return int(provider.get("value", 0)) + count * int(provider.get("multiplier", 1))
+	if provider_type == "PLAYER_ZONE_CARD_COUNT_MULTIPLIED":
+		var source_card_counted = state.get_card(source_card_uid)
+		var player_mode := str(provider.get("player", "SELF"))
+		var player_id := ""
+		if player_mode == "SELF":
+			player_id = source_card_counted.controller_player_id if source_card_counted != null else str(context.get("source_player_id", ""))
+		elif player_mode == "OPPONENT":
+			player_id = PlayerUtils.opponent_of(source_card_counted.controller_player_id) if source_card_counted != null else ""
+		else:
+			player_id = str(context.get("target_player_id", context.get("source_player_id", "")))
+		var count_player = state.get_player(player_id)
+		if count_player == null:
+			return 0
+		var total := 0
+		for zone_variant in provider.get("zones", []):
+			var zone_cards = _zone_cards_for_player(count_player, str(zone_variant))
+			for zone_card_uid_variant in zone_cards:
+				var zone_card_uid := str(zone_card_uid_variant)
+				if zone_card_uid == "":
+					continue
+				var zone_card = state.get_card(zone_card_uid)
+				var zone_def = state.get_card_def(zone_card.def_id) if zone_card != null else null
+				if zone_def == null:
+					continue
+				var required_card_type := str(provider.get("card_type", ""))
+				if required_card_type != "" and UATypes.card_type_to_text(zone_def.card_type) != required_card_type:
+					continue
+				total += 1
+		return total * int(provider.get("multiplier", 1))
 	return int(provider.get("value", 0))
 
 func _apply_energy_delta_map(cost_map: Dictionary, delta_map: Dictionary) -> Dictionary:
@@ -889,6 +932,13 @@ func _apply_energy_delta_map(cost_map: Dictionary, delta_map: Dictionary) -> Dic
 		var color := str(color_variant)
 		var base_value := int(result.get(color, 0))
 		result[color] = maxi(0, base_value + int(delta_map.get(color_variant, 0)))
+	return result
+
+func _apply_energy_scalar_delta(cost_map: Dictionary, delta: int) -> Dictionary:
+	var result: Dictionary = cost_map.duplicate(true)
+	for color_variant in result.keys():
+		var color := str(color_variant)
+		result[color] = maxi(0, int(result.get(color, 0)) + delta)
 	return result
 
 func _enqueue_target_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, target: Dictionary, candidates: Array, context: Dictionary, remaining_steps: Array, resume_as_effect := false, ui_meta: Dictionary = {}) -> bool:
@@ -941,6 +991,24 @@ func _ensure_array(value) -> Array:
 	if value == null or str(value) == "":
 		return []
 	return [value]
+
+func _zone_cards_for_player(player, zone_key: String) -> Array:
+	match zone_key:
+		"FRONT_LINE":
+			return player.front_line
+		"ENERGY_LINE":
+			return player.energy_line
+		"HAND":
+			return player.hand
+		"LIFE":
+			return player.life
+		"OUTSIDE":
+			return player.outside
+		"REMOVED":
+			return player.removed
+		"DECK":
+			return player.deck
+	return []
 
 func _is_modifier_active(state: GameState, modifier: Dictionary) -> bool:
 	var source_card_uid := _get_source_card_uid(modifier)

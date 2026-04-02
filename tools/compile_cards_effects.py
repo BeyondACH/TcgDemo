@@ -67,14 +67,15 @@ def _build_play_requirements(card: dict) -> list[dict]:
                     ],
                 }
             )
-        if text == "〈もう何も恐くない〉は1ターンに1枚のみ使用できる。":
+        match = re.fullmatch(r"〈(.+)〉は1ターンに1枚のみ使用できる。", text)
+        if match:
             requirements.append(
                 {
                     "type": "NOT",
                     "requirement": {
                         "type": "PLAYER_TURN_FLAG_TRUE",
                         "player": "SELF",
-                        "flag": "event_used_もう何も恐くない",
+                        "flag": _event_used_turn_flag(match.group(1)),
                     },
                 }
             )
@@ -406,6 +407,10 @@ def _conditional_value_provider(default_value, when: list[dict], then_value) -> 
     }
 
 
+def _event_used_turn_flag(card_name: str) -> str:
+    return f"event_used_{card_name}"
+
+
 def _primary_energy_color(card: dict) -> str:
     for source in [card.get("energy_provided", {}), card.get("card_meta", {}).get("energy_provided", {})]:
         if isinstance(source, dict):
@@ -672,6 +677,67 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             count=5,
             requirements=[{"type": "CARD_NAME_IS", "value": "鹿目 まどか"}],
             discard_after_add=True,
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_019":
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "discard_from_hand")
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": {
+                        "type": "PLAYER_ZONE_CARD_COUNT_MULTIPLIED",
+                        "player": "SELF",
+                        "zones": ["OUTSIDE"],
+                        "card_type": "EVENT",
+                        "multiplier": 1000,
+                    },
+                }
+            ],
+            0,
+            1,
+            "selected_target",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            discard_specs + target_specs,
+            [
+                {"type": "DRAW", "value": 1},
+                *discard_steps,
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"},
+                *steps,
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "HAND", "target_player_mode": "CARD_CONTROLLER"},
+            ],
+        )
+
+    if event_name == "MAIN_ACTIVATE" and card_id == "UA31BT_MMM_1_027":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["HAND"],
+            [],
+            1,
+            1,
+            "selected_event_discard",
+            filters=[{"type": "CARD_TYPE_IS", "value": "EVENT"}],
+        )
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_event_discard", "to": "OUTSIDE"},
+                {
+                    "type": "REGISTER_STATIC_MODIFIER",
+                    "modifier_type": "HAND_PLAY_COST_ENERGY_DELTA",
+                    "from_zone": "HAND",
+                    "filters": [{"type": "NAME_IS", "value": "巴 マミ"}],
+                    "value": -1,
+                    "expires": "END_OF_TURN",
+                },
+            ]
         )
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
@@ -1056,6 +1122,16 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             [{"type": "MOVE_TOP_DECK_TO_LIFE"}],
         )
 
+    if text == "自分の場外にイベントカードが2枚以上ある場合、カードを1枚引く。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [{"type": "PLAYER_ZONE_CARD_COUNT_GTE", "player": "SELF", "zones": ["OUTSIDE"], "card_type": "EVENT", "value": 2}],
+            [],
+            [{"type": "DRAW", "value": 1}],
+        )
+
     if text == "カードを1枚引き、自分の手札を1枚場外に置く。":
         target_specs, steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "discard_from_hand")
         return _supported_ability(
@@ -1076,6 +1152,23 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             [],
             target_specs,
             [{"type": "DRAW", "value": 2}] + steps + [{"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"}],
+        )
+
+    if text == "カードを2枚引き、自分の手札を1枚場外に置く。この効果でイベントカードを場外に置いた場合、自分のAPカードを1枚まで選び、アクティブにする。":
+        target_specs, steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "discard_from_hand")
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"},
+                {"type": "ACTIVATE_AP_SLOTS", "value": 1, "requirements": [{"type": "CONTEXT_SELECTED_CARD_TYPE_IS", "context_var": "discard_from_hand", "value": "EVENT"}]},
+            ]
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            [{"type": "DRAW", "value": 2}] + steps,
         )
 
     if text == "自分のAPカードを2枚まで選び、アクティブにする。":
@@ -1625,6 +1718,67 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
         )
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
+    if card_id == "UA31BT_MMM_1_027" and text == "自分の手札のイベントカードを1枚場外に置く。そうした場合、このターン中、自分の手札にある全ての〈巴 マミ〉の必要エナジーを減らす。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["HAND"],
+            [],
+            1,
+            1,
+            "selected_event_discard",
+            filters=[{"type": "CARD_TYPE_IS", "value": "EVENT"}],
+        )
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_event_discard", "to": "OUTSIDE"},
+                {
+                    "type": "REGISTER_STATIC_MODIFIER",
+                    "modifier_type": "HAND_PLAY_COST_ENERGY_DELTA",
+                    "from_zone": "HAND",
+                    "filters": [{"type": "NAME_IS", "value": "巴 マミ"}],
+                    "value": -1,
+                    "expires": "END_OF_TURN",
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if card_id == "UA31BT_MMM_1_029" and text == "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、カードを3枚引く。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE"],
+            [],
+            1,
+            1,
+            "selected_target",
+            filters=[{"type": "CARD_STATE_IS", "value": "ACTIVE"}],
+        )
+        steps.extend(
+            [
+                {"type": "REST", "target_var": "selected_target"},
+                {"type": "DRAW", "value": 3},
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if card_id == "UA31BT_MMM_1_034" and text == "カードを2枚引き、自分の手札を1枚場外に置く。この効果でイベントカードを場外に置いた場合、自分のAPカードを1枚まで選び、アクティブにする。":
+        target_specs, steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "discard_from_hand")
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"},
+                {"type": "ACTIVATE_AP_SLOTS", "value": 1, "requirements": [{"type": "CONTEXT_SELECTED_CARD_TYPE_IS", "context_var": "discard_from_hand", "value": "EVENT"}]},
+            ]
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            target_specs,
+            [{"type": "DRAW", "value": 2}] + steps,
+            "TRIGGERED",
+        )
+
     if card_id == "UA31BT_MMM_1_028" and text == "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。":
         return _supported_ability(
             card,
@@ -1644,14 +1798,15 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
             "TRIGGERED",
         )
 
-    if card_id == "UA31BT_MMM_1_033" and text == "〈もう何も恐くない〉は1ターンに1枚のみ使用できる。":
+    match = re.fullmatch(r"〈(.+)〉は1ターンに1枚のみ使用できる。", text)
+    if match:
         return _supported_ability(
             card,
             event_name,
             pseudo_trigger,
             [],
             [],
-            [{"type": "SET_PLAYER_TURN_FLAG", "player": "SOURCE", "flag": "event_used_もう何も恐くない", "value": True}],
+            [{"type": "SET_PLAYER_TURN_FLAG", "player": "SOURCE", "flag": _event_used_turn_flag(match.group(1)), "value": True}],
             "TRIGGERED",
         )
 
@@ -1787,6 +1942,86 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
                         {"type": "PLAYER_ZONE_CARD_COUNT_GTE", "player": "SELF", "zones": ["OUTSIDE"], "card_type": "EVENT", "value": 2},
                     ],
                 },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外にあるイベントカードの枚数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、手札に戻す。":
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "discard_from_hand")
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": {
+                        "type": "PLAYER_ZONE_CARD_COUNT_MULTIPLIED",
+                        "player": "SELF",
+                        "zones": ["OUTSIDE"],
+                        "card_type": "EVENT",
+                        "multiplier": 1000,
+                    },
+                }
+            ],
+            0,
+            1,
+            "selected_target",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            discard_specs + target_specs,
+            [
+                {"type": "DRAW", "value": 1},
+                *discard_steps,
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"},
+                *steps,
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "HAND", "target_player_mode": "CARD_CONTROLLER"},
+            ],
+            "TRIGGERED",
+        )
+
+    if text == "自分の手札のイベントカードを1枚場外に置く。そうした場合、このターン中、自分の手札にある全ての〈巴 マミ〉の必要エナジーを減らす。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["HAND"],
+            [],
+            1,
+            1,
+            "selected_event_discard",
+            filters=[{"type": "CARD_TYPE_IS", "value": "EVENT"}],
+        )
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_event_discard", "to": "OUTSIDE"},
+                {
+                    "type": "REGISTER_STATIC_MODIFIER",
+                    "modifier_type": "HAND_PLAY_COST_ENERGY_DELTA",
+                    "from_zone": "HAND",
+                    "filters": [{"type": "NAME_IS", "value": "巴 マミ"}],
+                    "value": -1,
+                    "expires": "END_OF_TURN",
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、カードを3枚引く。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE"],
+            [],
+            1,
+            1,
+            "selected_target",
+            filters=[{"type": "CARD_STATE_IS", "value": "ACTIVE"}],
+        )
+        steps.extend(
+            [
+                {"type": "REST", "target_var": "selected_target"},
+                {"type": "DRAW", "value": 3},
             ]
         )
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
