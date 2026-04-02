@@ -1,6 +1,7 @@
 import hashlib
 import json
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -651,7 +652,7 @@ def _partial_unsupported_ability(card: dict, event_name: str, trigger_entry: dic
     return ability
 
 
-def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, dict]) -> dict:
+def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[str, dict]) -> dict:
     event_name = str(trigger_entry.get("trigger", ""))
     text = str(trigger_entry.get("text", "")).strip()
     card_id = str(card.get("id", ""))
@@ -1604,7 +1605,7 @@ def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, di
     return _unsupported_ability(card, event_name, trigger_entry, "当前原子要求/步骤模板尚未覆盖该文本模式。")
 
 
-def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str, dict]) -> dict | None:
+def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: dict[str, dict]) -> dict | None:
     event_name = "ON_PLAY"
     text = str(effect_entry.get("text", "")).strip()
     card_id = str(card.get("id", ""))
@@ -1995,7 +1996,7 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
     return _unsupported_ability(card, event_name, pseudo_trigger, "当前原子要求/步骤模板尚未覆盖该文本模式。")
 
 
-def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
+def _compile_passive_effect_legacy(card: dict, effect_entry: dict) -> dict | None:
     text = str(effect_entry.get("text", "")).strip()
     pseudo_trigger = {
         "source_label": effect_entry.get("source_label", ""),
@@ -2063,6 +2064,387 @@ def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
         )
 
     return None
+
+
+@dataclass(frozen=True)
+class _TemplateRule:
+    name: str
+    event_filter: str | tuple[str, ...]
+    matcher: object
+    builder: object
+    priority: int = 0
+    card_filter: object | None = None
+
+
+_TEMPLATE_TELEMETRY_ENABLED = False
+_TEMPLATE_HIT_COUNTS: dict[str, int] = {}
+_TEMPLATE_FALLBACK_COUNTS: dict[str, int] = {}
+
+
+def _record_template_hit(name: str) -> None:
+    if not _TEMPLATE_TELEMETRY_ENABLED:
+        return
+    _TEMPLATE_HIT_COUNTS[name] = _TEMPLATE_HIT_COUNTS.get(name, 0) + 1
+
+
+def _record_template_fallback(registry_name: str) -> None:
+    if not _TEMPLATE_TELEMETRY_ENABLED:
+        return
+    _TEMPLATE_FALLBACK_COUNTS[registry_name] = _TEMPLATE_FALLBACK_COUNTS.get(registry_name, 0) + 1
+
+
+def _event_matches(rule_event: str | tuple[str, ...], event_name: str) -> bool:
+    if isinstance(rule_event, tuple):
+        return event_name in rule_event
+    return event_name == rule_event
+
+
+def _always_match(_card: dict, _entry: dict, _text: str, _card_id: str):
+    return {}
+
+
+def _card_id_in(card_ids: list[str]):
+    allowed = set(card_ids)
+    return lambda card_id: card_id in allowed
+
+
+def _exact_text_match(expected_text: str):
+    def _matcher(_card: dict, _entry: dict, text: str, _card_id: str):
+        if text == expected_text:
+            return {}
+        return None
+
+    return _matcher
+
+
+def _regex_match(pattern: str):
+    compiled = re.compile(pattern)
+
+    def _matcher(_card: dict, _entry: dict, text: str, _card_id: str):
+        match = compiled.fullmatch(text)
+        if match:
+            return {"match": match}
+        return None
+
+    return _matcher
+
+
+def _build_preview_add_to_hand_template(
+    card: dict,
+    trigger_entry: dict,
+    event_name: str,
+    _text: str,
+    _card_id: str,
+    payload: dict,
+) -> dict:
+    params = payload["params"]
+    target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+        count=params["count"],
+        requirements=params.get("requirements"),
+        filters=params.get("filters"),
+        min_count=params.get("min_count", 0),
+        max_count=params.get("max_count", 1),
+        store_as=params.get("store_as", "selected_preview_cards"),
+        distinct_by=params.get("distinct_by", ""),
+        discard_after_add=params.get("discard_after_add", False),
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+    )
+
+
+def _preview_add_to_hand_builder_factory(*, kind: str | None = None, **params):
+    def _builder(card: dict, trigger_entry: dict, event_name: str, text: str, card_id: str, _payload: dict) -> dict:
+        return _build_preview_add_to_hand_template(
+            card,
+            trigger_entry,
+            event_name,
+            text,
+            card_id,
+            {"params": params, "kind": kind},
+        )
+
+    return _builder
+
+
+def _build_bp_remove_ability(
+    card: dict,
+    trigger_entry: dict,
+    event_name: str,
+    requirements: list[dict],
+    *,
+    min_count: int = 1,
+    max_count: int = 1,
+    kind: str | None = None,
+) -> dict:
+    target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements, min_count, max_count)
+    steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+    return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps, kind)
+
+
+def _bp_remove_from_match_builder_factory(*, min_count: int = 1, max_count: int = 1, kind: str | None = None):
+    def _builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+        requirements = [{"type": "CARD_BP_LTE", "value": int(payload["match"].group(1))}]
+        return _build_bp_remove_ability(
+            card,
+            trigger_entry,
+            event_name,
+            requirements,
+            min_count=min_count,
+            max_count=max_count,
+            kind=kind,
+        )
+
+    return _builder
+
+
+def _bp_remove_with_requirements_builder_factory(
+    requirements: list[dict],
+    *,
+    min_count: int = 1,
+    max_count: int = 1,
+    kind: str | None = None,
+):
+    def _builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, _payload: dict) -> dict:
+        return _build_bp_remove_ability(
+            card,
+            trigger_entry,
+            event_name,
+            requirements,
+            min_count=min_count,
+            max_count=max_count,
+            kind=kind,
+        )
+
+    return _builder
+
+
+def _dispatch_template_rules(
+    registry_name: str,
+    rules: tuple[_TemplateRule, ...],
+    card: dict,
+    trigger_entry: dict,
+    fallback,
+):
+    event_name = str(trigger_entry.get("trigger", ""))
+    text = str(trigger_entry.get("text", "")).strip()
+    card_id = str(card.get("id", ""))
+    for rule in rules:
+        if not _event_matches(rule.event_filter, event_name):
+            continue
+        if rule.card_filter is not None and not rule.card_filter(card_id):
+            continue
+        payload = rule.matcher(card, trigger_entry, text, card_id)
+        if payload is None:
+            continue
+        _record_template_hit(rule.name)
+        return rule.builder(card, trigger_entry, event_name, text, card_id, payload)
+    _record_template_fallback(registry_name)
+    return fallback(card, trigger_entry)
+
+
+_TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
+    _TemplateRule(
+        name="trigger.preview_add_to_hand.007_or_trait_discard",
+        event_filter="ON_ENTER",
+        matcher=_exact_text_match("自分の山札の上から3枚見る。その中から〈アルティメットまどか〉か［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
+        builder=_preview_add_to_hand_builder_factory(
+            count=3,
+            filters=[
+                {
+                    "type": "OR",
+                    "filters": [
+                        {"type": "NAME_IS", "value": "アルティメットまどか"},
+                        {"type": "HAS_TRAIT", "value": "魔法少女"},
+                    ],
+                }
+            ],
+            discard_after_add=True,
+        ),
+        priority=200,
+    ),
+    _TemplateRule(
+        name="trigger.preview_add_to_hand.040_name_discard",
+        event_filter="ON_ENTER",
+        matcher=_exact_text_match("自分の山札の上から5枚見る。その中から〈鹿目 まどか〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
+        builder=_preview_add_to_hand_builder_factory(
+            count=5,
+            requirements=[{"type": "CARD_NAME_IS", "value": "鹿目 まどか"}],
+            discard_after_add=True,
+        ),
+        priority=200,
+    ),
+    _TemplateRule(
+        name="trigger.preview_add_to_hand.043_name_or_trait_discard",
+        event_filter="ON_ENTER",
+        matcher=_exact_text_match("自分の山札の上から3枚見る。その中から〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
+        builder=_preview_add_to_hand_builder_factory(
+            count=3,
+            filters=[
+                {
+                    "type": "OR",
+                    "filters": [
+                        {"type": "NAME_IS", "value": "百江 なぎさ"},
+                        {"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"},
+                    ],
+                }
+            ],
+            discard_after_add=True,
+        ),
+        priority=200,
+    ),
+    _TemplateRule(
+        name="trigger.preview_add_to_hand.yellow_event_discard",
+        event_filter="ON_ENTER",
+        matcher=_exact_text_match("自分の山札の上から4枚見る。その中から黄のイベントカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
+        builder=_preview_add_to_hand_builder_factory(
+            count=4,
+            requirements=[
+                {"type": "CARD_TYPE_IS", "value": "EVENT"},
+                {"type": "CARD_COLOR_IS", "value": "YELLOW"},
+            ],
+            discard_after_add=True,
+        ),
+        priority=180,
+    ),
+    _TemplateRule(
+        name="trigger.bp_remove.required",
+        event_filter=("ON_ENTER", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、退場させる。"),
+        builder=_bp_remove_from_match_builder_factory(min_count=1, max_count=1),
+        priority=120,
+    ),
+    _TemplateRule(
+        name="trigger.bp_remove.optional",
+        event_filter=("ON_ENTER", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。"),
+        builder=_bp_remove_from_match_builder_factory(min_count=0, max_count=1),
+        priority=110,
+    ),
+)
+
+
+_EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
+    _TemplateRule(
+        name="event.preview_add_to_hand.065_trait_distinct",
+        event_filter="ON_PLAY",
+        matcher=_exact_text_match("自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"),
+        builder=_preview_add_to_hand_builder_factory(
+            count=5,
+            filters=[{"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"}],
+            max_count=2,
+            distinct_by="CARD_NAME",
+            kind="TRIGGERED",
+        ),
+        priority=200,
+    ),
+    _TemplateRule(
+        name="event.bp_remove.required",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。"),
+        builder=_bp_remove_from_match_builder_factory(min_count=1, max_count=1, kind="TRIGGERED"),
+        priority=120,
+    ),
+    _TemplateRule(
+        name="event.bp_remove.optional",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。"),
+        builder=_bp_remove_from_match_builder_factory(min_count=0, max_count=1, kind="TRIGGERED"),
+        priority=110,
+    ),
+    _TemplateRule(
+        name="event.bp_remove.dynamic_sayaka_life",
+        event_filter="ON_PLAY",
+        matcher=_exact_text_match("『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。"),
+        builder=_bp_remove_with_requirements_builder_factory(
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": _conditional_value_provider(
+                        _fixed_value_provider(3000),
+                        [
+                            {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "美樹 さやか"},
+                            {"type": "PLAYER_LIFE_LTE", "player": "SELF", "value": 5},
+                        ],
+                        _fixed_value_provider(5000),
+                    ),
+                }
+            ],
+            kind="TRIGGERED",
+        ),
+        priority=130,
+    ),
+    _TemplateRule(
+        name="event.bp_remove.dynamic_madoka",
+        event_filter="ON_PLAY",
+        matcher=_exact_text_match("『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。"),
+        builder=_bp_remove_with_requirements_builder_factory(
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": _conditional_value_provider(
+                        _fixed_value_provider(3000),
+                        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"}],
+                        _fixed_value_provider(5000),
+                    ),
+                }
+            ],
+            kind="TRIGGERED",
+        ),
+        priority=130,
+    ),
+)
+
+
+_PASSIVE_TEMPLATE_RULES: tuple[_TemplateRule, ...] = ()
+
+
+def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, dict]) -> dict:
+    return _dispatch_template_rules(
+        "trigger",
+        _TRIGGER_TEMPLATE_RULES,
+        card,
+        trigger_entry,
+        lambda current_card, current_entry: _compile_trigger_legacy(current_card, current_entry, semantic_map),
+    )
+
+
+def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str, dict]) -> dict | None:
+    pseudo_trigger = {
+        "trigger": "ON_PLAY",
+        "source_label": effect_entry.get("source_label", ""),
+        "effect_box": effect_entry.get("effect_box", "OUTER"),
+        "text": str(effect_entry.get("text", "")).strip(),
+    }
+    return _dispatch_template_rules(
+        "event",
+        _EVENT_TEMPLATE_RULES,
+        card,
+        pseudo_trigger,
+        lambda current_card, current_entry: _compile_event_effect_legacy(current_card, effect_entry, semantic_map),
+    )
+
+
+def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
+    pseudo_trigger = {
+        "trigger": "PASSIVE",
+        "source_label": effect_entry.get("source_label", ""),
+        "effect_box": effect_entry.get("effect_box", "OUTER"),
+        "text": str(effect_entry.get("text", "")).strip(),
+    }
+    return _dispatch_template_rules(
+        "passive",
+        _PASSIVE_TEMPLATE_RULES,
+        card,
+        pseudo_trigger,
+        lambda current_card, _current_entry: _compile_passive_effect_legacy(current_card, effect_entry),
+    )
 
 
 def _build_card_effects(card: dict, semantic_map: dict[str, dict], source_label: str) -> dict:

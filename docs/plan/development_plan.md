@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-04-01
+更新时间：2026-04-02
 
 ## 1. 计划摘要
 
@@ -32,6 +32,7 @@
 - 当前主要风险已从”能力缺口”转为两类稳定性问题：一是规则运行时的跨回合 residue / 生命周期稳定性仍需持续压实；二是完整卡池级别回归与更长链路自动验证仍未建立。
 - 2026-03-31 已补一处快照兼容性 bugfix：`SnapshotSerializer` 不再依赖 `GameManager` 已移除的生命翻开私有方法，生命翻开期间的 `get_snapshot()` 恢复稳定，可继续作为 UI 与冒烟脚本的正式读取入口。
 - 2026-04-01 已确认 `tools/import_cards_raw_from_pic.ps1` 之前将沙箱内网络失败误归类为 `official_page_not_found`；当前脚本已补齐失败原因分类，能够区分 `network_error`、`request_failed`、`detail_structure_missing` 与 `card_number_mismatch`，并已验证 `UA31BT/MMM-1-001` 在沙箱外可正常解析，导入链路默认应在沙箱外执行。
+- 2026-04-02 已完成编译器识别层首轮注册表化，主入口改为 `registry -> legacy fallback`，编译结果保持正式 raw `174 / 6`、运行时总量 `177 / 6` 不变。
 
 ## 3. 开发阶段规划
 
