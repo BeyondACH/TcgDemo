@@ -15,6 +15,16 @@
 
 ## 2. 当前总体结论
 
+## 2.1 2026-04-02 长链验证补充
+
+- 当前验证资产已从“规则主冒烟 + 正式 raw 样例 + residue 专项 + AI 短链 smoke”收口为四层职责分工：
+  - `docs/milestone_smoke_test.gd`：规则主语义与高风险规则断言
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：只承担官方 raw 模板链路验证
+  - `docs/runtime_residue_smoke_test.gd`：所有链路收尾无残留校验
+  - `docs/long_run_stability_smoke_test.gd`：连续回合、延迟效果、离场链、生命触发二选一与 AI 长局稳定性
+- 2026-04-02 已新增 `docs/long_run_stability_smoke_test.gd`，当前结果为 `5 / 0`；既有 `docs/runtime_residue_smoke_test.gd = 9 / 0`、`docs/vs_ai_smoke_test.gd = 4 / 0` 仍保持通过。
+- 从本轮开始，“更长链路而不是更多零散样例”成为验证资产的第一优先级，前文中仍偏“继续扩样例”的旧口径均以本段为准。
+
 当前仓库已经完成从”可开局原型”到”可持续迭代的规则原型”的第一轮收口，项目状态可以概括为：
 
 - 基础对局闭环已实现，核心区域、阶段流转、资源支付、战斗与胜负判断具备稳定主路径。
