@@ -137,7 +137,7 @@ worker 至少应阅读：
   - `docs/logs/log_yyyy-MM-dd.md`
 - 如果代码已更新，但计划、日志仍保留旧口径，则该次工作视为未完成。
 - 日志内容必须使用中文。
-- 沙箱内如果申请写权限遇到 Access denied，直接申请沙箱外提权写入
+- 沙箱内如果写入遇到 Access denied或者Windows sandbox refresh，直接申请沙箱外提权写入
 
 ### 4.6 中文文档与编码安全
 
