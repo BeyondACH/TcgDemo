@@ -139,10 +139,11 @@
 当前验证基线：
 
 - `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
-- `docs/cards_raw_minimal_duel_smoke_test.gd`：75 项通过、0 项失败
-- `docs/runtime_residue_smoke_test.gd`：7 项通过、0 项失败
+- `docs/cards_raw_minimal_duel_smoke_test.gd`：80 项通过、0 项失败
+- `docs/runtime_residue_smoke_test.gd`：9 项通过、0 项失败
+- `docs/life_reveal_modal_smoke_test.gd`：7 项通过、0 项失败
 - `docs/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
-- `docs/vs_ai_smoke_test.gd`：2 项通过、0 项失败
+- `docs/vs_ai_smoke_test.gd`：4 项通过、0 项失败
 
 ## 里程碑 M5.5：AI 对局启发式与自动推进基线
 
@@ -259,7 +260,7 @@
 - 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三条规则验证入口稳定通过。
 - 暂不推进 UI 视觉落地，当前主线改为继续压实连续回合生命周期、离场触发链、更长链路自动验证，以及 AI 对局可观察性。
 - 保持 `docs/simple_ai_v2_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 的 AI 验证分层，逐步压实 AI 节奏判断而不污染规则主冒烟。
-- 保持规则、计划、README 与日志描述一致，避免再次出现文档口径滞后。
+- 保持规则、计划与日志描述一致，避免再次出现文档口径滞后。
 
 当前主要风险：
 
@@ -271,14 +272,14 @@
 ## 5. 下一阶段建议
 
 1. 下一阶段继续聚焦规则稳定性与验证资产，优先补比当前最小样例更长链的自动验证，覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进。
-2. 优先继续收口 [docs/plan/card_design.md] 中剩余 `6` 条正式 raw 未支持能力，继续遵守“先扩可复用 DSL/IR，再接入数据与回归”的原则。
-3. 把 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
-4. 暂不进行 UI 视觉重构；`docs/plan/ui_art_style_guide.md` 保留为后续阶段的视觉冻结文档，当前仅保留 AI 动作提示这一处最小 UI 补强。
-5. 若继续提升 AI 质量，优先补动作上下文参数与 AI 专项 smoke，而不是直接扩大 UI 或搜索式策略改造。
+2. 既有正式 raw 未支持能力已经收口到 `180 / 0`，后续重点改为维持 `registry -> legacy fallback` 编译链稳定，并只接受参数化模板族扩展，不回退到按卡或逐句匹配硬编码。
+3. 把 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
+4. 暂不进行 UI 视觉重构；`docs/plan/ui_art_style_guide.md` 保留为后续阶段的视觉冻结文档，当前仅保留 AI 动作提示与生命翻牌可见性相关的最小 UI 补强。
+5. 若继续提升 AI 质量，优先补动作上下文参数、长链 AI 对局 smoke 与日志可观察性，而不是直接扩大 UI 或搜索式策略改造。
 6. 待规则稳定性与长链路验证进一步压实后，再单独评估 UI 视觉落地的启动时机。
 ## 6. 文档同步要求
 
-- 后续每次功能更新或 bugfix，都必须同步统一`docs/plan/development_plan.md`、`docs/plan/mile_stone.md`、`README.md` 与 `docs/logs/log_yyyy-MM-dd.md` 的描述口径。
-- 若本轮改动未触及规则语义，也至少要同步复核并更新计划、README 与日志中的统计基线、验证结果、当前主线和下一步方向。
-- 若发现实现、规则、计划、README、日志之间存在旧口径并存，主 agent 必须在同一轮改动中一并收敛，不得把文档对齐留到后续。
+- 后续每次功能更新或 bugfix，都必须同步统一`docs/plan/development_plan.md`、`docs/plan/mile_stone.md`与 `docs/logs/log_yyyy-MM-dd.md` 的描述口径。
+- 若本轮改动未触及规则语义，也至少要同步复核并更新计划与日志中的统计基线、验证结果、当前主线和下一步方向。
+- 若发现实现、规则、计划、日志之间存在旧口径并存，主 agent 必须在同一轮改动中一并收敛，不得把文档对齐留到后续。
 - 文档未统一口径的功能更新，不应视为完成。

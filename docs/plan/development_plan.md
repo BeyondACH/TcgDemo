@@ -11,13 +11,12 @@
 3. 继续补强正式 raw 样例、规则专项回归和布局/交互验收，降低后续新增卡牌或新模板时的回归风险。
 4. 在不重启 UI 视觉阶段的前提下，允许为 AI 调试可见性做最小 UI 补强，并继续压实规则稳定性、回归覆盖与调试可见性。
 5. 对 `tools/compile_cards_effects.py` 的后续识别层重构，默认以“同类文本参数化复用同一模板族”为约束，不接受仅把逐句匹配搬入注册表的半重构状态。
-5. 对 `tools/compile_cards_effects.py` 的后续识别层重构，默认以“同类文本参数化复用同一模板族”为约束，不接受仅把逐句匹配搬入注册表的半重构状态。
 
 涉及 `core + data + ui` 的联动需求，必须先冻结接口和数据契约，再按 `core`、`docs/tests`、`ui` 三线拆分实施。
 
 ## 2. 当前基线
 
-截至 2026-04-01，当前仓库基线如下：
+截至 2026-04-02，当前仓库基线如下：
 - 基础规则闭环已具备：开局、抽牌、AP 成长、阶段推进、出牌、移动、攻击/阻挡、伤害、胜负判定、显式弃牌与生命触发决策均已落地。
 - 高风险规则区已覆盖：攻击失败攻击方不退场、AP 在结束阶段不恢复、生命触发可选发动、生命触发 `RAID` 在当前不满足条件时自动回手、同时触发顺序按规则处理。
 - 关键词与特殊登场已覆盖一批核心能力：`STEP`、`SNIPER`、`DAMAGE_2`、`IMPACT`、`IMPACT_PLUS_1`、`NEGATE_IMPACT`、`DOUBLE_ATTACK`、`DOUBLE_BLOCK`、`RAID`。
@@ -26,9 +25,11 @@
 - **架构重构已完成**：GameManager 从”上帝对象“（1467 行）重构为协调器模式（1060 行），提取 7 个专用管理器，移除 130 行重复代码，遵循 SOLID 单一职责原则。
 - 验证资产当前基线：
   - `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：75 项通过、0 项失败
+  - `docs/cards_raw_minimal_duel_smoke_test.gd`：80 项通过、0 项失败
   - `docs/draw_phase_smoke_test.gd`：当前环境稳定通过，可作为 DRAW 阶段专项回归入口
-  - `docs/runtime_residue_smoke_test.gd`：7 项通过、0 项失败
+  - `docs/runtime_residue_smoke_test.gd`：9 项通过、0 项失败
+  - `docs/life_reveal_modal_smoke_test.gd`：7 项通过、0 项失败
+  - `docs/vs_ai_smoke_test.gd`：4 项通过、0 项失败
 - 当前主要风险已从”能力缺口”转为两类稳定性问题：一是规则运行时的跨回合 residue / 生命周期稳定性仍需持续压实；二是完整卡池级别回归与更长链路自动验证仍未建立。
 - 2026-03-31 已补一处快照兼容性 bugfix：`SnapshotSerializer` 不再依赖 `GameManager` 已移除的生命翻开私有方法，生命翻开期间的 `get_snapshot()` 恢复稳定，可继续作为 UI 与冒烟脚本的正式读取入口。
 - 2026-04-01 已确认 `tools/import_cards_raw_from_pic.ps1` 之前将沙箱内网络失败误归类为 `official_page_not_found`；当前脚本已补齐失败原因分类，能够区分 `network_error`、`request_failed`、`detail_structure_missing` 与 `card_number_mismatch`，并已验证 `UA31BT/MMM-1-001` 在沙箱外可正常解析，导入链路默认应在沙箱外执行。
@@ -246,11 +247,12 @@
 
 ## 7. 近期执行顺序
 
-1. 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三个入口稳定通过，作为当前阶段规则冻结基线。
-2. 下一阶段优先补更长链路的自动验证，重点放在连续回合生命周期、延迟效果过期、离场触发链衔接和完整对局推进稳定性。
-3. 暂不推进 UI 视觉规范落地；除 AI 动作节拍提示这类最小可见性补强外，不修改 `ui/` 与 `scenes/`。
-4. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定。
-5. 若后续需要重新开启 UI 阶段，再以 `docs/plan/ui_art_style_guide.md` 为冻结基线单独立项推进。
+1. 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 五个入口稳定通过，作为当前阶段规则、生命触发交互与 AI 驱动链的冻结基线。
+2. 下一阶段优先补“更长链路而不是更多零散样例”的自动验证，重点覆盖连续回合生命周期、延迟效果过期、离场触发链衔接、生命触发二选一收尾，以及 AI 自动推进下的完整对局稳定性。
+3. 对 `tools/compile_cards_effects.py` 维持“registry -> legacy fallback”结构，后续只接受参数化模板族扩展与失败分类补强，不再把逐句匹配回灌成新的半重构分支。
+4. 暂不推进 UI 视觉规范落地；除 AI 动作节拍提示、生命翻牌可见性与验证阻塞修复这类最小补强外，不修改 `ui/` 与 `scenes/`。
+5. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定，并在后续长链回归中重点关注是否会伴随 residue 脏状态一同出现。
+6. 若后续需要重新开启 UI 阶段，再以 `docs/plan/ui_art_style_guide.md` 为冻结基线单独立项推进。
 
 ## 8. 实施假设
 
@@ -258,4 +260,4 @@
 - 短期内不引入大规模美术或动画重构；当前仅允许为 AI 调试可见性补一处最小提示位，整体仍以规则可见性和验证效率为优先。
 - `docs/rules/rule.md` 高于 README、旧计划文档和现有实现；若存在冲突，以 `docs/rules/rule.md` 为准。
 - 所有功能更新和 bugfix 必须同步记录到 `docs/logs/log_yyyy-MM-dd.md` 当日日志，且内容使用中文。
-- 后续每次功能更新完成后，必须同步统一 `docs/plan/development_plan.md`、`docs/plan/mile_stone.md`、`README.md` 与当日日志中的阶段口径、统计基线、验证结果和下一步方向；若其中任一文档仍停留在旧口径，则该次更新视为未完成。
+- 后续每次功能更新完成后，必须同步统一 `docs/plan/development_plan.md`、`docs/plan/mile_stone.md` 与当日日志中的阶段口径、统计基线、验证结果和下一步方向；若其中任一文档仍停留在旧口径，则该次更新视为未完成。
