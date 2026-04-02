@@ -10,6 +10,7 @@ var _controller_config := {}
 var _controllers := {}
 var _drive_pending := false
 var _drive_in_progress := false
+var _paced_drive_scheduled := false
 
 ## Default controller types for each player (used when not specified in config)
 var player_one_controller_type := PlayerController.CONTROLLER_HUMAN
@@ -54,6 +55,11 @@ var life_reveal_waiting_checker: Callable = Callable()
 ## Reference to game state for controller decision making
 var game_state: RefCounted = null
 
+## Runtime pacing dependencies (used only by queue_drive)
+var scene_tree: SceneTree = null
+var ai_action_delay_seconds := 0.3
+var ai_action_emitter: Callable = Callable()
+
 
 func reset_state(controller_config: Dictionary = {}) -> void:
 	_controller_config = {
@@ -68,6 +74,7 @@ func reset_state(controller_config: Dictionary = {}) -> void:
 	_controllers[UATypes.PLAYER_TWO] = build_controller_for(UATypes.PLAYER_TWO)
 	_drive_pending = false
 	_drive_in_progress = false
+	_paced_drive_scheduled = false
 
 
 func build_controller_for(player_id: String) -> PlayerController:
@@ -100,15 +107,21 @@ func get_controller(player_id: String) -> PlayerController:
 
 
 func queue_drive() -> void:
-	if _drive_in_progress or _drive_pending:
+	if _drive_pending:
 		return
 	_drive_pending = true
-	# Use call_deferred equivalent for RefCounted
+	if _drive_in_progress or _paced_drive_scheduled:
+		return
 	_process_drive_deferred()
 
 
 func _process_drive_deferred() -> void:
 	if _drive_in_progress:
+		return
+	if not _drive_pending:
+		return
+	if _should_use_runtime_pacing():
+		_run_runtime_drive_step()
 		return
 	_drive_pending = false
 	drive_controllers(64)
@@ -133,14 +146,10 @@ func drive_controllers(max_steps: int = 64) -> void:
 		if legal_actions.is_empty():
 			break
 		var snapshot := _get_snapshot()
-		var chosen_action := {}
-		if _has_pending_gate() or _has_battle_context():
-			chosen_action = controller.request_pending_decision(game_state, snapshot, _get_pending_context(), legal_actions)
-		else:
-			chosen_action = controller.request_action(game_state, snapshot, legal_actions)
-		if chosen_action.is_empty():
+		var step := _build_ai_step(player_id, controller, legal_actions, snapshot)
+		if step.is_empty():
 			break
-		_execute_action(chosen_action)
+		_execute_ai_step(step)
 		safety -= 1
 	_drive_in_progress = false
 	if _drive_pending and not _check_winner():
@@ -207,3 +216,120 @@ func _is_life_reveal_waiting() -> bool:
 func _execute_action(action: Dictionary) -> void:
 	if action_executor.is_valid():
 		action_executor.call(action)
+
+
+func _should_use_runtime_pacing() -> bool:
+	return scene_tree != null and ai_action_delay_seconds > 0.0
+
+
+func _run_runtime_drive_step() -> void:
+	if not _can_drive():
+		_drive_pending = false
+		return
+	_drive_pending = false
+	_drive_in_progress = true
+	var executed := false
+	if not _check_winner():
+		_refresh_life_reveal()
+		if not _is_life_reveal_waiting():
+			var player_id := _get_priority_player_id()
+			var controller: PlayerController = _controllers.get(player_id)
+			if controller != null and not controller.is_human():
+				var legal_actions := _get_legal_actions(player_id)
+				if not legal_actions.is_empty():
+					var snapshot := _get_snapshot()
+					var step := _build_ai_step(player_id, controller, legal_actions, snapshot)
+					if not step.is_empty():
+						_execute_ai_step(step)
+						executed = true
+	_drive_in_progress = false
+	if _drive_pending and not _check_winner():
+		if _should_use_runtime_pacing() and executed:
+			_schedule_runtime_drive()
+		else:
+			_process_drive_deferred()
+
+
+func _schedule_runtime_drive() -> void:
+	if scene_tree == null or _paced_drive_scheduled:
+		return
+	_paced_drive_scheduled = true
+	_drive_pending = true
+	scene_tree.create_timer(ai_action_delay_seconds).timeout.connect(_on_paced_drive_timeout, CONNECT_ONE_SHOT)
+
+
+func _on_paced_drive_timeout() -> void:
+	_paced_drive_scheduled = false
+	if _drive_in_progress or not _drive_pending:
+		return
+	_process_drive_deferred()
+
+
+func _build_ai_step(player_id: String, controller: PlayerController, legal_actions: Array[Dictionary], snapshot: Dictionary) -> Dictionary:
+	var chosen_action := {}
+	if _has_pending_gate() or _has_battle_context():
+		chosen_action = controller.request_pending_decision(game_state, snapshot, _get_pending_context(), legal_actions)
+	else:
+		chosen_action = controller.request_action(game_state, snapshot, legal_actions)
+	if chosen_action.is_empty():
+		return {}
+	return {
+		"player_id": player_id,
+		"snapshot": snapshot,
+		"action": chosen_action,
+	}
+
+
+func _execute_ai_step(step: Dictionary) -> void:
+	var action: Dictionary = step.get("action", {})
+	if action.is_empty():
+		return
+	if ai_action_emitter.is_valid():
+		ai_action_emitter.call(_build_action_info(step))
+	_execute_action(action)
+
+
+func _build_action_info(step: Dictionary) -> Dictionary:
+	var action: Dictionary = step.get("action", {})
+	var params: Dictionary = action.get("params", {})
+	var snapshot: Dictionary = step.get("snapshot", {})
+	var source_card_uid := str(action.get("source_card_uid", ""))
+	var target_uid := str(params.get("target_uid", ""))
+	if target_uid == "":
+		target_uid = str(params.get("blocker_uid", ""))
+	if target_uid == "":
+		target_uid = str(params.get("attacker_uid", ""))
+	if target_uid == "":
+		target_uid = str(params.get("card_uid", ""))
+	var attacker_uid := str(params.get("attacker_uid", ""))
+	var blocker_uid := str(params.get("blocker_uid", ""))
+	return {
+		"player_id": str(step.get("player_id", "")),
+		"phase": str(snapshot.get("phase", "")),
+		"action_type": str(action.get("type", "")),
+		"source_card_uid": source_card_uid,
+		"source_card_name": _card_name_for_uid(source_card_uid),
+		"target_uid": target_uid,
+		"target_name": _card_name_for_uid(target_uid),
+		"target_kind": str(params.get("target_kind", "")),
+		"target_zone": int(params.get("target_zone", -1)),
+		"move_mode": str(params.get("mode", "")),
+		"decision_type": str(params.get("decision_type", "")),
+		"activate": bool(params.get("activate", false)),
+		"attacker_uid": attacker_uid,
+		"attacker_name": _card_name_for_uid(attacker_uid),
+		"blocker_uid": blocker_uid,
+		"blocker_name": _card_name_for_uid(blocker_uid),
+	}
+
+
+func _card_name_for_uid(card_uid: String) -> String:
+	if card_uid == "" or game_state == null:
+		return ""
+	var card = game_state.get_card(card_uid)
+	if card == null:
+		return ""
+	var card_def = game_state.get_card_def(card.def_id)
+	if card_def == null:
+		return ""
+	return str(card_def.name)

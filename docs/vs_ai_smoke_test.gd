@@ -12,6 +12,7 @@ var _passes: Array[String] = []
 func _init() -> void:
 	_run_test("human vs ai can hand off one full ai turn", _test_human_vs_ai_turn)
 	_run_test("ai vs ai can auto-progress from opening", _test_ai_vs_ai_progress)
+	_run_test("sync drive emits ai action signal", _test_sync_drive_emits_ai_action_signal)
 	_run_test("ai life reveal waits for player confirmation then resumes", _test_ai_life_reveal_waits_for_player_confirmation_then_resumes)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
@@ -107,6 +108,27 @@ func _test_ai_vs_ai_progress() -> Dictionary:
 	if manager.game_state.turn_number < 2 and manager.game_state.winner_player_id == "":
 		return _fail("ai vs ai should advance beyond the opening turn")
 	return _ok()
+
+func _test_sync_drive_emits_ai_action_signal() -> Dictionary:
+	var manager := _new_manager({
+		UATypes.PLAYER_ONE: {"controller": "HUMAN"},
+		UATypes.PLAYER_TWO: {"controller": "AI_SIMPLE"},
+	})
+	var action_events: Array[Dictionary] = []
+	manager.ai_action_executed.connect(func(action_info: Dictionary) -> void:
+		action_events.append(action_info.duplicate(true))
+	)
+	manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
+	manager.drive_controllers(32)
+	if action_events.is_empty():
+		return _fail("expected sync drive_controllers to emit at least one ai action event")
+	var first_event: Dictionary = action_events[0]
+	if str(first_event.get("player_id", "")) != UATypes.PLAYER_TWO:
+		return _fail("expected the first ai action event to belong to player two")
+	if str(first_event.get("action_type", "")) == "":
+		return _fail("expected ai action event to include an action type")
+	return _ok()
+
 
 func _test_ai_life_reveal_waits_for_player_confirmation_then_resumes() -> Dictionary:
 	var manager := _new_manager({

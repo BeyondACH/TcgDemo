@@ -25,6 +25,7 @@ const LifeTriggerManager = preload("res://core/life_trigger_manager.gd")
 signal state_changed(snapshot: Dictionary)
 signal blockers_requested(request: Dictionary)
 signal log_added(text: String)
+signal ai_action_executed(action_info: Dictionary)
 
 const STARTER_A_PATH := "res://data/decks/starter_a.txt"
 const STARTER_B_PATH := "res://data/decks/starter_b.txt"
@@ -32,6 +33,7 @@ const DECKS_DIR_PATH := "res://data/decks"
 
 @export_enum("HUMAN", "AI_SIMPLE") var player_one_controller_type := PlayerController.CONTROLLER_HUMAN
 @export_enum("HUMAN", "AI_SIMPLE") var player_two_controller_type := PlayerController.CONTROLLER_AI_SIMPLE
+@export var ai_action_delay := 0.3
 
 var game_state := GameState.new()
 var zone_manager := ZoneManager.new()
@@ -84,10 +86,17 @@ func _initialize_controller_manager() -> void:
 	controller_manager.pending_context_provider = _current_pending_context
 	controller_manager.life_reveal_refresher = _refresh_life_reveal_waiting_for_player
 	controller_manager.life_reveal_waiting_checker = _is_life_reveal_waiting_for_player
+	controller_manager.scene_tree = get_tree() if is_inside_tree() else null
+	controller_manager.ai_action_delay_seconds = ai_action_delay
+	controller_manager.ai_action_emitter = _emit_ai_action_executed
 
 
 func _execute_controller_action(action: Dictionary) -> void:
 	execute_action(action)
+
+
+func _emit_ai_action_executed(action_info: Dictionary) -> void:
+	emit_signal("ai_action_executed", action_info)
 
 
 func _get_controller_legal_actions(_game_state, player_id: String) -> Array[Dictionary]:
@@ -762,6 +771,7 @@ func _queue_controller_drive() -> void:
 	controller_manager.queue_drive()
 
 func drive_controllers(max_steps := 64) -> void:
+	_initialize_controller_manager()
 	controller_manager.drive_controllers(max_steps)
 
 func _current_pending_context() -> Dictionary:

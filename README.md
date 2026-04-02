@@ -76,7 +76,7 @@
 - 新增模板先扩 DSL/IR，再扩编译链与运行时
 - 若后续重构 `tools/compile_cards_effects.py` 识别层，完成标准应是“同类文本参数化复用同一模板族”，而不是仅把逐句匹配搬进注册表
 - 2026-04-02 已完成首轮 registry 化落地，编译结果保持正式 raw `174 / 6`、运行时总量 `183 / 0` 不变。
-截至 2026-04-01，正式 raw 基线为：
+截至 2026-04-02，正式 raw 基线为：
 
 - 已支持能力：`174`
 - 未支持能力：`6`
@@ -98,7 +98,9 @@
 
 Godot 退出时仍存在既有 `ObjectDB` / resource 泄漏告警，但目前未影响断言结果。
 
-导入链路方面，`tools/import_cards_raw_from_pic.ps1` 现已同时补齐浏览器请求头与失败原因分类；截至 2026-04-01，已确认 `UA31BT-MMM-1-001` 到 `034` 在沙箱外可正常访问官网详情页，之前批量报 `official_page_not_found` 的直接原因是沙箱内网络失败被脚本误归类。当前导入脚本默认应在沙箱外执行，若在沙箱内复现失败，优先按 `network_error` / `request_failed` 口径排查环境，而不是先假定官网缺卡。正式 raw 的 `6` 条未支持能力清单见 `docs/plan/card_design.md`。
+导入链路方面，`tools/import_cards_raw_from_pic.ps1` 现已同时补齐浏览器请求头与失败原因分类；截至 2026-04-01，已确认 `UA31BT-MMM-1-001` 到 `034` 在沙箱外可正常访问官网详情页，之前批量报 `official_page_not_found` 的直接原因是沙箱内网络失败被脚本误归类。当前导入脚本默认应在沙箱外执行，若在沙箱内复现失败，优先按 `network_error` / `request_failed` 口径排查环境，而不是先假定官网缺卡。
+
+AI 对局体验方面，当前运行时已支持按 `0.3s` 节拍逐步推进 AI 动作，并在战斗界面顶部显示轻量提示文案，便于观察 AI 抽牌、出牌、移动、攻击、阻挡与待决策处理。
 
 ## 目录说明
 
@@ -179,6 +181,12 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --pa
 
 ```powershell
 D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/draw_phase_smoke_test.gd
+```
+
+### 运行 AI 对局专项
+
+```powershell
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/vs_ai_smoke_test.gd
 ```
 
 ### 执行布局验收

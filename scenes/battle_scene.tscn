@@ -175,6 +175,16 @@ size_flags_horizontal = 8
 theme_override_constants/separation = 12
 alignment = 2
 
+[node name="AIActionLabel" type="Label" parent="UILayer/TopHUD/TopBar/ActionRow"]
+visible = false
+modulate = Color(1, 1, 1, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.952941, 0.788235, 1)
+text = "AI 动作提示"
+horizontal_alignment = 2
+autowrap_mode = 2
+
 [node name="BonusDrawButton" type="Button" parent="UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow" unique_id=1078425964]
 layout_mode = 2
 text = "Bonus Draw (1 AP)"

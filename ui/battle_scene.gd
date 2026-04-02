@@ -30,6 +30,8 @@ const LOG_PANEL_BOTTOM_CLEARANCE := 16.0
 const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
 const MIN_BOARD_VISIBLE_HEIGHT_COMPACT := 500.0
 const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
+const AI_ACTION_HINT_HOLD_SECONDS := 0.8
+const AI_ACTION_HINT_FADE_SECONDS := 0.35
 
 @onready var game_manager: GameManager = $GameManager
 @onready var background_texture_rect: TextureRect = $BackgroundLayer/Background
@@ -45,6 +47,7 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var status_row: HFlowContainer = $UILayer/TopHUD/TopBar/StatusRow
 @onready var action_row: VBoxContainer = $UILayer/TopHUD/TopBar/ActionRow
 @onready var action_button_row: HBoxContainer = $UILayer/TopHUD/TopBar/ActionRow/ActionButtonRow
+@onready var ai_action_label: Label = $UILayer/TopHUD/TopBar/ActionRow/AIActionLabel
 @onready var phase_controls: VBoxContainer = $UILayer/TopHUD/TopBar/PhaseControls
 @onready var turn_label: Label = $UILayer/TopHUD/TopBar/StatusRow/TurnLabel
 @onready var active_player_label: Label = $UILayer/TopHUD/TopBar/StatusRow/ActivePlayerLabel
@@ -106,11 +109,13 @@ var _preview_player_id := ""
 var _preview_zone_name := ""
 var _available_decks: Array[Dictionary] = []
 var _opening_setup_pending := true
+var _ai_action_hint_tween: Tween
 
 func _ready() -> void:
 	_setup_optional_art()
 	game_manager.state_changed.connect(_on_state_changed)
 	game_manager.blockers_requested.connect(_on_blockers_requested)
+	game_manager.ai_action_executed.connect(_on_ai_action_executed)
 	next_phase_button.pressed.connect(_on_next_phase_pressed)
 	bonus_draw_button.pressed.connect(_on_bonus_draw_pressed)
 	no_block_button.pressed.connect(_on_no_block_pressed)
@@ -167,6 +172,7 @@ func _ready() -> void:
 	_load_deck_selection_options()
 	get_viewport().size_changed.connect(_update_responsive_layout)
 	_update_responsive_layout()
+	_clear_ai_action_hint()
 	_on_state_changed(game_manager.get_snapshot())
 	_show_deck_selection_modal()
 	call_deferred("_run_layout_probe_if_requested")
@@ -267,6 +273,109 @@ func _update_log_panel_layout(compact: bool, very_small: bool, viewport_height: 
 	log_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	log_panel.position = Vector2(maxf(12.0, panel_left), panel_top)
 	log_panel.size = Vector2(panel_width, minf(panel_height, viewport_height - panel_top - LOG_PANEL_BOTTOM_CLEARANCE))
+
+func _on_ai_action_executed(action_info: Dictionary) -> void:
+	var action_text := _format_ai_action_text(action_info)
+	if action_text == "":
+		return
+	if _ai_action_hint_tween != null and is_instance_valid(_ai_action_hint_tween):
+		_ai_action_hint_tween.kill()
+	ai_action_label.text = action_text
+	ai_action_label.visible = true
+	ai_action_label.modulate = Color(1, 1, 1, 1)
+	_ai_action_hint_tween = create_tween()
+	_ai_action_hint_tween.tween_interval(AI_ACTION_HINT_HOLD_SECONDS)
+	_ai_action_hint_tween.tween_property(ai_action_label, "modulate:a", 0.0, AI_ACTION_HINT_FADE_SECONDS)
+	_ai_action_hint_tween.finished.connect(_clear_ai_action_hint, CONNECT_ONE_SHOT)
+
+
+func _clear_ai_action_hint() -> void:
+	if ai_action_label == null:
+		return
+	ai_action_label.text = ""
+	ai_action_label.visible = false
+	ai_action_label.modulate = Color(1, 1, 1, 1)
+	_ai_action_hint_tween = null
+
+
+func _format_ai_action_text(action_info: Dictionary) -> String:
+	var player_text := _format_ai_player_text(str(action_info.get("player_id", "")))
+	var action_type := str(action_info.get("action_type", ""))
+	var source_name := str(action_info.get("source_card_name", ""))
+	var target_name := str(action_info.get("target_name", ""))
+	var phase := str(action_info.get("phase", ""))
+	match action_type:
+		ActionTypes.ADVANCE_PHASE:
+			return "%s进入 %s 阶段" % [player_text, phase]
+		ActionTypes.BONUS_DRAW:
+			return "%s支付 1 AP 额外抽牌" % player_text
+		ActionTypes.PLAY_CARD:
+			var zone_text := _format_target_zone_text(int(action_info.get("target_zone", -1)))
+			if source_name != "" and zone_text != "":
+				return "%s打出 %s 到%s" % [player_text, source_name, zone_text]
+			if source_name != "":
+				return "%s打出 %s" % [player_text, source_name]
+			return "%s打出卡牌" % player_text
+		ActionTypes.MOVE_CARD:
+			var move_mode := str(action_info.get("move_mode", ""))
+			if move_mode == ActionTypes.MOVE_ENERGY_TO_FRONT:
+				return "%s让 %s 从能量线前移" % [player_text, source_name if source_name != "" else "角色"]
+			if move_mode == ActionTypes.MOVE_STEP_TO_ENERGY:
+				return "%s让 %s 撤步回能量线" % [player_text, source_name if source_name != "" else "角色"]
+			return "%s移动卡牌" % player_text
+		ActionTypes.ATTACK:
+			if str(action_info.get("target_kind", "PLAYER")) == "CHARACTER":
+				return "%s用 %s 攻击 %s" % [player_text, source_name if source_name != "" else "角色", target_name if target_name != "" else "角色"]
+			return "%s用 %s 攻击玩家" % [player_text, source_name if source_name != "" else "角色"]
+		ActionTypes.BLOCK:
+			return "%s用 %s 进行阻挡" % [player_text, str(action_info.get("blocker_name", "")) if str(action_info.get("blocker_name", "")) != "" else "角色"]
+		ActionTypes.NO_BLOCK:
+			return "%s选择不阻挡" % player_text
+		ActionTypes.RESOLVE_PENDING_DECISION:
+			return "%s处理%s" % [player_text, _format_pending_decision_text(str(action_info.get("decision_type", "")))]
+		ActionTypes.RESOLVE_LIFE_TRIGGER:
+			var life_name := target_name if target_name != "" else source_name
+			if bool(action_info.get("activate", false)):
+				return "%s发动生命触发%s" % [player_text, "：%s" % life_name if life_name != "" else ""]
+			return "%s跳过生命触发%s" % [player_text, "：%s" % life_name if life_name != "" else ""]
+		ActionTypes.END_TURN:
+			return "%s结束当前回合" % player_text
+	return ""
+
+
+func _format_ai_player_text(player_id: String) -> String:
+	if player_id == UATypes.PLAYER_ONE:
+		return "玩家 1（AI）"
+	if player_id == UATypes.PLAYER_TWO:
+		return "玩家 2（AI）"
+	return "%s（AI）" % player_id
+
+
+func _format_target_zone_text(target_zone: int) -> String:
+	if target_zone == UATypes.Zone.FRONT_LINE:
+		return "前线"
+	if target_zone == UATypes.Zone.ENERGY_LINE:
+		return "能量线"
+	return ""
+
+
+func _format_pending_decision_text(decision_type: String) -> String:
+	match decision_type:
+		"MULLIGAN_CHOICE":
+			return "起手换牌决策"
+		"RAID_ZONE_CHOICE":
+			return "RAID 落点选择"
+		"LIFE_TRIGGER_RAID_CHOICE":
+			return "生命触发 RAID 选择"
+		"LIFE_TRIGGER_RAID_TARGET":
+			return "生命触发 RAID 目标选择"
+		"STEP_SWAP_CHOICE":
+			return "STEP 交换选择"
+		"HAND_LIMIT_DISCARD":
+			return "手牌上限弃牌"
+		"ABILITY_TARGET_SELECTION":
+			return "效果目标选择"
+	return "待决策"
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
