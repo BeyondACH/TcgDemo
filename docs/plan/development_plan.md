@@ -34,6 +34,7 @@
 - 2026-04-01 已确认 `tools/import_cards_raw_from_pic.ps1` 之前将沙箱内网络失败误归类为 `official_page_not_found`；当前脚本已补齐失败原因分类，能够区分 `network_error`、`request_failed`、`detail_structure_missing` 与 `card_number_mismatch`，并已验证 `UA31BT/MMM-1-001` 在沙箱外可正常解析，导入链路默认应在沙箱外执行。
 - 2026-04-02 已完成编译器识别层首轮注册表化，主入口改为 `registry -> legacy fallback`，并已把正式 raw 基线收口到 `180 / 0`、运行时总量 `183 / 0`。
 - 2026-04-02 已为 AI 控制器补齐动作节拍推进与轻量提示文案；该改动仅用于调试可见性，不视为重新开启 UI 视觉阶段。
+- 2026-04-02 已修正生命翻牌弹窗中的 Activate 链路：当带 LIFE_TRIGGER_RAID_CHOICE 的生命触发卡在当前 AP / 能量 / 底座条件下无法立即 RAID 时，点击 Activate 会直接按既有规则兜底加入手牌，不再额外停留在仅剩禁用 RAID_NOW 的待决策态。
 
 ## 3. 开发阶段规划
 

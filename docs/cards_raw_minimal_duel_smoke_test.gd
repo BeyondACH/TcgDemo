@@ -4893,13 +4893,10 @@ func _test_raw_life_trigger_raid_falls_back_to_hand_when_illegal() -> Dictionary
 	_trim_life_to_count(manager, player_id, 2)
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
 	manager.resolve_life_trigger_decision(source_uid, true)
-	if manager.game_state.pending_decisions.is_empty():
-		return _fail("Raw illegal life-trigger RAID sample should still enter the add-to-hand or raid-now choice after activation.")
-	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
 	var source_card = manager.game_state.get_card(source_uid)
 	var player := _player(manager, player_id)
 	if source_card == null or source_card.zone != UATypes.Zone.HAND:
-		return _fail("Raw illegal life-trigger RAID sample should move the card to hand when RAID is currently illegal.")
+		return _fail("Raw illegal life-trigger RAID sample should move the card to hand immediately after Activate when RAID is currently illegal.")
 	if not player.hand.has(source_uid):
 		return _fail("Raw illegal life-trigger RAID sample should leave the source card in hand after fallback.")
 	if not manager.game_state.pending_decisions.is_empty():

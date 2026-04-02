@@ -16,6 +16,7 @@ func _init() -> void:
 	_run_test("life reveal snapshot includes trigger and non-trigger cards", _test_life_reveal_snapshot_for_damage)
 	_run_test("life reveal acknowledge finalizes non-trigger damage", _test_life_reveal_acknowledge_flow)
 	_run_test("human trigger reveal offers activate and skip", _test_human_trigger_reveal_controls)
+	_run_test("illegal life-trigger raid still allows activate and falls back to hand", _test_illegal_life_trigger_raid_activate_falls_back_to_hand)
 	_run_test("ai vanilla reveal waits for player acknowledgement", _test_ai_vanilla_reveal_waits_for_player_ack)
 	_run_test("ai trigger reveal requires continue before ai resolves", _test_ai_trigger_reveal_requires_continue_before_ai)
 	_run_test("life reveal modal toggles actions by current card", _test_life_reveal_modal_ui)
@@ -112,6 +113,36 @@ func _vanilla_life_card(id_suffix: String) -> Dictionary:
 		"trigger_effects": [],
 	}
 
+func _life_trigger_raid_card(id_suffix: String) -> Dictionary:
+	return {
+		"id": "TMP_LIFE_RAID_%s" % id_suffix,
+		"name": "Life Raid %s" % id_suffix,
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LR-%s" % id_suffix,
+		"traits": ["Tester"],
+		"cost_energy": {"GREEN": 1},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3500,
+		"keywords": ["RAID"],
+		"effects": [],
+		"trigger_effects": [
+			{
+				"trigger": "ON_LIFE_TRIGGER",
+				"text": "Add this card to hand, or raid it if legal.",
+				"steps": [{"type": "LIFE_TRIGGER_RAID_CHOICE"}]
+			}
+		],
+		"special_play_rule": {
+			"type": "RAID",
+			"raid_target_name": "Life Raid Base %s" % id_suffix,
+			"allow_from_hand": true,
+			"require_full_energy": true,
+			"life_trigger_only": true
+		},
+	}
+
 func _test_life_reveal_snapshot_for_damage() -> Dictionary:
 	var manager := _new_manager()
 	var p2 := _player(manager, UATypes.PLAYER_TWO)
@@ -178,6 +209,49 @@ func _test_human_trigger_reveal_controls() -> Dictionary:
 		return _fail("human trigger reveal should expose activate and skip.")
 	if bool(modal.get("can_acknowledge", false)):
 		return _fail("human trigger reveal should not use continue before trigger choice.")
+	return _ok()
+
+func _test_illegal_life_trigger_raid_activate_falls_back_to_hand() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_TWO
+	var player := _player(manager, player_id)
+	player.life.clear()
+	player.ap_area.clear()
+	var base_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_LIFE_RAID_WRONG_BASE",
+		"name": "Wrong Base",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-LRB-WRONG",
+		"traits": ["Tester"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [],
+	}, UATypes.Zone.FRONT_LINE, true)
+	var raid_uid := _spawn_temp_card(manager, player_id, _life_trigger_raid_card("ILLEGAL"), UATypes.Zone.LIFE, true)
+	if base_uid == "" or raid_uid == "":
+		return _fail("illegal life-trigger RAID sample should prepare both the wrong base and the source card.")
+	player.life = [raid_uid]
+	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
+	var modal: Dictionary = manager.get_snapshot().get("life_reveal_modal", {})
+	if not bool(modal.get("can_activate", false)):
+		return _fail("illegal life-trigger RAID should still expose activate in the reveal modal.")
+	manager.resolve_life_trigger_decision(raid_uid, true)
+	var raid_card = manager.game_state.get_card(raid_uid)
+	if raid_card == null or raid_card.zone != UATypes.Zone.HAND:
+		return _fail("illegal life-trigger RAID should add the card to hand immediately after activate.")
+	if not player.hand.has(raid_uid):
+		return _fail("illegal life-trigger RAID should leave the source card in hand after activate fallback.")
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("illegal life-trigger RAID should not leave pending decisions after activate fallback.")
+	if not manager.game_state.pending_life_triggers.is_empty():
+		return _fail("illegal life-trigger RAID should not leave pending life triggers after activate fallback.")
+	if not manager.game_state.pending_life_damage_cards.is_empty():
+		return _fail("illegal life-trigger RAID should not leave pending life damage cards after activate fallback.")
 	return _ok()
 
 func _test_ai_vanilla_reveal_waits_for_player_ack() -> Dictionary:

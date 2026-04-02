@@ -236,13 +236,7 @@ func build_life_trigger_raid_target_choices(state: GameState, card_uid: String, 
 
 
 func move_pending_life_card_to_hand(state: GameState, card_uid: String, owner_player_id: String) -> void:
-	for i in range(state.pending_life_damage_cards.size()):
-		var entry: Dictionary = state.pending_life_damage_cards[i]
-		if str(entry.get("card_uid", "")) != card_uid:
-			continue
-		state.pending_life_damage_cards.remove_at(i)
-		break
-	_zone_manager.move_card(state, card_uid, UATypes.Zone.HAND, owner_player_id)
+	_effect_resolver.move_pending_life_card_to_hand(state, card_uid, owner_player_id)
 
 
 func fallback_life_trigger_raid_to_hand(state: GameState, card_uid: String, owner_player_id: String) -> Array[String]:

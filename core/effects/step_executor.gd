@@ -568,6 +568,12 @@ func _enqueue_life_trigger_raid_choice(state: GameState, source_card_uid: String
 					break
 				if raid_enabled:
 					break
+	if source_def != null and str(source_def.special_play_rule.get("type", "")) == "RAID" and not raid_enabled:
+		if _effect_resolver != null and _effect_resolver.move_pending_life_card_to_hand(state, source_card_uid, owner_player_id):
+			logs.append("%s cannot raid now because requirements are not met, so the card is added to hand instead." % owner_player_id)
+			var card_name: String = source_def.name if source_def != null else source_card_uid
+			logs.append("%s adds %s to hand." % [owner_player_id, card_name])
+			return logs
 	state.pending_decisions.append({
 		"type": "LIFE_TRIGGER_RAID_CHOICE",
 		"owner_player_id": owner_player_id,

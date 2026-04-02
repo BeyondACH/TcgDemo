@@ -357,6 +357,24 @@ func deal_damage_to_player(state: GameState, player_id: String, amount: int) -> 
 func resolve_life_trigger_decision(state: GameState, card_uid: String, activate: bool) -> Array[String]:
 	return _life_damage_handler.resolve_life_trigger_decision(state, card_uid, activate)
 
+func move_pending_life_card_to_hand(state: GameState, card_uid: String, owner_player_id: String = "") -> bool:
+	if card_uid == "":
+		return false
+	var card = state.get_card(card_uid)
+	if card == null:
+		return false
+	var resolved_owner_player_id := owner_player_id
+	if resolved_owner_player_id == "":
+		resolved_owner_player_id = card.owner_player_id
+	for i in range(state.pending_life_damage_cards.size()):
+		var entry: Dictionary = state.pending_life_damage_cards[i]
+		if str(entry.get("card_uid", "")) != card_uid:
+			continue
+		state.pending_life_damage_cards.remove_at(i)
+		break
+	zone_manager.move_card(state, card_uid, UATypes.Zone.HAND, resolved_owner_player_id)
+	return true
+
 func acknowledge_life_reveal(state: GameState, card_uid: String) -> Array[String]:
 	return _life_damage_handler.acknowledge_life_reveal(state, card_uid)
 
