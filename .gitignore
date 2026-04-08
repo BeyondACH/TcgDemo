@@ -28,3 +28,4 @@ desktop.ini
 # IDE / 编辑器
 .idea/
 .vscode/
+.worktrees/
