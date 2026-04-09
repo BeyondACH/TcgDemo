@@ -61,9 +61,37 @@ def sanitize_path_component(text: str) -> str:
     return cleaned or "images"
 
 
-def default_output_dir(work: str, color: str | None = None) -> Path:
+def default_output_dir(title_code: str, color: str | None = None) -> Path:
     base_dir = Path(__file__).resolve().parent / "pic"
-    return base_dir / sanitize_path_component(work)
+    return base_dir / sanitize_path_component(title_code)
+
+
+def infer_title_code_from_local_data(work: str) -> str | None:
+    normalized_work = normalize_text(work)
+    if not normalized_work:
+        return None
+    cards_root = Path(__file__).resolve().parent / "data" / "cards"
+    if not cards_root.exists():
+        return None
+    for series_dir in sorted(path for path in cards_root.iterdir() if path.is_dir()):
+        raw_path = series_dir / "cards_raw.json"
+        if not raw_path.exists():
+            continue
+        try:
+            payload = json.loads(raw_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(payload, list):
+            continue
+        for item in payload:
+            if not isinstance(item, dict):
+                continue
+            if normalize_text(str(item.get("series_title", ""))) != normalized_work:
+                continue
+            title_code = normalize_text(str(item.get("title_code", "")))
+            if title_code:
+                return title_code
+    return None
 
 
 def normalize_text(text: str) -> str:
@@ -334,6 +362,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--work", default=DEFAULT_WORK, help="Official work title.")
     parser.add_argument(
+        "--title-code",
+        help="Title code used for the output directory, for example MMM or TLR.",
+    )
+    parser.add_argument(
         "--product",
         default=DEFAULT_PRODUCT,
         help="Optional product name filter from the official card list.",
@@ -345,7 +377,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        help="Directory for downloaded images. Defaults to pic/<work>.",
+        help="Directory for downloaded images. Defaults to pic/<title_code>.",
     )
     parser.add_argument(
         "--print-url",
@@ -393,7 +425,14 @@ def main(argv: list[str] | None = None) -> int:
         product=args.product,
         limit=args.limit,
     )
-    output_dir = args.output_dir or default_output_dir(args.work)
+    title_code = normalize_text(str(args.title_code or ""))
+    if not title_code:
+        inferred_title_code = infer_title_code_from_local_data(args.work)
+        if inferred_title_code:
+            title_code = inferred_title_code
+    if not title_code:
+        title_code = sanitize_path_component(args.work)
+    output_dir = args.output_dir or default_output_dir(title_code)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.print_url:

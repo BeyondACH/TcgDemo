@@ -1,25 +1,37 @@
+param(
+	[string]$SourceRoot = "",
+	[int]$TargetHeight = 84
+)
+
 $ErrorActionPreference = "Stop"
 
-# Generate 84px-high PNG thumbnails for missing pic/*.png files into pic/micro/.
+# Generate 84px-high PNG thumbnails for missing pic/<title_code>/*.png files into
+# pic/<title_code>/micro/.
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$sourceDir = Join-Path $projectRoot "pic"
-$outputDir = Join-Path $sourceDir "micro"
-$targetHeight = 84
+$sourceDir = if ($SourceRoot -ne "") { $SourceRoot } else { Join-Path $projectRoot "pic" }
 
 if (-not (Test-Path $sourceDir)) {
 	throw "Source directory not found: $sourceDir"
 }
 
-New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
-
 Add-Type -AssemblyName System.Drawing
 
-$sourceFiles = Get-ChildItem -Path $sourceDir -File -Filter *.png | Sort-Object Name
+$titleDirs = Get-ChildItem -Path $sourceDir -Directory | Sort-Object Name
+$sourceFiles = @()
+foreach ($titleDir in $titleDirs) {
+	if ($titleDir.Name -eq "micro") {
+		continue
+	}
+	$sourceFiles += Get-ChildItem -Path $titleDir.FullName -File -Filter *.png | Sort-Object Name
+}
+
 $scanned = $sourceFiles.Count
 $generated = 0
 $skippedExisting = 0
 
 foreach ($file in $sourceFiles) {
+	$outputDir = Join-Path $file.DirectoryName "micro"
+	New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
 	$outputPath = Join-Path $outputDir $file.Name
 	if (Test-Path $outputPath) {
 		$skippedExisting++
@@ -62,4 +74,4 @@ foreach ($file in $sourceFiles) {
 	}
 }
 
-Write-Output ("scanned={0} skipped_existing={1} generated={2} output_dir={3}" -f $scanned, $skippedExisting, $generated, $outputDir)
+Write-Output ("scanned={0} skipped_existing={1} generated={2} source_root={3}" -f $scanned, $skippedExisting, $generated, $sourceDir)

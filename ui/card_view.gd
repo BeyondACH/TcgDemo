@@ -223,9 +223,12 @@ func _resolve_card_texture(card_data: Dictionary, prefer_original: bool = false)
 
 func _card_image_candidates(card_data: Dictionary, prefer_original: bool = false) -> Array[String]:
 	var candidates: Array[String] = []
+	var title_code := str(card_data.get("title_code", "")).strip_edges()
+	if title_code == "":
+		return candidates
 	var source_image := str(card_data.get("source_image", "")).strip_edges()
 	if source_image != "":
-		_append_card_image_candidate(candidates, source_image, prefer_original)
+		_append_card_image_candidate(candidates, title_code, source_image, prefer_original)
 	var number := str(card_data.get("number", "")).strip_edges()
 	if number == "":
 		return candidates
@@ -239,19 +242,20 @@ func _card_image_candidates(card_data: Dictionary, prefer_original: bool = false
 		if normalized == "":
 			continue
 		var filename := normalized if normalized.to_lower().ends_with(".png") else "%s.png" % normalized
-		_append_card_image_candidate(candidates, filename, prefer_original)
+		_append_card_image_candidate(candidates, title_code, filename, prefer_original)
 	return candidates
 
-func _append_card_image_candidate(candidates: Array[String], filename: String, prefer_original: bool = false) -> void:
+func _append_card_image_candidate(candidates: Array[String], title_code: String, filename: String, prefer_original: bool = false) -> void:
+	var normalized_title_code := title_code.strip_edges()
 	var normalized := filename.strip_edges()
-	if normalized == "":
+	if normalized_title_code == "" or normalized == "":
 		return
 	var ordered_paths := [
-		"res://pic/%s" % normalized,
-		"res://pic/micro/%s" % normalized,
+		"res://pic/%s/%s" % [normalized_title_code, normalized],
+		"res://pic/%s/micro/%s" % [normalized_title_code, normalized],
 	] if prefer_original else [
-		"res://pic/micro/%s" % normalized,
-		"res://pic/%s" % normalized,
+		"res://pic/%s/micro/%s" % [normalized_title_code, normalized],
+		"res://pic/%s/%s" % [normalized_title_code, normalized],
 	]
 	for path in ordered_paths:
 		if not candidates.has(path):

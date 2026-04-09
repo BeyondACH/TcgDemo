@@ -81,6 +81,7 @@ func serialize_card(state: GameState, card_uid: String, action_player_id: String
 		"uid": card.uid,
 		"name": card_def.name,
 		"card_type": UATypes.card_type_to_text(card_def.card_type),
+		"title_code": card_def.title_code,
 		"number": card_def.number,
 		"source_image": card_def.source_image,
 		"zone": UATypes.zone_to_key(card.zone),
