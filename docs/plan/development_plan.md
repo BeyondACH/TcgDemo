@@ -65,10 +65,10 @@
 
 ## 2.3 2026-04-09 图片抓取脚本商品名列表补充
 
-- `download_mmm_images.py` 已补充日文官网 cardlist 页面只读商品名入口，唯一来源固定为 `https://www.unionarena-tcg.com/jp/cardlist/index.php?search=true`。
+- `download_images.py` 已补充日文官网 cardlist 页面只读商品名入口，唯一来源固定为 `https://www.unionarena-tcg.com/jp/cardlist/index.php?search=true`。
 - 当前脚本新增 `--list-products`，用于输出 `series` 下拉框里的商品显示名与 `option value` 编号；该模式只读官网静态页面，不进入图片下载流程。
 - `--product` 手填筛选语义保持不变；本轮不做“按作品筛商品名”的联动，也不把商品编号自动映射回下载参数。
-- `download_mmm_images.py` 与 `tests/test_download_mmm_images.py` 中与该脚本直接相关的中文乱码已一并修复，并补了最小解析/CLI 回归测试。
+- `download_images.py` 与 `tests/test_download_mmm_images.py` 中与该脚本直接相关的中文乱码已一并修复，并补了最小解析/CLI 回归测试。
 
 ## 3. 开发阶段规划
 

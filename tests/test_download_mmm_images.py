@@ -5,7 +5,7 @@ import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import patch
 
-import download_mmm_images as script
+import download_images as script
 
 
 class DownloadMmmImagesTests(unittest.TestCase):
@@ -189,7 +189,7 @@ class DownloadMmmImagesTests(unittest.TestCase):
 
     def test_help_output_does_not_list_title(self) -> None:
         result = subprocess.run(
-            [sys.executable, "download_mmm_images.py", "--help"],
+            [sys.executable, "download_images.py", "--help"],
             cwd="D:\\CodexWork\\TcgDemo",
             capture_output=True,
             text=True,

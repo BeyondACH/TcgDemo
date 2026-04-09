@@ -53,7 +53,7 @@
 
 ## 2.3 2026-04-09 图片抓取脚本商品名列表补充
 
-- `download_mmm_images.py` 已支持从日文官网 `jp/cardlist/index.php?search=true` 的 `series` 下拉框枚举商品名和对应编号。
+- `download_images.py` 已支持从日文官网 `jp/cardlist/index.php?search=true` 的 `series` 下拉框枚举商品名和对应编号。
 - 新增 `--list-products` 只读列表入口，输出格式固定为 `Official products:` + `- <name> [<id>]`，不影响现有 `--product` 手填筛选流程。
 - 为避免旧逻辑回归，脚本保留了作品列表 HTML 解析辅助函数的回归测试，但不重新引入 `--list-works` CLI 入口。
 
