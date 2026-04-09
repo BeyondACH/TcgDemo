@@ -4,6 +4,13 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from tools.card_effects_compiler.normalization import normalize_japanese_text as normalize_compiler_text
+from tools.card_effects_compiler.template_registry import _dispatch_template_rules
+from tools.card_effects_compiler.template_registry import _exact_text_match
+from tools.card_effects_compiler.template_registry import _regex_match
+from tools.card_effects_compiler.template_registry import dispatch_template_rules
+from tools.card_effects_compiler.template_registry import set_trigger_template_rules
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CARDS_DIR = ROOT / "data" / "cards"
@@ -425,10 +432,6 @@ def _normalize_compiled_abilities(compiled_ability) -> list[dict]:
     if isinstance(compiled_ability, list):
         return compiled_ability
     return [compiled_ability]
-
-
-def normalize_compiler_text(text) -> str:
-    return re.sub(r"\s+", " ", str(text or "")).strip()
 
 
 def _hand_character_summon_steps(
@@ -2347,27 +2350,6 @@ def _card_id_in(card_ids: list[str]):
     return lambda card_id: card_id in allowed
 
 
-def _exact_text_match(expected_text: str):
-    def _matcher(_card: dict, _entry: dict, text: str, _card_id: str):
-        if text == expected_text:
-            return {}
-        return None
-
-    return _matcher
-
-
-def _regex_match(pattern: str):
-    compiled = re.compile(pattern)
-
-    def _matcher(_card: dict, _entry: dict, text: str, _card_id: str):
-        match = compiled.fullmatch(text)
-        if match:
-            return {"match": match}
-        return None
-
-    return _matcher
-
-
 def _build_preview_add_to_hand_template(
     card: dict,
     trigger_entry: dict,
@@ -2464,30 +2446,6 @@ def _bp_remove_with_requirements_builder_factory(
     return _builder
 
 
-def _dispatch_template_rules(
-    registry_name: str,
-    rules: tuple[_TemplateRule, ...],
-    card: dict,
-    trigger_entry: dict,
-    fallback,
-):
-    event_name = str(trigger_entry.get("trigger", ""))
-    text = str(trigger_entry.get("text", "")).strip()
-    card_id = str(card.get("id", ""))
-    for rule in rules:
-        if not _event_matches(rule.event_filter, event_name):
-            continue
-        if rule.card_filter is not None and not rule.card_filter(card_id):
-            continue
-        payload = rule.matcher(card, trigger_entry, text, card_id)
-        if payload is None:
-            continue
-        _record_template_hit(rule.name)
-        return rule.builder(card, trigger_entry, event_name, text, card_id, payload)
-    _record_template_fallback(registry_name)
-    return fallback(card, trigger_entry)
-
-
 _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     _TemplateRule(
         name="trigger.preview_add_to_hand.007_or_trait_discard",
@@ -2568,6 +2526,8 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     ),
 )
 
+set_trigger_template_rules(_TRIGGER_TEMPLATE_RULES)
+
 
 _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     _TemplateRule(
@@ -2645,7 +2605,7 @@ _PASSIVE_TEMPLATE_RULES: tuple[_TemplateRule, ...] = ()
 
 
 def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, dict]) -> dict:
-    return _dispatch_template_rules(
+    return dispatch_template_rules(
         "trigger",
         _TRIGGER_TEMPLATE_RULES,
         card,
