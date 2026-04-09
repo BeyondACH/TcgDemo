@@ -50,6 +50,11 @@ def _dispatch_template_rules(
         payload = rule.matcher(card, trigger_entry, text, card_id)
         if payload is None:
             continue
+        if isinstance(payload, dict):
+            template_metadata = getattr(rule, "template_metadata", None)
+            if template_metadata:
+                payload = dict(payload)
+                payload["template_metadata"] = dict(template_metadata)
         _record_template_hit(rule.name)
         return rule.builder(card, trigger_entry, event_name, text, card_id, payload)
     _record_template_fallback(registry_name)

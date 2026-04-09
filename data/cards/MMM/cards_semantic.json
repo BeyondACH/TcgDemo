@@ -1,7 +1,7 @@
 [
   {
     "card_id": "UA31BT_MMM_1_001",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -35,11 +35,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはアクティブで場に登場させる。\n自分のアタックフェイズ終了時、このキャラを退場させる。\n自分の場外にあるキャラカードを2枚までリムーブエリアに置く。\nこのキャラをリムーブエリアに置き、自分のリムーブエリアから〈鹿目 まどか〉以外の必要エナジーが3以下で消費APが1の異なるカード名の黄の［特徴：魔法少女］を2枚まで自分の場にレストで登場させる。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_002",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -75,14 +80,20 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈鹿目 まどか〉アクティブにし、フロントLに移動できる\n自分は自分のリムーブエリアの〈鹿目 まどか〉以外のを持たない［特徴：魔法少女］か〈円環の理〉を使用できる。（使用する場合は必要エナジーを満たす必要があり、消費APを支払う）\n自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。\nこのキャラをリムーブエリアに置く。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_003",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -91,15 +102,20 @@
         "status": "SUPPORTED",
         "text": "自分の山札の上から4枚見る。その中から黄のイベントカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "PREVIEW_ADD_TO_HAND"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から4枚見る。その中から黄のイベントカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_004",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -124,11 +140,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_005",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -153,11 +174,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のリムーブエリアにある〈アルティメットまどか〉を1枚場外に置いてもよい。そうした場合、このキャラはこのターン中、BP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_006",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -173,15 +199,21 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_007",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "READY_AND_TEMP_BP"
+      "READY_AND_TEMP_BP",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -190,7 +222,7 @@
         "status": "SUPPORTED",
         "text": "自分の山札の上から3枚見る。その中から〈アルティメットまどか〉か［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "PREVIEW_ADD_TO_HAND"
       },
       {
         "id": "UA31BT_MMM_1_007_on_life_trigger_bab7196d2b",
@@ -202,11 +234,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見る。その中から〈アルティメットまどか〉か［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_008",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -239,11 +276,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から4枚見る。その中からキャラカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。\n自分の山札の上から1枚見る。そのカードを自分の山札の上か場外に置く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_009",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -259,22 +301,32 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_010",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "相手の場に紫か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_011",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -292,11 +344,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_012",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "DOUBLE_BLOCK"
     ],
@@ -314,11 +371,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラがこのターン初めてブロックした時、アクティブにする）",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_013",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -336,11 +398,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_014",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -356,11 +423,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_015",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -385,11 +457,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_016",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -414,11 +491,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から1枚見る。そのカードを自分の山札の上か場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_017",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -434,11 +516,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場外にイベントカードが2枚以上ある場合、このキャラはBP+1000。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_018",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -454,11 +541,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場外にイベントカードが2枚以上ある場合、カードを1枚引く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_019",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -485,11 +577,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈巴 マミ〉アクティブにし、フロントLに移動できる\nカードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外にあるイベントカードの枚数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、手札に戻す。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_020",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -505,11 +602,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場外にイベントカードが4枚以上ある場合、手札にあるこのカードの必要エナジーを減らす。\n（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
+      "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_021",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -517,13 +619,18 @@
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_022",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -539,11 +646,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはBP+1000。\nこのキャラがリムーブエリアから登場していた場合、カードを1枚引く。〈百江 なぎさ〉のこの効果は1ターンに1回のみ発動する。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_023",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -559,11 +671,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_024",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -588,11 +705,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがリムーブエリアから登場していた場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_025",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -608,11 +730,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_026",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -628,11 +755,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_027",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -657,11 +789,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札のイベントカードを1枚場外に置く。そうした場合、このターン中、自分の手札にある全ての〈巴 マミ〉の必要エナジーを減らす。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_028",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -694,11 +831,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。\nBP5000以下の相手のフロントLのキャラを1枚選び、選んだキャラとこのカードをリムーブエリアに置く。自分のリムーブエリアから使用されている場合、このカードはリムーブエリアに置く代わりに自分の山札の下に置く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_029",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
@@ -723,11 +865,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、カードを3枚引く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_030",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -752,11 +899,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_031",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -781,11 +933,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_032",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -809,11 +966,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈巴 マミ〉がある場合、『退場させる』に代えてもよい。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_033",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -837,11 +999,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈もう何も恐くない〉は1ターンに1枚のみ使用できる。\n相手のフロントLのキャラを1枚選び、『レストにする』。自分の場に〈巴 マミ〉があり、自分の場外にイベントカードが2枚以上ある場合、『レストにする。それは次の1回アクティブにならない』に代わる。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_034",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -875,11 +1042,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈訳が分からないよ〉は1ターンに1枚のみ使用できる。\nカードを2枚引き、自分の手札を1枚場外に置く。この効果でイベントカードを場外に置いた場合、自分のAPカードを1枚まで選び、アクティブにする。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_035",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
@@ -912,11 +1084,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードは〈暁美 ほむら〉としても扱う。\n自分のフロントLの〈鹿目 まどか〉を1枚選び、このキャラと位置を入れ替える。\n自分のエナジーLに〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+      "trigger": "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_036",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -943,22 +1120,32 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードは〈暁美 ほむら〉としても扱う。\n〈暁美 ほむら〉アクティブにし、フロントLに移動できる\n自分の場の〈悪魔ほむら〉全ては自分と相手の効果でリムーブエリアに置くことができない。\n自分の場の〈鹿目 まどか〉を1枚手札に戻してもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、このターン中、『BP-3000』。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉の場合、『BP-4000』に代わる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_037",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "相手の場に黄か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_038",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -983,11 +1170,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードは〈百江 なぎさ〉としても扱う。\n自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_039",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -1003,15 +1195,21 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_040",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "READY_AND_TEMP_BP"
+      "READY_AND_TEMP_BP",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -1020,7 +1218,7 @@
         "status": "SUPPORTED",
         "text": "自分の山札の上から5枚見る。その中から〈鹿目 まどか〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "PREVIEW_ADD_TO_HAND"
       },
       {
         "id": "UA31BT_MMM_1_040_on_life_trigger_bab7196d2b",
@@ -1032,11 +1230,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から5枚見る。その中から〈鹿目 まどか〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_041",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1072,11 +1275,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈暁美 ほむら〉アクティブにし、フロントLに移動できる\nカードを2枚引き、自分の手札を1枚場外に置く。\n自分の場に〈鹿目 まどか〉がある場合、このキャラのレイド元のカードを1枚まで手札に戻す。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_042",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1092,14 +1300,20 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札から『必要エナジーが1以下』で消費APが1の紫の〔〈暁美 ほむら〉か〈鹿目 まどか〉〕を1枚まで自分の場にレストで登場させる。自分の場にあるキャラが全て〈暁美 ほむら〉と〈鹿目 まどか〉のみの場合、『必要エナジーが2以下』に代わる。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_043",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -1108,15 +1322,20 @@
         "status": "SUPPORTED",
         "text": "自分の山札の上から3枚見る。その中から〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "PREVIEW_ADD_TO_HAND"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見る。その中から〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_044",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1152,11 +1371,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈百江 なぎさ〉アクティブにし、フロントLに移動できる\n自分の場の〈百江 なぎさ〉と［特徴：ピュエラ・マギ・ホーリー・クインテット］全ては、このターン中、BP+1000。\n自分の山札の上から1枚を公開する。公開したカードが〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］の場合、そのカードを手札に加える。公開したカードがそれら以外の場合、自分の山札の上か下に置く。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_045",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -1175,11 +1399,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_046",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1195,11 +1424,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_047",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -1224,11 +1458,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_048",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1244,11 +1483,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_049",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_KEYWORD",
@@ -1273,11 +1517,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラが登場したターン中のみ発動できる。自分の場の他のキャラを1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_050",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -1293,11 +1542,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_051",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -1322,11 +1576,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_052",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1342,11 +1601,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_054",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -1365,11 +1629,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_055",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -1394,11 +1663,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合のみ発動できる。自分の場の〈百江 なぎさ〉か他の［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚選び、このターン中、BP+1000。",
+      "trigger": "自分の場外から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚自分のフロントLにアクティブで登場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_056",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1425,11 +1699,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈巴 マミ〉アクティブにし、フロントLに移動できる\n自分の山札の上から4枚見る。その中から必要エナジーが2以下で消費APが1の紫のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で自分の山札の下に置く。自分の場に他の［特徴：ピュエラ・マギ・ホーリー・クインテット］が4枚以上ある場合、このキャラはこのターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_057",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1445,11 +1724,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_058",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1465,11 +1749,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_059",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP"
@@ -1485,11 +1774,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_060",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -1514,11 +1808,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場外から紫の［特徴：魔法少女］を1枚まで手札に加える。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_061",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -1543,11 +1842,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引く。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_062",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "IMPACT"
     ],
@@ -1574,11 +1878,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_063",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -1603,11 +1912,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_064",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1631,15 +1945,21 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "『BP2000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場の［特徴：ピュエラ・マギ・ホーリー・クインテット］1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_065",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -1656,15 +1976,20 @@
         "status": "SUPPORTED",
         "text": "自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "PREVIEW_ADD_TO_HAND"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_066",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1688,11 +2013,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_067",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -1717,22 +2047,32 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈暁美 ほむら〉を選んで使用する場合、このカードの消費APを-1する。\n自分のフロントLのキャラを1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_068",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "相手の場に黄か紫のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_069",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1748,11 +2088,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードを手札に加える。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_070",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1768,11 +2113,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_071",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1790,11 +2140,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードは〈美樹 さやか〉としても扱う。\n自分のライフが5以上の場合、このカードは使用できない。\n〈美樹 さやか〉アクティブにし、フロントLに移動できる\n（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）\nこのキャラはBP2000以下のキャラにブロックされない。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_072",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1810,11 +2165,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_073",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -1832,11 +2192,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_074",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -1852,11 +2217,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に〈鹿目 まどか〉がある場合、カードを1枚引く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_075",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1883,11 +2253,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈暁美 ほむら〉アクティブにし、フロントLに移動できる\n自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。自分の場に〈鹿目 まどか〉がある場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックできない。」を与える。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_076",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1903,14 +2278,20 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_077",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -1919,15 +2300,20 @@
         "status": "SUPPORTED",
         "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカード以外の自分の場の［特徴：魔法少女］のカード名が3種類以上ある場合、このキャラの発生エナジー+。",
+      "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_078",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1954,37 +2340,52 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈鹿目 まどか〉アクティブにし、フロントLに移動できる\nこのカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、退場させる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_079",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_080",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラはBP+1000。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_081",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -2000,11 +2401,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_082",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
@@ -2029,11 +2435,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札から必要エナジーが2以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_083",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -2069,11 +2480,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈佐倉 杏子〉アクティブにし、フロントLに移動できる\nこのターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラは（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。\n自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_084",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -2098,11 +2514,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_085",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2118,11 +2539,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_086",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -2138,11 +2564,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_087",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -2158,11 +2589,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に〈佐倉 杏子〉がある場合、このキャラはBP+1000。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_088",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -2181,15 +2617,21 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_089",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "LIFE_TO_HAND_AND_READY_SOURCE",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2206,15 +2648,20 @@
         "status": "SUPPORTED",
         "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のライフが4以下の場合、このキャラはBP+500。\n自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラをアクティブにする。",
+      "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_090",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID",
       "NEGATE_IMPACT",
@@ -2243,11 +2690,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈美樹 さやか〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）\n（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラは次の自分のターン開始時まで、「このカードを自分の場にレストで登場させるかレイドさせる。」を得る。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_091",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
@@ -2272,11 +2724,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このフィールドはアクティブで場に登場させる。\n自分の場の［特徴：魔法少女］を1枚選び、このターン中、BP+500。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_092",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -2301,14 +2758,20 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、カードを2枚引く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_093",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2325,18 +2788,24 @@
         "status": "SUPPORTED",
         "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_094",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2353,15 +2822,20 @@
         "status": "SUPPORTED",
         "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_095",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2386,11 +2860,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_096",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2415,11 +2894,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_097",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2444,11 +2928,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_098",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -2475,14 +2964,20 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から5枚見る。その中からキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。公開したカードがを持つ［特徴：魔法少女］の場合、自分のAPカードを1枚まで選び、アクティブにする。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_099",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2499,15 +2994,20 @@
         "status": "SUPPORTED",
         "text": "BP5000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に〈佐倉 杏子〉がある場合、手札にあるこのカードの消費APを-1する。\nBP5000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31BT_MMM_1_100",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
@@ -2532,11 +3032,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場の〈佐倉 杏子〉を1枚退場させる。そうした場合、そのキャラのBP以下の相手のフロントLのキャラを1枚まで選び、退場させ、カードを2枚引く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_069",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -2552,11 +3057,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードを手札に加える。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_070",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -2572,11 +3082,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_076",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -2592,24 +3107,34 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_080",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのターン中に自分がライフエリアにあるカードを手札に加えている場合、このキャラはBP+1000。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_081",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -2625,11 +3150,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_085",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2645,11 +3175,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_088",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -2668,14 +3203,20 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_094",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2692,15 +3233,20 @@
         "status": "SUPPORTED",
         "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_095",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2725,11 +3271,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_101",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE"
@@ -2745,11 +3296,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_102",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -2774,11 +3330,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場の〈鹿目 まどか〉を1枚自分の山札の下に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーが4以下で消費APが1の赤の［特徴：魔法少女］を1枚まで自分の場にレストで登場させる。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_103",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -2794,11 +3355,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から4枚見る。その中から〈鹿目 まどか〉以外の［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_104",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -2834,11 +3400,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈鹿目 まどか〉アクティブにし、フロントLに移動できる\nこのカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数により、このキャラは以下の効果を全て得る。\n2種類以上：このキャラがアタックしてブロックされなかった時、カードを1枚引く。\n4種類以上：このキャラはBP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_105",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -2854,11 +3425,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_106",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_2",
@@ -2883,20 +3459,30 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはアクティブで場に登場させる。\n自分のターン開始時、このキャラを退場させる。\nカードを2枚引く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_107",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_108",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -2921,11 +3507,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが3以下で消費APが1の［特徴：魔法少女］を1枚まで手札に加える。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA31ST_MMM_1_109",
-    "source": "MMM/cards_raw.json",
+    "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -2950,6 +3541,11 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から5枚見る。その中から異なるカード名の［特徴：魔法少女］をそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   }
 ]

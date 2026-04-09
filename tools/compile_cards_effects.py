@@ -1,8 +1,12 @@
 import hashlib
 import json
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from tools.card_effects_compiler.normalization import normalize_japanese_text as normalize_compiler_text
 from tools.card_effects_compiler.semantic_ir import build_semantic_entry as build_semantic_ir_entry
@@ -617,6 +621,7 @@ def _supported_ability(
     steps: list[dict],
     kind: str | None = None,
     once_per_turn: bool | None = None,
+    template_metadata: dict | None = None,
 ) -> dict:
     digest = hashlib.sha1(str(trigger_entry.get("text", "")).encode("utf-8")).hexdigest()[:10]
     ability = {
@@ -636,6 +641,8 @@ def _supported_ability(
     }
     if once_per_turn is not None:
         ability["limits"]["once_per_turn"] = once_per_turn
+    if template_metadata:
+        ability["template_metadata"] = dict(template_metadata)
     return ability
 
 
@@ -2317,6 +2324,7 @@ class _TemplateRule:
     builder: object
     priority: int = 0
     card_filter: object | None = None
+    template_metadata: dict | None = None
 
 
 _TEMPLATE_TELEMETRY_ENABLED = False
@@ -2378,18 +2386,23 @@ def _build_preview_add_to_hand_template(
         target_specs,
         steps,
         payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
     )
 
 
 def _preview_add_to_hand_builder_factory(*, kind: str | None = None, **params):
-    def _builder(card: dict, trigger_entry: dict, event_name: str, text: str, card_id: str, _payload: dict) -> dict:
+    def _builder(card: dict, trigger_entry: dict, event_name: str, text: str, card_id: str, payload: dict) -> dict:
         return _build_preview_add_to_hand_template(
             card,
             trigger_entry,
             event_name,
             text,
             card_id,
-            {"params": params, "kind": kind},
+            {
+                "params": params,
+                "kind": kind,
+                "template_metadata": payload.get("template_metadata"),
+            },
         )
 
     return _builder
@@ -2404,10 +2417,20 @@ def _build_bp_remove_ability(
     min_count: int = 1,
     max_count: int = 1,
     kind: str | None = None,
+    template_metadata: dict | None = None,
 ) -> dict:
     target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements, min_count, max_count)
     steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
-    return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps, kind)
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        kind,
+        template_metadata=template_metadata,
+    )
 
 
 def _bp_remove_from_match_builder_factory(*, min_count: int = 1, max_count: int = 1, kind: str | None = None):
@@ -2421,6 +2444,7 @@ def _bp_remove_from_match_builder_factory(*, min_count: int = 1, max_count: int 
             min_count=min_count,
             max_count=max_count,
             kind=kind,
+            template_metadata=payload.get("template_metadata"),
         )
 
     return _builder
@@ -2442,6 +2466,7 @@ def _bp_remove_with_requirements_builder_factory(
             min_count=min_count,
             max_count=max_count,
             kind=kind,
+            template_metadata=_payload.get("template_metadata"),
         )
 
     return _builder
@@ -2466,6 +2491,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
             discard_after_add=True,
         ),
         priority=200,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
     ),
     _TemplateRule(
         name="trigger.preview_add_to_hand.040_name_discard",
@@ -2477,6 +2503,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
             discard_after_add=True,
         ),
         priority=200,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
     ),
     _TemplateRule(
         name="trigger.preview_add_to_hand.043_name_or_trait_discard",
@@ -2496,6 +2523,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
             discard_after_add=True,
         ),
         priority=200,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
     ),
     _TemplateRule(
         name="trigger.preview_add_to_hand.yellow_event_discard",
@@ -2510,6 +2538,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
             discard_after_add=True,
         ),
         priority=180,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
     ),
     _TemplateRule(
         name="trigger.bp_remove.required",
@@ -2517,6 +2546,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、退場させる。"),
         builder=_bp_remove_from_match_builder_factory(min_count=1, max_count=1),
         priority=120,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_required"},
     ),
     _TemplateRule(
         name="trigger.bp_remove.optional",
@@ -2524,6 +2554,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。"),
         builder=_bp_remove_from_match_builder_factory(min_count=0, max_count=1),
         priority=110,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_optional"},
     ),
 )
 
@@ -2543,6 +2574,7 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
             kind="TRIGGERED",
         ),
         priority=200,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_distinct_names"},
     ),
     _TemplateRule(
         name="event.bp_remove.required",
@@ -2550,6 +2582,7 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。"),
         builder=_bp_remove_from_match_builder_factory(min_count=1, max_count=1, kind="TRIGGERED"),
         priority=120,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_required"},
     ),
     _TemplateRule(
         name="event.bp_remove.optional",
@@ -2557,6 +2590,7 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。"),
         builder=_bp_remove_from_match_builder_factory(min_count=0, max_count=1, kind="TRIGGERED"),
         priority=110,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_optional"},
     ),
     _TemplateRule(
         name="event.bp_remove.dynamic_sayaka_life",
@@ -2579,6 +2613,7 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
             kind="TRIGGERED",
         ),
         priority=130,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_dynamic_sayaka_life"},
     ),
     _TemplateRule(
         name="event.bp_remove.dynamic_madoka",
@@ -2598,6 +2633,7 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
             kind="TRIGGERED",
         ),
         priority=130,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_dynamic_madoka"},
     ),
 )
 
@@ -2802,8 +2838,31 @@ def _infer_template_type(ability: dict) -> str:
     return "COMPOSITE"
 
 
+def _template_family_from_ability(ability: dict) -> str:
+    template_metadata = ability.get("template_metadata")
+    if isinstance(template_metadata, dict):
+        family = str(template_metadata.get("family", "")).strip()
+        if family:
+            return family
+    return ""
+
+
+def _apply_stable_template_metadata(semantic_entry: dict, card_effects: dict) -> dict:
+    template_types: list[str] = list(semantic_entry.get("template_types", []))
+    for ability_entry, source_ability in zip(semantic_entry.get("abilities", []), card_effects.get("abilities", [])):
+        family = _template_family_from_ability(source_ability)
+        if not family:
+            continue
+        ability_entry["template_type"] = family
+        if family not in template_types:
+            template_types.append(family)
+    semantic_entry["template_types"] = template_types
+    return semantic_entry
+
+
 def _build_semantic_entry(card_effects: dict) -> dict:
-    return build_semantic_ir_entry(card_effects)
+    semantic_entry = build_semantic_ir_entry(card_effects)
+    return _apply_stable_template_metadata(semantic_entry, card_effects)
 
 
 def _iter_series_raw_paths() -> list[Path]:
