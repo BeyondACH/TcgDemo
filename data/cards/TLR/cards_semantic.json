@@ -1,0 +1,2200 @@
+[
+  {
+    "card_id": "UA45BT_TLR_1_001",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_001_main_activate_e018eb9472",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_001_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_002",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_002_on_enter_43348ae670",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_003",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_003_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_004",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_005",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_005_on_enter_411fa6e744",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_006",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_006_on_enter_137300a282",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から〈黒咲 芽亜〉を1枚まで手札に加える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_006_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_007",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_007_on_enter_c6156983b1",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_007_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_008",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_008_on_enter_4d8a138f55",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を全て場外に置き、カードを5枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_009",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_009_on_enter_30616d10de",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_009_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_010",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_010_on_enter_248cae62b4",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から1枚見て、山札の上か下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_011",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_011_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_012",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_012_on_enter_2ac10423f0",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_012_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_013",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_013_on_enter_a94eb0e04a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_014",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_014_on_enter_9c11afd82f",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_014_main_activate_30c19abad2",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他のキャラを1枚選び、このターン中、BP+1000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_014_on_life_trigger_8723e8b5cb",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_015",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_015_on_enter_fecaad5f98",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "カードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_015_main_activate_d01a84b346",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_015_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_016",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_016_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_017",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "DOUBLE_BLOCK"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_017_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_018",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_018_on_attack_8bd2b2b9a3",
+        "timing": "ON_ATTACK",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLに〈霧崎 恭子〉がある場合、カードを1枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_018_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_019",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_019_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_020",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_020_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_021",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_021_on_enter_68ca61c02a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_021_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_022",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_022_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_023",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_023_on_enter_bad633bcf6",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_023_main_activate_ba34325275",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_023_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_024",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_024_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA45BT_TLR_1_024_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_025",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_026",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_026_main_activate_fcd432e4e7",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_026_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_027",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_027_on_enter_02e747d62b",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_027_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_028",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "DRAW_1",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_028_on_enter_91b04beda2",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA45BT_TLR_1_028_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_029",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_029_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_030",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_030_on_enter_cae4ef1c23",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "BPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_030_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_031",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_031_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_032",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_032_on_enter_abaa51734a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_033",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_033_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_034",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_034_on_enter_91b04beda2",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA45BT_TLR_1_034_on_life_trigger_8723e8b5cb",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_035",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "STEP"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_035_on_enter_80e8cdc58d",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_035_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_036",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_036_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_037",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_037_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA45BT_TLR_1_037_on_play_52a2516601",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_038",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_038_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA45BT_TLR_1_038_on_play_63529b5c57",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "カードを2枚引く。相手は自身の手札を全て公開する。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_039",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_039_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA45BT_TLR_1_039_on_play_6ba26a141c",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_040",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_040_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA45BT_TLR_1_040_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_041",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_041_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      },
+      {
+        "id": "UA45BT_TLR_1_041_on_play_6d43ac2c94",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_042",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_042_on_enter_248cae62b4",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から1枚見て、山札の上か下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_042_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_043",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_043_on_enter_194841f0b9",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_043_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_044",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_044_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_045",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_045_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_046",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_046_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_047",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_047_on_enter_f50f89224c",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_047_on_life_trigger_a41bad1555",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_048",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_048_on_enter_be8b243b89",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_048_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_049",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_049_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_050",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_050_on_enter_4dd584f511",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_051",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_051_on_enter_a100bb503b",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札から必要エナジーが2以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_051_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_052",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_052_on_enter_7ecf134719",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_052_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_053",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_053_main_activate_fb6d44c92a",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_053_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_054",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_054_on_enter_43348ae670",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_055",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_055_on_enter_536516f54f",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "以下から1つ選ぶ。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_055_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_056",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_056_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_057",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_057_on_enter_91b04beda2",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA45BT_TLR_1_057_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_058",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_058_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_059",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_059_on_leave_496127524a",
+        "timing": "ON_LEAVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈モモ・ベリア・デビルーク〉がある場合、カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA45BT_TLR_1_059_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_060",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_060_on_enter_00ae41d5e9",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_060_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_061",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_062",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_062_on_attack_fa840dea3e",
+        "timing": "ON_ATTACK",
+        "status": "UNSUPPORTED",
+        "text": "以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_062_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_063",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_063_on_enter_ee82639273",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_063_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_064",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_064_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_065",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_065_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_066",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_066_on_enter_053989dd8c",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_067",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "DOUBLE_BLOCK",
+      "NEGATE_IMPACT"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_067_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_068",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "SELECT_AND_MOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_068_on_enter_3c81107e13",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA45BT_TLR_1_068_on_life_trigger_a41bad1555",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_069",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_069_on_attack_b7fd01327a",
+        "timing": "ON_ATTACK",
+        "status": "UNSUPPORTED",
+        "text": "以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_069_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_070",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_070_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_071",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_071_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA45BT_TLR_1_071_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_072",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_072_on_enter_9e7dd06bd7",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_073",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_073_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_074",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_074_on_enter_b3c7717a9e",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_074_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_075",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED",
+      "LIFE_TRIGGER_RAID_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_075_on_enter_88fae5012a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "カードを1枚引く。自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、自分の手札から必要エナジーが4以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_075_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "",
+        "template_type": "LIFE_TRIGGER_RAID_CHOICE"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_076",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_076_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_077",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED",
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_077_main_activate_3686a2c0ae",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_077_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_078",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_078_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA45BT_TLR_1_078_on_play_ee9dd479ee",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_079",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_079_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA45BT_TLR_1_079_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "missing_capabilities": []
+  },
+  {
+    "card_id": "UA45BT_TLR_1_080",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_080_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA45BT_TLR_1_080_on_play_bd041a7f51",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_081",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_081_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA45BT_TLR_1_081_on_play_536516f54f",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "以下から1つ選ぶ。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_081_on_play_b20fce8918",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_081_on_play_b341867df9",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  },
+  {
+    "card_id": "UA45BT_TLR_1_082",
+    "source": "TLR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_082_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA45BT_TLR_1_082_on_play_cde32398ed",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "missing_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ]
+  }
+]

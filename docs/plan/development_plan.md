@@ -293,3 +293,9 @@
 - 短期内不引入大规模美术或动画重构；当前仅允许为 AI 调试可见性补一处最小提示位，整体仍以规则可见性和验证效率为优先。
 - `docs/rules/rule.md` 高于 README、旧计划文档和现有实现；若存在冲突，以 `docs/rules/rule.md` 为准。
 - 所有功能更新和 bugfix 必须同步记录到 `docs/logs/log_yyyy-MM-dd.md` 当日日志，且内容使用中文。
+
+## 8.1 2026-04-09 图片抓取脚本作品下载口径补充
+
+- `download_images.py` 新增 `--list-works` 交互入口：脚本会先读取 `attrweblist.data.works`，打印官方作品列表并提示输入编号。
+- 选中作品后，下载链接改为使用 `weblist?works=<作品名>` 进入主流程，以覆盖该作品下全部产品的图片，不再要求用户二次选择产品。
+- `--list-products` 仍保留为按产品名下载的交互入口；`--product` 手填下载语义不变。

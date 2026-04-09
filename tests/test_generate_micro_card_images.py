@@ -1,13 +1,16 @@
 import subprocess
-import tempfile
 import unittest
+import shutil
 from pathlib import Path
 
 
 class GenerateMicroCardImagesTests(unittest.TestCase):
     def test_script_generates_micro_images_inside_title_code_directory(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_root = Path(temp_dir)
+        repo_root = Path("D:\\CodexWork\\TcgDemo\\tests\\artifacts\\generate_micro_card_images_case")
+        if repo_root.exists():
+            shutil.rmtree(repo_root)
+        repo_root.mkdir(parents=True)
+        try:
             source_root = repo_root / "pic"
             title_dir = source_root / "MMM"
             title_dir.mkdir(parents=True)
@@ -34,6 +37,9 @@ class GenerateMicroCardImagesTests(unittest.TestCase):
             self.assertTrue((title_dir / "micro" / "UA31BT-MMM-1-001.png").exists())
             self.assertIn("scanned=1", result.stdout)
             self.assertIn("generated=1", result.stdout)
+        finally:
+            if repo_root.exists():
+                shutil.rmtree(repo_root)
 
     @staticmethod
     def _write_sample_png(path: Path) -> None:

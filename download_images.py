@@ -44,14 +44,16 @@ def fetch_json(url: str) -> dict:
 def build_source_url(
     *,
     product: str = DEFAULT_PRODUCT,
+    works: str = "",
     page: int = 1,
     limit: int = 50,
 ) -> str:
-    params = {
-        "good": product,
-        "page": str(page),
-        "limit": str(limit),
-    }
+    params = {"page": str(page), "limit": str(limit)}
+    normalized_works = normalize_text(works)
+    if normalized_works:
+        params["works"] = normalized_works
+    else:
+        params["good"] = product
     return f"{API_BASE_URL}?{urlencode(params)}"
 
 
@@ -311,6 +313,22 @@ def prompt_for_product_selection(products: list[dict[str, str]]) -> dict[str, st
     return products[selected_index - 1]
 
 
+def prompt_for_work_selection(works: list[str]) -> str:
+    console_print("Official works:")
+    for index, work in enumerate(works, start=1):
+        console_print(f"{index}. {work}")
+
+    selected = input("Enter work number to download: ").strip()
+    if not selected.isdigit():
+        raise ValueError(f"Invalid work number: {selected or '<empty>'}")
+
+    selected_index = int(selected)
+    if selected_index < 1 or selected_index > len(works):
+        raise ValueError(f"Invalid work number: {selected_index}")
+
+    return works[selected_index - 1]
+
+
 def build_page_url(url: str, page: int) -> str:
     parsed = urlparse(url)
     params = parse_qs(parsed.query, keep_blank_values=True)
@@ -389,6 +407,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="List product names and IDs from the official Japanese card list page.",
     )
+    parser.add_argument(
+        "--list-works",
+        action="store_true",
+        help="List official works, pick one by number, then download all images for it.",
+    )
     return parser.parse_args(argv)
 
 
@@ -421,8 +444,24 @@ def main(argv: list[str] | None = None) -> int:
         args.product = selected_product["name"]
         args.work = inferred_work
 
+    if args.list_works:
+        try:
+            works = get_attr_works()
+        except Exception as exc:
+            console_print(exc, file=sys.stderr)
+            return 1
+
+        try:
+            args.work = prompt_for_work_selection(works)
+        except ValueError as exc:
+            console_print(exc, file=sys.stderr)
+            return 1
+
+        args.product = ""
+
     SOURCE_URL = build_source_url(
         product=args.product,
+        works=args.work if args.list_works else "",
         limit=args.limit,
     )
     title_code = normalize_text(str(args.title_code or ""))

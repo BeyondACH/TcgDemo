@@ -6,8 +6,8 @@
 
 ## 1. 输入范围
 
-- 只读取 `pic/` 顶层图片文件。
-- 不读取 `pic/micro/` 缩略图目录。
+- 只读取 `pic/<series>/` 顶层图片文件。
+- 不读取 `pic/<series>/micro/` 缩略图目录。
 - 不读取 Godot 自动生成的 `.import` 文件。
 - 当前默认接受的图片扩展名：
   - `.png`
@@ -71,7 +71,7 @@
 刷新模式：
 
 - 使用脚本参数 `-RefreshExisting`
-- 会重新抓取 `pic/` 顶层图片对应的官网页
+- 会重新抓取 `pic/<series>/` 图片对应的官网页
 - 若目标系列 `cards_raw.json` 中已存在相同 `number` 或 `id`，会先移除旧条目，再写入新条目
 - 适合以下情况：
   - 官网字段解析逻辑修复后，需要批量回填旧数据
@@ -210,7 +210,7 @@
 
 适用于：
 
-- `pic/` 顶层新增了卡图
+- `pic/<series>/` 新增了卡图
 - 对应系列 `cards_raw.json` 中还没有这些卡
 
 执行：
@@ -248,7 +248,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_fro
 
 预期：
 
-- `pic/` 顶层图片对应的卡会全部重新抓取
+- `pic/<series>/` 图片对应的卡会全部重新抓取
 - 旧条目会按 `number` / `id` 替换
 - 可用于统一修复 `energy_provided` 等批量问题
 
@@ -256,8 +256,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_fro
 
 适用于：
 
-- 本轮导入新增了 `pic/` 顶层卡图对应的数据
-- 希望 `pic/micro/` 缩略图目录与顶层卡图保持同步
+- 本轮导入新增了 `pic/<series>/` 顶层卡图对应的数据
+- 希望 `pic/<series>/micro/` 缩略图目录与顶层卡图保持同步
 
 执行：
 
@@ -265,7 +265,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_fro
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_images.ps1
 ```
 
-建议在导入成功后顺带执行一次。该脚本会读取 `pic/` 顶层 `.png` 卡图，并只为 `pic/micro/` 中当前缺失的文件生成缩略图，不会覆盖已有缩略图。
+建议在导入成功后顺带执行一次。该脚本会读取 `pic/<series>/` 顶层 `.png` 卡图，并只为 `pic/<series>/micro/` 中当前缺失的文件生成缩略图，不会覆盖已有缩略图。
 
 预期：
 
@@ -302,7 +302,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_
 
 - `data/cards/<series>/cards_effects.json`
 - `data/cards/<series>/cards_semantic.json`
-- `pic/micro/` 缩略图目录
+- `pic/<series>/micro/` 缩略图目录
 
 当前编译入口仍是：
 

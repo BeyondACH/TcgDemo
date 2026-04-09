@@ -152,5 +152,3 @@ python tools/compile_cards_effects.py
   - 验证方式与结果
 - 如果某次改动没有写入对应日期的日志文件 `docs/logs/log_yyyy-MM-dd.md`，则该次工作应视为未完成。
 - 多 agent 协作时，由主 agent 负责确保最终集成结果只在当日日志文件中记录一次，且内容为中文。
-- 每次功能更新或 bugfix 完成后，主 agent 都必须在同一轮改动中同步统一 `docs/plan/development_plan.md`、`docs/plan/mile_stone.md`、`README.md` 与 `docs/logs/log_yyyy-MM-dd.md` 的口径，至少复核并更新规则状态、阶段主线、统计基线、验证结果与下一步方向。
-- 若某次功能更新后仍存在"代码已更新，但规则 / 计划 / README / 日志 仍保留旧口径"的情况，则该次工作应视为未完成；主 agent 不得把文档统一口径留到后续轮次补做。

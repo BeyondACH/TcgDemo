@@ -1,0 +1,3715 @@
+[
+    {
+        "id":  "UA45BT_TLR_1_001",
+        "name":  "霧崎 恭子",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-001",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-001.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-001",
+        "raw_effect_text":  "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "きりさき きょうこ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_002",
+        "name":  "古手川 唯",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-002",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  2
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-002.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-002",
+        "raw_effect_text":  "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "raw_trigger_text":  "-",
+        "ruby":  "こてがわ ゆい"
+    },
+    {
+        "id":  "UA45BT_TLR_1_003",
+        "name":  "西連寺 春菜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-003",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  1000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-003.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-003",
+        "raw_effect_text":  "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "raw_trigger_text":  "-",
+        "ruby":  "さいれんじ はるな"
+    },
+    {
+        "id":  "UA45BT_TLR_1_004",
+        "name":  "ティアーユ・ルナティーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-004",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+                         "NEGATE_IMPACT",
+                         "IMPACT"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト無効"
+                        }
+                    ],
+        "trigger_effects":  [
+
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-004.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-004",
+        "raw_effect_text":  "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+        "raw_trigger_text":  "-",
+        "ruby":  "てぃあーゆ るなてぃーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_005",
+        "name":  "ティアーユ・ルナティーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-005",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-005.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-005",
+        "raw_effect_text":  "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。",
+        "raw_trigger_text":  "-",
+        "ruby":  "てぃあーゆ るなてぃーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_006",
+        "name":  "ナナ・アスタ・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-006",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から〈黒咲 芽亜〉を1枚まで手札に加える。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-006.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-006",
+        "raw_effect_text":  "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から〈黒咲 芽亜〉を1枚まで手札に加える。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "なな あすた でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_007",
+        "name":  "マジカルキョーコ",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-007",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このカードは〈霧崎 恭子〉としても扱う。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-007.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-007",
+        "raw_effect_text":  "このカードは〈霧崎 恭子〉としても扱う。\n相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "まじかるきょーこ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_008",
+        "name":  "御門 涼子",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-008",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  5
+                        },
+        "cost_ap":  2,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札を全て場外に置き、カードを5枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-008.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-008",
+        "raw_effect_text":  "自分の手札を全て場外に置き、カードを5枚引く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "みかど りょうこ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_009",
+        "name":  "村雨 静",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-009",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-009.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-009",
+        "raw_effect_text":  "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "むらさめ しず"
+    },
+    {
+        "id":  "UA45BT_TLR_1_010",
+        "name":  "モモ・ベリア・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-010",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から1枚見て、山札の上か下に置く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-010.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-010",
+        "raw_effect_text":  "自分の山札の上から1枚見て、山札の上か下に置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "もも べりあ でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_011",
+        "name":  "結城 美柑",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-011",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-011.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-011",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "ゆうき みかん"
+    },
+    {
+        "id":  "UA45BT_TLR_1_012",
+        "name":  "結城 美柑",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-012",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-012.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-012",
+        "raw_effect_text":  "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "ゆうき みかん"
+    },
+    {
+        "id":  "UA45BT_TLR_1_013",
+        "name":  "結城 美柑",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-013",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-013.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-013",
+        "raw_effect_text":  "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+        "raw_trigger_text":  "-",
+        "ruby":  "ゆうき みかん"
+    },
+    {
+        "id":  "UA45BT_TLR_1_014",
+        "name":  "結城 美柑",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-014",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。"
+                                },
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場の他のキャラを1枚選び、このターン中、BP+1000。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "カラー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-014.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-014",
+        "raw_effect_text":  "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。\n自分の場の他のキャラを1枚選び、このターン中、BP+1000。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "ruby":  "ゆうき みかん"
+    },
+    {
+        "id":  "UA45BT_TLR_1_015",
+        "name":  "結城 美柑",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-015",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  2
+                            },
+        "bp":  0,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈結城 美柑〉アクティブにし、フロントLに移動できる"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "カードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。"
+                                },
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-015.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-015",
+        "raw_effect_text":  "〈結城 美柑〉アクティブにし、フロントLに移動できる\nカードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。\n必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "ゆうき みかん",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "結城 美柑",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_016",
+        "name":  "ララ・サタリン・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-016",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引き、自分の手札を1枚場外に置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-016.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-016",
+        "raw_effect_text":  "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "らら さたりん でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_017",
+        "name":  "ルン・エルシ・ジュエリア",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-017",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  3500,
+        "keywords":  [
+                         "DOUBLE_BLOCK"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（このキャラがこのターン初めてブロックした時、アクティブにする）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "2回ブロック"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-017.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-017",
+        "raw_effect_text":  "（このキャラがこのターン初めてブロックした時、アクティブにする）",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "るん えるし じゅえりあ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_018",
+        "name":  "ルン・エルシ・ジュエリア",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-018",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ATTACK",
+                                    "source_label":  "アタック時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のフロントLに〈霧崎 恭子〉がある場合、カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-018.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-018",
+        "raw_effect_text":  "自分のフロントLに〈霧崎 恭子〉がある場合、カードを1枚引く。",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "るん えるし じゅえりあ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_019",
+        "name":  "黒咲 芽亜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-019",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-019.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-019",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "くろさき めあ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_020",
+        "name":  "黒咲 芽亜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-020",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-020.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-020",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "くろさき めあ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_021",
+        "name":  "黒咲 芽亜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-021",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-021.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-021",
+        "raw_effect_text":  "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "くろさき めあ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_022",
+        "name":  "黒咲 芽亜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-022",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  2
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このキャラはBP+1000。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-022.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-022",
+        "raw_effect_text":  "このキャラはBP+1000。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "くろさき めあ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_023",
+        "name":  "黒咲 芽亜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-023",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  5
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈黒咲 芽亜〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "このキャラはフロントLでもエナジーを発生させる。",
+                            "effect_box":  "RAID_INNER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。"
+                                },
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-023.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-023",
+        "raw_effect_text":  "〈黒咲 芽亜〉アクティブにし、フロントLに移動できる\nこのキャラはフロントLでもエナジーを発生させる。\n相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。\nBP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "くろさき めあ",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "黒咲 芽亜",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_024",
+        "name":  "金色の闇",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-024",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引き、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-024.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-024",
+        "raw_effect_text":  "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "こんじきのやみ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_025",
+        "name":  "金色の闇",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-025",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "相手の場にBP4000以上のキャラがある場合、このキャラはBP+500。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-025.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-025",
+        "raw_effect_text":  "相手の場にBP4000以上のキャラがある場合、このキャラはBP+500。",
+        "raw_trigger_text":  "-",
+        "ruby":  "こんじきのやみ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_026",
+        "name":  "金色の闇",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-026",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-026.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-026",
+        "raw_effect_text":  "自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "こんじきのやみ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_027",
+        "name":  "金色の闇",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-027",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1000。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-027.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-027",
+        "raw_effect_text":  "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1000。\n自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "こんじきのやみ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_028",
+        "name":  "金色の闇",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-028",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈金色の闇〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1500。",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "自分のターン中"
+                        },
+                        {
+                            "text":  "このキャラのアタック終了時、自分の手札を2枚場外に置いてもよい。そうした場合、このキャラをアクティブにし、このターン中、を得る。",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "ターン1"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-028.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-028",
+        "raw_effect_text":  "〈金色の闇〉アクティブにし、フロントLに移動できる\n自分の場に〈結城 美柑〉がある場合、このキャラはBP+1500。\nこのキャラのアタック終了時、自分の手札を2枚場外に置いてもよい。そうした場合、このキャラをアクティブにし、このターン中、を得る。\nカードを1枚引く。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "こんじきのやみ",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "金色の闇",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_029",
+        "name":  "ダークネス",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-029",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  6
+                        },
+        "cost_ap":  2,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このカードは〈金色の闇〉としても扱う。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "text":  "このキャラはアクティブで登場させる。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "text":  "（このキャラがアタックで与える直接ダメージは2ダメージ）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "ダメージ（2）"
+                        },
+                        {
+                            "text":  "このキャラはBP+1000。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
+                        },
+                        {
+                            "text":  "このキャラがアタックしてバトルに勝利した時、カードを1枚引く。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-029.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-029",
+        "raw_effect_text":  "このカードは〈金色の闇〉としても扱う。\nこのキャラはアクティブで登場させる。\n（このキャラがアタックで与える直接ダメージは2ダメージ）\nこのキャラはBP+1000。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引く。",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "だーくねす"
+    },
+    {
+        "id":  "UA45BT_TLR_1_030",
+        "name":  "ダークネス",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-030",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  8
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  5000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このカードは〈金色の闇〉としても扱う。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈金色の闇〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "（アタックしてバトルに勝利した時、相手に1ダメージ）",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "インパクト（1）"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "BPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-030.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-030",
+        "raw_effect_text":  "このカードは〈金色の闇〉としても扱う。\n〈金色の闇〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nBPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "だーくねす",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "金色の闇",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_031",
+        "name":  "ネメシス",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-031",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-031.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-031",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "ねめしす"
+    },
+    {
+        "id":  "UA45BT_TLR_1_032",
+        "name":  "ネメシス",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-032",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-032.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-032",
+        "raw_effect_text":  "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "ねめしす"
+    },
+    {
+        "id":  "UA45BT_TLR_1_033",
+        "name":  "ネメシス",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-033",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "黄"
+                        }
+                    ],
+        "trigger_effects":  [
+
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-033.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-033",
+        "raw_effect_text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "raw_trigger_text":  "-",
+        "ruby":  "ねめしす"
+    },
+    {
+        "id":  "UA45BT_TLR_1_034",
+        "name":  "ネメシス",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-034",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  2
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "カラー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-034.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-034",
+        "raw_effect_text":  "カードを1枚引く。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "ruby":  "ねめしす"
+    },
+    {
+        "id":  "UA45BT_TLR_1_035",
+        "name":  "ネメシス",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-035",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  5
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈ネメシス〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "ステップ"
+                        },
+                        {
+                            "text":  "このキャラの発生エナジー+。",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "黄"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-035.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-035",
+        "raw_effect_text":  "〈ネメシス〉アクティブにし、フロントLに移動できる\n（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのキャラの発生エナジー+。\n自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "ねめしす",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "ネメシス",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_036",
+        "name":  "ルナティーク号",
+        "card_type":  "FIELD",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-036",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "YELLOW":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分のフロントLに〈金色の闇〉がある場合、このフィールドの発生エナジー+。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "黄"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-036.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-036",
+        "raw_effect_text":  "自分のフロントLに〈金色の闇〉がある場合、このフィールドの発生エナジー+。",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "るなてぃーくごう"
+    },
+    {
+        "id":  "UA45BT_TLR_1_037",
+        "name":  "えっちぃのはキライです",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-037",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-037.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-037",
+        "raw_effect_text":  "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "えっちぃのはきらいです"
+    },
+    {
+        "id":  "UA45BT_TLR_1_038",
+        "name":  "精神侵入",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-038",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "カードを2枚引く。相手は自身の手札を全て公開する。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-038.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-038",
+        "raw_effect_text":  "カードを2枚引く。相手は自身の手札を全て公開する。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "さいこだいぶ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_039",
+        "name":  "ダークマター",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-039",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  5
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-039.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-039",
+        "raw_effect_text":  "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "だーくまたー"
+    },
+    {
+        "id":  "UA45BT_TLR_1_040",
+        "name":  "To LOVEる",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-040",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分のAPカードを2枚まで選び、アクティブにする。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ファイナル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-040.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-040",
+        "raw_effect_text":  "自分のAPカードを2枚まで選び、アクティブにする。",
+        "raw_trigger_text":  "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "ruby":  "とらぶる"
+    },
+    {
+        "id":  "UA45BT_TLR_1_041",
+        "name":  "美柑の手料理",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-041",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "YELLOW":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-041.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-041",
+        "raw_effect_text":  "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "みかんのてりょうり"
+    },
+    {
+        "id":  "UA45BT_TLR_1_042",
+        "name":  "新井 紗弥香",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-042",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  1000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から1枚見て、山札の上か下に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-042.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-042",
+        "raw_effect_text":  "自分の山札の上から1枚見て、山札の上か下に置く。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "あらい さやか"
+    },
+    {
+        "id":  "UA45BT_TLR_1_043",
+        "name":  "九条 凛",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-043",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  2,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このキャラはアクティブで登場させる。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-043.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-043",
+        "raw_effect_text":  "このキャラはアクティブで登場させる。\n自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "くじょう りん"
+    },
+    {
+        "id":  "UA45BT_TLR_1_044",
+        "name":  "古手川 唯",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-044",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-044.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-044",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "こてがわ ゆい"
+    },
+    {
+        "id":  "UA45BT_TLR_1_045",
+        "name":  "古手川 唯",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-045",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分の場に他のカードが5枚以上ある場合、このキャラはBP+1000。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-045.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-045",
+        "raw_effect_text":  "自分の場に他のカードが5枚以上ある場合、このキャラはBP+1000。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "こてがわ ゆい"
+    },
+    {
+        "id":  "UA45BT_TLR_1_046",
+        "name":  "古手川 唯",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-046",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このキャラのアタックがブロックされなかった時、カードを1枚引き、自分の手札を1枚場外に置く。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引き、自分の手札を1枚場外に置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-046.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-046",
+        "raw_effect_text":  "このキャラのアタックがブロックされなかった時、カードを1枚引き、自分の手札を1枚場外に置く。\nカードを1枚引き、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "こてがわ ゆい"
+    },
+    {
+        "id":  "UA45BT_TLR_1_047",
+        "name":  "古手川 唯",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-047",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  2
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "カラー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-047.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-047",
+        "raw_effect_text":  "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。",
+        "raw_trigger_text":  "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "こてがわ ゆい"
+    },
+    {
+        "id":  "UA45BT_TLR_1_048",
+        "name":  "古手川 唯",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-048",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈古手川 唯〉アクティブにし、フロントLに移動できる"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-048.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-048",
+        "raw_effect_text":  "〈古手川 唯〉アクティブにし、フロントLに移動できる\nこのキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "こてがわ ゆい",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "古手川 唯",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_049",
+        "name":  "西連寺 春菜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-049",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-049.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-049",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "さいれんじ はるな"
+    },
+    {
+        "id":  "UA45BT_TLR_1_050",
+        "name":  "西連寺 春菜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-050",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-050.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-050",
+        "raw_effect_text":  "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "さいれんじ はるな"
+    },
+    {
+        "id":  "UA45BT_TLR_1_051",
+        "name":  "西連寺 春菜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-051",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の手札から必要エナジーが2以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-051.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-051",
+        "raw_effect_text":  "自分の手札から必要エナジーが2以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "さいれんじ はるな"
+    },
+    {
+        "id":  "UA45BT_TLR_1_052",
+        "name":  "西連寺 春菜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-052",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  2
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-052.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-052",
+        "raw_effect_text":  "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "さいれんじ はるな"
+    },
+    {
+        "id":  "UA45BT_TLR_1_053",
+        "name":  "西連寺 春菜",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-053",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈西連寺 春菜〉アクティブにし、フロントLに移動できる"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-053.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-053",
+        "raw_effect_text":  "〈西連寺 春菜〉アクティブにし、フロントLに移動できる\n〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "さいれんじ はるな",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "西連寺 春菜",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_054",
+        "name":  "沢田 未央",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-054",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  2
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-054.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-054",
+        "raw_effect_text":  "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "raw_trigger_text":  "-",
+        "ruby":  "さわだ みお"
+    },
+    {
+        "id":  "UA45BT_TLR_1_055",
+        "name":  "セフィ・ミカエラ・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-055",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  2
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "・自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "text":  "・BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "以下から1つ選ぶ。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-055.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-055",
+        "raw_effect_text":  "以下から1つ選ぶ。\n・自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。\n・BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "せふぃ みかえら でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_056",
+        "name":  "セリーヌ",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-056",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  1000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-056.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-056",
+        "raw_effect_text":  "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "raw_trigger_text":  "-",
+        "ruby":  "せりーぬ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_057",
+        "name":  "天条院 沙姫",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-057",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-057.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-057",
+        "raw_effect_text":  "カードを1枚引く。",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "てんじょういん さき"
+    },
+    {
+        "id":  "UA45BT_TLR_1_058",
+        "name":  "ナナ・アスタ・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-058",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-058.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-058",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "なな あすた でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_059",
+        "name":  "ナナ・アスタ・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-059",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LEAVE",
+                                    "source_label":  "退場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場に〈モモ・ベリア・デビルーク〉がある場合、カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-059.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-059",
+        "raw_effect_text":  "自分の場に〈モモ・ベリア・デビルーク〉がある場合、カードを1枚引く。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "なな あすた でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_060",
+        "name":  "ナナ・アスタ・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-060",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  3500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "ステップ"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-060.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-060",
+        "raw_effect_text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "なな あすた でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_061",
+        "name":  "ナナ・アスタ・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-061",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "ステップ"
+                        },
+                        {
+                            "text":  "自分の場に〈モモ・ベリア・デビルーク〉がある場合、このキャラはBP+1500。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "自分のターン中"
+                        }
+                    ],
+        "trigger_effects":  [
+
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-061.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-061",
+        "raw_effect_text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分の場に〈モモ・ベリア・デビルーク〉がある場合、このキャラはBP+1500。",
+        "raw_trigger_text":  "-",
+        "ruby":  "なな あすた でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_062",
+        "name":  "ナナ・アスタ・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-062",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈ナナ・アスタ・デビルーク〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "・自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+                            "effect_box":  "RAID_INNER"
+                        },
+                        {
+                            "text":  "・自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。",
+                            "effect_box":  "RAID_INNER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ATTACK",
+                                    "source_label":  "アタック時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-062.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-062",
+        "raw_effect_text":  "〈ナナ・アスタ・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。\n・自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。\n・自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "なな あすた でびるーく",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "ナナ・アスタ・デビルーク",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_063",
+        "name":  "藤崎 綾",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-063",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  1000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-063.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-063",
+        "raw_effect_text":  "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "ふじさき あや"
+    },
+    {
+        "id":  "UA45BT_TLR_1_064",
+        "name":  "籾岡 里紗",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-064",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "赤"
+                        }
+                    ],
+        "trigger_effects":  [
+
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-064.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-064",
+        "raw_effect_text":  "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "raw_trigger_text":  "-",
+        "ruby":  "もみおか りさ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_065",
+        "name":  "モモ・ベリア・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-065",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ゲット",
+                                    "effect_box":  "OUTER",
+                                    "text":  "このカードを手札に加える。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-065.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-065",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "このカードを手札に加える。",
+        "ruby":  "もも べりあ でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_066",
+        "name":  "モモ・ベリア・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-066",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-066.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-066",
+        "raw_effect_text":  "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "もも べりあ でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_067",
+        "name":  "モモ・ベリア・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-067",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  3000,
+        "keywords":  [
+                         "DOUBLE_BLOCK",
+                         "NEGATE_IMPACT"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、このキャラはとを得る。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "2回ブロック"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-067.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-067",
+        "raw_effect_text":  "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、このキャラはとを得る。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "もも べりあ でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_068",
+        "name":  "モモ・ベリア・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-068",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  2
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、カードを1枚引く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "カラー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-068.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-068",
+        "raw_effect_text":  "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、カードを1枚引く。",
+        "raw_trigger_text":  "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "もも べりあ でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_069",
+        "name":  "モモ・ベリア・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-069",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈モモ・ベリア・デビルーク〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "・自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+                            "effect_box":  "RAID_INNER"
+                        },
+                        {
+                            "text":  "・自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。",
+                            "effect_box":  "RAID_INNER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ATTACK",
+                                    "source_label":  "アタック時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-069.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-069",
+        "raw_effect_text":  "〈モモ・ベリア・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。\n・自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。\n・自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "もも べりあ でびるーく",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "モモ・ベリア・デビルーク",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_070",
+        "name":  "結城 美柑",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-070",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+                         "NEGATE_IMPACT",
+                         "IMPACT"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト無効"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-070.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-070",
+        "raw_effect_text":  "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "ゆうき みかん"
+    },
+    {
+        "id":  "UA45BT_TLR_1_071",
+        "name":  "ララ・サタリン・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-071",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  1500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引き、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-071.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-071",
+        "raw_effect_text":  "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "らら さたりん でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_072",
+        "name":  "ララ・サタリン・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-072",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2000,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-072.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-072",
+        "raw_effect_text":  "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
+        "raw_trigger_text":  "-",
+        "ruby":  "らら さたりん でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_073",
+        "name":  "ララ・サタリン・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-073",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "ステップ"
+                        },
+                        {
+                            "text":  "このキャラはBP+500。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "相手のターン中"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-073.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-073",
+        "raw_effect_text":  "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのキャラはBP+500。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "らら さたりん でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_074",
+        "name":  "ララ・サタリン・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-074",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "NEGATE_IMPACT",
+                         "IMPACT"
+                     ],
+        "effects":  [
+                        {
+                            "text":  "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト無効"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "R",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-074.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-074",
+        "raw_effect_text":  "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "らら さたりん でびるーく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_075",
+        "name":  "ララ・サタリン・デビルーク",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-075",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  5
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  4000,
+        "keywords":  [
+                         "RAID"
+                     ],
+        "effects":  [
+                        {
+                            "source_label":  "レイド",
+                            "effect_box":  "RAID_INNER",
+                            "text":  "〈ララ・サタリン・デビルーク〉アクティブにし、フロントLに移動できる"
+                        },
+                        {
+                            "text":  "（アタックしてバトルに勝利した時、相手に1ダメージ）",
+                            "effect_box":  "RAID_INNER",
+                            "source_label":  "インパクト（1）"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_ENTER",
+                                    "source_label":  "登場時",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "カードを1枚引く。自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、自分の手札から必要エナジーが4以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+                                },
+                                {
+                                    "trigger":  "RAID_RULE",
+                                    "source_label":  "レイド",
+                                    "effect_box":  "RAID_INNER",
+                                    "text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+                                }
+                            ],
+        "rarity":  "SR",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-075.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-075",
+        "raw_effect_text":  "〈ララ・サタリン・デビルーク〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nカードを1枚引く。自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、自分の手札から必要エナジーが4以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "raw_trigger_text":  "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "ruby":  "らら さたりん でびるーく",
+        "special_play_rule":  {
+                                  "type":  "RAID",
+                                  "raid_target_name":  "ララ・サタリン・デビルーク",
+                                  "allow_from_hand":  true,
+                                  "require_full_energy":  true
+                              }
+    },
+    {
+        "id":  "UA45BT_TLR_1_076",
+        "name":  "金色の闇",
+        "card_type":  "CHARACTER",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-076",
+        "traits":  [
+                       "変身兵器"
+                   ],
+        "cost_energy":  {
+                            "RED":  1
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  2500,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "アクティブ",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-076.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-076",
+        "raw_effect_text":  "-",
+        "raw_trigger_text":  "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "ruby":  "こんじきのやみ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_077",
+        "name":  "彩南高校",
+        "card_type":  "FIELD",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-077",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  2
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+                                "RED":  1
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "MAIN_ACTIVATE",
+                                    "source_label":  "起動メイン",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+                                },
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-077.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-077",
+        "raw_effect_text":  "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "さいなんこうこう"
+    },
+    {
+        "id":  "UA45BT_TLR_1_078",
+        "name":  "キャノンフラワー",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-078",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-078.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-078",
+        "raw_effect_text":  "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "きゃのんふらわー"
+    },
+    {
+        "id":  "UA45BT_TLR_1_079",
+        "name":  "To LOVEる",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-079",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  3
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分のAPカードを2枚まで選び、アクティブにする。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ファイナル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-079.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-079",
+        "raw_effect_text":  "自分のAPカードを2枚まで選び、アクティブにする。",
+        "raw_trigger_text":  "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "ruby":  "とらぶる"
+    },
+    {
+        "id":  "UA45BT_TLR_1_080",
+        "name":  "楽園計画",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-080",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "ドロー",
+                                    "effect_box":  "OUTER",
+                                    "text":  "カードを1枚引く。"
+                                }
+                            ],
+        "rarity":  "C",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-080.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-080",
+        "raw_effect_text":  "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+        "raw_trigger_text":  "カードを1枚引く。",
+        "ruby":  "はーれむけいかく"
+    },
+    {
+        "id":  "UA45BT_TLR_1_081",
+        "name":  "ハレンチなっ!!",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-081",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  1,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "以下から1つ選ぶ。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "text":  "・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "text":  "・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。",
+                            "effect_box":  "OUTER",
+                            "source_label":  "インパクト（1）"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-081.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-081",
+        "raw_effect_text":  "以下から1つ選ぶ。\n・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。\n・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "はれんちなっ"
+    },
+    {
+        "id":  "UA45BT_TLR_1_082",
+        "name":  "ぴょんぴょんワープくん",
+        "card_type":  "EVENT",
+        "title_code":  "TLR",
+        "number":  "UA45BT/TLR-1-082",
+        "traits":  [
+
+                   ],
+        "cost_energy":  {
+                            "RED":  4
+                        },
+        "cost_ap":  2,
+        "energy_provided":  {
+
+                            },
+        "bp":  0,
+        "keywords":  [
+
+                     ],
+        "effects":  [
+                        {
+                            "text":  "自分の場に〈ララ・サタリン・デビルーク〉がある場合、手札にあるこのカードの消費APを-1する。",
+                            "effect_box":  "OUTER"
+                        },
+                        {
+                            "text":  "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。",
+                            "effect_box":  "OUTER"
+                        }
+                    ],
+        "trigger_effects":  [
+                                {
+                                    "trigger":  "ON_LIFE_TRIGGER",
+                                    "source_label":  "スペシャル",
+                                    "effect_box":  "OUTER",
+                                    "text":  "相手のフロントLのキャラを1枚選び、退場させる。"
+                                }
+                            ],
+        "rarity":  "U",
+        "series_title":  "To LOVEる-とらぶる-",
+        "source_image":  "UA45BT-TLR-1-082.png",
+        "source_url":  "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA45BT/TLR-1-082",
+        "raw_effect_text":  "自分の場に〈ララ・サタリン・デビルーク〉がある場合、手札にあるこのカードの消費APを-1する。\nBP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。",
+        "raw_trigger_text":  "相手のフロントLのキャラを1枚選び、退場させる。",
+        "ruby":  "ぴょんぴょんわーぷくん"
+    }
+]

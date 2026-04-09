@@ -1,5 +1,7 @@
 param(
-  [switch]$RefreshExisting
+  [switch]$RefreshExisting,
+  [string]$PicRoot = "",
+  [string]$CardsRoot = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -501,13 +503,28 @@ function Get-WebRequestFailureInfo($errorRecord) {
 }
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
-$picDir = Join-Path $repoRoot "pic"
-$cardsRoot = Join-Path $repoRoot "data\\cards"
+$picDir = if ($PicRoot -ne "") { $PicRoot } else { Join-Path $repoRoot "pic" }
+$cardsRoot = if ($CardsRoot -ne "") { $CardsRoot } else { Join-Path $repoRoot "data\\cards" }
 $cardsBySeries = @{}
 $existingNumbersBySeries = @{}
 $existingIdsBySeries = @{}
 
-$files = Get-ChildItem -Path $picDir -File | Where-Object { $_.Extension.ToLowerInvariant() -in @(".png", ".jpg", ".jpeg", ".webp") } | Sort-Object Name
+$files = [System.Collections.ArrayList]::new()
+
+foreach ($file in (Get-ChildItem -Path $picDir -File | Where-Object { $_.Extension.ToLowerInvariant() -in @(".png", ".jpg", ".jpeg", ".webp") } | Sort-Object Name)) {
+  [void]$files.Add($file)
+}
+
+foreach ($titleDir in (Get-ChildItem -Path $picDir -Directory | Sort-Object Name)) {
+  if ($titleDir.Name -eq "micro") {
+    continue
+  }
+
+  foreach ($file in (Get-ChildItem -Path $titleDir.FullName -File | Where-Object { $_.Extension.ToLowerInvariant() -in @(".png", ".jpg", ".jpeg", ".webp") } | Sort-Object Name)) {
+    [void]$files.Add($file)
+  }
+}
+
 $added = [System.Collections.ArrayList]::new()
 $failures = [System.Collections.ArrayList]::new()
 $skippedExisting = [System.Collections.ArrayList]::new()

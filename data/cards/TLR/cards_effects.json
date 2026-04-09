@@ -1,0 +1,7885 @@
+[
+  {
+    "id": "UA45BT_TLR_1_001",
+    "card_meta": {
+      "name": "霧崎 恭子",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-001",
+      "source_image": "UA45BT-TLR-1-001.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_001_main_activate_e018eb9472",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_001_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_002",
+    "card_meta": {
+      "name": "古手川 唯",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-002",
+      "source_image": "UA45BT-TLR-1-002.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 2
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_002_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_primary_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_primary_target",
+            "to": "HAND"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "primary_target_moved",
+            "from_var": "selected_primary_target"
+          },
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "HAND",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_FALSE",
+                "var": "primary_target_moved"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_003",
+    "card_meta": {
+      "name": "西連寺 春菜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-003",
+      "source_image": "UA45BT-TLR-1-003.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 1000,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_003_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "YELLOW",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_004",
+    "card_meta": {
+      "name": "ティアーユ・ルナティーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-004",
+      "source_image": "UA45BT-TLR-1-004.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2000,
+      "keywords": [
+        "NEGATE_IMPACT",
+        "IMPACT"
+      ],
+      "text": {
+        "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_005",
+    "card_meta": {
+      "name": "ティアーユ・ルナティーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-005",
+      "source_image": "UA45BT-TLR-1-005.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_005_on_enter_411fa6e744",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_006",
+    "card_meta": {
+      "name": "ナナ・アスタ・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-006",
+      "source_image": "UA45BT-TLR-1-006.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から〈黒咲 芽亜〉を1枚まで手札に加える。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_006_on_enter_137300a282",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から〈黒咲 芽亜〉を1枚まで手札に加える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_006_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_007",
+    "card_meta": {
+      "name": "マジカルキョーコ",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-007",
+      "source_image": "UA45BT-TLR-1-007.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 4000,
+      "keywords": [],
+      "text": {
+        "effect": "このカードは〈霧崎 恭子〉としても扱う。\n相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_007_on_enter_c6156983b1",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_007_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_008",
+    "card_meta": {
+      "name": "御門 涼子",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-008",
+      "source_image": "UA45BT-TLR-1-008.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 5
+      },
+      "cost_ap": 2,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の手札を全て場外に置き、カードを5枚引く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_008_on_enter_4d8a138f55",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札を全て場外に置き、カードを5枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_009",
+    "card_meta": {
+      "name": "村雨 静",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-009",
+      "source_image": "UA45BT-TLR-1-009.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_009_on_enter_30616d10de",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_009_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_010",
+    "card_meta": {
+      "name": "モモ・ベリア・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-010",
+      "source_image": "UA45BT-TLR-1-010.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から1枚見て、山札の上か下に置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_010_on_enter_248cae62b4",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から1枚見て、山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_011",
+    "card_meta": {
+      "name": "結城 美柑",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-011",
+      "source_image": "UA45BT-TLR-1-011.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_011_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_012",
+    "card_meta": {
+      "name": "結城 美柑",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-012",
+      "source_image": "UA45BT-TLR-1-012.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_012_on_enter_2ac10423f0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_012_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_013",
+    "card_meta": {
+      "name": "結城 美柑",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-013",
+      "source_image": "UA45BT-TLR-1-013.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_013_on_enter_a94eb0e04a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_014",
+    "card_meta": {
+      "name": "結城 美柑",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-014",
+      "source_image": "UA45BT-TLR-1-014.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。\n自分の場の他のキャラを1枚選び、このターン中、BP+1000。",
+        "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_014_on_enter_9c11afd82f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_014_main_activate_30c19abad2",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "自分の場の他のキャラを1枚選び、このターン中、BP+1000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_014_on_life_trigger_8723e8b5cb",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "SET_CARD_FLAG",
+            "target_var": "selected_target",
+            "flag": "skip_next_ready_once",
+            "value": true
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "カラー",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "COMPOSITE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_015",
+    "card_meta": {
+      "name": "結城 美柑",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-015",
+      "source_image": "UA45BT-TLR-1-015.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 2
+      },
+      "bp": 0,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈結城 美柑〉アクティブにし、フロントLに移動できる\nカードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。\n必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "結城 美柑",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_015_on_enter_fecaad5f98",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "カードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_015_main_activate_d01a84b346",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "RAID_INNER",
+          "text": "必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_015_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_016",
+    "card_meta": {
+      "name": "ララ・サタリン・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-016",
+      "source_image": "UA45BT-TLR-1-016.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_016_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_017",
+    "card_meta": {
+      "name": "ルン・エルシ・ジュエリア",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-017",
+      "source_image": "UA45BT-TLR-1-017.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3500,
+      "keywords": [
+        "DOUBLE_BLOCK"
+      ],
+      "text": {
+        "effect": "（このキャラがこのターン初めてブロックした時、アクティブにする）",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_017_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_018",
+    "card_meta": {
+      "name": "ルン・エルシ・ジュエリア",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-018",
+      "source_image": "UA45BT-TLR-1-018.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 4000,
+      "keywords": [],
+      "text": {
+        "effect": "自分のフロントLに〈霧崎 恭子〉がある場合、カードを1枚引く。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_018_on_attack_8bd2b2b9a3",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ATTACK"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アタック時",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLに〈霧崎 恭子〉がある場合、カードを1枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_018_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_019",
+    "card_meta": {
+      "name": "黒咲 芽亜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-019",
+      "source_image": "UA45BT-TLR-1-019.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_019_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_020",
+    "card_meta": {
+      "name": "黒咲 芽亜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-020",
+      "source_image": "UA45BT-TLR-1-020.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_020_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_021",
+    "card_meta": {
+      "name": "黒咲 芽亜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-021",
+      "source_image": "UA45BT-TLR-1-021.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_021_on_enter_68ca61c02a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_021_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_022",
+    "card_meta": {
+      "name": "黒咲 芽亜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-022",
+      "source_image": "UA45BT-TLR-1-022.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 2
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラはBP+1000。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_022_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_023",
+    "card_meta": {
+      "name": "黒咲 芽亜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-023",
+      "source_image": "UA45BT-TLR-1-023.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 5
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈黒咲 芽亜〉アクティブにし、フロントLに移動できる\nこのキャラはフロントLでもエナジーを発生させる。\n相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。\nBP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "黒咲 芽亜",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_023_on_enter_bad633bcf6",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_023_main_activate_ba34325275",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "RAID_INNER",
+          "text": "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_023_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_024",
+    "card_meta": {
+      "name": "金色の闇",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-024",
+      "source_image": "UA45BT-TLR-1-024.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_024_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_024_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_025",
+    "card_meta": {
+      "name": "金色の闇",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-025",
+      "source_image": "UA45BT-TLR-1-025.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "相手の場にBP4000以上のキャラがある場合、このキャラはBP+500。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_026",
+    "card_meta": {
+      "name": "金色の闇",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-026",
+      "source_image": "UA45BT-TLR-1-026.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_026_main_activate_fcd432e4e7",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_026_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_027",
+    "card_meta": {
+      "name": "金色の闇",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-027",
+      "source_image": "UA45BT-TLR-1-027.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1000。\n自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_027_on_enter_02e747d62b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_027_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_028",
+    "card_meta": {
+      "name": "金色の闇",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-028",
+      "source_image": "UA45BT-TLR-1-028.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 0,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈金色の闇〉アクティブにし、フロントLに移動できる\n自分の場に〈結城 美柑〉がある場合、このキャラはBP+1500。\nこのキャラのアタック終了時、自分の手札を2枚場外に置いてもよい。そうした場合、このキャラをアクティブにし、このターン中、を得る。\nカードを1枚引く。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "金色の闇",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_028_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_028_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_029",
+    "card_meta": {
+      "name": "ダークネス",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-029",
+      "source_image": "UA45BT-TLR-1-029.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 6
+      },
+      "cost_ap": 2,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "このカードは〈金色の闇〉としても扱う。\nこのキャラはアクティブで登場させる。\n（このキャラがアタックで与える直接ダメージは2ダメージ）\nこのキャラはBP+1000。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引く。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_029_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_030",
+    "card_meta": {
+      "name": "ダークネス",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-030",
+      "source_image": "UA45BT-TLR-1-030.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 8
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 5000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "このカードは〈金色の闇〉としても扱う。\n〈金色の闇〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nBPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "金色の闇",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_030_on_enter_cae4ef1c23",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "BPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_030_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_031",
+    "card_meta": {
+      "name": "ネメシス",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-031",
+      "source_image": "UA45BT-TLR-1-031.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_031_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_032",
+    "card_meta": {
+      "name": "ネメシス",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-032",
+      "source_image": "UA45BT-TLR-1-032.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_032_on_enter_abaa51734a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_033",
+    "card_meta": {
+      "name": "ネメシス",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-033",
+      "source_image": "UA45BT-TLR-1-033.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_033_passive_7dbbcaedd2",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "YELLOW",
+            "value": 1,
+            "while": [
+              {
+                "type": "SOURCE_STATE_IS_ACTIVE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "黄",
+          "effect_box": "OUTER",
+          "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_034",
+    "card_meta": {
+      "name": "ネメシス",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-034",
+      "source_image": "UA45BT-TLR-1-034.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 2
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引く。",
+        "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_034_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_034_on_life_trigger_8723e8b5cb",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "SET_CARD_FLAG",
+            "target_var": "selected_target",
+            "flag": "skip_next_ready_once",
+            "value": true
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "カラー",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "COMPOSITE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_035",
+    "card_meta": {
+      "name": "ネメシス",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-035",
+      "source_image": "UA45BT-TLR-1-035.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "YELLOW": 5
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID",
+        "STEP"
+      ],
+      "text": {
+        "effect": "〈ネメシス〉アクティブにし、フロントLに移動できる\n（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのキャラの発生エナジー+。\n自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "ネメシス",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_035_on_enter_80e8cdc58d",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_035_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_036",
+    "card_meta": {
+      "name": "ルナティーク号",
+      "card_type": "FIELD",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-036",
+      "source_image": "UA45BT-TLR-1-036.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "YELLOW": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のフロントLに〈金色の闇〉がある場合、このフィールドの発生エナジー+。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_036_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_037",
+    "card_meta": {
+      "name": "えっちぃのはキライです",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-037",
+      "source_image": "UA45BT-TLR-1-037.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_037_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_037_on_play_52a2516601",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_038",
+    "card_meta": {
+      "name": "精神侵入",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-038",
+      "source_image": "UA45BT-TLR-1-038.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "カードを2枚引く。相手は自身の手札を全て公開する。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_038_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_038_on_play_63529b5c57",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを2枚引く。相手は自身の手札を全て公開する。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_039",
+    "card_meta": {
+      "name": "ダークマター",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-039",
+      "source_image": "UA45BT-TLR-1-039.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 5
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_039_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_039_on_play_6ba26a141c",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_040",
+    "card_meta": {
+      "name": "To LOVEる",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-040",
+      "source_image": "UA45BT-TLR-1-040.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_040_on_life_trigger_40f54dabd9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [
+          {
+            "type": "PLAYER_LIFE_IS_EMPTY",
+            "player": "SELF"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_TOP_DECK_TO_LIFE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ファイナル",
+          "effect_box": "OUTER",
+          "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_040_on_play_0da85cfcde",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "value": 2
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TOP_DECK_TO_LIFE",
+        "READY_AP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_041",
+    "card_meta": {
+      "name": "美柑の手料理",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-041",
+      "source_image": "UA45BT-TLR-1-041.png",
+      "traits": [],
+      "cost_energy": {
+        "YELLOW": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_041_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_041_on_play_6d43ac2c94",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_042",
+    "card_meta": {
+      "name": "新井 紗弥香",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-042",
+      "source_image": "UA45BT-TLR-1-042.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から1枚見て、山札の上か下に置く。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_042_on_enter_248cae62b4",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から1枚見て、山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_042_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_043",
+    "card_meta": {
+      "name": "九条 凛",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-043",
+      "source_image": "UA45BT-TLR-1-043.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 2,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラはアクティブで登場させる。\n自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_043_on_enter_194841f0b9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_043_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_044",
+    "card_meta": {
+      "name": "古手川 唯",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-044",
+      "source_image": "UA45BT-TLR-1-044.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_044_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_045",
+    "card_meta": {
+      "name": "古手川 唯",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-045",
+      "source_image": "UA45BT-TLR-1-045.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に他のカードが5枚以上ある場合、このキャラはBP+1000。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_045_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_046",
+    "card_meta": {
+      "name": "古手川 唯",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-046",
+      "source_image": "UA45BT-TLR-1-046.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラのアタックがブロックされなかった時、カードを1枚引き、自分の手札を1枚場外に置く。\nカードを1枚引き、自分の手札を1枚場外に置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_046_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_047",
+    "card_meta": {
+      "name": "古手川 唯",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-047",
+      "source_image": "UA45BT-TLR-1-047.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 2
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。",
+        "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_047_on_enter_f50f89224c",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_047_on_life_trigger_a41bad1555",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "カラー",
+          "effect_box": "OUTER",
+          "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_048",
+    "card_meta": {
+      "name": "古手川 唯",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-048",
+      "source_image": "UA45BT-TLR-1-048.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈古手川 唯〉アクティブにし、フロントLに移動できる\nこのキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "古手川 唯",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_048_on_enter_be8b243b89",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_048_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_049",
+    "card_meta": {
+      "name": "西連寺 春菜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-049",
+      "source_image": "UA45BT-TLR-1-049.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_049_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_050",
+    "card_meta": {
+      "name": "西連寺 春菜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-050",
+      "source_image": "UA45BT-TLR-1-050.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_050_on_enter_4dd584f511",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_051",
+    "card_meta": {
+      "name": "西連寺 春菜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-051",
+      "source_image": "UA45BT-TLR-1-051.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の手札から必要エナジーが2以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_051_on_enter_a100bb503b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の手札から必要エナジーが2以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_051_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_052",
+    "card_meta": {
+      "name": "西連寺 春菜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-052",
+      "source_image": "UA45BT-TLR-1-052.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 2
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_052_on_enter_7ecf134719",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_052_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_053",
+    "card_meta": {
+      "name": "西連寺 春菜",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-053",
+      "source_image": "UA45BT-TLR-1-053.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈西連寺 春菜〉アクティブにし、フロントLに移動できる\n〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "西連寺 春菜",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_053_main_activate_fb6d44c92a",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "RAID_INNER",
+          "text": "〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_053_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_054",
+    "card_meta": {
+      "name": "沢田 未央",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-054",
+      "source_image": "UA45BT-TLR-1-054.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 2
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_054_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_primary_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_primary_target",
+            "to": "HAND"
+          },
+          {
+            "type": "SET_CONTEXT_FLAG",
+            "var": "primary_target_moved",
+            "from_var": "selected_primary_target"
+          },
+          {
+            "type": "MOVE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "to": "HAND",
+            "requirements": [
+              {
+                "type": "CONTEXT_FLAG_FALSE",
+                "var": "primary_target_moved"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_055",
+    "card_meta": {
+      "name": "セフィ・ミカエラ・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-055",
+      "source_image": "UA45BT-TLR-1-055.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 2
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "以下から1つ選ぶ。\n・自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。\n・BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_055_on_enter_536516f54f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "以下から1つ選ぶ。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_055_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_056",
+    "card_meta": {
+      "name": "セリーヌ",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-056",
+      "source_image": "UA45BT-TLR-1-056.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1000,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_056_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_057",
+    "card_meta": {
+      "name": "天条院 沙姫",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-057",
+      "source_image": "UA45BT-TLR-1-057.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3000,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引く。",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_057_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_057_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_058",
+    "card_meta": {
+      "name": "ナナ・アスタ・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-058",
+      "source_image": "UA45BT-TLR-1-058.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_058_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_059",
+    "card_meta": {
+      "name": "ナナ・アスタ・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-059",
+      "source_image": "UA45BT-TLR-1-059.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈モモ・ベリア・デビルーク〉がある場合、カードを1枚引く。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_059_on_leave_496127524a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LEAVE"
+        },
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+            "value": "モモ・ベリア・デビルーク"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "退場時",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈モモ・ベリア・デビルーク〉がある場合、カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_059_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_060",
+    "card_meta": {
+      "name": "ナナ・アスタ・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-060",
+      "source_image": "UA45BT-TLR-1-060.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3500,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_060_on_enter_00ae41d5e9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_060_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_061",
+    "card_meta": {
+      "name": "ナナ・アスタ・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-061",
+      "source_image": "UA45BT-TLR-1-061.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分の場に〈モモ・ベリア・デビルーク〉がある場合、このキャラはBP+1500。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": []
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_062",
+    "card_meta": {
+      "name": "ナナ・アスタ・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-062",
+      "source_image": "UA45BT-TLR-1-062.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈ナナ・アスタ・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。\n・自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。\n・自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "ナナ・アスタ・デビルーク",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_062_on_attack_fa840dea3e",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ATTACK"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アタック時",
+          "effect_box": "RAID_INNER",
+          "text": "以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_062_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_063",
+    "card_meta": {
+      "name": "藤崎 綾",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-063",
+      "source_image": "UA45BT-TLR-1-063.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_063_on_enter_ee82639273",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_063_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_064",
+    "card_meta": {
+      "name": "籾岡 里紗",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-064",
+      "source_image": "UA45BT-TLR-1-064.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_064_passive_7dbbcaedd2",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "while": [
+              {
+                "type": "SOURCE_STATE_IS_ACTIVE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "赤",
+          "effect_box": "OUTER",
+          "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_065",
+    "card_meta": {
+      "name": "モモ・ベリア・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-065",
+      "source_image": "UA45BT-TLR-1-065.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "このカードを手札に加える。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_065_on_life_trigger_0a3e81b9d0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_CARD",
+            "to": "HAND"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ゲット",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加える。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "MOVE_SELF"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_066",
+    "card_meta": {
+      "name": "モモ・ベリア・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-066",
+      "source_image": "UA45BT-TLR-1-066.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_066_on_enter_053989dd8c",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_067",
+    "card_meta": {
+      "name": "モモ・ベリア・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-067",
+      "source_image": "UA45BT-TLR-1-067.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 3000,
+      "keywords": [
+        "DOUBLE_BLOCK",
+        "NEGATE_IMPACT"
+      ],
+      "text": {
+        "effect": "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、このキャラはとを得る。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_067_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_068",
+    "card_meta": {
+      "name": "モモ・ベリア・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-068",
+      "source_image": "UA45BT-TLR-1-068.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 2
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、カードを1枚引く。",
+        "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_068_on_enter_3c81107e13",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+            "value": "ナナ・アスタ・デビルーク"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_068_on_life_trigger_a41bad1555",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 2500
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "カラー",
+          "effect_box": "OUTER",
+          "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "SELECT_AND_MOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_069",
+    "card_meta": {
+      "name": "モモ・ベリア・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-069",
+      "source_image": "UA45BT-TLR-1-069.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈モモ・ベリア・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。\n・自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。\n・自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "モモ・ベリア・デビルーク",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_069_on_attack_b7fd01327a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ATTACK"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アタック時",
+          "effect_box": "RAID_INNER",
+          "text": "以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_069_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_070",
+    "card_meta": {
+      "name": "結城 美柑",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-070",
+      "source_image": "UA45BT-TLR-1-070.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [
+        "NEGATE_IMPACT",
+        "IMPACT"
+      ],
+      "text": {
+        "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_070_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_071",
+    "card_meta": {
+      "name": "ララ・サタリン・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-071",
+      "source_image": "UA45BT-TLR-1-071.png",
+      "traits": [],
+      "cost_energy": {},
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 1500,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_071_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_071_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_072",
+    "card_meta": {
+      "name": "ララ・サタリン・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-072",
+      "source_image": "UA45BT-TLR-1-072.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2000,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
+        "trigger": "-",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_072_on_enter_9e7dd06bd7",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_073",
+    "card_meta": {
+      "name": "ララ・サタリン・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-073",
+      "source_image": "UA45BT-TLR-1-073.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [
+        "STEP"
+      ],
+      "text": {
+        "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのキャラはBP+500。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_073_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_074",
+    "card_meta": {
+      "name": "ララ・サタリン・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-074",
+      "source_image": "UA45BT-TLR-1-074.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "NEGATE_IMPACT",
+        "IMPACT"
+      ],
+      "text": {
+        "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_074_on_enter_b3c7717a9e",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "OUTER",
+          "text": "自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_074_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_075",
+    "card_meta": {
+      "name": "ララ・サタリン・デビルーク",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-075",
+      "source_image": "UA45BT-TLR-1-075.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 5
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 4000,
+      "keywords": [
+        "RAID"
+      ],
+      "text": {
+        "effect": "〈ララ・サタリン・デビルーク〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nカードを1枚引く。自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、自分の手札から必要エナジーが4以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [
+        {
+          "type": "RAID",
+          "raid_target_name": "ララ・サタリン・デビルーク",
+          "allow_from_hand": true,
+          "require_full_energy": true,
+          "life_trigger_only": true
+        }
+      ],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_075_on_enter_88fae5012a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "登場時",
+          "effect_box": "RAID_INNER",
+          "text": "カードを1枚引く。自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、自分の手札から必要エナジーが4以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_075_on_life_trigger_a342b2ffe2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "レイド",
+          "effect_box": "OUTER",
+          "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_076",
+    "card_meta": {
+      "name": "金色の闇",
+      "card_type": "CHARACTER",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-076",
+      "source_image": "UA45BT-TLR-1-076.png",
+      "traits": [
+        "変身兵器"
+      ],
+      "cost_energy": {
+        "RED": 1
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 2500,
+      "keywords": [],
+      "text": {
+        "effect": "-",
+        "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_076_on_life_trigger_bab7196d2b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 3000,
+            "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "アクティブ",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_077",
+    "card_meta": {
+      "name": "彩南高校",
+      "card_type": "FIELD",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-077",
+      "source_image": "UA45BT-TLR-1-077.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 2
+      },
+      "cost_ap": 1,
+      "energy_provided": {
+        "RED": 1
+      },
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_077_main_activate_3686a2c0ae",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "起動メイン",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_077_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "UNSUPPORTED",
+        "DRAW_1"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_078",
+    "card_meta": {
+      "name": "キャノンフラワー",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-078",
+      "source_image": "UA45BT-TLR-1-078.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_078_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_078_on_play_ee9dd479ee",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_079",
+    "card_meta": {
+      "name": "To LOVEる",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-079",
+      "source_image": "UA45BT-TLR-1-079.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 3
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_079_on_life_trigger_40f54dabd9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [
+          {
+            "type": "PLAYER_LIFE_IS_EMPTY",
+            "player": "SELF"
+          }
+        ],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "MOVE_TOP_DECK_TO_LIFE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ファイナル",
+          "effect_box": "OUTER",
+          "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_079_on_play_0da85cfcde",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "value": 2
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "TOP_DECK_TO_LIFE",
+        "READY_AP"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_080",
+    "card_meta": {
+      "name": "楽園計画",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-080",
+      "source_image": "UA45BT-TLR-1-080.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+        "trigger": "カードを1枚引く。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_080_on_life_trigger_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "ドロー",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_080_on_play_bd041a7f51",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "DRAW_1",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_081",
+    "card_meta": {
+      "name": "ハレンチなっ!!",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-081",
+      "source_image": "UA45BT-TLR-1-081.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "以下から1つ選ぶ。\n・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。\n・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_081_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_081_on_play_536516f54f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "以下から1つ選ぶ。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_081_on_play_b20fce8918",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA45BT_TLR_1_081_on_play_b341867df9",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "インパクト（1）",
+          "effect_box": "OUTER",
+          "text": "・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  },
+  {
+    "id": "UA45BT_TLR_1_082",
+    "card_meta": {
+      "name": "ぴょんぴょんワープくん",
+      "card_type": "EVENT",
+      "title_code": "TLR",
+      "number": "UA45BT/TLR-1-082",
+      "source_image": "UA45BT-TLR-1-082.png",
+      "traits": [],
+      "cost_energy": {
+        "RED": 4
+      },
+      "cost_ap": 2,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "自分の場に〈ララ・サタリン・デビルーク〉がある場合、手札にあるこのカードの消費APを-1する。\nBP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [
+        {
+          "type": "SELF_HAND_AP_DELTA",
+          "from_zone": "HAND",
+          "ap_delta": -1,
+          "requirements": [
+            {
+              "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+              "value": "ララ・サタリン・デビルーク"
+            }
+          ],
+          "ui": {
+            "text": "自分の場に〈ララ・サタリン・デビルーク〉がある場合、手札にあるこのカードの消費APを-1する。",
+            "effect_box": "OUTER"
+          }
+        }
+      ],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_082_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "スペシャル",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA45BT_TLR_1_082_on_play_cde32398ed",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
+    "analysis": {
+      "source": "TLR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "SELECT_AND_MOVE",
+        "UNSUPPORTED"
+      ]
+    }
+  }
+]
