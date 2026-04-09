@@ -427,6 +427,10 @@ def _normalize_compiled_abilities(compiled_ability) -> list[dict]:
     return [compiled_ability]
 
 
+def normalize_compiler_text(text) -> str:
+    return re.sub(r"\s+", " ", str(text or "")).strip()
+
+
 def _hand_character_summon_steps(
     energy_lte: int,
     *,
@@ -1693,7 +1697,7 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
 
     semantic_entry = semantic_map.get(card["id"])
     if semantic_entry and not semantic_entry.get("can_be_expressed_by_dsl", True):
-        reason = " / ".join(semantic_entry.get("missing_capabilities", []))
+        reason = " / ".join(semantic_entry.get("unresolved_capabilities", []))
         return _unsupported_ability(card, event_name, trigger_entry, reason)
     return _unsupported_ability(card, event_name, trigger_entry, "当前原子要求/步骤模板尚未覆盖该文本模式。")
 
@@ -2226,7 +2230,7 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
 
     semantic_entry = semantic_map.get(card["id"])
     if semantic_entry and not semantic_entry.get("can_be_expressed_by_dsl", True):
-        reason = " / ".join(semantic_entry.get("missing_capabilities", []))
+        reason = " / ".join(semantic_entry.get("unresolved_capabilities", []))
         return _unsupported_ability(card, event_name, pseudo_trigger, reason)
     return _unsupported_ability(card, event_name, pseudo_trigger, "当前原子要求/步骤模板尚未覆盖该文本模式。")
 
@@ -2839,7 +2843,7 @@ def _infer_template_type(ability: dict) -> str:
 
 def _build_semantic_entry(card_effects: dict) -> dict:
     abilities = []
-    missing_capabilities = []
+    unresolved_capabilities = []
     template_types = []
     for ability in card_effects.get("abilities", []):
         template_type = _infer_template_type(ability)
@@ -2855,9 +2859,9 @@ def _build_semantic_entry(card_effects: dict) -> dict:
         )
         if template_type and template_type not in template_types:
             template_types.append(template_type)
-        reason = str(ability.get("unsupported_reason", "")).strip()
-        if reason and reason not in missing_capabilities:
-            missing_capabilities.append(reason)
+        reason = normalize_compiler_text(ability.get("unsupported_reason", ""))
+        if reason and reason not in unresolved_capabilities:
+            unresolved_capabilities.append(reason)
     has_raw_text = any(
         str(card_effects.get("card_meta", {}).get("text", {}).get(key, "")).strip() not in {"", "-"}
         for key in ["effect", "trigger", "rule"]
@@ -2867,7 +2871,7 @@ def _build_semantic_entry(card_effects: dict) -> dict:
         can_be_expressed = all(entry.get("status") == "SUPPORTED" for entry in abilities)
     elif has_raw_text:
         can_be_expressed = False
-        missing_capabilities.append("当前卡牌文本尚未映射为能力对象。")
+        unresolved_capabilities.append(normalize_compiler_text("当前卡牌文本尚未映射为能力对象。"))
     return {
         "card_id": card_effects.get("id", ""),
         "source": card_effects.get("analysis", {}).get("source", ""),
@@ -2875,7 +2879,7 @@ def _build_semantic_entry(card_effects: dict) -> dict:
         "template_types": template_types,
         "abilities": abilities,
         "can_be_expressed_by_dsl": can_be_expressed,
-        "missing_capabilities": missing_capabilities,
+        "unresolved_capabilities": unresolved_capabilities,
     }
 
 
