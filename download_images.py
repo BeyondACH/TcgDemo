@@ -11,12 +11,27 @@ from urllib.request import Request, urlopen
 
 
 API_BASE_URL = "https://uapcapi.windoent.com/card/card/weblist"
-OFFICIAL_JP_CARDLIST_URL = "https://www.unionarena-tcg.com/jp/cardlist/index.php?search=true"
+ATTR_WEBLIST_URL = "https://uapcapi.windoent.com/card/card/attrweblist"
 DEFAULT_WORK = "魔法少女小圆"
 DEFAULT_PRODUCT = "魔法少女小圆 补充包【UA31BT】"
 DEFAULT_COLOR = "紫"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) CardScraper/1.0"
 SOURCE_URL = ""
+
+
+def prepare_text_stream(stream: Any) -> Any:
+    reconfigure = getattr(stream, "reconfigure", None)
+    if callable(reconfigure):
+        try:
+            reconfigure(errors="backslashreplace")
+        except ValueError:
+            pass
+    return stream
+
+
+def console_print(*args: Any, sep: str = " ", end: str = "\n", file: Any = None) -> None:
+    stream = prepare_text_stream(sys.stdout if file is None else file)
+    print(*args, sep=sep, end=end, file=stream)
 
 
 def fetch_json(url: str) -> dict:
@@ -26,40 +41,14 @@ def fetch_json(url: str) -> dict:
         return json.loads(response.read().decode(charset))
 
 
-def fetch_text(url: str) -> str:
-    request = Request(url, headers={"User-Agent": USER_AGENT})
-    with urlopen(request, timeout=30) as response:
-        charset = response.headers.get_content_charset() or "utf-8"
-        return response.read().decode(charset)
-
-
 def build_source_url(
     *,
-    work: str = DEFAULT_WORK,
     product: str = DEFAULT_PRODUCT,
-    color: str = DEFAULT_COLOR,
     page: int = 1,
     limit: int = 50,
 ) -> str:
     params = {
-        "name": "",
-        "onlyName": "",
         "good": product,
-        "parallel": "",
-        "cardType": "",
-        "color": color,
-        "energyStart": "",
-        "energyEnd": "",
-        "energyNumColor": "",
-        "energyNum": "",
-        "consumerAp": "",
-        "BPStart": "",
-        "BPEnd": "",
-        "keyWord": "",
-        "triggerType": "",
-        "feature": "",
-        "rarity": "",
-        "works": work,
         "page": str(page),
         "limit": str(limit),
     }
@@ -72,8 +61,9 @@ def sanitize_path_component(text: str) -> str:
     return cleaned or "images"
 
 
-def default_output_dir(work: str, color: str) -> Path:
-    return Path(__file__).resolve().parent / sanitize_path_component(f"{work}_{color}")
+def default_output_dir(work: str, color: str | None = None) -> Path:
+    base_dir = Path(__file__).resolve().parent / "pic"
+    return base_dir / sanitize_path_component(work)
 
 
 def normalize_text(text: str) -> str:
@@ -125,47 +115,6 @@ class SelectOptionParser(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         if self._capture_option:
-            self._current_text.append(data)
-
-
-class TitleListParser(HTMLParser):
-    def __init__(self) -> None:
-        super().__init__(convert_charrefs=True)
-        self._container_depth = 0
-        self._capture_depth = 0
-        self._current_text: list[str] = []
-        self.titles: list[str] = []
-
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        attr_map = dict(attrs)
-        classes = set((attr_map.get("class") or "").split())
-
-        if attr_map.get("id") == "title_list":
-            self._container_depth = 1
-            return
-
-        if self._container_depth:
-            self._container_depth += 1
-            if "title" in classes:
-                self._capture_depth = 1
-                self._current_text = []
-            elif self._capture_depth:
-                self._capture_depth += 1
-
-    def handle_endtag(self, tag: str) -> None:
-        if self._capture_depth:
-            self._capture_depth -= 1
-            if self._capture_depth == 0:
-                title = normalize_text("".join(self._current_text))
-                if title:
-                    self.titles.append(title)
-                self._current_text = []
-
-        if self._container_depth:
-            self._container_depth -= 1
-
-    def handle_data(self, data: str) -> None:
-        if self._capture_depth:
             self._current_text.append(data)
 
 
@@ -246,58 +195,82 @@ def find_image_urls(node: Any) -> list[str]:
     return found
 
 
-def extract_titles_from_html(html: str) -> list[str]:
-    parser = TitleListParser()
-    parser.feed(html)
-    return parser.titles
-
-
-def extract_titles_from_cardlist_html(html: str) -> list[str]:
-    parser = SelectOptionParser(select_id="title")
-    parser.feed(html)
-    titles: list[str] = []
-    for option in parser.options:
-        if option["value"] and option["text"]:
-            titles.append(option["text"])
-    return titles
-
-
-def extract_products_from_jp_cardlist_html(html: str) -> list[dict[str, str]]:
-    parser = SelectOptionParser(select_id="series")
-    parser.feed(html)
+def extract_products_from_attr_data(data: dict[str, Any]) -> list[dict[str, str]]:
+    goods = data.get("goods")
+    if not isinstance(goods, list):
+        raise RuntimeError("Failed to parse goods from attrweblist.")
 
     seen_ids: set[str] = set()
     products: list[dict[str, str]] = []
-    for option in parser.options:
-        product_id = option["value"]
-        product_name = option["text"]
+    for item in goods:
+        if not isinstance(item, dict):
+            continue
+        product_id = str(item.get("id", "")).strip()
+        product_name = normalize_text(str(item.get("name", "")))
         if not product_id or not product_name:
             continue
         if product_id in seen_ids:
             continue
         seen_ids.add(product_id)
         products.append({"id": product_id, "name": product_name})
-    return products
-
-
-def get_official_products() -> list[dict[str, str]]:
-    try:
-        html = fetch_text(OFFICIAL_JP_CARDLIST_URL)
-    except Exception as exc:  # pragma: no cover
-        raise RuntimeError(f"Failed to fetch official products: {exc}") from exc
-
-    products = extract_products_from_jp_cardlist_html(html)
     if not products:
-        raise RuntimeError(
-            "Failed to parse official products from the Japanese card list page."
-        )
+        raise RuntimeError("Failed to parse goods from attrweblist.")
     return products
+
+
+def extract_titles_from_attr_data(data: dict[str, Any]) -> list[str]:
+    works = data.get("works")
+    if not isinstance(works, list):
+        raise RuntimeError("Failed to parse works from attrweblist.")
+
+    titles: list[str] = []
+    for item in works:
+        if not isinstance(item, dict):
+            continue
+        work_id = str(item.get("id", "")).strip()
+        work_name = normalize_text(str(item.get("name", "")))
+        if not work_id or not work_name:
+            continue
+        titles.append(work_name)
+    if not titles:
+        raise RuntimeError("Failed to parse works from attrweblist.")
+    return titles
+
+
+def fetch_attr_data() -> dict[str, Any]:
+    try:
+        payload = fetch_json(ATTR_WEBLIST_URL)
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError(f"Failed to fetch attrweblist: {exc}") from exc
+
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        raise RuntimeError("Failed to parse attrweblist payload.")
+    return data
+
+
+def get_attr_goods() -> list[dict[str, str]]:
+    return extract_products_from_attr_data(fetch_attr_data())
+
+
+def get_attr_works() -> list[str]:
+    return extract_titles_from_attr_data(fetch_attr_data())
+
+
+def infer_work_from_product_name(product_name: str, works: list[str]) -> str | None:
+    normalized_product = normalize_text(product_name)
+    matching_works = [
+        work for work in works if work and normalize_text(work) in normalized_product
+    ]
+    if not matching_works:
+        return None
+    return max(matching_works, key=len)
 
 
 def prompt_for_product_selection(products: list[dict[str, str]]) -> dict[str, str]:
-    print("Official products:")
+    console_print("Official products:")
     for index, product in enumerate(products, start=1):
-        print(f"{index}. {product['name']} [{product['id']}]")
+        console_print(f"{index}. {product['name']} [{product['id']}]")
 
     selected = input("Enter product number to download: ").strip()
     if not selected.isdigit():
@@ -372,7 +345,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        help="Directory for downloaded images. Defaults to <work>_<color>.",
+        help="Directory for downloaded images. Defaults to pic/<work>.",
     )
     parser.add_argument(
         "--print-url",
@@ -393,29 +366,38 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.list_products:
         try:
-            products = get_official_products()
+            products = get_attr_goods()
+            works = get_attr_works()
         except Exception as exc:
-            print(exc, file=sys.stderr)
+            console_print(exc, file=sys.stderr)
             return 1
 
         try:
             selected_product = prompt_for_product_selection(products)
         except ValueError as exc:
-            print(exc, file=sys.stderr)
+            console_print(exc, file=sys.stderr)
             return 1
+
+        inferred_work = infer_work_from_product_name(selected_product["name"], works)
+        if not inferred_work:
+            console_print(
+                f"Could not infer work for selected product: {selected_product['name']}",
+                file=sys.stderr,
+            )
+            return 1
+
         args.product = selected_product["name"]
+        args.work = inferred_work
 
     SOURCE_URL = build_source_url(
-        work=args.work,
         product=args.product,
-        color=args.color,
         limit=args.limit,
     )
-    output_dir = args.output_dir or default_output_dir(args.work, args.color)
+    output_dir = args.output_dir or default_output_dir(args.work)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.print_url:
-        print(f"SOURCE_URL={SOURCE_URL}")
+        console_print(f"SOURCE_URL={SOURCE_URL}")
 
     seen: set[str] = set()
     downloaded = 0
@@ -432,39 +414,41 @@ def main(argv: list[str] | None = None) -> int:
             target = output_dir / file_name
             if target.exists() and target.stat().st_size > 0:
                 skipped_existing += 1
-                print(f"Skipped existing: {target.name}")
+                console_print(f"Skipped existing: {target.name}")
                 continue
 
             try:
                 download_file(image_url, target)
                 downloaded += 1
-                print(f"Downloaded: {target.name}")
+                console_print(f"Downloaded: {target.name}")
             except HTTPError as exc:
                 failed.append((image_url, f"HTTP {exc.code}"))
-                print(f"Skipped failed: {file_name} ({exc.code})", file=sys.stderr)
+                console_print(f"Skipped failed: {file_name} ({exc.code})", file=sys.stderr)
             except URLError as exc:
                 failed.append((image_url, f"URL error: {exc.reason}"))
-                print(f"Skipped failed: {file_name} ({exc.reason})", file=sys.stderr)
+                console_print(
+                    f"Skipped failed: {file_name} ({exc.reason})", file=sys.stderr
+                )
     except Exception as exc:  # pragma: no cover
-        print(f"Download failed: {exc}", file=sys.stderr)
+        console_print(f"Download failed: {exc}", file=sys.stderr)
         return 1
 
     if downloaded == 0 and skipped_existing == 0:
-        print(
+        console_print(
             "No images found in the response. The API fields may have changed; "
             "please save one page of JSON and inspect it.",
             file=sys.stderr,
         )
         return 1
 
-    print(
+    console_print(
         f"Finished. Downloaded {downloaded} images to: {output_dir}. "
         f"Skipped existing: {skipped_existing}. Failed: {len(failed)}."
     )
     if failed:
-        print("Failed URLs:", file=sys.stderr)
+        console_print("Failed URLs:", file=sys.stderr)
         for url, reason in failed:
-            print(f"- {reason}: {url}", file=sys.stderr)
+            console_print(f"- {reason}: {url}", file=sys.stderr)
     return 0
 
 
