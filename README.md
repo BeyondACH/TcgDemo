@@ -210,7 +210,6 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 - 修改脚本后优先做一次 headless 冒烟验证
 - 涉及界面布局改动后，要额外确认手牌区域没有遮挡战场区域
 - 读取中文规则、计划、日志时优先使用显式 UTF-8 方式，避免终端编码噪音误判
-- 修改中文文档时优先使用 `apply_patch`；若必须脚本写回，需显式指定 UTF-8 无 BOM，避免把 PowerShell 控制台当作文档中转层
 - 修改中文文档后，至少补做一次“UTF-8 显式复读 + `git diff` 静态复核”；若有需要，可补跑 `python tools/check_utf8_docs.py`
 
 ## 下一步重点

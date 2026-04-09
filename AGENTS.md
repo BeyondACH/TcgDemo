@@ -134,7 +134,6 @@ worker 至少应阅读：
 - 每次功能更新与 bugfix，都必须在同一轮改动中同步更新：
   - `docs/logs/log_yyyy-MM-dd.md`
 - 日志内容必须使用中文。
-- 沙箱内如果写入遇到 Access denied或者Windows sandbox refresh，直接申请沙箱外提权写入
 
 ### 4.6 中文文档与编码安全
 
@@ -376,15 +375,18 @@ worker 至少应阅读：
 
 若默认输出与显式 UTF-8 输出不一致，以显式 UTF-8 结果为准。
 
+
+---
+
 ### 9.3 中文文档编辑优先级
 
 修改中文文档时，优先级固定为：
 
-1. `apply_patch`
-2. 多行 here-doc / here-string 配合显式 UTF-8 脚本处理
-3. Python 显式 `encoding='utf-8'` 直接读写
+1. PowerShell 显式 UTF-8 读写
+2. Python 显式 `encoding='utf-8'` 直接读写
+3. 必要时使用最小范围脚本修改
 
-不再把 PowerShell 控制台当作文档编辑器。
+不再把 PowerShell 控制台当作文档编辑器，而是把 PowerShell 作为显式 UTF-8 文件读写工具使用。
 
 禁止以下做法：
 
@@ -396,6 +398,25 @@ worker 至少应阅读：
 - 禁止把中文正文直接内联到需要提权的终端命令、here-string、here-doc 或跨 shell 命令链中再写回文件；即使最终调用方声明 `encoding='utf-8'`，只要中文内容先在命令传参链里被替换成 `?`，落盘后仍会形成不可逆污染
 - 不要因为终端回显出现 `??` 就假定只是“显示问题”；若脚本下一步会把该文本写回文件，则这些 `?` 会作为真实内容落盘
 - 涉及中文 `.gd`、`.tscn`、`.md` 时，不要用“整文件 replace + 整文件回写”替代小补丁；一旦源文本已被污染，会把正常中文成片覆盖成问号串
+
+### 9.3.1 PowerShell 文件读写规范
+
+在 Windows 环境下，文本文件修改默认采用 PowerShell 显式 UTF-8 方案：
+
+```powershell
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+$text = [System.IO.File]::ReadAllText($path, $utf8)
+# 修改 $text
+[System.IO.File]::WriteAllText($path, $text, $utf8)
+```
+
+要求如下：
+
+- 不得依赖默认编码的 Get-Content、Set-Content、Out-File 做中文文件回写。
+- 不得把中文正文直接拼进复杂命令字符串后再写回文件。
+- 优先做“小范围、可验证”的文本替换，不要无必要整文件重写。
+- 写回后必须立刻用显式 UTF-8 重新读取目标片段，并结合 git diff 复核。
+- 若一次修改失败，应先重新读取文件确认上下文未漂移，再决定是否重试。
 
 ### 9.4 中文文档修改后校验
 
@@ -410,13 +431,12 @@ worker 至少应阅读：
 
 ## 10. 异常处理原则
 
-### 10.1 `apply_patch` 失败
+### 10.1 文件修改失败
 
-- 优先切换到显式 UTF-8 的 Python / 脚本文件方案
-- 不优先退回 PowerShell 文本替换
-- 中文文档批量修改时，应优先拆成小补丁
-- 若 `apply_patch` 在 Windows 上因 sandbox refresh 失败，不要立刻改用携带中文正文的整文件重写；优先改成按锚点、行号、ASCII 标记或 `unicode_escape` 的最小脚本修改
-- 若同一文件连续两次 `apply_patch` 失败，应先重新读取目标文件并做 `git diff`，确认上下文未漂移，再决定是否改用脚本方案
+- Windows 环境下默认优先使用 PowerShell 显式 UTF-8 读写。
+- 若 PowerShell 修改失败，优先切换到 Python 显式 `encoding='utf-8'` 的脚本方案。
+- 中文文档修改应优先采用按锚点、按片段、最小范围替换；避免无必要整文件重写。
+- 每次失败后都应先重新读取目标文件并检查 `git diff`，确认上下文未漂移，再继续修改。
 
 ### 10.2 Godot 沙箱运行失败
 
