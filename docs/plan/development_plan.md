@@ -293,4 +293,3 @@
 - 短期内不引入大规模美术或动画重构；当前仅允许为 AI 调试可见性补一处最小提示位，整体仍以规则可见性和验证效率为优先。
 - `docs/rules/rule.md` 高于 README、旧计划文档和现有实现；若存在冲突，以 `docs/rules/rule.md` 为准。
 - 所有功能更新和 bugfix 必须同步记录到 `docs/logs/log_yyyy-MM-dd.md` 当日日志，且内容使用中文。
-- 后续每次功能更新完成后，必须同步统一 `docs/plan/development_plan.md`、`docs/plan/mile_stone.md` 与当日日志中的阶段口径、统计基线、验证结果和下一步方向；若其中任一文档仍停留在旧口径，则该次更新视为未完成。
