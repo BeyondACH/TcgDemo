@@ -86,6 +86,7 @@ func _initialize_controller_manager() -> void:
 	controller_manager.pending_context_provider = _current_pending_context
 	controller_manager.life_reveal_refresher = _refresh_life_reveal_waiting_for_player
 	controller_manager.life_reveal_waiting_checker = _is_life_reveal_waiting_for_player
+	controller_manager.life_reveal_acknowledger = acknowledge_life_reveal
 	controller_manager.scene_tree = get_tree() if is_inside_tree() else null
 	controller_manager.ai_action_delay_seconds = ai_action_delay
 	controller_manager.ai_action_emitter = _emit_ai_action_executed
@@ -414,8 +415,11 @@ func execute_action(action: Dictionary) -> Dictionary:
 		ActionTypes.RESOLVE_PENDING_DECISION:
 			var payload := {
 				"source_card_uid": str(params.get("source_card_uid", "")),
-				"choice": params.get("choice"),
 			}
+			if params.has("choices"):
+				payload["choices"] = params.get("choices", [])
+			else:
+				payload["choice"] = params.get("choice")
 			if str(params.get("resolution_id", "")) != "":
 				payload["resolution_id"] = str(params.get("resolution_id", ""))
 			return resolve_pending_decision(str(params.get("decision_type", "")), payload)

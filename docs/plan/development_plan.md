@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-04-02
+更新时间：2026-04-09
 
 ## 1. 计划摘要
 
@@ -50,6 +50,25 @@
 - 2026-04-02 已完成编译器识别层首轮注册表化，主入口改为 `registry -> legacy fallback`，并已把正式 raw 基线收口到 `180 / 0`、运行时总量 `183 / 0`。
 - 2026-04-02 已为 AI 控制器补齐动作节拍推进与轻量提示文案；该改动仅用于调试可见性，不视为重新开启 UI 视觉阶段。
 - 2026-04-02 已修正生命翻牌弹窗中的 Activate 链路：当带 LIFE_TRIGGER_RAID_CHOICE 的生命触发卡在当前 AP / 能量 / 底座条件下无法立即 RAID 时，点击 Activate 会直接按既有规则兜底加入手牌，不再额外停留在仅剩禁用 RAID_NOW 的待决策态。
+
+## 2.2 2026-04-08 Phase E 基线修复补充
+
+- 已先修复 Phase E 执行前暴露的基线编译回归：`core/effects/requirement_matcher.gd` 补回 `PlayerState` 预加载，`docs/milestone_smoke_test.gd` 恢复为 `33 / 0`。
+- AI 自动推进链新增两处稳定性修正：
+  - `ControllerManager` 现在会为 AI 自动确认生命翻牌 reveal，不再把 AI 长链卡死在等待玩家确认的窗口。
+  - `GameManager.execute_action()` 与 `SimpleAI` 已对齐多目标 `ABILITY_TARGET_SELECTION` 的 `choices` 提交口径，不再遗留目标选择队列残渣。
+- 长链验证入口已补强：
+  - `docs/long_run_stability_smoke_test.gd` 新增“跨回合 delayed leave + AI pacing”链路，当前基线 `6 / 0`
+  - `docs/runtime_residue_smoke_test.gd` 新增 AI 长链 residue 校验，当前基线 `10 / 0`
+  - `docs/vs_ai_smoke_test.gd` 新增 AI 多回合推进断言，并将生命翻牌口径更新为自动确认，当前基线 `5 / 0`
+- 当前 Phase E 第一轮目标已从“先修基线”进入“保持长链验证入口稳定通过并继续观察 Godot 退出泄漏告警是否影响断言稳定性”。
+
+## 2.3 2026-04-09 图片抓取脚本商品名列表补充
+
+- `download_mmm_images.py` 已补充日文官网 cardlist 页面只读商品名入口，唯一来源固定为 `https://www.unionarena-tcg.com/jp/cardlist/index.php?search=true`。
+- 当前脚本新增 `--list-products`，用于输出 `series` 下拉框里的商品显示名与 `option value` 编号；该模式只读官网静态页面，不进入图片下载流程。
+- `--product` 手填筛选语义保持不变；本轮不做“按作品筛商品名”的联动，也不把商品编号自动映射回下载参数。
+- `download_mmm_images.py` 与 `tests/test_download_mmm_images.py` 中与该脚本直接相关的中文乱码已一并修复，并补了最小解析/CLI 回归测试。
 
 ## 3. 开发阶段规划
 
@@ -151,7 +170,7 @@
 
 ## 阶段 E：规则稳定性与验证资产深化
 
-状态：下一阶段主线
+状态：进行中（已完成第一轮基线修复与长链补强）
 
 目标：
 
@@ -176,8 +195,8 @@
 
 完成判据：
 
-- `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 持续稳定通过。
-- 至少新增一类比当前最小样例更长链的自动验证，覆盖连续回合、延迟效果清理、离场链或 AI 对局流程中的一种高风险组合。
+- `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/long_run_stability_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 持续稳定通过。
+- 已新增比最小样例更长链的自动验证，覆盖连续回合、延迟效果清理、离场链与 AI 对局流程组合；后续重点转为维持该基线稳定。
 - 若本阶段触及 `core/` 或 `data/`，对应变更必须同步落日志并附验证结果。
 - 文档、日志与验证基线口径保持一致。
 
@@ -261,8 +280,8 @@
 
 ## 7. 近期执行顺序
 
-1. 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 五个入口稳定通过，作为当前阶段规则、生命触发交互与 AI 驱动链的冻结基线。
-2. 下一阶段优先补“更长链路而不是更多零散样例”的自动验证，重点覆盖连续回合生命周期、延迟效果过期、离场触发链衔接、生命触发二选一收尾，以及 AI 自动推进下的完整对局稳定性。
+1. 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/long_run_stability_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 六个入口稳定通过，作为当前阶段规则、长链 residue、生命触发交互与 AI 驱动链的冻结基线。
+2. 在已完成第一轮长链补强后，继续优先观察连续回合生命周期、延迟效果过期、离场触发链衔接、生命触发二选一收尾，以及 AI 自动推进下的完整对局稳定性，避免后续新增改动把问题重新打回短链 smoke。
 3. 对 `tools/compile_cards_effects.py` 维持“registry -> legacy fallback”结构，后续只接受参数化模板族扩展与失败分类补强，不再把逐句匹配回灌成新的半重构分支。
 4. 暂不推进 UI 视觉规范落地；除 AI 动作节拍提示、生命翻牌可见性与验证阻塞修复这类最小补强外，不修改 `ui/` 与 `scenes/`。
 5. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定，并在后续长链回归中重点关注是否会伴随 residue 脏状态一同出现。

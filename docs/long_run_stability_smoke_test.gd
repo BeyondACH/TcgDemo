@@ -17,6 +17,7 @@ func _init() -> void:
 	_run_test("leave chains stay stable across battle leave and stack leave", _test_leave_chain_stability)
 	_run_test("life trigger binary choice fully settles all branches", _test_life_trigger_binary_choice_fully_settles)
 	_run_test("ai vs ai can keep advancing without long-run deadlock", _test_ai_long_run_stability)
+	_run_test("cross turn delayed leave and ai pacing chain leaves no residue", _test_cross_turn_delayed_leave_and_ai_pacing_chain)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
 
@@ -49,6 +50,19 @@ func _ok() -> Dictionary:
 
 func _fail(message: String) -> Dictionary:
 	return {"ok": false, "error": message}
+
+func _assert_runtime_clean(manager: GameManager, label: String) -> Dictionary:
+	if not manager.game_state.effect_queue.is_empty():
+		return _fail("%s left effect_queue residue" % label)
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("%s left pending_decisions residue" % label)
+	if not manager.game_state.pending_life_triggers.is_empty():
+		return _fail("%s left pending_life_triggers residue" % label)
+	if not manager.game_state.delayed_effects.is_empty():
+		return _fail("%s left delayed_effects residue" % label)
+	if not manager.game_state.battle_context.is_empty():
+		return _fail("%s left battle_context residue" % label)
+	return _ok()
 
 func _new_manager(controller_config: Dictionary = {}) -> GameManager:
 	var manager := GameManager.new()
@@ -686,4 +700,49 @@ func _test_ai_long_run_stability() -> Dictionary:
 		return _fail("expected ai vs ai to resolve the opening automatically")
 	if manager.game_state.winner_player_id == "" and manager.game_state.turn_number < 4:
 		return _fail("expected ai vs ai to either find a winner or advance through multiple full turns")
+	return _ok()
+
+func _test_cross_turn_delayed_leave_and_ai_pacing_chain() -> Dictionary:
+	var manager := _new_manager({
+		UATypes.PLAYER_ONE: {"controller": "AI_SIMPLE"},
+		UATypes.PLAYER_TWO: {"controller": "AI_SIMPLE"},
+	})
+	if not _advance_to_turn_draw(manager, UATypes.PLAYER_ONE, 3, 96):
+		return _fail("failed to reach P1 turn 3 draw")
+	manager.drive_controllers(64)
+	for _i in range(12):
+		if manager.game_state.winner_player_id != "":
+			break
+		manager.advance_phase()
+		manager.drive_controllers(64)
+	var settle_safety := 8
+	while settle_safety > 0:
+		var runtime_error := _runtime_state_error(manager)
+		if runtime_error == "":
+			break
+		manager.drive_controllers(64)
+		settle_safety -= 1
+	var clean := _assert_runtime_clean(manager, "cross turn ai chain")
+	if not bool(clean.get("ok", false)):
+		var queue_head := {}
+		if not manager.game_state.effect_queue.is_empty():
+			queue_head = manager.game_state.effect_queue[0]
+		var pending_life := {}
+		if not manager.game_state.pending_life_triggers.is_empty():
+			pending_life = manager.game_state.pending_life_triggers[0]
+		var legal_actions: Array = []
+		var pending_player_id := str(pending_life.get("player_id", manager.game_state.active_player_id))
+		legal_actions = manager.rules_engine.get_legal_actions(manager.game_state, pending_player_id)
+		return _fail("%s | runtime=%s | queue_head=%s" % [
+			"%s | pending_life=%s | priority=%s | legal_actions=%s" % [
+				str(clean.get("error", "runtime residue")),
+				str(pending_life),
+				manager._current_priority_player_id(),
+				str(legal_actions),
+			],
+			_runtime_state_error(manager),
+			str(queue_head),
+		])
+	if manager.game_state.turn_number < 3:
+		return _fail("turn flow regressed before long-run assertions")
 	return _ok()

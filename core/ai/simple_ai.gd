@@ -45,10 +45,28 @@ func choose_pending_decision(_game_state, snapshot: Dictionary, pending: Diction
 		"LIFE_TRIGGER_RAID_TARGET":
 			return legal_actions[0]
 		"ABILITY_TARGET_SELECTION":
-			return legal_actions[0]
+			return _choose_ability_target_selection(pending, legal_actions)
 		"TRIGGER_ORDER":
 			return legal_actions[0]
 	return _fallback_action(legal_actions)
+
+func _choose_ability_target_selection(pending: Dictionary, legal_actions: Array[Dictionary]) -> Dictionary:
+	if legal_actions.is_empty():
+		return {}
+	var max_count := int(pending.get("max", 1))
+	if max_count <= 1:
+		return legal_actions[0]
+	var selected_values: Array = []
+	for action in legal_actions:
+		selected_values.append(_action_params(action).get("choice"))
+		if selected_values.size() >= max_count:
+			break
+	var chosen_action: Dictionary = legal_actions[0].duplicate(true)
+	var chosen_params: Dictionary = chosen_action.get("params", {}).duplicate(true)
+	chosen_params.erase("choice")
+	chosen_params["choices"] = selected_values
+	chosen_action["params"] = chosen_params
+	return chosen_action
 
 func _choose_draw_action(legal_actions: Array[Dictionary]) -> Dictionary:
 	for action in legal_actions:

@@ -7,6 +7,7 @@ class_name RequirementMatcher
 const UATypes = preload("res://core/ua_types.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
+const PlayerState = preload("res://data/player_state.gd")
 const RulesEngine = preload("res://core/rules_engine.gd")
 const PlayerUtils = preload("res://core/player_utils.gd")
 

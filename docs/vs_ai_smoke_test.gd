@@ -13,7 +13,8 @@ func _init() -> void:
 	_run_test("human vs ai can hand off one full ai turn", _test_human_vs_ai_turn)
 	_run_test("ai vs ai can auto-progress from opening", _test_ai_vs_ai_progress)
 	_run_test("sync drive emits ai action signal", _test_sync_drive_emits_ai_action_signal)
-	_run_test("ai life reveal waits for player confirmation then resumes", _test_ai_life_reveal_waits_for_player_confirmation_then_resumes)
+	_run_test("ai life reveal auto-confirms then resumes", _test_ai_life_reveal_auto_confirms_then_resumes)
+	_run_test("ai drive progresses across multiple turn boundaries", _test_ai_drive_progresses_across_multiple_turn_boundaries)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
 
@@ -130,7 +131,7 @@ func _test_sync_drive_emits_ai_action_signal() -> Dictionary:
 	return _ok()
 
 
-func _test_ai_life_reveal_waits_for_player_confirmation_then_resumes() -> Dictionary:
+func _test_ai_life_reveal_auto_confirms_then_resumes() -> Dictionary:
 	var manager := _new_manager({
 		UATypes.PLAYER_ONE: {"controller": "HUMAN"},
 		UATypes.PLAYER_TWO: {"controller": "AI_SIMPLE"},
@@ -147,13 +148,36 @@ func _test_ai_life_reveal_waits_for_player_confirmation_then_resumes() -> Dictio
 	p2.life = [trigger_uid]
 	var hand_before := p2.hand.size()
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
-	manager.drive_controllers(16)
-	if manager.game_state.pending_life_reveal.is_empty():
-		return _fail("ai life reveal should pause until the player confirms it")
-	manager.acknowledge_life_reveal(trigger_uid)
 	manager.drive_controllers(32)
+	if not manager.game_state.pending_life_reveal.is_empty():
+		return _fail("ai life reveal should auto-confirm and finish without a remaining reveal window")
+	if not manager.game_state.pending_life_triggers.is_empty():
+		return _fail("ai life reveal should not leave pending life triggers behind")
 	if p2.hand.size() != hand_before + 1:
 		return _fail("after confirmation the ai should resume and resolve its trigger")
+	return _ok()
+
+func _test_ai_drive_progresses_across_multiple_turn_boundaries() -> Dictionary:
+	var manager := _new_manager({
+		UATypes.PLAYER_ONE: {"controller": "AI_SIMPLE"},
+		UATypes.PLAYER_TWO: {"controller": "AI_SIMPLE"},
+	})
+	var action_events: Array[Dictionary] = []
+	manager.ai_action_executed.connect(func(action_info: Dictionary) -> void:
+		action_events.append(action_info.duplicate(true))
+	)
+	manager.drive_controllers(160)
+	if not manager.game_state.opening_complete:
+		return _fail("ai vs ai drive should resolve the opening sequence automatically")
+	if manager.game_state.turn_number < 4 and manager.game_state.winner_player_id == "":
+		return _fail("expected ai drive to progress across multiple turn boundaries or finish the duel")
+	if action_events.size() < 8:
+		return _fail("expected sustained ai_action_executed activity during the long drive")
+	var seen_players := {}
+	for action_info in action_events:
+		seen_players[str(action_info.get("player_id", ""))] = true
+	if not seen_players.has(UATypes.PLAYER_ONE) or not seen_players.has(UATypes.PLAYER_TWO):
+		return _fail("expected both ai players to emit action events during the long drive")
 	return _ok()
 
 func _spawn_temp_trigger_life_card(manager: GameManager, player_id: String) -> String:

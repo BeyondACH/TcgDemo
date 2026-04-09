@@ -1,6 +1,6 @@
 # 当前项目里程碑盘点
 
-更新时间：2026-04-02
+更新时间：2026-04-09
 
 ## 1. 盘点依据
 
@@ -25,6 +25,17 @@
 - 2026-04-02 已新增 `docs/long_run_stability_smoke_test.gd`，当前结果为 `5 / 0`；既有 `docs/runtime_residue_smoke_test.gd = 9 / 0`、`docs/vs_ai_smoke_test.gd = 4 / 0` 仍保持通过。
 - 从本轮开始，“更长链路而不是更多零散样例”成为验证资产的第一优先级，前文中仍偏“继续扩样例”的旧口径均以本段为准。
 
+## 2.2 2026-04-08 Phase E 基线修复补充
+
+- 已修复 Phase E 启动前暴露的基线编译回归：`core/effects/requirement_matcher.gd` 补回 `PlayerState` 预加载后，`docs/milestone_smoke_test.gd` 恢复为 `33 / 0`。
+- AI 自动推进链本轮补齐两项关键稳定性：
+  - AI 在生命翻牌 reveal 窗口会自动确认，不再残留 `pending_life_reveal`
+  - 多目标 `ABILITY_TARGET_SELECTION` 已按统一 `choices` 口径提交，不再把待决策队列卡死
+- 长链冻结基线已更新为：
+  - `docs/runtime_residue_smoke_test.gd`：10 项通过、0 项失败
+  - `docs/long_run_stability_smoke_test.gd`：6 项通过、0 项失败
+  - `docs/vs_ai_smoke_test.gd`：5 项通过、0 项失败
+
 当前仓库已经完成从”可开局原型”到”可持续迭代的规则原型”的第一轮收口，项目状态可以概括为：
 
 - 基础对局闭环已实现，核心区域、阶段流转、资源支付、战斗与胜负判断具备稳定主路径。
@@ -39,6 +50,12 @@
 - `compile_cards_effects.py` 的后续识别层重构方向已补充约束：对 `UA31BT_MMM_1_007` 一类同族文本，完成标准必须是参数化模板族复用，而不是仅把逐句匹配迁移到模板注册表。
 - 2026-04-02 已完成首轮 registry 化落地，并将正式 raw 基线收口到 `180 / 0`、运行时总量 `183 / 0`。
 - 已补中文文档防污染流程，并新增 `tools/check_utf8_docs.py` 轻量检查工具。
+
+## 2.3 2026-04-09 图片抓取脚本商品名列表补充
+
+- `download_mmm_images.py` 已支持从日文官网 `jp/cardlist/index.php?search=true` 的 `series` 下拉框枚举商品名和对应编号。
+- 新增 `--list-products` 只读列表入口，输出格式固定为 `Official products:` + `- <name> [<id>]`，不影响现有 `--product` 手填筛选流程。
+- 为避免旧逻辑回归，脚本保留了作品列表 HTML 解析辅助函数的回归测试，但不重新引入 `--list-works` CLI 入口。
 
 ## 3. 里程碑状态
 
@@ -143,6 +160,8 @@
   - `docs/cards_raw_minimal_duel_smoke_test.gd`：正式 raw 样例回归
   - `docs/draw_phase_smoke_test.gd`：DRAW 阶段专项
   - `docs/deck_import_smoke_test.gd`：导入链路专项
+  - `docs/runtime_residue_smoke_test.gd`：运行时 residue / cleanup 专项
+  - `docs/long_run_stability_smoke_test.gd`：连续回合与 AI 长链稳定性专项
   - `docs/simple_ai_v2_smoke_test.gd`：AI 评分行为专项
   - `docs/vs_ai_smoke_test.gd`：AI 控制器整体流程 smoke
 
@@ -150,10 +169,11 @@
 
 - `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
 - `docs/cards_raw_minimal_duel_smoke_test.gd`：80 项通过、0 项失败
-- `docs/runtime_residue_smoke_test.gd`：9 项通过、0 项失败
+- `docs/runtime_residue_smoke_test.gd`：10 项通过、0 项失败
+- `docs/long_run_stability_smoke_test.gd`：6 项通过、0 项失败
 - `docs/life_reveal_modal_smoke_test.gd`：7 项通过、0 项失败
 - `docs/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
-- `docs/vs_ai_smoke_test.gd`：4 项通过、0 项失败
+- `docs/vs_ai_smoke_test.gd`：5 项通过、0 项失败
 
 ## 里程碑 M5.5：AI 对局启发式与自动推进基线
 
@@ -267,7 +287,7 @@
 
 当前主线：
 
-- 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三条规则验证入口稳定通过。
+- 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd` 与 `docs/long_run_stability_smoke_test.gd` 四条规则长链入口稳定通过。
 - 暂不推进 UI 视觉落地，当前主线改为继续压实连续回合生命周期、离场触发链、更长链路自动验证，以及 AI 对局可观察性。
 - 保持 `docs/simple_ai_v2_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 的 AI 验证分层，逐步压实 AI 节奏判断而不污染规则主冒烟。
 - 保持规则、计划与日志描述一致，避免再次出现文档口径滞后。
@@ -275,15 +295,15 @@
 当前主要风险：
 
 - 当前正式 raw 已全部进入统一 IR 主链路，但完整卡池级别回归仍未建立，样例脚本不能替代更大规模回归。
-- Godot 退出时仍保留既有 `ObjectDB` / resource 泄漏告警，虽未影响断言结果，但仍需持续观察。
+- Godot 退出时仍保留既有 `ObjectDB` / resource 泄漏告警，虽未影响本轮 `33 / 0`、`80 / 0`、`10 / 0`、`6 / 0`、`5 / 0` 断言基线，但仍需持续观察。
 - `SimpleAI v2` 目前仍是轻量启发式，`EVENT / ACTIVATE_EFFECT / 关键阻挡位` 的判断更多依赖近似策略，后续若继续增强 AI，需要在不破坏接口冻结的前提下补充更明确的动作上下文字段。
 - 当前验证入口仍偏专项与最小样例，若迟迟不补更长链路自动验证，后续新增改动仍可能在完整流程上暴露迟发问题。
 
 ## 5. 下一阶段建议
 
-1. 下一阶段继续聚焦规则稳定性与验证资产，优先补比当前最小样例更长链的自动验证，覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进。
+1. 下一阶段继续聚焦规则稳定性与验证资产，在已修复基线编译回归和 AI 长链待决策回归后，继续观察连续回合生命周期、延迟效果过期、离场触发链与完整流程推进是否保持稳定。
 2. 既有正式 raw 未支持能力已经收口到 `180 / 0`，后续重点改为维持 `registry -> legacy fallback` 编译链稳定，并只接受参数化模板族扩展，不回退到按卡或逐句匹配硬编码。
-3. 把 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
+3. 把 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/long_run_stability_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
 4. 暂不进行 UI 视觉重构；`docs/plan/ui_art_style_guide.md` 保留为后续阶段的视觉冻结文档，当前仅保留 AI 动作提示与生命翻牌可见性相关的最小 UI 补强。
 5. 若继续提升 AI 质量，优先补动作上下文参数、长链 AI 对局 smoke 与日志可观察性，而不是直接扩大 UI 或搜索式策略改造。
 6. 待规则稳定性与长链路验证进一步压实后，再单独评估 UI 视觉落地的启动时机。

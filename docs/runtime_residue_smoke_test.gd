@@ -24,6 +24,7 @@ func _init() -> void:
 	_run_test("手牌玛米减费跨回合清理", _test_hand_mami_discount_expires_on_next_turn)
 	_run_test("事件每回合限制跨回合清理", _test_event_once_per_turn_flag_clears_on_next_turn)
 	_run_test("一次性移除区 AP 减免消费后不残留", _test_removed_ap_discount_does_not_residue)
+	_run_test("ai drive long chain leaves no pending gate residue", _test_ai_drive_finishes_without_pending_gate_residue)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
 
@@ -743,6 +744,27 @@ func _test_removed_ap_discount_does_not_residue() -> Dictionary:
 	manager.play_card(full_cost_uid, UATypes.Zone.OUTSIDE, {"force_allow_current_zone": true})
 	if player.ap_active_count() != 0:
 		return _fail("一次性 REMOVED AP 减免消费后不应继续影响第二张牌")
+	return _ok()
+
+func _test_ai_drive_finishes_without_pending_gate_residue() -> Dictionary:
+	var manager := _new_manager({
+		UATypes.PLAYER_ONE: {"controller": "AI_SIMPLE"},
+		UATypes.PLAYER_TWO: {"controller": "AI_SIMPLE"},
+	})
+	for _i in range(10):
+		if manager.game_state.winner_player_id != "":
+			break
+		manager.drive_controllers(64)
+		manager.advance_phase()
+	manager.drive_controllers(64)
+	if not manager.game_state.pending_decisions.is_empty():
+		return _fail("ai drive left pending decisions behind")
+	if not manager.game_state.pending_life_triggers.is_empty():
+		return _fail("ai drive left pending life triggers behind")
+	if not manager.game_state.pending_life_reveal.is_empty():
+		return _fail("ai drive left pending life reveal behind")
+	if not manager.game_state.effect_queue.is_empty():
+		return _fail("ai drive left effect_queue behind")
 	return _ok()
 
 func _fill_ap(player: PlayerState, total: int) -> void:

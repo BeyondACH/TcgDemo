@@ -52,6 +52,10 @@ var life_reveal_refresher: Callable = Callable()
 ## Signature: func() -> bool
 var life_reveal_waiting_checker: Callable = Callable()
 
+## Callback for acknowledging the currently revealed life card
+## Signature: func(card_uid: String) -> void
+var life_reveal_acknowledger: Callable = Callable()
+
 ## Reference to game state for controller decision making
 var game_state: RefCounted = null
 
@@ -137,6 +141,9 @@ func drive_controllers(max_steps: int = 64) -> void:
 			break
 		_refresh_life_reveal()
 		if _is_life_reveal_waiting():
+			if _try_acknowledge_ai_life_reveal():
+				safety -= 1
+				continue
 			break
 		var player_id := _get_priority_player_id()
 		var controller: PlayerController = _controllers.get(player_id)
@@ -154,6 +161,22 @@ func drive_controllers(max_steps: int = 64) -> void:
 	_drive_in_progress = false
 	if _drive_pending and not _check_winner():
 		_process_drive_deferred()
+
+
+func _try_acknowledge_ai_life_reveal() -> bool:
+	if game_state == null or game_state.pending_life_reveal.is_empty():
+		return false
+	var player_id := str(game_state.pending_life_reveal.get("player_id", ""))
+	var card_uid := str(game_state.pending_life_reveal.get("current_card_uid", ""))
+	if player_id == "" or card_uid == "":
+		return false
+	var controller: PlayerController = _controllers.get(player_id)
+	if controller == null or controller.is_human():
+		return false
+	if life_reveal_acknowledger.is_valid():
+		life_reveal_acknowledger.call(card_uid)
+		return true
+	return false
 
 
 func _can_drive() -> bool:
