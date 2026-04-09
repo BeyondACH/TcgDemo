@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from tools.card_effects_compiler.normalization import normalize_japanese_text as normalize_compiler_text
+from tools.card_effects_compiler.semantic_ir import build_semantic_entry as build_semantic_ir_entry
 from tools.card_effects_compiler.template_registry import _dispatch_template_rules
 from tools.card_effects_compiler.template_registry import _exact_text_match
 from tools.card_effects_compiler.template_registry import _regex_match
@@ -2802,45 +2803,7 @@ def _infer_template_type(ability: dict) -> str:
 
 
 def _build_semantic_entry(card_effects: dict) -> dict:
-    abilities = []
-    unresolved_capabilities = []
-    template_types = []
-    for ability in card_effects.get("abilities", []):
-        template_type = _infer_template_type(ability)
-        abilities.append(
-            {
-                "id": ability.get("id", ""),
-                "timing": ability.get("timing", {}).get("event", ""),
-                "status": ability.get("status", "UNSUPPORTED"),
-                "text": ability.get("ui", {}).get("text", ""),
-                "reason": ability.get("unsupported_reason", ""),
-                "template_type": template_type,
-            }
-        )
-        if template_type and template_type not in template_types:
-            template_types.append(template_type)
-        reason = normalize_compiler_text(ability.get("unsupported_reason", ""))
-        if reason and reason not in unresolved_capabilities:
-            unresolved_capabilities.append(reason)
-    has_raw_text = any(
-        str(card_effects.get("card_meta", {}).get("text", {}).get(key, "")).strip() not in {"", "-"}
-        for key in ["effect", "trigger", "rule"]
-    )
-    can_be_expressed = True
-    if abilities:
-        can_be_expressed = all(entry.get("status") == "SUPPORTED" for entry in abilities)
-    elif has_raw_text:
-        can_be_expressed = False
-        unresolved_capabilities.append(normalize_compiler_text("当前卡牌文本尚未映射为能力对象。"))
-    return {
-        "card_id": card_effects.get("id", ""),
-        "source": card_effects.get("analysis", {}).get("source", ""),
-        "inferred_keywords": card_effects.get("card_meta", {}).get("keywords", []),
-        "template_types": template_types,
-        "abilities": abilities,
-        "can_be_expressed_by_dsl": can_be_expressed,
-        "unresolved_capabilities": unresolved_capabilities,
-    }
+    return build_semantic_ir_entry(card_effects)
 
 
 def _iter_series_raw_paths() -> list[Path]:

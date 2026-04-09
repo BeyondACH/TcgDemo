@@ -111,9 +111,39 @@ class CompileCardsEffectsTests(unittest.TestCase):
         entry = _build_semantic_entry(card_effects)
 
         self.assertEqual(entry["card_id"], "card-001")
+        self.assertNotIn("source", entry)
+        self.assertEqual(entry["origin"], "test-source")
+        self.assertEqual(
+            entry["source_text_jp"],
+            {
+                "effect": "効果",
+                "trigger": "",
+                "rule": "",
+            },
+        )
         self.assertIn("unresolved_capabilities", entry)
         self.assertNotIn("missing_capabilities", entry)
         self.assertEqual(entry["unresolved_capabilities"], ["一行目 二行目。"])
+
+    def test_build_semantic_entry_emits_fallback_for_raw_text_without_abilities(self):
+        card_effects = {
+            "id": "card-002",
+            "analysis": {"source": "test-source"},
+            "card_meta": {
+                "keywords": [],
+                "text": {
+                    "effect": "効果だけがある",
+                    "trigger": "",
+                    "rule": "",
+                },
+            },
+            "abilities": [],
+        }
+
+        entry = _build_semantic_entry(card_effects)
+
+        self.assertFalse(entry["can_be_expressed_by_dsl"])
+        self.assertEqual(entry["unresolved_capabilities"], ["当前卡牌文本尚未映射为能力对象。"])
 
 
 if __name__ == "__main__":
