@@ -2383,7 +2383,7 @@ def _bp_sum_limit_remove_builder(card: dict, trigger_entry: dict, event_name: st
     match = payload["match"]
     max_sum_bp = int(match.group(1))
     max_count = int(match.group(2))
-    target_specs, steps = _manual_card_set(
+    target_specs, _ = _manual_card_set(
         "OPPONENT",
         ["FRONT_LINE"],
         min_count=0,
@@ -2393,9 +2393,20 @@ def _bp_sum_limit_remove_builder(card: dict, trigger_entry: dict, event_name: st
     )
     composite_steps: list[dict] = [
         {
-            "type": "SELECT_TARGETS_WITH_SUM_LIMIT",
+            "type": "SELECT_TARGETS_BY_COMBINATION",
             "var": "selected_targets",
-            "target": deepcopy(steps[0].get("target", {})),
+            "target": {
+                "type": "CARD_SET",
+                "owner": "OPPONENT",
+                "zones": ["FRONT_LINE"],
+                "filters": [],
+                "requirements": [],
+                "min": 0,
+                "max": max_count,
+                "selection_mode": "MANUAL",
+                "manual": True,
+                "selection_constraints": {"max_count": max_count, "max_sum_bp": max_sum_bp},
+            },
         },
         {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_targets", "to": "OUTSIDE"},
     ]
@@ -2409,6 +2420,89 @@ def _bp_sum_limit_remove_builder(card: dict, trigger_entry: dict, event_name: st
         payload.get("kind"),
         template_metadata=payload.get("template_metadata"),
     )
+
+
+def _bp_sum_limit_remove_dynamic_energy_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    multiplier = int(match.group(1))
+    max_count = int(match.group(2))
+    constraints = {
+        "max_count": max_count,
+        "max_sum_provider": {
+            "type": "PLAYER_ZONE_CARD_COUNT_MULTIPLIED",
+            "player": "SELF",
+            "zones": ["ENERGY_LINE"],
+            "multiplier": multiplier,
+        },
+    }
+    composite_steps: list[dict] = [
+        {
+            "type": "SELECT_TARGETS_BY_COMBINATION",
+            "var": "selected_targets",
+            "target": {
+                "type": "CARD_SET",
+                "owner": "OPPONENT",
+                "zones": ["FRONT_LINE"],
+                "filters": [],
+                "requirements": [],
+                "min": 0,
+                "max": max_count,
+                "selection_mode": "MANUAL",
+                "manual": True,
+                "selection_constraints": constraints,
+            },
+        },
+        {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_targets", "to": "OUTSIDE"},
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        composite_steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _compile_branch_sub_steps(card: dict, trigger_entry: dict, branch_text: str) -> list[dict]:
+    branch_text = str(branch_text).strip().lstrip("・").strip()
+    if not branch_text:
+        return []
+    draw_match = re.fullmatch(r"カードを(\d+)枚引く。", branch_text)
+    if draw_match:
+        return [{"type": "DRAW", "value": int(draw_match.group(1))}]
+    damage_match = re.fullmatch(r"相手に(\d+)ダメージ。", branch_text)
+    if damage_match:
+        return [{"type": "DEAL_DAMAGE", "target_player": "OPPONENT", "value": int(damage_match.group(1))}]
+    temp_bp_match = re.fullmatch(r"このターン中、自分のフロントLのキャラ1枚のBP\+(\d+)。", branch_text)
+    if temp_bp_match:
+        _, select_steps = _manual_single_target("SELF", ["FRONT_LINE"], [], 1, 1)
+        return select_steps + [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(temp_bp_match.group(1)), "expires": "END_OF_TURN"}]
+    compiled = _compile_event_effect(
+        card,
+        {"source_label": trigger_entry.get("source_label", ""), "effect_box": trigger_entry.get("effect_box", "OUTER"), "text": branch_text},
+        {},
+    )
+    if compiled is None or str(compiled.get("status", "")) != "SUPPORTED":
+        compiled = _compile_trigger(
+            card,
+            {
+                "trigger": str(trigger_entry.get("trigger", "ON_ENTER")),
+                "source_label": trigger_entry.get("source_label", ""),
+                "effect_box": trigger_entry.get("effect_box", "OUTER"),
+                "text": branch_text,
+            },
+            {},
+        )
+    if compiled is None or str(compiled.get("status", "")) != "SUPPORTED":
+        return [{"type": "PENDING_BRANCH_EFFECT", "text": branch_text}]
+    steps = deepcopy(compiled.get("steps", []))
+    requirements = deepcopy(compiled.get("requirements", []))
+    if requirements:
+        return [{"type": "RUN_COMPOSITE_IF", "if_requirements": requirements, "steps": steps}]
+    return steps or [{"type": "PENDING_BRANCH_EFFECT", "text": branch_text}]
 
 
 def _preview_add_to_hand_name_contains_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
@@ -2606,12 +2700,10 @@ def _branch_choice_builder(card: dict, trigger_entry: dict, event_name: str, _te
             },
         },
         {
-            "type": "EXECUTE_BRANCH",
-            "branch_var": "selected_branch_option",
-            "branches": [
-                {"id": option, "steps": [{"type": "PENDING_BRANCH_EFFECT", "text": text}]}
-                for option, text in zip(options, branch_texts)
-            ],
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": {option: _compile_branch_sub_steps(card, trigger_entry, text) for option, text in zip(options, branch_texts)},
+            "default_steps": [],
         },
     ]
     return _supported_ability(
@@ -2759,6 +2851,14 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         template_metadata={"family": "BP_SUM_LIMIT_REMOVE", "variant": "bp_sum_limit_remove_optional"},
     ),
     _TemplateRule(
+        name="trigger.bp_sum_limit_remove.dynamic_energy_line",
+        event_filter=("ON_ENTER", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
+        matcher=_regex_match(r"BPの合計が自分のエナジーラインのカード枚数×(\d+)以下になるように相手のフロントLのキャラを(\d+)枚まで選び、退場させる。"),
+        builder=_bp_sum_limit_remove_dynamic_energy_builder,
+        priority=136,
+        template_metadata={"family": "BP_SUM_LIMIT_REMOVE", "variant": "bp_sum_limit_remove_dynamic_energy_line"},
+    ),
+    _TemplateRule(
         name="trigger.preview_add_to_hand.name_contains_discard",
         event_filter="ON_ENTER",
         matcher=_regex_match(r"自分の山札の上から(\d+)枚見て、カード名に「(.+)」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
@@ -2876,6 +2976,14 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         ),
         priority=130,
         template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_dynamic_madoka"},
+    ),
+    _TemplateRule(
+        name="event.bp_sum_limit_remove.dynamic_energy_line",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"BPの合計が自分のエナジーラインのカード枚数×(\d+)以下になるように相手のフロントLのキャラを(\d+)枚まで選び、退場させる。"),
+        builder=_bp_sum_limit_remove_dynamic_energy_builder,
+        priority=136,
+        template_metadata={"family": "BP_SUM_LIMIT_REMOVE", "variant": "bp_sum_limit_remove_dynamic_energy_line"},
     ),
 )
 

@@ -466,7 +466,14 @@ class CompileCardsEffectsTests(unittest.TestCase):
 
     def test_compile_event_effect_supports_branch_choice_template(self):
         ability = _compile_event_effect(
-            {"id": "UA45BT_TLR_1_081", "card_type": "EVENT", "effects": [{"text": "・A。"}, {"text": "・B。"}]},
+            {
+                "id": "UA45BT_TLR_1_081",
+                "card_type": "EVENT",
+                "effects": [
+                    {"text": "・カードを1枚引く。"},
+                    {"text": "・相手に1ダメージ。"},
+                ],
+            },
             {
                 "source_label": "",
                 "effect_box": "OUTER",
@@ -475,8 +482,10 @@ class CompileCardsEffectsTests(unittest.TestCase):
             {},
         )
         self.assertEqual(ability["status"], "SUPPORTED")
-        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "EXECUTE_BRANCH"])
-        self.assertEqual(len(ability["steps"][1]["branches"]), 2)
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "EXECUTE_CHOICE_BRANCH"])
+        branches = ability["steps"][1]["branches"]
+        self.assertEqual(branches["BRANCH_1"][0]["type"], "DRAW")
+        self.assertEqual(branches["BRANCH_2"][0]["type"], "DEAL_DAMAGE")
 
     def test_compile_trigger_supports_bp_sum_limit_remove_template(self):
         ability = _compile_trigger(
@@ -490,11 +499,31 @@ class CompileCardsEffectsTests(unittest.TestCase):
             {},
         )
         self.assertEqual(ability["status"], "SUPPORTED")
-        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS_WITH_SUM_LIMIT")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS_BY_COMBINATION")
         constraints = ability["steps"][0]["target"]["selection_constraints"]
         self.assertEqual(constraints["max_sum_bp"], 6000)
         self.assertEqual(constraints["max_count"], 2)
         self.assertEqual(ability["steps"][1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_trigger_supports_bp_sum_limit_dynamic_provider_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_031"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": "BPの合計が自分のエナジーラインのカード枚数×1000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS_BY_COMBINATION")
+        constraints = ability["steps"][0]["target"]["selection_constraints"]
+        self.assertEqual(constraints["max_count"], 2)
+        self.assertEqual(
+            constraints["max_sum_provider"],
+            {"type": "PLAYER_ZONE_CARD_COUNT_MULTIPLIED", "player": "SELF", "zones": ["ENERGY_LINE"], "multiplier": 1000},
+        )
 
     def test_compile_trigger_supports_preview_name_contains_discard_template(self):
         ability = _compile_trigger(
