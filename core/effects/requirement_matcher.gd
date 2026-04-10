@@ -113,6 +113,8 @@ func matches_filter(state: GameState, filter_variant, context: Dictionary, candi
 		return candidate_def != null and UATypes.card_type_to_text(candidate_def.card_type) == str(filter.get("value", ""))
 	if filter_type == "NAME_IS":
 		return candidate_def != null and candidate_def.matches_reference_name(str(filter.get("value", "")))
+	if filter_type == "NAME_CONTAINS":
+		return candidate_def != null and candidate_def.name.find(str(filter.get("value", ""))) != -1
 	if filter_type == "NAME_NOT":
 		return candidate_def != null and candidate_def.name != str(filter.get("value", ""))
 	if filter_type == "CARD_STATE_IS":

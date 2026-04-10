@@ -49,6 +49,7 @@ func _init_handlers() -> void:
 		"REGISTER_STATIC_MODIFIER": _step_register_static_modifier,
 		"STORE_CARD_INFO": _step_store_card_info,
 		"SELECT_TARGETS_BY_COMBINATION": _step_select_targets_by_combination,
+		"SELECT_TARGETS_WITH_SUM_LIMIT": _step_select_targets_with_sum_limit,
 		"SET_CHOICE_MODE": _step_set_choice_mode,
 		"EXECUTE_CHOICE_BRANCH": _step_execute_choice_branch,
 		"RUN_COMPOSITE_IF": _step_run_composite_if,
@@ -331,6 +332,29 @@ func _step_select_targets_by_combination(state: GameState, source_card_uid: Stri
 	context[selected_var] = constrained_selected
 	logs.append("Selected %d target(s) for %s under combination constraints." % [constrained_selected.size(), selected_var])
 	return {"logs": logs, "paused": false}
+
+func _step_select_targets_with_sum_limit(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var target: Dictionary = step.get("target", {}).duplicate(true)
+	var constraints: Dictionary = target.get("selection_constraints", {}).duplicate(true)
+	if step.has("max_sum_bp") and not constraints.has("max_sum_bp"):
+		constraints["max_sum_bp"] = int(step.get("max_sum_bp", 0))
+	if step.has("max_sum_provider") and not constraints.has("max_sum_provider"):
+		constraints["max_sum_provider"] = step.get("max_sum_provider")
+	if step.has("max_count") and not constraints.has("max_count"):
+		constraints["max_count"] = int(step.get("max_count", int(target.get("max", 0))))
+	target["selection_constraints"] = constraints
+	return _step_select_targets_by_combination(
+		state,
+		source_card_uid,
+		{
+			"type": "SELECT_TARGETS_BY_COMBINATION",
+			"var": step.get("var", "selected_targets"),
+			"target": target,
+		},
+		context,
+		remaining_steps,
+		effect
+	)
 
 func _step_set_choice_mode(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
 	var mode_var := str(step.get("var", "choice_mode"))

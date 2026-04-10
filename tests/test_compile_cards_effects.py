@@ -48,6 +48,8 @@ class CompileCardsEffectsTests(unittest.TestCase):
         "自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。"
     )
     TLR_COMPLEX_OVERRIDE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。"
+    TLR_BP_SUM_LIMIT_TEXT = "BPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。"
+    TLR_PREVIEW_NAME_CONTAINS_TEXT = "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
     TLR_PREVIEW_TOP_CHOOSE_TEXT = "自分の山札の上から1枚見て、山札の上か下に置く。"
     TLR_CONDITIONAL_DRAW_TEXT = "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。"
     TLR_OPTIONAL_AP_DAMAGE_TEXT = "相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。"
@@ -475,6 +477,41 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "EXECUTE_BRANCH"])
         self.assertEqual(len(ability["steps"][1]["branches"]), 2)
+
+    def test_compile_trigger_supports_bp_sum_limit_remove_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_030"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_BP_SUM_LIMIT_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS_WITH_SUM_LIMIT")
+        constraints = ability["steps"][0]["target"]["selection_constraints"]
+        self.assertEqual(constraints["max_sum_bp"], 6000)
+        self.assertEqual(constraints["max_count"], 2)
+        self.assertEqual(ability["steps"][1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_trigger_supports_preview_name_contains_discard_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_066"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_PREVIEW_NAME_CONTAINS_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "PREVIEW_ADD_TO_HAND")
+        select_step = next(step for step in ability["steps"] if step["type"] == "SELECT_TARGETS")
+        self.assertEqual(select_step["target"]["filters"][0]["type"], "NAME_CONTAINS")
+        self.assertEqual(select_step["target"]["filters"][0]["value"], "デビルーク")
 
     def test_build_semantic_entry_uses_override_enum_for_complex_tlr_boundary_cases(self):
         semantic_entry = _build_semantic_entry(
