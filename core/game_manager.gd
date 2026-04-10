@@ -478,11 +478,18 @@ func resolve_pending_decision(decision_type: String, payload: Dictionary = {}) -
 			emit_state_changed()
 			return {"ok": true}
 		"ABILITY_TARGET_SELECTION":
-			_apply_logs(effect_resolver.resolve_target_selection_decision(
+			var target_logs := effect_resolver.resolve_target_selection_decision(
 				game_state,
 				str(decision.get("resolution_id", "")),
 				payload.get("choice", payload.get("choices", []))
-			))
+			)
+			_apply_logs(target_logs)
+			for log_line_variant in target_logs:
+				var log_line := str(log_line_variant)
+				if log_line.begins_with("Target selection failed:"):
+					game_state.pending_decisions.insert(0, decision.duplicate(true))
+					emit_state_changed()
+					return {"ok": false, "reason": log_line.trim_prefix("Target selection failed: ").trim_suffix(".")}
 			_maybe_finalize_life_damage_after_pending_resolution()
 			emit_state_changed()
 			return {"ok": true}

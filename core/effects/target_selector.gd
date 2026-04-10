@@ -265,17 +265,32 @@ func normalize_selection_payload(selected_values, max_count: int) -> Array:
 		var single := str(selected_values)
 		if single != "":
 			result.append(single)
-	if max_count >= 0 and result.size() > max_count:
-		return result.slice(0, max_count)
 	return result
 
 func validate_selection_payload(state: GameState, normalized: Array, queued_effect: Dictionary) -> String:
+	var min_count := int(queued_effect.get("min", 0))
+	var max_count := int(queued_effect.get("max", -1))
+	if normalized.size() < min_count:
+		return "not_enough_targets"
+	if max_count >= 0 and normalized.size() > max_count:
+		return "too_many_targets"
+	var seen_uids: Dictionary = {}
+	for value_variant in normalized:
+		var uid := str(value_variant)
+		if uid == "":
+			continue
+		if seen_uids.has(uid):
+			return "duplicate_target"
+		seen_uids[uid] = true
 	var candidate_values: Array = queued_effect.get("candidate_values", [])
 	for value_variant in normalized:
 		var value := str(value_variant)
 		if not candidate_values.has(value):
 			return "invalid_choice"
 	var constraints: Dictionary = queued_effect.get("selection_constraints", {})
+	var constrained_max_count := int(constraints.get("max_count", -1))
+	if constrained_max_count >= 0 and normalized.size() > constrained_max_count:
+		return "too_many_targets"
 	if str(constraints.get("distinct_by", "")) == "CARD_NAME":
 		var seen_names: Dictionary = {}
 		for card_uid_variant in normalized:
@@ -289,7 +304,49 @@ func validate_selection_payload(state: GameState, normalized: Array, queued_effe
 			if seen_names.has(card_def.name):
 				return "duplicate_card_name"
 			seen_names[card_def.name] = true
+	var threshold := -1
+	if constraints.has("max_sum_provider"):
+		threshold = _resolve_dynamic_sum_threshold(state, queued_effect, constraints.get("max_sum_provider"))
+	elif constraints.has("max_sum_bp"):
+		threshold = int(constraints.get("max_sum_bp", -1))
+	if threshold >= 0:
+		var sum_bp := 0
+		for card_uid_variant in normalized:
+			var card_uid := str(card_uid_variant)
+			var card = state.get_card(card_uid)
+			if card == null:
+				continue
+			sum_bp += int(card.current_bp)
+		if sum_bp > threshold:
+			return "selection_sum_exceeded"
+	var disjoint_var := str(constraints.get("disjoint_with_var", constraints.get("other_var", "")))
+	if disjoint_var != "":
+		var context: Dictionary = queued_effect.get("context", {})
+		var other_selected: Array = _ensure_array(context.get(disjoint_var, []))
+		var other_lookup: Dictionary = {}
+		for other_variant in other_selected:
+			var other_uid := str(other_variant)
+			if other_uid == "":
+				continue
+			other_lookup[other_uid] = true
+		for selected_variant in normalized:
+			var selected_uid := str(selected_variant)
+			if selected_uid == "":
+				continue
+			if other_lookup.has(selected_uid):
+				return "selection_not_disjoint"
 	return ""
+
+func _resolve_dynamic_sum_threshold(state: GameState, queued_effect: Dictionary, provider_variant) -> int:
+	if _effect_resolver != null:
+		var context: Dictionary = queued_effect.get("context", {})
+		var source_card_uid := str(queued_effect.get("source_card_uid", ""))
+		return _effect_resolver._resolve_numeric_value(state, provider_variant, context, source_card_uid)
+	if provider_variant is int or provider_variant is float:
+		return int(provider_variant)
+	if provider_variant is Dictionary:
+		return int(provider_variant.get("value", 0))
+	return int(provider_variant)
 
 # ============================================================
 # 辅助函数

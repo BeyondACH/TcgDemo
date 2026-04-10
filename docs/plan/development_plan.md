@@ -77,6 +77,13 @@
 - 已重新执行 `python tools/compile_cards_effects.py`，当前冻结基线为：系列卡编译总数 `199`、目录数 `2`、带 base sample 的运行时总卡数 `214`、支持能力 `265`、未支持能力 `48`。
 - 本轮仅收口已迁移模板族的 legacy-path 残留；未迁移模板族仍维持既有 `registry -> legacy fallback` 结构，不在本轮扩大清理范围。
 
+## 2.5 2026-04-10 task_breakdown Week 1（P0）执行补充
+
+- 已按 `docs/plan/task_breakdown.md` 的 Week 1 优先级开始落地 Iteration A，并先补“暂停/恢复链路不可绕过组合约束”的回归闭环。
+- `ABILITY_TARGET_SELECTION` 的恢复校验已覆盖：数量上限、候选合法性、重复目标、总 BP 上限、动态阈值、互斥集合。
+- 决策消费语义修正为：非法输入不消费待决策，返回稳定 reason，便于 UI 与日志层做一致展示。
+- `runtime_residue_smoke_test` 已新增 `SELECT_TARGETS_BY_COMBINATION`、`SET_CHOICE_MODE/EXECUTE_CHOICE_BRANCH`、`RUN_COMPOSITE_IF` 三条最小回归链。
+
 ## 3. 开发阶段规划
 
 ## 阶段 A：规则与 DSL/IR 基线维护
