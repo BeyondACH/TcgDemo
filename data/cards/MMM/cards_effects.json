@@ -644,14 +644,19 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から4枚見る。その中から黄のイベントカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_add_to_hand_discard_on_add"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },
@@ -1246,7 +1251,11 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から3枚見る。その中から〈アルティメットまどか〉か［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_add_to_hand_discard_on_add"
+        }
       },
       {
         "id": "UA31BT_MMM_1_007_on_life_trigger_bab7196d2b",
@@ -1320,7 +1329,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "READY_AND_TEMP_BP"
+        "READY_AND_TEMP_BP",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },
@@ -5699,7 +5709,11 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から5枚見る。その中から〈鹿目 まどか〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_add_to_hand_discard_on_add"
+        }
       },
       {
         "id": "UA31BT_MMM_1_040_on_life_trigger_bab7196d2b",
@@ -5773,7 +5787,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "READY_AND_TEMP_BP"
+        "READY_AND_TEMP_BP",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },
@@ -6316,14 +6331,19 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から3枚見る。その中から〈百江 なぎさ〉か［特徴：ピュエラ・マギ・ホーリー・クインテット］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_add_to_hand_discard_on_add"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },
@@ -9311,7 +9331,11 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_add_to_hand_distinct_names"
+        }
       }
     ],
     "analysis": {
@@ -9319,7 +9343,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },
@@ -9443,7 +9468,7 @@
                     "when": [
                       {
                         "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                        "value": "暁美 ほむら"
+                        "value": "暁美ほむら"
                       }
                     ],
                     "then": {
@@ -9485,7 +9510,7 @@
                     "when": [
                       {
                         "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                        "value": "暁美 ほむら"
+                        "value": "暁美ほむら"
                       }
                     ],
                     "then": {
@@ -9515,14 +9540,19 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_dynamic_name_gate"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -10616,14 +10646,19 @@
           "effect_box": "OUTER",
           "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_required"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -12020,7 +12055,11 @@
           "effect_box": "OUTER",
           "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_required"
+        }
       }
     ],
     "analysis": {
@@ -12028,7 +12067,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "LIFE_TO_HAND_AND_READY_SOURCE",
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -12664,14 +12704,19 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_dynamic_sayaka_life"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -12867,14 +12912,19 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_dynamic_madoka"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -13490,14 +13540,19 @@
           "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚まで選び、退場させる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_optional"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -14479,14 +14534,19 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_dynamic_madoka"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
