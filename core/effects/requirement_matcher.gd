@@ -60,6 +60,10 @@ func _init_handlers() -> void:
 		"PLAYER_ZONE_CARD_COUNT_GTE": _req_player_zone_card_count_gte,
 		"CONTROLLER_TRAIT_NAME_COUNT_GTE": _req_controller_trait_name_count_gte,
 		"CONTROLLER_OTHER_TRAIT_CARD_COUNT_GTE": _req_controller_other_trait_card_count_gte,
+		"TARGET_SET_BP_SUM_LTE": _req_target_set_bp_sum_lte,
+		"TARGET_SET_DYNAMIC_SUM_LTE": _req_target_set_dynamic_sum_lte,
+		"TARGET_SET_UNIQUE": _req_target_set_unique,
+		"TARGET_SET_DISJOINT": _req_target_set_disjoint,
 	}
 
 # ============================================================
@@ -553,6 +557,58 @@ func _req_controller_other_trait_card_count_gte(state: GameState, requirement: D
 				matched_count += 1
 	return matched_count >= count_min
 
+func _req_target_set_bp_sum_lte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var card_uids := _resolve_requirement_card_uids(requirement, context, candidate_card_uid)
+	var sum_bp := 0
+	for uid in card_uids:
+		var card = state.get_card(uid)
+		if card == null:
+			continue
+		sum_bp += int(card.current_bp)
+	return sum_bp <= int(requirement.get("value", 0))
+
+func _req_target_set_dynamic_sum_lte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var card_uids := _resolve_requirement_card_uids(requirement, context, candidate_card_uid)
+	var sum_value := 0
+	var metric := str(requirement.get("metric", "BP"))
+	for uid in card_uids:
+		sum_value += _resolve_card_metric_value(state, uid, metric)
+	var threshold := _resolve_numeric_value(
+		state,
+		requirement.get("value_provider", requirement.get("value", 0)),
+		context,
+		source_card_uid,
+		candidate_card_uid
+	)
+	return sum_value <= threshold
+
+func _req_target_set_unique(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var card_uids := _resolve_requirement_card_uids(requirement, context, candidate_card_uid)
+	var key_mode := str(requirement.get("by", "UID"))
+	var seen: Dictionary = {}
+	for uid in card_uids:
+		var key := _resolve_uniqueness_key(state, uid, key_mode)
+		if key == "":
+			continue
+		if seen.has(key):
+			return false
+		seen[key] = true
+	return true
+
+func _req_target_set_disjoint(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var left := _resolve_requirement_card_uids(requirement, context, candidate_card_uid)
+	var right := _ensure_array(context.get(str(requirement.get("other_var", "")), []))
+	var right_lookup: Dictionary = {}
+	for uid_variant in right:
+		var uid := str(uid_variant)
+		if uid == "":
+			continue
+		right_lookup[uid] = true
+	for uid in left:
+		if right_lookup.has(uid):
+			return false
+	return true
+
 # ============================================================
 # 辅助函数
 # ============================================================
@@ -603,6 +659,41 @@ func _ensure_array(value) -> Array:
 	if value == null or str(value) == "":
 		return []
 	return [value]
+
+func _resolve_requirement_card_uids(requirement: Dictionary, context: Dictionary, candidate_card_uid: String) -> Array[String]:
+	var result: Array[String] = []
+	var source_var := str(requirement.get("source_var", ""))
+	if source_var != "":
+		for uid_variant in _ensure_array(context.get(source_var, [])):
+			var uid := str(uid_variant)
+			if uid != "":
+				result.append(uid)
+	if result.is_empty() and candidate_card_uid != "":
+		result.append(candidate_card_uid)
+	return result
+
+func _resolve_card_metric_value(state: GameState, card_uid: String, metric: String) -> int:
+	var card = state.get_card(card_uid)
+	if card == null:
+		return 0
+	match metric:
+		"BP":
+			return int(card.current_bp)
+		_:
+			return int(card.current_bp)
+
+func _resolve_uniqueness_key(state: GameState, card_uid: String, key_mode: String) -> String:
+	if card_uid == "":
+		return ""
+	var card = state.get_card(card_uid)
+	var card_def = state.get_card_def(card.def_id) if card != null else null
+	match key_mode:
+		"NAME":
+			return card_def.name if card_def != null else ""
+		"DEF_ID":
+			return card.def_id if card != null else ""
+		_:
+			return card_uid
 
 func _zone_cards_for_player(player: PlayerState, zone_key: String) -> Array:
 	match zone_key:

@@ -1106,3 +1106,59 @@ VictoryChecker
 3. **能量 + AP 双资源判定**
 4. **攻击 / 阻挡 / 战斗结算**
 5. **触发效果队列与处理顺序**
+
+---
+
+# 15. DSL / IR 原子能力补充（要求与步骤分离）
+
+以下新增类型用于可复用的效果建模，均遵循“要求只做判断，步骤只做执行”的约束。
+
+## 15.1 Requirement 原子定义（只判断，不改状态）
+
+### 1) 目标集合聚合约束
+
+- `TARGET_SET_BP_SUM_LTE`
+  - 含义：检查 `source_var` 指向的目标集合 BP 合计是否不超过 `value`。
+  - 典型用途：`最多2枚且总BP≤X` 中的“总BP≤X”判定。
+
+- `TARGET_SET_DYNAMIC_SUM_LTE`
+  - 含义：检查目标集合某指标（当前先支持 `metric=BP`）总和是否不超过动态阈值。
+  - 阈值来源：`value_provider`（可引用上下文卡牌、来源卡牌或已选目标相关变量）。
+
+### 2) 多次选择互斥 / 去重
+
+- `TARGET_SET_UNIQUE`
+  - 含义：检查集合内是否无重复。
+  - `by` 支持：`UID` / `NAME` / `DEF_ID`。
+
+- `TARGET_SET_DISJOINT`
+  - 含义：检查 `source_var` 与 `other_var` 两个集合是否互斥（无交集）。
+
+## 15.2 Step 原子定义（只执行，不承载规则判断）
+
+### 1) 组合约束选择执行
+
+- `SELECT_TARGETS_BY_COMBINATION`
+  - 行为：在 `SELECT_TARGETS` 基础上额外应用 `selection_constraints`。
+  - 当前支持：
+    - `max_count`
+    - `max_sum_bp`
+    - `max_sum_provider`（动态阈值）
+
+### 2) 显式分支执行（choice / mode）
+
+- `SET_CHOICE_MODE`
+  - 行为：写入分支模式变量（如 `choice_mode`）。
+- `EXECUTE_CHOICE_BRANCH`
+  - 行为：按 `mode_var` 读取模式，在 `branches` 中执行对应步骤集。
+
+### 3) 条件成立后的串联动作
+
+- `RUN_COMPOSITE_IF`
+  - 行为：先判断 `if_requirements`，成立后顺序执行 `steps`。
+  - 典型串联：抽牌 + 移动 + BP 增减。
+
+## 15.3 兼容性约束
+
+- `requirement.type` 与 `step.type` 必须使用稳定命名，不通过黑盒 fallback 注入语义。
+- 新能力优先通过新增原子 requirement / step 组合表达，不为单卡写专用解释分支。
