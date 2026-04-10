@@ -289,7 +289,30 @@ func validate_selection_payload(state: GameState, normalized: Array, queued_effe
 			if seen_names.has(card_def.name):
 				return "duplicate_card_name"
 			seen_names[card_def.name] = true
+	var max_sum_threshold := _resolve_selection_max_sum_bp(state, constraints, queued_effect)
+	if max_sum_threshold >= 0:
+		var selected_bp_sum := 0
+		for card_uid_variant in normalized:
+			var card_uid := str(card_uid_variant)
+			var card = state.get_card(card_uid)
+			if card == null:
+				continue
+			selected_bp_sum += int(card.current_bp)
+		if selected_bp_sum > max_sum_threshold:
+			return "sum_bp_exceeded"
 	return ""
+
+func _resolve_selection_max_sum_bp(state: GameState, constraints: Dictionary, queued_effect: Dictionary) -> int:
+	if constraints.is_empty():
+		return -1
+	var max_sum_provider = constraints.get("max_sum_provider", null)
+	if max_sum_provider != null and _effect_resolver != null:
+		var queued_context: Dictionary = queued_effect.get("context", {})
+		var source_card_uid := str(queued_effect.get("source_card_uid", ""))
+		return int(_effect_resolver._resolve_numeric_value(state, max_sum_provider, queued_context, source_card_uid))
+	if constraints.has("max_sum_bp"):
+		return int(constraints.get("max_sum_bp", -1))
+	return -1
 
 # ============================================================
 # 辅助函数
