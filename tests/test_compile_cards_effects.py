@@ -487,6 +487,29 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(branches["BRANCH_1"][0]["type"], "DRAW")
         self.assertEqual(branches["BRANCH_2"][0]["type"], "DEAL_DAMAGE")
 
+    def test_compile_event_effect_branch_choice_template_avoids_recursive_reentry(self):
+        ability = _compile_event_effect(
+            {
+                "id": "UA45BT_TLR_1_082",
+                "card_type": "EVENT",
+                "effects": [
+                    {"text": "・以下から1つ選ぶ。"},
+                    {"text": "・カードを1枚引く。"},
+                ],
+            },
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.TLR_BRANCH_SELECT_ONE_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "EXECUTE_CHOICE_BRANCH"])
+        branches = ability["steps"][1]["branches"]
+        self.assertEqual(branches["BRANCH_1"][0], {"type": "PENDING_BRANCH_EFFECT", "text": self.TLR_BRANCH_SELECT_ONE_TEXT})
+        self.assertEqual(branches["BRANCH_2"][0]["type"], "DRAW")
+
     def test_compile_trigger_supports_bp_sum_limit_remove_template(self):
         ability = _compile_trigger(
             {"id": "UA45BT_TLR_1_030"},

@@ -2466,10 +2466,20 @@ def _bp_sum_limit_remove_dynamic_energy_builder(card: dict, trigger_entry: dict,
     )
 
 
-def _compile_branch_sub_steps(card: dict, trigger_entry: dict, branch_text: str) -> list[dict]:
+def _compile_branch_sub_steps(
+    card: dict,
+    trigger_entry: dict,
+    branch_text: str,
+    branch_compile_stack: tuple[str, ...] = (),
+) -> list[dict]:
     branch_text = str(branch_text).strip().lstrip("・").strip()
     if not branch_text:
         return []
+    if normalize_compiler_text(branch_text) == normalize_compiler_text("以下から1つ選ぶ。"):
+        return [{"type": "PENDING_BRANCH_EFFECT", "text": branch_text}]
+    if branch_text in branch_compile_stack:
+        return [{"type": "PENDING_BRANCH_EFFECT", "text": branch_text}]
+    next_branch_compile_stack = branch_compile_stack + (branch_text,)
     draw_match = re.fullmatch(r"カードを(\d+)枚引く。", branch_text)
     if draw_match:
         return [{"type": "DRAW", "value": int(draw_match.group(1))}]
@@ -2482,7 +2492,12 @@ def _compile_branch_sub_steps(card: dict, trigger_entry: dict, branch_text: str)
         return select_steps + [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(temp_bp_match.group(1)), "expires": "END_OF_TURN"}]
     compiled = _compile_event_effect(
         card,
-        {"source_label": trigger_entry.get("source_label", ""), "effect_box": trigger_entry.get("effect_box", "OUTER"), "text": branch_text},
+        {
+            "source_label": trigger_entry.get("source_label", ""),
+            "effect_box": trigger_entry.get("effect_box", "OUTER"),
+            "text": branch_text,
+            "__branch_compile_stack": next_branch_compile_stack,
+        },
         {},
     )
     if compiled is None or str(compiled.get("status", "")) != "SUPPORTED":
@@ -2493,6 +2508,7 @@ def _compile_branch_sub_steps(card: dict, trigger_entry: dict, branch_text: str)
                 "source_label": trigger_entry.get("source_label", ""),
                 "effect_box": trigger_entry.get("effect_box", "OUTER"),
                 "text": branch_text,
+                "__branch_compile_stack": next_branch_compile_stack,
             },
             {},
         )
@@ -2686,6 +2702,7 @@ def _branch_choice_builder(card: dict, trigger_entry: dict, event_name: str, _te
     if not branch_texts:
         branch_texts = ["BRANCH_1", "BRANCH_2"]
     options = [f"BRANCH_{index + 1}" for index in range(len(branch_texts))]
+    branch_compile_stack = tuple(trigger_entry.get("__branch_compile_stack", ()))
     steps = [
         {
             "type": "SELECT_TARGETS",
@@ -2702,7 +2719,9 @@ def _branch_choice_builder(card: dict, trigger_entry: dict, event_name: str, _te
         {
             "type": "EXECUTE_CHOICE_BRANCH",
             "mode_var": "selected_branch_option",
-            "branches": {option: _compile_branch_sub_steps(card, trigger_entry, text) for option, text in zip(options, branch_texts)},
+            "branches": {
+                option: _compile_branch_sub_steps(card, trigger_entry, text, branch_compile_stack) for option, text in zip(options, branch_texts)
+            },
             "default_steps": [],
         },
     ]
@@ -3007,6 +3026,7 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
         "source_label": effect_entry.get("source_label", ""),
         "effect_box": effect_entry.get("effect_box", "OUTER"),
         "text": str(effect_entry.get("text", "")).strip(),
+        "__branch_compile_stack": effect_entry.get("__branch_compile_stack", ()),
     }
     return _dispatch_template_rules(
         "event",
