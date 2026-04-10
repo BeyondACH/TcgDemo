@@ -25,6 +25,9 @@ func _init() -> void:
 	_run_test("事件每回合限制跨回合清理", _test_event_once_per_turn_flag_clears_on_next_turn)
 	_run_test("一次性移除区 AP 减免消费后不残留", _test_removed_ap_discount_does_not_residue)
 	_run_test("ai drive long chain leaves no pending gate residue", _test_ai_drive_finishes_without_pending_gate_residue)
+	_run_test("组合约束手动恢复非法输入会被拒绝且待决策不丢失", _test_combination_selection_rejects_invalid_resume_payload)
+	_run_test("choice 分支默认值与分支内手动选目标恢复一致", _test_choice_branch_default_and_manual_resume)
+	_run_test("RUN_COMPOSITE_IF 条件与暂停恢复链路稳定", _test_run_composite_if_resume_path_is_stable)
 	_print_summary()
 	quit(0 if _failures.is_empty() else 1)
 
@@ -852,3 +855,124 @@ func _spawn_raw_card_copy(manager: GameManager, player_id: String, def_id: Strin
 	if zone_cards != null:
 		zone_cards.append(card.uid)
 	return card.uid
+
+func _test_combination_selection_rejects_invalid_resume_payload() -> Dictionary:
+	var manager := _new_manager()
+	if not _advance_to_phase(manager, UATypes.Phase.MAIN):
+		return _fail("未能进入 MAIN 阶段")
+	var source_uid := _spawn_temp_card(manager, UATypes.PLAYER_ONE, {
+		"id": "TMP_COMBO_RESUME_SOURCE",
+		"name": "组合约束恢复来源",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-COMB-1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"GREEN": 1},
+		"bp": 3500,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [{
+			"trigger": "MAIN_ACTIVATE",
+			"steps": [{
+				"type": "SELECT_TARGETS_BY_COMBINATION",
+				"var": "picked_targets",
+				"target": {
+					"type": "CARD_SET",
+					"owner": "OPPONENT",
+					"zones": ["FRONT_LINE"],
+					"min": 1,
+					"max": 2,
+					"selection_mode": "MANUAL",
+					"selection_constraints": {"max_count": 2, "max_sum_bp": 4000}
+				}
+			}, {"type": "MOVE_SELECTED_CARDS", "from_var": "picked_targets", "to": "OUTSIDE"}]
+		}]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var target_a := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {"id": "TMP_COMBO_RESUME_A", "name": "组合约束目标A", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-COMB-2", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 2500, "keywords": [], "effects": [], "trigger_effects": []}, UATypes.Zone.FRONT_LINE, true)
+	var target_b := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {"id": "TMP_COMBO_RESUME_B", "name": "组合约束目标B", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-COMB-3", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 2500, "keywords": [], "effects": [], "trigger_effects": []}, UATypes.Zone.FRONT_LINE, true)
+	var target_c := _spawn_temp_card(manager, UATypes.PLAYER_TWO, {"id": "TMP_COMBO_RESUME_C", "name": "组合约束目标C", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-COMB-4", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 1000, "keywords": [], "effects": [], "trigger_effects": []}, UATypes.Zone.FRONT_LINE, true)
+	if source_uid == "" or target_a == "" or target_b == "" or target_c == "":
+		return _fail("组合约束恢复测试卡创建失败")
+	manager.request_main_activate(source_uid)
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var resolution_id := str(decision.get("resolution_id", ""))
+	var too_many_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": resolution_id, "choices": [target_a, target_b, target_c]})
+	if bool(too_many_result.get("ok", true)) or str(too_many_result.get("reason", "")) != "too_many_targets":
+		return _fail("超出数量上限应返回 too_many_targets")
+	var sum_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": resolution_id, "choices": [target_a, target_b]})
+	if bool(sum_result.get("ok", true)) or str(sum_result.get("reason", "")) != "selection_sum_exceeded":
+		return _fail("超过 BP 总和阈值应返回 selection_sum_exceeded")
+	var invalid_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": resolution_id, "choice": "not_candidate_uid"})
+	if bool(invalid_result.get("ok", true)) or str(invalid_result.get("reason", "")) != "invalid_choice":
+		return _fail("非候选目标应返回 invalid_choice")
+	if manager.game_state.pending_decisions.is_empty():
+		return _fail("非法输入后待决策不应被消费")
+	var ok_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": resolution_id, "choice": target_c})
+	if not bool(ok_result.get("ok", false)):
+		return _fail("合法输入应能继续结算")
+	var card_c = manager.game_state.get_card(target_c)
+	if card_c == null or card_c.zone != UATypes.Zone.OUTSIDE:
+		return _fail("合法输入后应把目标移入 OUTSIDE")
+	return _ok()
+
+func _test_choice_branch_default_and_manual_resume() -> Dictionary:
+	var manager_default := _new_manager()
+	if not _advance_to_phase(manager_default, UATypes.Phase.MAIN):
+		return _fail("default 分支测试未进入 MAIN")
+	var source_default := _spawn_temp_card(manager_default, UATypes.PLAYER_ONE, {"id": "TMP_CHOICE_DEFAULT_SOURCE", "name": "分支默认来源", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-CHOICE-1", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 3000, "keywords": [], "effects": [], "trigger_effects": [{"trigger": "MAIN_ACTIVATE", "steps": [{"type": "EXECUTE_CHOICE_BRANCH", "mode_var": "missing_mode", "default_steps": [{"type": "SET_CARD_FLAG", "target": "SOURCE", "flag": "choice_default_hit", "value": true}], "branches": {}}]}]}, UATypes.Zone.FRONT_LINE, true)
+	if source_default == "":
+		return _fail("default 分支测试卡创建失败")
+	manager_default.request_main_activate(source_default)
+	var source_default_card = manager_default.game_state.get_card(source_default)
+	if source_default_card == null or not bool(source_default_card.flags.get("choice_default_hit", false)):
+		return _fail("default_steps 应在 mode 缺失时生效")
+	var manager_manual := _new_manager()
+	if not _advance_to_phase(manager_manual, UATypes.Phase.MAIN):
+		return _fail("manual 分支测试未进入 MAIN")
+	var source_manual := _spawn_temp_card(manager_manual, UATypes.PLAYER_ONE, {"id": "TMP_CHOICE_MANUAL_SOURCE", "name": "分支手动来源", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-CHOICE-2", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 3000, "keywords": [], "effects": [], "trigger_effects": [{"trigger": "MAIN_ACTIVATE", "steps": [{"type": "SET_CHOICE_MODE", "var": "choice_mode", "value": "manual"}, {"type": "EXECUTE_CHOICE_BRANCH", "mode_var": "choice_mode", "default_mode": "manual", "branches": {"manual": [{"type": "SELECT_TARGETS", "var": "picked_target", "target": {"type": "CARD_SET", "owner": "OPPONENT", "zones": ["FRONT_LINE"], "min": 1, "max": 1, "selection_mode": "MANUAL"}}, {"type": "MOVE_SELECTED_CARDS", "from_var": "picked_target", "to": "OUTSIDE"}]}}]}]}, UATypes.Zone.FRONT_LINE, true)
+	var manual_target := _spawn_temp_card(manager_manual, UATypes.PLAYER_TWO, {"id": "TMP_CHOICE_MANUAL_TARGET", "name": "分支手动目标", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-CHOICE-3", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 1800, "keywords": [], "effects": [], "trigger_effects": []}, UATypes.Zone.FRONT_LINE, true)
+	if source_manual == "" or manual_target == "":
+		return _fail("manual 分支测试卡创建失败")
+	manager_manual.request_main_activate(source_manual)
+	if manager_manual.game_state.pending_decisions.size() != 1:
+		return _fail("branch 内 SELECT_TARGETS 应暂停并创建待决策")
+	var manual_decision: Dictionary = manager_manual.game_state.pending_decisions[0]
+	var manual_result := manager_manual.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": str(manual_decision.get("resolution_id", "")), "choice": manual_target})
+	if not bool(manual_result.get("ok", false)):
+		return _fail("branch 内合法目标恢复应成功")
+	var moved_target = manager_manual.game_state.get_card(manual_target)
+	if moved_target == null or moved_target.zone != UATypes.Zone.OUTSIDE:
+		return _fail("branch 恢复后目标应进入 OUTSIDE")
+	return _ok()
+
+func _test_run_composite_if_resume_path_is_stable() -> Dictionary:
+	var manager_skip := _new_manager()
+	if not _advance_to_phase(manager_skip, UATypes.Phase.MAIN):
+		return _fail("composite skip 测试未进入 MAIN")
+	var skip_source := _spawn_temp_card(manager_skip, UATypes.PLAYER_ONE, {"id": "TMP_COMPOSITE_SKIP_SOURCE", "name": "条件跳过来源", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-COMP-1", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 3000, "keywords": [], "effects": [], "trigger_effects": [{"trigger": "MAIN_ACTIVATE", "steps": [{"type": "RUN_COMPOSITE_IF", "if_requirements": [{"type": "CONTEXT_FLAG_TRUE", "var": "should_run"}], "steps": [{"type": "SET_CARD_FLAG", "target": "SOURCE", "flag": "composite_should_not_set", "value": true}]}]}]}, UATypes.Zone.FRONT_LINE, true)
+	if skip_source == "":
+		return _fail("composite skip 测试卡创建失败")
+	manager_skip.request_main_activate(skip_source)
+	var skip_card = manager_skip.game_state.get_card(skip_source)
+	if skip_card == null or bool(skip_card.flags.get("composite_should_not_set", false)):
+		return _fail("if_requirements 不满足时不应执行 steps")
+	var manager_resume := _new_manager()
+	if not _advance_to_phase(manager_resume, UATypes.Phase.MAIN):
+		return _fail("composite resume 测试未进入 MAIN")
+	var resume_source := _spawn_temp_card(manager_resume, UATypes.PLAYER_ONE, {"id": "TMP_COMPOSITE_RESUME_SOURCE", "name": "条件恢复来源", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-COMP-2", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 3000, "keywords": [], "effects": [], "trigger_effects": [{"trigger": "MAIN_ACTIVATE", "steps": [{"type": "SET_CONTEXT_FLAG", "var": "should_run", "value": true}, {"type": "RUN_COMPOSITE_IF", "if_requirements": [{"type": "CONTEXT_FLAG_TRUE", "var": "should_run"}], "steps": [{"type": "SELECT_TARGETS", "var": "composite_target", "target": {"type": "CARD_SET", "owner": "OPPONENT", "zones": ["FRONT_LINE"], "min": 1, "max": 1, "selection_mode": "MANUAL"}}, {"type": "MOVE_SELECTED_CARDS", "from_var": "composite_target", "to": "OUTSIDE"}]}]}]}, UATypes.Zone.FRONT_LINE, true)
+	var resume_target := _spawn_temp_card(manager_resume, UATypes.PLAYER_TWO, {"id": "TMP_COMPOSITE_RESUME_TARGET", "name": "条件恢复目标", "card_type": "CHARACTER", "title_code": "TMP", "number": "TMP-COMP-3", "traits": ["测试角色"], "cost_energy": {}, "cost_ap": 1, "energy_provided": {"GREEN": 1}, "bp": 2000, "keywords": [], "effects": [], "trigger_effects": []}, UATypes.Zone.FRONT_LINE, true)
+	if resume_source == "" or resume_target == "":
+		return _fail("composite resume 测试卡创建失败")
+	manager_resume.request_main_activate(resume_source)
+	if manager_resume.game_state.pending_decisions.size() != 1:
+		return _fail("RUN_COMPOSITE_IF 内手动选目标应进入待决策")
+	var resume_decision: Dictionary = manager_resume.game_state.pending_decisions[0]
+	var resume_result := manager_resume.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": str(resume_decision.get("resolution_id", "")), "choice": resume_target})
+	if not bool(resume_result.get("ok", false)):
+		return _fail("RUN_COMPOSITE_IF 恢复后应成功继续执行")
+	var moved_card = manager_resume.game_state.get_card(resume_target)
+	if moved_card == null or moved_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("RUN_COMPOSITE_IF 恢复后目标应进入 OUTSIDE")
+	return _ok()
