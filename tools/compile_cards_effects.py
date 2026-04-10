@@ -802,6 +802,146 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             steps,
         )
 
+    if event_name == "ON_ENTER" and text == "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から〈黒咲 芽亜〉を1枚まで手札に加える。":
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 0, 1, "selected_discard")
+        target_specs, recover_steps = _manual_single_target(
+            "SELF",
+            ["OUTSIDE"],
+            [{"type": "CARD_NAME_IS", "value": "黒咲 芽亜"}],
+            0,
+            1,
+            "selected_recover",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            discard_specs + target_specs,
+            discard_steps
+            + [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_discard", "to": "OUTSIDE"},
+            ]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_discard"}])
+                for step in recover_steps
+            ]
+            + [
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "selected_recover",
+                    "to": "HAND",
+                    "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_discard"}],
+                }
+            ],
+        )
+
+    if event_name == "ON_ENTER" and text == "自分の手札を全て場外に置き、カードを5枚引く。":
+        target_specs, steps = _auto_target_set("SELF", ["HAND"], min_count=0, max_count=-1, store_as="all_hand_cards")
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            steps + [{"type": "MOVE_SELECTED_CARDS", "from_var": "all_hand_cards", "to": "OUTSIDE"}, {"type": "DRAW", "value": 5}],
+        )
+
+    if event_name == "ON_ENTER" and text == "カードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。":
+        target_specs, select_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            0,
+            1,
+            "selected_target",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            [{"type": "DRAW", "value": 1}]
+            + select_steps
+            + [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 1000, "expires": "END_OF_TURN"}],
+        )
+
+    if event_name == "ON_ATTACK" and text == "自分のフロントLに〈霧崎 恭子〉がある場合、カードを1枚引く。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [_name_in_zone_requirement("霧崎 恭子", ["FRONT_LINE"])],
+            [],
+            [{"type": "DRAW", "value": 1}],
+        )
+
+    if event_name == "ON_ENTER" and text == "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=3,
+            filters=[{"type": "HAS_TRAIT", "value": "変身兵器"}],
+            min_count=0,
+            max_count=1,
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and text == "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=3,
+            filters=[{"type": "HAS_TRAIT", "value": "変身兵器"}],
+            min_count=0,
+            max_count=1,
+            discard_after_add=True,
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and text == "自分の手札から必要エナジーが2以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。":
+        target_specs, steps = _hand_character_summon_steps(
+            2,
+            color="RED",
+            state="RESTED",
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
+    if event_name == "ON_ENTER" and text == "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。":
+        target_specs, steps = _hand_character_summon_steps(
+            3,
+            color="RED",
+            state="RESTED",
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, [{"type": "DRAW", "value": 1}] + steps)
+
+    if event_name == "ON_ENTER" and text == "カードを1枚引く。自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、自分の手札から必要エナジーが4以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。":
+        bounce_specs, bounce_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            0,
+            1,
+            "selected_bounce",
+        )
+        summon_specs, summon_steps = _hand_character_summon_steps(
+            4,
+            color="RED",
+            state="RESTED",
+            store_as="selected_summon",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            bounce_specs + summon_specs,
+            [{"type": "DRAW", "value": 1}]
+            + bounce_steps
+            + [{"type": "MOVE_SELECTED_CARDS", "from_var": "selected_bounce", "to": "HAND"}]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_bounce"}])
+                for step in summon_steps
+            ],
+        )
+
     if event_name == "ON_ENTER" and text == "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。":
         target_specs, steps = _manual_card_set(
             "SELF",
