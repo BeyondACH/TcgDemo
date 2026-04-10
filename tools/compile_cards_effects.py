@@ -836,6 +836,36 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             ],
         )
 
+<<<<<<< codex/complete-atomic-capability-support-for-all-tlr-p0vpoh
+    if event_name == "ON_ENTER" and text == "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。":
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 0, 1, "selected_discard")
+        rest_specs, rest_steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [{"type": "CARD_BP_LTE", "value": 4000}],
+            0,
+            1,
+            "selected_rest_target",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            discard_specs + rest_specs,
+            discard_steps
+            + [{"type": "MOVE_SELECTED_CARDS", "from_var": "selected_discard", "to": "OUTSIDE"}]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_discard"}])
+                for step in rest_steps
+            ]
+            + [
+                {"type": "REST", "target_var": "selected_rest_target", "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_discard"}]}
+            ],
+        )
+
+=======
+>>>>>>> codex/v1.0
     if event_name == "ON_ENTER" and text == "自分の手札を全て場外に置き、カードを5枚引く。":
         target_specs, steps = _auto_target_set("SELF", ["HAND"], min_count=0, max_count=-1, store_as="all_hand_cards")
         return _supported_ability(
@@ -877,6 +907,35 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             [{"type": "DRAW", "value": 1}],
         )
 
+<<<<<<< codex/complete-atomic-capability-support-for-all-tlr-p0vpoh
+    if event_name == "ON_ENTER" and text == "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [
+                {
+                    "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+                    "player": "SELF",
+                    "zones": ["FRONT_LINE"],
+                    "card_type": "CHARACTER",
+                    "value": 2,
+                }
+            ],
+            [],
+            [{"type": "ACTIVATE_CARD", "target_uid": "SOURCE_CARD"}],
+        )
+
+    if event_name in ["ON_ENTER", "MAIN_ACTIVATE"] and text == "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。":
+        target_specs, steps = _hand_character_summon_steps(
+            3,
+            color="RED",
+            state="RESTED",
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, [{"type": "DRAW", "value": 1}] + steps)
+
+=======
+>>>>>>> codex/v1.0
     if event_name == "ON_ENTER" and text == "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。":
         target_specs, steps = _preview_add_to_hand_then_reorder_steps(
             count=3,
@@ -942,6 +1001,124 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             ],
         )
 
+<<<<<<< codex/complete-atomic-capability-support-for-all-tlr-p0vpoh
+    if event_name == "ON_ENTER" and text == "自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。":
+        bounce_specs, bounce_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            0,
+            1,
+            "selected_bounce",
+        )
+        discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "selected_discard")
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            bounce_specs + discard_specs,
+            bounce_steps
+            + [{"type": "MOVE_SELECTED_CARDS", "from_var": "selected_bounce", "to": "HAND"}]
+            + [
+                {"type": "DRAW", "value": 2, "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_bounce"}]},
+            ]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_bounce"}])
+                for step in discard_steps
+            ]
+            + [
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "selected_discard",
+                    "to": "OUTSIDE",
+                    "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_bounce"}],
+                }
+            ],
+        )
+
+    if event_name == "MAIN_ACTIVATE" and text == "〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。":
+        target_specs, select_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE"],
+            [],
+            1,
+            1,
+            "selected_target",
+            filters=[{"type": "NAME_NOT", "value": "西連寺 春菜"}],
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            select_steps + [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 1000, "expires": "END_OF_TURN"}, {"type": "DRAW", "value": 1}],
+        )
+
+    if event_name == "ON_PLAY" and text == "カードを2枚引く。相手は自身の手札を全て公開する。":
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            [],
+            [{"type": "DRAW", "value": 2}],
+            kind="TRIGGERED",
+        )
+
+    if event_name == "ON_PLAY" and text == "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。":
+        target_specs, select_steps = _auto_target_set(
+            "SELF",
+            ["FRONT_LINE"],
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=-1,
+            store_as="all_front_chars",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            trigger_entry,
+            [],
+            target_specs,
+            select_steps
+            + [
+                {
+                    "type": "FOR_EACH",
+                    "items_var": "all_front_chars",
+                    "current_var": "buff_target",
+                    "steps": [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "buff_target", "value": 1000, "expires": "END_OF_TURN"}],
+                },
+                {"type": "DRAW", "value": 1},
+            ],
+            kind="TRIGGERED",
+        )
+
+    if event_name == "ON_PLAY" and text == "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=5,
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=3,
+            distinct_by="CARD_NAME",
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps, kind="TRIGGERED")
+
+    if event_name == "ON_PLAY" and text == "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [{"type": "CARD_BP_LTE", "value": 5000}],
+            1,
+            1,
+            "selected_target",
+        )
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "DECK", "target_player_mode": "CARD_CONTROLLER"})
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps, kind="TRIGGERED")
+
+=======
+>>>>>>> codex/v1.0
     if event_name == "ON_ENTER" and text == "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。":
         target_specs, steps = _manual_card_set(
             "SELF",
@@ -1913,6 +2090,66 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
 
     if text == "カードを2枚引く。":
         return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 2}], "TRIGGERED")
+
+    if text == "カードを2枚引く。相手は自身の手札を全て公開する。":
+        return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 2}], "TRIGGERED")
+
+    if text == "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。":
+        target_specs, select_steps = _auto_target_set(
+            "SELF",
+            ["FRONT_LINE"],
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=-1,
+            store_as="all_front_chars",
+        )
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            target_specs,
+            select_steps
+            + [
+                {
+                    "type": "FOR_EACH",
+                    "items_var": "all_front_chars",
+                    "current_var": "buff_target",
+                    "steps": [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "buff_target", "value": 1000, "expires": "END_OF_TURN"}],
+                },
+                {"type": "DRAW", "value": 1},
+            ],
+            "TRIGGERED",
+        )
+
+    if text == "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=5,
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=3,
+            distinct_by="CARD_NAME",
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [{"type": "CARD_BP_LTE", "value": 5000}],
+            1,
+            1,
+            "selected_target",
+        )
+        steps.append(
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "selected_target",
+                "to": "DECK",
+                "target_player_mode": "CARD_CONTROLLER",
+            }
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
     if text == "BP5000以下の相手のフロントLのキャラを1枚選び、選んだキャラとこのカードをリムーブエリアに置く。自分のリムーブエリアから使用されている場合、このカードはリムーブエリアに置く代わりに自分の山札の下に置く。":
         target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": 5000}], 1, 1, "selected_target")

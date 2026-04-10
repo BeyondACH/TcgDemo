@@ -1037,8 +1037,111 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          },
+          {
+            "id": "selected_rest_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 4000
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_rest_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_rest_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 4000
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_discard"
+              }
+            ]
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_rest_target",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_discard"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1047,8 +1150,7 @@
           "effect_box": "OUTER",
           "text": "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA45BT_TLR_1_009_on_life_trigger_bab7196d2b",
@@ -1121,7 +1223,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "SELECT_AND_MOVE",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -1593,9 +1695,24 @@
         "timing": {
           "event": "ON_ENTER"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+            "player": "SELF",
+            "zones": [
+              "FRONT_LINE"
+            ],
+            "card_type": "CHARACTER",
+            "value": 2
+          }
+        ],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "ACTIVATE_CARD",
+            "target_uid": "SOURCE_CARD"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1604,8 +1721,7 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA45BT_TLR_1_014_main_activate_30c19abad2",
@@ -1756,9 +1872,8 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "TEMP_BP",
         "COMPOSITE",
+        "TEMP_BP",
         "TEMP_BP_MODIFIER"
       ]
     }
@@ -4307,7 +4422,12 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 2
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4316,8 +4436,7 @@
           "effect_box": "OUTER",
           "text": "カードを2枚引く。相手は自身の手札を全て公開する。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -4325,7 +4444,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "DRAW_2"
       ]
     }
   },
@@ -4645,8 +4764,72 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "all_front_chars",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": -1,
+              "mode": "AUTO"
+            },
+            "store_as": "all_front_chars"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "all_front_chars",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": -1,
+              "selection_mode": "AUTO",
+              "manual": false
+            }
+          },
+          {
+            "type": "FOR_EACH",
+            "items_var": "all_front_chars",
+            "current_var": "buff_target",
+            "steps": [
+              {
+                "type": "ADD_TEMP_BP_MODIFIER",
+                "target_var": "buff_target",
+                "value": 1000,
+                "expires": "END_OF_TURN"
+              }
+            ]
+          },
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4655,8 +4838,7 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -4664,7 +4846,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -5912,8 +6094,65 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "NAME_NOT",
+                  "value": "西連寺 春菜"
+                }
+              ],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [
+                {
+                  "type": "NAME_NOT",
+                  "value": "西連寺 春菜"
+                }
+              ],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -5922,8 +6161,7 @@
           "effect_box": "RAID_INNER",
           "text": "〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA45BT_TLR_1_053_on_life_trigger_a342b2ffe2",
@@ -5953,7 +6191,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_BP",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -8052,8 +8290,124 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_bounce",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_bounce"
+          },
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_bounce",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_bounce",
+            "to": "HAND"
+          },
+          {
+            "type": "DRAW",
+            "value": 2,
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_bounce"
+              }
+            ]
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_bounce"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_bounce"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -8062,8 +8416,7 @@
           "effect_box": "OUTER",
           "text": "自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA45BT_TLR_1_074_on_life_trigger_bab7196d2b",
@@ -8136,7 +8489,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "DRAW_THEN_SELECT_AND_MOVE",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -8542,8 +8895,103 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_summon_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_summon_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_summon_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                },
+                {
+                  "type": "CARD_COST_AP_EQ",
+                  "value": 1
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "CARD_CAN_PLAY_TO_ZONE",
+                  "zone": "FRONT_LINE",
+                  "ignore_play_timing": true,
+                  "allow_current_zone": false
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon_card",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true,
+            "allow_current_zone": false
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -8552,8 +9000,7 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA45BT_TLR_1_077_on_life_trigger_91b04beda2",
@@ -8584,7 +9031,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "COMPOSITE",
         "DRAW_1"
       ]
     }
@@ -8950,8 +9397,76 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 3,
+              "mode": "MANUAL",
+              "constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 5,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 3,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -8960,8 +9475,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -8969,7 +9483,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -9311,8 +9825,61 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "DECK",
+            "target_player_mode": "CARD_CONTROLLER"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -9321,16 +9888,14 @@
           "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "SEMANTIC_OVERRIDE_REQUIRED"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   }
