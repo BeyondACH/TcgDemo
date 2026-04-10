@@ -1992,7 +1992,8 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2009,7 +2010,7 @@
         "status": "SUPPORTED",
         "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,

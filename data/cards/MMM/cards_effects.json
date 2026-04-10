@@ -9468,7 +9468,7 @@
                     "when": [
                       {
                         "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                        "value": "暁美 ほむら"
+                        "value": "暁美ほむら"
                       }
                     ],
                     "then": {
@@ -9510,7 +9510,7 @@
                     "when": [
                       {
                         "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                        "value": "暁美 ほむら"
+                        "value": "暁美ほむら"
                       }
                     ],
                     "then": {
@@ -9540,14 +9540,19 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_dynamic_name_gate"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },

@@ -692,14 +692,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
         )
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
-    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_040":
-        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
-            count=5,
-            requirements=[{"type": "CARD_NAME_IS", "value": "鹿目 まどか"}],
-            discard_after_add=True,
-        )
-        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
-
     if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_019":
         discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 1, 1, "discard_from_hand")
         target_specs, steps = _manual_single_target(
@@ -758,22 +750,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
                     "expires": "END_OF_TURN",
                 },
             ]
-        )
-        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
-
-    if event_name == "ON_ENTER" and card_id == "UA31BT_MMM_1_043":
-        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
-            count=3,
-            filters=[
-                {
-                    "type": "OR",
-                    "filters": [
-                        {"type": "NAME_IS", "value": "百江 なぎさ"},
-                        {"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"},
-                    ],
-                }
-            ],
-            discard_after_add=True,
         )
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
@@ -858,33 +834,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
                     "steps": [{"type": "MODIFY_PLAY_COST_AP", "value": -1}],
                 },
             ]
-        )
-        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
-
-    if event_name == "ON_ENTER" and text == "自分の山札の上から4枚見る。その中から黄のイベントカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。":
-        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
-            count=4,
-            requirements=[
-                {"type": "CARD_TYPE_IS", "value": "EVENT"},
-                {"type": "CARD_COLOR_IS", "value": "YELLOW"},
-            ],
-            discard_after_add=True,
-        )
-        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
-
-    if event_name == "ON_ENTER" and text == "自分の山札の上から3枚見る。その中から〈アルティメットまどか〉か［特徴：魔法少女］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。":
-        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
-            count=3,
-            filters=[
-                {
-                    "type": "OR",
-                    "filters": [
-                        {"type": "NAME_IS", "value": "アルティメットまどか"},
-                        {"type": "HAS_TRAIT", "value": "魔法少女"},
-                    ],
-                }
-            ],
-            discard_after_add=True,
         )
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
@@ -1100,13 +1049,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             [{"type": "DRAW", "value": 1}],
         )
 
-    match = re.fullmatch(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、退場させる。", text)
-    if match:
-        requirements = [{"type": "CARD_BP_LTE", "value": int(match.group(1))}]
-        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements)
-        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
-        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
-
     if text == "このカード以外の自分の場の［特徴：魔法少女］のカード名の種類の数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、退場させる。":
         target_specs, steps = _manual_single_target(
             "OPPONENT",
@@ -1212,13 +1154,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             "selected_target",
         )
         steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": -int(match.group(2)), "expires": "END_OF_TURN"})
-        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
-
-    match = re.fullmatch(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。", text)
-    if match:
-        requirements = [{"type": "CARD_BP_LTE", "value": int(match.group(1))}]
-        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements, 0, 1)
-        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
     if text == "自分のライフエリアにあるカードを1枚手札に加える。そうした場合、このキャラをアクティブにする。":
@@ -1729,15 +1664,6 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
         "text": text,
     }
 
-    if card_id == "UA31BT_MMM_1_065":
-        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
-            count=5,
-            filters=[{"type": "HAS_TRAIT", "value": "ピュエラ・マギ・ホーリー・クインテット"}],
-            max_count=2,
-            distinct_by="CARD_NAME",
-        )
-        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
-
     if card_id == "UA31BT_MMM_1_027" and text == "自分の手札のイベントカードを1枚場外に置く。そうした場合、このターン中、自分の手札にある全ての〈巴 マミ〉の必要エナジーを減らす。":
         target_specs, steps = _manual_single_target(
             "SELF",
@@ -1829,59 +1755,6 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
             [{"type": "SET_PLAYER_TURN_FLAG", "player": "SOURCE", "flag": _event_used_turn_flag(match.group(1)), "value": True}],
             "TRIGGERED",
         )
-
-    match = re.fullmatch(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。", text)
-    if match:
-        requirements = [{"type": "CARD_BP_LTE", "value": int(match.group(1))}]
-        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements)
-        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
-        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
-
-    if text == "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈美樹 さやか〉があり、自分のライフが5以下の場合、『BP5000以下』に代わる。":
-        target_specs, steps = _manual_single_target(
-            "OPPONENT",
-            ["FRONT_LINE"],
-            [
-                {
-                    "type": "CARD_BP_LTE_DYNAMIC",
-                    "value_provider": _conditional_value_provider(
-                        _fixed_value_provider(3000),
-                        [
-                            {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "美樹 さやか"},
-                            {"type": "PLAYER_LIFE_LTE", "player": "SELF", "value": 5},
-                        ],
-                        _fixed_value_provider(5000),
-                    ),
-                }
-            ],
-        )
-        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
-        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
-
-    if text == "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈鹿目 まどか〉がある場合、『BP5000以下』に代わる。":
-        target_specs, steps = _manual_single_target(
-            "OPPONENT",
-            ["FRONT_LINE"],
-            [
-                {
-                    "type": "CARD_BP_LTE_DYNAMIC",
-                    "value_provider": _conditional_value_provider(
-                        _fixed_value_provider(3000),
-                        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"}],
-                        _fixed_value_provider(5000),
-                    ),
-                }
-            ],
-        )
-        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
-        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
-
-    match = re.fullmatch(r"BP(\d+)以下の相手のフロントLのキャラを1枚まで選び、退場させる。", text)
-    if match:
-        requirements = [{"type": "CARD_BP_LTE", "value": int(match.group(1))}]
-        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements, 0, 1)
-        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
-        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
     if text == "自分のAPカードを2枚まで選び、アクティブにする。":
         return _supported_ability(
@@ -2079,24 +1952,6 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
                         "trait": "ピュエラ・マギ・ホーリー・クインテット",
                         "multiplier": 1000,
                     },
-                }
-            ],
-        )
-        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
-        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
-
-    if text == "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈暁美 ほむら〉がある場合、『BP5000以下』に代わる。":
-        target_specs, steps = _manual_single_target(
-            "OPPONENT",
-            ["FRONT_LINE"],
-            [
-                {
-                    "type": "CARD_BP_LTE_DYNAMIC",
-                    "value_provider": _conditional_value_provider(
-                        _fixed_value_provider(3000),
-                        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "暁美 ほむら"}],
-                        _fixed_value_provider(5000),
-                    ),
                 }
             ],
         )

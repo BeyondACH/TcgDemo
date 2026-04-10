@@ -8,7 +8,10 @@ from tools.card_effects_compiler.template_registry import dispatch_template_rule
 from tools.card_effects_compiler.template_registry import dispatch_trigger_template
 from tools.compile_cards_effects import _build_semantic_entry
 from tools.compile_cards_effects import _compile_event_effect
+from tools.compile_cards_effects import _compile_event_effect_legacy
 from tools.compile_cards_effects import _compile_trigger
+from tools.compile_cards_effects import _compile_trigger_legacy
+from tools.compile_cards_effects import _compile_series_cards
 from tools.compile_cards_effects import _TRIGGER_TEMPLATE_RULES
 
 
@@ -26,6 +29,12 @@ class CompileCardsEffectsTests(unittest.TestCase):
         "\u300eBP3000\u4ee5\u4e0b\u300f\u306e\u76f8\u624b\u306e\u30d5\u30ed\u30f3\u30c8L\u306e\u30ad\u30e3\u30e9"
         "\u30921\u679a\u9078\u3073\u3001\u9000\u5834\u3055\u305b\u308b\u3002\u81ea\u5206\u306e\u5834\u306b"
         "\u3008\u9e7f\u76ee \u307e\u3069\u304b\u3009\u304c\u3042\u308b\u5834\u5408\u3001\u300eBP5000\u4ee5\u4e0b\u300f"
+        "\u306b\u4ee3\u308f\u308b\u3002"
+    )
+    HOMURA_BP_THRESHOLD_TEXT = (
+        "\u300eBP3000\u4ee5\u4e0b\u300f\u306e\u76f8\u624b\u306e\u30d5\u30ed\u30f3\u30c8L\u306e\u30ad\u30e3\u30e9"
+        "\u30921\u679a\u9078\u3073\u3001\u9000\u5834\u3055\u305b\u308b\u3002\u81ea\u5206\u306e\u5834\u306b"
+        "\u3008\u6681\u7f8e \u307b\u3080\u3089\u3009\u304c\u3042\u308b\u5834\u5408\u3001\u300eBP5000\u4ee5\u4e0b\u300f"
         "\u306b\u4ee3\u308f\u308b\u3002"
     )
 
@@ -399,6 +408,62 @@ class CompileCardsEffectsTests(unittest.TestCase):
 
         self.assertFalse(semantic_entry["can_be_expressed_by_dsl"])
         self.assertEqual(semantic_entry["unresolved_capabilities"], ["SEMANTIC_OVERRIDE_REQUIRED"])
+
+    def test_migrated_template_families_no_longer_compile_through_legacy_helpers(self):
+        legacy_preview = _compile_trigger_legacy(
+            {"id": "UA31BT_MMM_1_043"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "test",
+                "effect_box": "OUTER",
+                "text": self.PREVIEW_ADD_TO_HAND_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(legacy_preview["status"], "UNSUPPORTED")
+
+        legacy_bp_cases = [
+            ("UA31BT_MMM_1_094", self.BP_THRESHOLD_TEXT),
+            ("UA31BT_MMM_1_066", self.HOMURA_BP_THRESHOLD_TEXT),
+            ("UA45BT_TLR_1_078", self.TLR_BP_THRESHOLD_TEXT),
+        ]
+        for card_id, effect_text in legacy_bp_cases:
+            legacy_bp = _compile_event_effect_legacy(
+                {"id": card_id, "card_type": "EVENT"},
+                {
+                    "source_label": "",
+                    "effect_box": "OUTER",
+                    "text": effect_text,
+                },
+                {},
+            )
+            self.assertEqual(legacy_bp["status"], "UNSUPPORTED", msg=card_id)
+
+        workspace_root = Path(__file__).resolve().parents[1]
+        cases = [
+            (workspace_root / "data" / "cards" / "MMM" / "cards_raw.json", "UA31BT_MMM_1_043", "PREVIEW_ADD_TO_HAND"),
+            (workspace_root / "data" / "cards" / "MMM" / "cards_raw.json", "UA31BT_MMM_1_094", "BP_THRESHOLD_REMOVE"),
+            (workspace_root / "data" / "cards" / "MMM" / "cards_raw.json", "UA31BT_MMM_1_066", "BP_THRESHOLD_REMOVE"),
+            (workspace_root / "data" / "cards" / "TLR" / "cards_raw.json", "UA45BT_TLR_1_012", "PREVIEW_ADD_TO_HAND"),
+            (workspace_root / "data" / "cards" / "TLR" / "cards_raw.json", "UA45BT_TLR_1_078", "BP_THRESHOLD_REMOVE"),
+        ]
+
+        compiled_by_series: dict[Path, tuple[list[dict], list[dict]]] = {}
+        for raw_path, card_id, expected_family in cases:
+            if raw_path not in compiled_by_series:
+                compiled_by_series[raw_path] = _compile_series_cards(raw_path)
+            _compiled, semantic_entries = compiled_by_series[raw_path]
+            semantic_map = {entry["card_id"]: entry for entry in semantic_entries}
+            semantic_entry = semantic_map[card_id]
+
+            self.assertIn(expected_family, semantic_entry["template_types"])
+            self.assertNotIn("LEGACY_PASSTHROUGH", semantic_entry["template_types"])
+            self.assertTrue(
+                all(
+                    ability.get("template_type") != "LEGACY_PASSTHROUGH"
+                    for ability in semantic_entry.get("abilities", [])
+                )
+            )
 
 
 if __name__ == "__main__":

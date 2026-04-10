@@ -70,6 +70,13 @@
 - `--product` 手填筛选语义保持不变；本轮不做“按作品筛商品名”的联动，也不把商品编号自动映射回下载参数。
 - `download_mmm_images.py` 与 `tests/test_download_mmm_images.py` 中与该脚本直接相关的中文乱码已一并修复，并补了最小解析/CLI 回归测试。
 
+## 2.4 2026-04-10 编译器模板族基线冻结补充
+
+- `tools/compile_cards_effects.py` 已完成本轮“compiler-template-generalization”收口：`MMM` / `TLR` 中已迁移的 `PREVIEW_ADD_TO_HAND` 与 `BP_THRESHOLD_REMOVE` 模板族不再保留对应 legacy helper 命中分支。
+- `tests/test_compile_cards_effects.py` 已新增回归测试，固定要求这两类已迁移模板族在 semantic 输出中继续产出稳定 family metadata，且不得再出现 `LEGACY_PASSTHROUGH`。
+- 已重新执行 `python tools/compile_cards_effects.py`，当前冻结基线为：系列卡编译总数 `199`、目录数 `2`、带 base sample 的运行时总卡数 `214`、支持能力 `265`、未支持能力 `48`。
+- 本轮仅收口已迁移模板族的 legacy-path 残留；未迁移模板族仍维持既有 `registry -> legacy fallback` 结构，不在本轮扩大清理范围。
+
 ## 3. 开发阶段规划
 
 ## 阶段 A：规则与 DSL/IR 基线维护
@@ -282,7 +289,7 @@
 
 1. 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/long_run_stability_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 六个入口稳定通过，作为当前阶段规则、长链 residue、生命触发交互与 AI 驱动链的冻结基线。
 2. 在已完成第一轮长链补强后，继续优先观察连续回合生命周期、延迟效果过期、离场触发链衔接、生命触发二选一收尾，以及 AI 自动推进下的完整对局稳定性，避免后续新增改动把问题重新打回短链 smoke。
-3. 对 `tools/compile_cards_effects.py` 维持“registry -> legacy fallback”结构，后续只接受参数化模板族扩展与失败分类补强，不再把逐句匹配回灌成新的半重构分支。
+3. 对 `tools/compile_cards_effects.py` 继续维持“registry -> legacy fallback”总结构；但对已完成迁移并已冻结的模板族，后续不再恢复对应 legacy helper 分支，只接受参数化模板族扩展与失败分类补强。
 4. 暂不推进 UI 视觉规范落地；除 AI 动作节拍提示、生命翻牌可见性与验证阻塞修复这类最小补强外，不修改 `ui/` 与 `scenes/`。
 5. 持续观察 Godot 退出时既有的 `ObjectDB` / resource 泄漏告警，确认其不会演化为断言不稳定，并在后续长链回归中重点关注是否会伴随 residue 脏状态一同出现。
 6. 若后续需要重新开启 UI 阶段，再以 `docs/plan/ui_art_style_guide.md` 为冻结基线单独立项推进。
