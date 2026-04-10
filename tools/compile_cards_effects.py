@@ -2737,7 +2737,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     ),
     _TemplateRule(
         name="trigger.conditional_draw",
-        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
         matcher=_regex_match(r"自分の場に(?:他のカードが(\d+)枚以上ある|〈(.+)〉がある)場合、カードを(\d+)枚引く。"),
         builder=_conditional_draw_builder,
         priority=205,
@@ -2745,7 +2745,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     ),
     _TemplateRule(
         name="trigger.optional_ap_damage",
-        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
         matcher=_regex_match(r"相手のライフが(\d+)以上の場合、APを(\d+)支払ってもよい。そうした場合、相手に(\d+)ダメージ。"),
         builder=_optional_pay_ap_deal_damage_builder,
         priority=205,
@@ -2761,7 +2761,7 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     ),
     _TemplateRule(
         name="trigger.self_other_bp_modifier",
-        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
         matcher=_regex_match(r"自分の場の他のキャラを1枚選び、このターン中、BP\+(\d+)。"),
         builder=_self_other_bp_modifier_builder,
         priority=200,
