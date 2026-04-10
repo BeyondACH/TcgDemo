@@ -1,7 +1,7 @@
 [
   {
     "card_id": "UA45BT_TLR_1_001",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -26,13 +26,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_002",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -48,11 +53,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_003",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -68,11 +78,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_004",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -80,13 +95,18 @@
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_005",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -102,13 +122,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_006",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -133,13 +158,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から〈黒咲 芽亜〉を1枚まで手札に加える。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_007",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -164,13 +194,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "このカードは〈霧崎 恭子〉としても扱う。\n相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_008",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -186,13 +221,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の手札を全て場外に置き、カードを5枚引く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_009",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -217,13 +257,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_010",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -239,13 +284,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から1枚見て、山札の上か下に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_011",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -261,24 +311,30 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_012",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "DRAW_1"
+      "SELECT_AND_MOVE",
+      "DRAW_1",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_012_on_enter_2ac10423f0",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "PREVIEW_ADD_TO_HAND"
       },
       {
         "id": "UA45BT_TLR_1_012_on_life_trigger_91b04beda2",
@@ -289,14 +345,17 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_013",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -312,13 +371,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_014",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -351,13 +415,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。\n自分の場の他のキャラを1枚選び、このターン中、BP+1000。",
+      "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_015",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -392,13 +461,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈結城 美柑〉アクティブにし、フロントLに移動できる\nカードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。\n必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_016",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE"
@@ -414,11 +488,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_017",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "DOUBLE_BLOCK"
     ],
@@ -436,11 +515,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラがこのターン初めてブロックした時、アクティブにする）",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_018",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -465,13 +549,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分のフロントLに〈霧崎 恭子〉がある場合、カードを1枚引く。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_019",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -487,11 +576,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_020",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -507,11 +601,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_021",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -536,13 +635,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_022",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -558,11 +662,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはBP+1000。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_023",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -597,13 +706,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈黒咲 芽亜〉アクティブにし、フロントLに移動できる\nこのキャラはフロントLでもエナジーを発生させる。\n相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。\nBP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_024",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -628,22 +742,32 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_025",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "相手の場にBP4000以上のキャラがある場合、このキャラはBP+500。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_026",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -668,13 +792,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_027",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -699,13 +828,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1000。\n自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_028",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -732,11 +866,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈金色の闇〉アクティブにし、フロントLに移動できる\n自分の場に〈結城 美柑〉がある場合、このキャラはBP+1500。\nこのキャラのアタック終了時、自分の手札を2枚場外に置いてもよい。そうした場合、このキャラをアクティブにし、このターン中、を得る。\nカードを1枚引く。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_029",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -752,11 +891,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このカードは〈金色の闇〉としても扱う。\nこのキャラはアクティブで登場させる。\n（このキャラがアタックで与える直接ダメージは2ダメージ）\nこのキャラはBP+1000。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引く。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_030",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -770,7 +914,7 @@
         "timing": "ON_ENTER",
         "status": "UNSUPPORTED",
         "text": "BPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "reason": "SEMANTIC_OVERRIDE_REQUIRED",
         "template_type": "UNSUPPORTED"
       },
       {
@@ -783,13 +927,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "unresolved_capabilities": [
+      "SEMANTIC_OVERRIDE_REQUIRED"
+    ],
+    "source_text_jp": {
+      "effect": "このカードは〈金色の闇〉としても扱う。\n〈金色の闇〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nBPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_031",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -805,11 +954,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_032",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -825,13 +979,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_033",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -847,11 +1006,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_034",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -876,11 +1040,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_035",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID",
       "STEP"
@@ -908,13 +1077,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈ネメシス〉アクティブにし、フロントLに移動できる\n（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのキャラの発生エナジー+。\n自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_036",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -930,11 +1104,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のフロントLに〈金色の闇〉がある場合、このフィールドの発生エナジー+。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_037",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -959,13 +1138,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_038",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -990,13 +1174,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "カードを2枚引く。相手は自身の手札を全て公開する。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_039",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -1021,13 +1210,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_040",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -1052,11 +1246,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_041",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
@@ -1081,13 +1280,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分のフロントLのキャラ全ては、このターン中、BP+1000。カードを1枚引く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_042",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -1112,13 +1316,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から1枚見て、山札の上か下に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_043",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -1143,13 +1352,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "このキャラはアクティブで登場させる。\n自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_044",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -1165,11 +1379,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_045",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -1185,11 +1404,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に他のカードが5枚以上ある場合、このキャラはBP+1000。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_046",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE"
@@ -1205,15 +1429,21 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラのアタックがブロックされなかった時、カードを1枚引き、自分の手札を1枚場外に置く。\nカードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_047",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -1230,17 +1460,22 @@
         "status": "SUPPORTED",
         "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。",
+      "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_048",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1267,13 +1502,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈古手川 唯〉アクティブにし、フロントLに移動できる\nこのキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_049",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1289,11 +1529,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_050",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -1309,13 +1554,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_051",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -1340,13 +1590,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の手札から必要エナジーが2以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_052",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -1371,13 +1626,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_053",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1404,13 +1664,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈西連寺 春菜〉アクティブにし、フロントLに移動できる\n〈西連寺 春菜〉以外の自分のフロントLのキャラを1枚選ぶ。そうした場合、そのキャラをこのターン中、BP+1000し、カードを1枚引く。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_054",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE"
@@ -1426,11 +1691,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_055",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -1455,13 +1725,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "以下から1つ選ぶ。\n・自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。\n・BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_056",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1477,11 +1752,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_057",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -1506,11 +1786,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引く。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_058",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1"
@@ -1526,11 +1811,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_059",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -1555,11 +1845,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に〈モモ・ベリア・デビルーク〉がある場合、カードを1枚引く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_060",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -1586,26 +1881,36 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_061",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
     "template_types": [],
     "abilities": [],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前卡牌文本尚未映射为能力对象。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分の場に〈モモ・ベリア・デビルーク〉がある場合、このキャラはBP+1500。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_062",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1632,13 +1937,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈ナナ・アスタ・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。\n・自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。\n・自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_063",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -1663,13 +1973,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_064",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE"
@@ -1685,11 +2000,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_065",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "MOVE_SELF"
@@ -1705,11 +2025,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_066",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -1720,18 +2045,23 @@
         "timing": "ON_ENTER",
         "status": "UNSUPPORTED",
         "text": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "reason": "SEMANTIC_OVERRIDE_REQUIRED",
         "template_type": "UNSUPPORTED"
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "unresolved_capabilities": [
+      "SEMANTIC_OVERRIDE_REQUIRED"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_067",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "DOUBLE_BLOCK",
       "NEGATE_IMPACT"
@@ -1750,15 +2080,21 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、このキャラはとを得る。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_068",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -1775,15 +2111,20 @@
         "status": "SUPPORTED",
         "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、カードを1枚引く。",
+      "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_069",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1810,13 +2151,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈モモ・ベリア・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。\n・自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。\n・自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_070",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -1835,11 +2181,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_071",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
@@ -1864,11 +2215,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_072",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED"
@@ -1884,13 +2240,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
+      "trigger": "-",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_073",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "STEP"
     ],
@@ -1908,11 +2269,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\nこのキャラはBP+500。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_074",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "NEGATE_IMPACT",
       "IMPACT"
@@ -1940,13 +2306,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_075",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [
       "RAID"
     ],
@@ -1973,13 +2344,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "〈ララ・サタリン・デビルーク〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nカードを1枚引く。自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、自分の手札から必要エナジーが4以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_076",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP"
@@ -1995,11 +2371,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "-",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_077",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
@@ -2024,17 +2405,22 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "カードを1枚引く。その後、自分の手札から必要エナジーが3以下で消費APが1の赤のキャラカードを1枚まで自分の場にレストで登場させる。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_078",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2048,20 +2434,23 @@
       {
         "id": "UA45BT_TLR_1_078_on_play_ee9dd479ee",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_079",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "TOP_DECK_TO_LIFE",
@@ -2086,11 +2475,16 @@
       }
     ],
     "can_be_expressed_by_dsl": true,
-    "missing_capabilities": []
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_080",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
@@ -2115,13 +2509,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から5枚見て、異なるカード名のキャラカードをそれぞれ1枚ずつ合計3枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_081",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -2162,13 +2561,18 @@
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
+    "unresolved_capabilities": [
       "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    ],
+    "source_text_jp": {
+      "effect": "以下から1つ選ぶ。\n・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。\n・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   },
   {
     "card_id": "UA45BT_TLR_1_082",
-    "source": "TLR/cards_raw.json",
+    "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
@@ -2188,13 +2592,18 @@
         "timing": "ON_PLAY",
         "status": "UNSUPPORTED",
         "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "reason": "SEMANTIC_OVERRIDE_REQUIRED",
         "template_type": "UNSUPPORTED"
       }
     ],
     "can_be_expressed_by_dsl": false,
-    "missing_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ]
+    "unresolved_capabilities": [
+      "SEMANTIC_OVERRIDE_REQUIRED"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場に〈ララ・サタリン・デビルーク〉がある場合、手札にあるこのカードの消費APを-1する。\nBP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
   }
 ]

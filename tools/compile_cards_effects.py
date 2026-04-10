@@ -20,6 +20,7 @@ from tools.card_effects_compiler.template_registry import set_trigger_template_r
 ROOT = Path(__file__).resolve().parents[1]
 CARDS_DIR = ROOT / "data" / "cards"
 LEGACY_SAMPLE_PATH = ROOT / "data" / "cards" / "base_cards.json"
+SEMANTIC_OVERRIDE_REQUIRED = "SEMANTIC_OVERRIDE_REQUIRED"
 
 
 def _load_json(path: Path):
@@ -421,6 +422,10 @@ def _conditional_value_provider(default_value, when: list[dict], then_value) -> 
 
 def _event_used_turn_flag(card_name: str) -> str:
     return f"event_used_{card_name}"
+
+
+def _compact_compiler_text(text: str) -> str:
+    return normalize_compiler_text(text).replace(" ", "")
 
 
 def _primary_energy_color(card: dict) -> str:
@@ -2408,6 +2413,30 @@ def _preview_add_to_hand_builder_factory(*, kind: str | None = None, **params):
     return _builder
 
 
+def _preview_add_to_hand_energy_threshold_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    count = int(match.group(1))
+    energy_threshold = int(match.group(2))
+    return _build_preview_add_to_hand_template(
+        card,
+        trigger_entry,
+        event_name,
+        _text,
+        _card_id,
+        {
+            "params": {
+                "count": count,
+                "requirements": [
+                    {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                    {"type": "CARD_COST_ENERGY_LTE", "value": energy_threshold},
+                ],
+                "discard_after_add": True,
+            },
+            "template_metadata": payload.get("template_metadata"),
+        },
+    )
+
+
 def _build_bp_remove_ability(
     card: dict,
     trigger_entry: dict,
@@ -2448,6 +2477,28 @@ def _bp_remove_from_match_builder_factory(*, min_count: int = 1, max_count: int 
         )
 
     return _builder
+
+
+def _bp_remove_dynamic_name_gate_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    requirements = [
+        {
+            "type": "CARD_BP_LTE_DYNAMIC",
+            "value_provider": _conditional_value_provider(
+                _fixed_value_provider(int(match.group(1))),
+                [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(2)}],
+                _fixed_value_provider(int(match.group(3))),
+            ),
+        }
+    ]
+    return _build_bp_remove_ability(
+        card,
+        trigger_entry,
+        event_name,
+        requirements,
+        kind=payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
 
 
 def _bp_remove_with_requirements_builder_factory(
@@ -2541,6 +2592,14 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
     ),
     _TemplateRule(
+        name="trigger.preview_add_to_hand.energy_threshold_discard",
+        event_filter="ON_ENTER",
+        matcher=_regex_match(r"自分の山札の上から(\d+)枚見て、必要エナジーが(\d+)以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
+        builder=_preview_add_to_hand_energy_threshold_builder,
+        priority=190,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
+    ),
+    _TemplateRule(
         name="trigger.bp_remove.required",
         event_filter=("ON_ENTER", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
         matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、退場させる。"),
@@ -2591,6 +2650,14 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_bp_remove_from_match_builder_factory(min_count=0, max_count=1, kind="TRIGGERED"),
         priority=110,
         template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_optional"},
+    ),
+    _TemplateRule(
+        name="event.bp_remove.dynamic_name_gate",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈(.+)〉がある場合、『?BP(\d+)以下』?に代わる。"),
+        builder=_bp_remove_dynamic_name_gate_builder,
+        priority=125,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_dynamic_name_gate"},
     ),
     _TemplateRule(
         name="event.bp_remove.dynamic_sayaka_life",
@@ -2860,9 +2927,31 @@ def _apply_stable_template_metadata(semantic_entry: dict, card_effects: dict) ->
     return semantic_entry
 
 
+def _requires_semantic_override(source_ability: dict) -> bool:
+    if source_ability.get("status") != "UNSUPPORTED":
+        return False
+    compact_text = _compact_compiler_text(str(source_ability.get("ui", {}).get("text", "")))
+    if not compact_text:
+        return False
+    if re.fullmatch(r"BP\d+以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。", compact_text):
+        return True
+    if re.fullmatch(r"BPの合計が\d+以下になるように相手のフロントLのキャラを\d+枚まで選び、退場させる。", compact_text):
+        return True
+    if "山札の上から" in compact_text and "手札に加える。" in compact_text and "カード名に「" in compact_text:
+        return True
+    return False
+
+
+def _apply_semantic_override_boundaries(semantic_entry: dict, card_effects: dict) -> dict:
+    if any(_requires_semantic_override(source_ability) for source_ability in card_effects.get("abilities", [])):
+        semantic_entry["unresolved_capabilities"] = [SEMANTIC_OVERRIDE_REQUIRED]
+    return semantic_entry
+
+
 def _build_semantic_entry(card_effects: dict) -> dict:
     semantic_entry = build_semantic_ir_entry(card_effects)
-    return _apply_stable_template_metadata(semantic_entry, card_effects)
+    semantic_entry = _apply_stable_template_metadata(semantic_entry, card_effects)
+    return _apply_semantic_override_boundaries(semantic_entry, card_effects)
 
 
 def _iter_series_raw_paths() -> list[Path]:

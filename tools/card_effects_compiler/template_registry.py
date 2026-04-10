@@ -42,7 +42,8 @@ def _dispatch_template_rules(
     event_name = str(trigger_entry.get("trigger", ""))
     text = normalize_japanese_text(trigger_entry.get("text", ""))
     card_id = str(card.get("id", ""))
-    for rule in rules:
+    ordered_rules = sorted(rules, key=lambda rule: getattr(rule, "priority", 0), reverse=True)
+    for rule in ordered_rules:
         if not _event_matches(rule.event_filter, event_name):
             continue
         if rule.card_filter is not None and not rule.card_filter(card_id):

@@ -987,8 +987,132 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          },
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 3,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_preview_cards"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -997,8 +1121,11 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_add_to_hand_discard_on_add"
+        }
       },
       {
         "id": "UA45BT_TLR_1_012_on_life_trigger_91b04beda2",
@@ -1029,8 +1156,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "DRAW_1"
+        "SELECT_AND_MOVE",
+        "DRAW_1",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },
@@ -2766,7 +2894,7 @@
           "text": "BPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。"
         },
         "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "unsupported_reason": "SEMANTIC_OVERRIDE_REQUIRED"
       },
       {
         "id": "UA45BT_TLR_1_030_on_life_trigger_a342b2ffe2",
@@ -4453,7 +4581,11 @@
           "effect_box": "OUTER",
           "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_required"
+        }
       }
     ],
     "analysis": {
@@ -4461,7 +4593,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -6185,7 +6318,7 @@
           "text": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
         "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "unsupported_reason": "SEMANTIC_OVERRIDE_REQUIRED"
       }
     ],
     "analysis": {
@@ -6436,7 +6569,11 @@
           "effect_box": "OUTER",
           "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_required"
+        }
       }
     ],
     "analysis": {
@@ -6444,7 +6581,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -7385,8 +7523,92 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "モモ・ベリア・デビルーク"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "モモ・ベリア・デビルーク"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7395,8 +7617,11 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_dynamic_name_gate"
+        }
       }
     ],
     "analysis": {
@@ -7404,7 +7629,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -7870,7 +8095,7 @@
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。"
         },
         "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "unsupported_reason": "SEMANTIC_OVERRIDE_REQUIRED"
       }
     ],
     "analysis": {

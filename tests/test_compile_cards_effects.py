@@ -29,6 +29,16 @@ class CompileCardsEffectsTests(unittest.TestCase):
         "\u306b\u4ee3\u308f\u308b\u3002"
     )
 
+
+    TLR_PREVIEW_ADD_TO_HAND_TEXT = (
+        "自分の山札の上から3枚見て、必要エナジーが3以下のキャラカードを1枚まで公開し手札に加える。"
+        "残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+    )
+    TLR_BP_THRESHOLD_TEXT = (
+        "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。"
+        "自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。"
+    )
+    TLR_COMPLEX_OVERRIDE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -290,6 +300,105 @@ class CompileCardsEffectsTests(unittest.TestCase):
         )
         self.assertEqual(semantic_entry["abilities"][0]["template_type"], "PREVIEW_ADD_TO_HAND")
         self.assertEqual(semantic_entry["abilities"][1]["template_type"], "READY_AND_TEMP_BP")
+
+    def test_compile_trigger_reuses_preview_add_to_hand_family_for_tlr_energy_threshold_text(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_012"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "test",
+                "effect_box": "OUTER",
+                "text": self.TLR_PREVIEW_ADD_TO_HAND_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["template_metadata"],
+            {
+                "family": "PREVIEW_ADD_TO_HAND",
+                "variant": "preview_add_to_hand_discard_on_add",
+            },
+        )
+
+        semantic_entry = _build_semantic_entry(
+            {
+                "id": "UA45BT_TLR_1_012",
+                "analysis": {"source": "TLR/cards_raw.json"},
+                "card_meta": {
+                    "keywords": [],
+                    "text": {"effect": self.TLR_PREVIEW_ADD_TO_HAND_TEXT, "trigger": "", "rule": ""},
+                },
+                "abilities": [ability],
+            }
+        )
+
+        self.assertEqual(semantic_entry["template_types"], ["SELECT_AND_MOVE", "PREVIEW_ADD_TO_HAND"])
+        self.assertEqual(semantic_entry["abilities"][0]["template_type"], "PREVIEW_ADD_TO_HAND")
+
+    def test_compile_event_effect_reuses_bp_threshold_family_for_tlr_name_gate_text(self):
+        ability = _compile_event_effect(
+            {"id": "UA45BT_TLR_1_078", "card_type": "EVENT"},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.TLR_BP_THRESHOLD_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["template_metadata"],
+            {
+                "family": "BP_THRESHOLD_REMOVE",
+                "variant": "bp_threshold_remove_dynamic_name_gate",
+            },
+        )
+
+        semantic_entry = _build_semantic_entry(
+            {
+                "id": "UA45BT_TLR_1_078",
+                "analysis": {"source": "TLR/cards_raw.json"},
+                "card_meta": {
+                    "keywords": [],
+                    "text": {"effect": self.TLR_BP_THRESHOLD_TEXT, "trigger": "", "rule": ""},
+                },
+                "abilities": [ability],
+            }
+        )
+
+        self.assertEqual(semantic_entry["template_types"], ["SELECT_AND_MOVE", "BP_THRESHOLD_REMOVE"])
+        self.assertEqual(semantic_entry["abilities"][0]["template_type"], "BP_THRESHOLD_REMOVE")
+
+    def test_build_semantic_entry_uses_override_enum_for_complex_tlr_boundary_cases(self):
+        semantic_entry = _build_semantic_entry(
+            {
+                "id": "UA45BT_TLR_1_095",
+                "analysis": {"source": "TLR/cards_raw.json"},
+                "card_meta": {
+                    "keywords": [],
+                    "text": {"effect": self.TLR_COMPLEX_OVERRIDE_TEXT, "trigger": "", "rule": ""},
+                },
+                "abilities": [
+                    {
+                        "id": "override-needed",
+                        "timing": {"event": "ON_PLAY"},
+                        "status": "UNSUPPORTED",
+                        "requirements": [],
+                        "target_specs": [],
+                        "steps": [],
+                        "limits": {},
+                        "ui": {"text": self.TLR_COMPLEX_OVERRIDE_TEXT},
+                        "unsupported_reason": "out-of-template",
+                    }
+                ],
+            }
+        )
+
+        self.assertFalse(semantic_entry["can_be_expressed_by_dsl"])
+        self.assertEqual(semantic_entry["unresolved_capabilities"], ["SEMANTIC_OVERRIDE_REQUIRED"])
 
 
 if __name__ == "__main__":
