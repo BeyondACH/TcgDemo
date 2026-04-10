@@ -326,6 +326,7 @@
 # 里程碑计划（基于 `codex/v1.0`）
 
 > 目标：在现有 `cards_effects.json` 与规则引擎原子能力基础上，优先扩大 `SUPPORTED` 覆盖面，再提升运行时稳定性，最后建立可持续的支持率 / 回归体系。
+> 执行级任务拆分与排期以 `docs/plan/task_breakdown.md` 为准；当两者存在粒度差异时，本文件负责里程碑口径，`task_breakdown.md` 负责具体落地。
 
 ---
 
