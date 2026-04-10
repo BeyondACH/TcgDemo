@@ -1,0 +1,22 @@
+{
+  "totals": {
+    "cards": 199,
+    "abilities": 310,
+    "supported": 272,
+    "unsupported": 38
+  },
+  "per_series": {
+    "MMM": {
+      "cards": 117,
+      "abilities": 180,
+      "supported": 180,
+      "unsupported": 0
+    },
+    "TLR": {
+      "cards": 82,
+      "abilities": 130,
+      "supported": 92,
+      "unsupported": 38
+    }
+  }
+}

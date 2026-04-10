@@ -84,6 +84,14 @@
 - 决策消费语义修正为：非法输入不消费待决策，返回稳定 reason，便于 UI 与日志层做一致展示。
 - `runtime_residue_smoke_test` 已新增 `SELECT_TARGETS_BY_COMBINATION`、`SET_CHOICE_MODE/EXECUTE_CHOICE_BRANCH`、`RUN_COMPOSITE_IF` 三条最小回归链。
 
+## 2.6 2026-04-10 task_breakdown P1/P2 收口补充
+
+- `P1` 已完成收口：`P1-1/P1-2` 的模板化与组合约束映射已落地，`P1-3` 已新增高频 `UNSUPPORTED` 文本族 Top N 聚类与分类建议清单（用于下一轮模板优先级）。
+- `P2-1` 已新增支持率统计脚本：`tools/report_support_stats.py`，并产出 `docs/plan/support_stats_report.md`。
+- `P2-2` 已新增原子复用矩阵脚本：`tools/report_atom_usage_matrix.py`，并产出 `docs/plan/atom_usage_matrix.md`。
+- `P2-3` 已新增编译产物快照脚本：`tools/snapshot_compiler_metrics.py`，并写入基线 `docs/plan/compiler_metrics_snapshot.json`。
+- `P2-4` 已新增准入规范：`docs/plan/new_capability_checklist.md`，用于后续能力接入标准化。
+
 ## 3. 开发阶段规划
 
 ## 阶段 A：规则与 DSL/IR 基线维护
