@@ -904,17 +904,18 @@
       "RAID"
     ],
     "template_types": [
-      "UNSUPPORTED",
-      "LIFE_TRIGGER_RAID_CHOICE"
+      "COMPOSITE",
+      "LIFE_TRIGGER_RAID_CHOICE",
+      "BP_SUM_LIMIT_REMOVE"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_030_on_enter_cae4ef1c23",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "BPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
-        "reason": "SEMANTIC_OVERRIDE_REQUIRED",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_SUM_LIMIT_REMOVE"
       },
       {
         "id": "UA45BT_TLR_1_030_on_life_trigger_a342b2ffe2",
@@ -925,10 +926,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "SEMANTIC_OVERRIDE_REQUIRED"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このカードは〈金色の闇〉としても扱う。\n〈金色の闇〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nBPの合計が6000以下になるように相手のフロントLのキャラを2枚まで選び、退場させる。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -2033,22 +2032,21 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_066_on_enter_053989dd8c",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-        "reason": "SEMANTIC_OVERRIDE_REQUIRED",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "PREVIEW_ADD_TO_HAND"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "SEMANTIC_OVERRIDE_REQUIRED"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
       "trigger": "-",

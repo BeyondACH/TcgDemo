@@ -77,6 +77,8 @@ const RAW_OUTSIDE_EVENT_BOUNCE_019 := "UA31BT_MMM_1_019"
 const RAW_MAIN_ACTIVATE_MAMI_DISCOUNT_027 := "UA31BT_MMM_1_027"
 const RAW_EVENT_REST_DRAW_029 := "UA31BT_MMM_1_029"
 const RAW_EVENT_ONCE_DRAW_READY_034 := "UA31BT_MMM_1_034"
+const RAW_TLR_BP_SUM_LIMIT_030 := "UA45BT_TLR_1_030"
+const RAW_TLR_PREVIEW_NAME_CONTAINS_066 := "UA45BT_TLR_1_066"
 
 var _failures: Array[String] = []
 var _passes: Array[String] = []
@@ -162,6 +164,8 @@ func _init() -> void:
 	_run_test("Raw Main Activate Mami Discount 027", _test_raw_main_activate_mami_discount_027)
 	_run_test("Raw Event Rest Then Draw 029", _test_raw_event_rest_then_draw_029)
 	_run_test("Raw Event Once Draw Ready 034", _test_raw_event_once_draw_ready_034)
+	_run_test("Raw TLR BP Sum Limit Remove 030", _test_raw_tlr_bp_sum_limit_remove_030)
+	_run_test("Raw TLR Preview Name Contains 066", _test_raw_tlr_preview_name_contains_066)
 	_print_summary()
 	if _failures.is_empty():
 		print("CARDS_RAW_MINIMAL_DUEL_SMOKE_OK")
@@ -3950,6 +3954,131 @@ func _test_raw_event_once_draw_ready_034() -> Dictionary:
 	var blocked := manager.rules_engine.can_play_card(manager.game_state, player_id, second_uid, UATypes.Zone.OUTSIDE)
 	if bool(blocked.get("ok", false)):
 		return _fail("Raw 034 should only be playable once per turn.")
+	return _ok()
+
+func _test_raw_tlr_bp_sum_limit_remove_030() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	var opponent_id := UATypes.PLAYER_TWO
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TLR_BP_SUM_LIMIT_030, UATypes.Zone.FRONT_LINE)
+	if source_uid == "":
+		return _fail("Raw TLR 030 sample source card should be available.")
+	var legal_a := _spawn_magic_girl_named_card(manager, opponent_id, "TLR030合法目标A", 3000, UATypes.Zone.FRONT_LINE)
+	var legal_b := _spawn_magic_girl_named_card(manager, opponent_id, "TLR030合法目标B", 3000, UATypes.Zone.FRONT_LINE)
+	var illegal_target := _spawn_magic_girl_named_card(manager, opponent_id, "TLR030超限目标", 4000, UATypes.Zone.FRONT_LINE)
+	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": opponent_id})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw TLR 030 sample should request explicit combination selection.")
+	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choice_values := _extract_choice_values(decision.get("choices", []))
+	if not choice_values.has(legal_a) or not choice_values.has(legal_b):
+		return _fail("Raw TLR 030 sample should expose legal front-line targets.")
+	if not choice_values.has(illegal_target):
+		return _fail("Raw TLR 030 sample should still expose single-target choices even when one card BP is high.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choices": [legal_a, legal_b, illegal_target],
+	})
+	var legal_a_card = manager.game_state.get_card(legal_a)
+	var legal_b_card = manager.game_state.get_card(legal_b)
+	var illegal_card = manager.game_state.get_card(illegal_target)
+	if legal_a_card == null or legal_a_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw TLR 030 sample should remove legal target A to outside.")
+	if legal_b_card == null or legal_b_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw TLR 030 sample should remove legal target B to outside.")
+	if illegal_card == null or illegal_card.zone != UATypes.Zone.FRONT_LINE:
+		return _fail("Raw TLR 030 sample should keep the over-sum target on front line.")
+	return _ok()
+
+func _test_raw_tlr_preview_name_contains_066() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.phase = UATypes.Phase.MAIN
+	_fill_ap(_player(manager, player_id), 3)
+	if not _ensure_color_energy(manager, player_id, "YELLOW", 2):
+		return _fail("Raw TLR 066 sample should prepare enough yellow energy.")
+	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TLR_PREVIEW_NAME_CONTAINS_066, UATypes.Zone.HAND)
+	if source_uid == "":
+		return _fail("Raw TLR 066 sample source card should be available.")
+	var match_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_TLR066_MATCH",
+		"name": "测试デビルーク角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-TLR-066-A",
+		"traits": [],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var non_match_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_TLR066_NON_MATCH",
+		"name": "测试非名称匹配角色",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-TLR-066-B",
+		"traits": [],
+		"cost_energy": {"YELLOW": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 1000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	var extra_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_TLR066_EXTRA",
+		"name": "测试其他卡",
+		"card_type": "EVENT",
+		"title_code": "TMP",
+		"number": "TMP-TLR-066-C",
+		"traits": [],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {},
+		"bp": 0,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.DECK, true)
+	_set_deck_top_order(manager, player_id, [match_uid, non_match_uid, extra_uid])
+	var player := _player(manager, player_id)
+	var hand_before := player.hand.size()
+	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw TLR 066 sample should first request preview selection.")
+	var pick_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var pick_values := _extract_choice_values(pick_decision.get("choices", []))
+	if not pick_values.has(match_uid):
+		return _fail("Raw TLR 066 sample should expose name-contains matching character.")
+	if pick_values.has(non_match_uid):
+		return _fail("Raw TLR 066 sample should filter out non-matching names.")
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(pick_decision.get("resolution_id", "")),
+		"choice": match_uid,
+	})
+	if manager.game_state.pending_decisions.size() != 2:
+		return _fail("Raw TLR 066 sample should continue to discard + reorder decisions after adding to hand.")
+	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(discard_decision.get("resolution_id", "")),
+		"choice": match_uid,
+	})
+	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var reorder_choices := _extract_choice_values(reorder_decision.get("choices", []))
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(reorder_decision.get("resolution_id", "")),
+		"choices": reorder_choices,
+	})
+	if player.hand.size() != hand_before - 1:
+		return _fail("Raw TLR 066 sample should net -1 hand after add-then-discard chain.")
+	var match_card = manager.game_state.get_card(match_uid)
+	if match_card == null or match_card.zone != UATypes.Zone.OUTSIDE:
+		return _fail("Raw TLR 066 sample should move the added card to outside after discard choice.")
 	return _ok()
 
 func _player(manager: GameManager, player_id: String) -> PlayerState:

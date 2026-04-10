@@ -2,6 +2,7 @@ import hashlib
 import json
 import re
 import sys
+from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -2378,6 +2379,58 @@ def _bp_remove_with_requirements_builder_factory(
     return _builder
 
 
+def _bp_sum_limit_remove_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    max_sum_bp = int(match.group(1))
+    max_count = int(match.group(2))
+    target_specs, steps = _manual_card_set(
+        "OPPONENT",
+        ["FRONT_LINE"],
+        min_count=0,
+        max_count=max_count,
+        store_as="selected_targets",
+        constraints={"max_count": max_count, "max_sum_bp": max_sum_bp},
+    )
+    composite_steps: list[dict] = [
+        {
+            "type": "SELECT_TARGETS_WITH_SUM_LIMIT",
+            "var": "selected_targets",
+            "target": deepcopy(steps[0].get("target", {})),
+        },
+        {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_targets", "to": "OUTSIDE"},
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        composite_steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _preview_add_to_hand_name_contains_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    return _build_preview_add_to_hand_template(
+        card,
+        trigger_entry,
+        event_name,
+        _text,
+        _card_id,
+        {
+            "params": {
+                "count": int(match.group(1)),
+                "requirements": [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+                "filters": [{"type": "NAME_CONTAINS", "value": match.group(2)}],
+                "discard_after_add": True,
+            },
+            "template_metadata": payload.get("template_metadata"),
+        },
+    )
+
+
 def _preview_top_then_choose_top_or_bottom_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     target_specs = []
     steps = [
@@ -2696,6 +2749,22 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_preview_add_to_hand_energy_threshold_builder,
         priority=190,
         template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
+    ),
+    _TemplateRule(
+        name="trigger.bp_sum_limit_remove",
+        event_filter=("ON_ENTER", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
+        matcher=_regex_match(r"BPの合計が(\d+)以下になるように相手のフロントLのキャラを(\d+)枚まで選び、退場させる。"),
+        builder=_bp_sum_limit_remove_builder,
+        priority=135,
+        template_metadata={"family": "BP_SUM_LIMIT_REMOVE", "variant": "bp_sum_limit_remove_optional"},
+    ),
+    _TemplateRule(
+        name="trigger.preview_add_to_hand.name_contains_discard",
+        event_filter="ON_ENTER",
+        matcher=_regex_match(r"自分の山札の上から(\d+)枚見て、カード名に「(.+)」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
+        builder=_preview_add_to_hand_name_contains_builder,
+        priority=195,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_name_contains_discard_on_add"},
     ),
     _TemplateRule(
         name="trigger.bp_remove.required",
