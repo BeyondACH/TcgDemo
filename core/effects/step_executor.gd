@@ -48,6 +48,10 @@ func _init_handlers() -> void:
 		"REGISTER_DELAYED_EFFECT": _step_register_delayed_effect,
 		"REGISTER_STATIC_MODIFIER": _step_register_static_modifier,
 		"STORE_CARD_INFO": _step_store_card_info,
+		"SELECT_TARGETS_BY_COMBINATION": _step_select_targets_by_combination,
+		"SET_CHOICE_MODE": _step_set_choice_mode,
+		"EXECUTE_CHOICE_BRANCH": _step_execute_choice_branch,
+		"RUN_COMPOSITE_IF": _step_run_composite_if,
 	}
 
 # ============================================================
@@ -308,6 +312,68 @@ func _step_store_card_info(state: GameState, source_card_uid: String, step: Dict
 	}
 	return {"logs": [], "paused": false}
 
+func _step_select_targets_by_combination(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var logs: Array[String] = []
+	var target: Dictionary = step.get("target", {})
+	var selected := _resolve_target_set(state, source_card_uid, target, context)
+	var selected_var := str(step.get("var", "selected_targets"))
+	var min_count := int(target.get("min", 0))
+	if selected.size() < min_count:
+		context[selected_var] = []
+		return {"logs": logs, "paused": false}
+	if bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL":
+		if context.has(selected_var):
+			return {"logs": logs, "paused": false}
+		if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, remaining_steps, false, _build_preview_pick_ui_meta(target, context)):
+			return {"logs": logs, "paused": true}
+		return {"logs": logs, "paused": false}
+	var constrained_selected := _apply_selection_constraints(state, selected, target.get("selection_constraints", {}), context, source_card_uid)
+	context[selected_var] = constrained_selected
+	logs.append("Selected %d target(s) for %s under combination constraints." % [constrained_selected.size(), selected_var])
+	return {"logs": logs, "paused": false}
+
+func _step_set_choice_mode(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var mode_var := str(step.get("var", "choice_mode"))
+	if mode_var == "":
+		return {"logs": [], "paused": false}
+	var mode := str(context.get(mode_var, str(step.get("default", ""))))
+	if mode == "" and step.has("value"):
+		mode = str(step.get("value", ""))
+	if mode == "":
+		var options: Array = step.get("options", [])
+		if not options.is_empty():
+			mode = str(options[0])
+	context[mode_var] = mode
+	return {"logs": ["Choice mode set: %s=%s." % [mode_var, mode]], "paused": false}
+
+func _step_execute_choice_branch(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var logs: Array[String] = []
+	var mode_var := str(step.get("mode_var", "choice_mode"))
+	var selected_mode := str(context.get(mode_var, str(step.get("default_mode", ""))))
+	if selected_mode == "":
+		return {"logs": logs, "paused": false}
+	var branches: Dictionary = step.get("branches", {})
+	var branch_steps: Array = branches.get(selected_mode, step.get("default_steps", []))
+	if branch_steps.is_empty():
+		return {"logs": logs, "paused": false}
+	var branch_result := execute_steps(state, source_card_uid, branch_steps, context, effect)
+	logs.append("Executed choice branch: %s." % selected_mode)
+	logs.append_array(branch_result.get("logs", []))
+	return {"logs": logs, "paused": bool(branch_result.get("paused", false))}
+
+func _step_run_composite_if(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var logs: Array[String] = []
+	var requirements: Array = step.get("if_requirements", [])
+	if _effect_resolver != null and not requirements.is_empty():
+		if not _effect_resolver._requirements_met(state, source_card_uid, requirements, context):
+			return {"logs": logs, "paused": false}
+	var chain_steps: Array = step.get("steps", [])
+	if chain_steps.is_empty():
+		return {"logs": logs, "paused": false}
+	var chain_result := execute_steps(state, source_card_uid, chain_steps, context, effect)
+	logs.append_array(chain_result.get("logs", []))
+	return {"logs": logs, "paused": bool(chain_result.get("paused", false))}
+
 # ============================================================
 # 辅助函数 - 目标选择
 # ============================================================
@@ -403,6 +469,33 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		"title": str(ui_meta.get("title", "")),
 	})
 	return true
+
+func _apply_selection_constraints(state: GameState, selected: Array, constraints: Dictionary, context: Dictionary, source_card_uid: String) -> Array:
+	if constraints.is_empty():
+		return selected
+	var result: Array = []
+	var max_count := int(constraints.get("max_count", selected.size()))
+	var max_sum_bp := constraints.get("max_sum_bp", null)
+	var max_sum_provider = constraints.get("max_sum_provider", null)
+	var threshold := -1
+	if max_sum_provider != null:
+		threshold = _resolve_numeric_value(state, max_sum_provider, context, source_card_uid)
+	elif max_sum_bp != null:
+		threshold = int(max_sum_bp)
+	var running_bp := 0
+	for uid_variant in selected:
+		if max_count >= 0 and result.size() >= max_count:
+			break
+		var uid := str(uid_variant)
+		if uid == "":
+			continue
+		var card = state.get_card(uid)
+		var card_bp := int(card.current_bp) if card != null else 0
+		if threshold >= 0 and running_bp + card_bp > threshold:
+			continue
+		result.append(uid)
+		running_bp += card_bp
+	return result
 
 # ============================================================
 # 辅助函数 - 临时效果
