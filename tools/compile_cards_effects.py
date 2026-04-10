@@ -836,7 +836,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             ],
         )
 
-<<<<<<< codex/complete-atomic-capability-support-for-all-tlr-p0vpoh
     if event_name == "ON_ENTER" and text == "自分の手札を1枚場外に置いてもよい。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、レストにする。":
         discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], 0, 1, "selected_discard")
         rest_specs, rest_steps = _manual_single_target(
@@ -863,9 +862,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
                 {"type": "REST", "target_var": "selected_rest_target", "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_discard"}]}
             ],
         )
-
-=======
->>>>>>> codex/v1.0
     if event_name == "ON_ENTER" and text == "自分の手札を全て場外に置き、カードを5枚引く。":
         target_specs, steps = _auto_target_set("SELF", ["HAND"], min_count=0, max_count=-1, store_as="all_hand_cards")
         return _supported_ability(
@@ -907,7 +903,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             [{"type": "DRAW", "value": 1}],
         )
 
-<<<<<<< codex/complete-atomic-capability-support-for-all-tlr-p0vpoh
     if event_name == "ON_ENTER" and text == "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。":
         return _supported_ability(
             card,
@@ -918,7 +913,10 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
                     "type": "PLAYER_ZONE_CARD_COUNT_GTE",
                     "player": "SELF",
                     "zones": ["FRONT_LINE"],
-                    "card_type": "CHARACTER",
+                    "filters": [
+                        {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                        {"type": "CARD_COST_ENERGY_LTE", "value": 3},
+                    ],
                     "value": 2,
                 }
             ],
@@ -933,9 +931,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             state="RESTED",
         )
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, [{"type": "DRAW", "value": 1}] + steps)
-
-=======
->>>>>>> codex/v1.0
     if event_name == "ON_ENTER" and text == "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。":
         target_specs, steps = _preview_add_to_hand_then_reorder_steps(
             count=3,
@@ -975,7 +970,7 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
         bounce_specs, bounce_steps = _manual_single_target(
             "SELF",
             ["FRONT_LINE", "ENERGY_LINE"],
-            [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}, {"type": "NOT_SOURCE_CARD"}],
             0,
             1,
             "selected_bounce",
@@ -1001,12 +996,11 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             ],
         )
 
-<<<<<<< codex/complete-atomic-capability-support-for-all-tlr-p0vpoh
     if event_name == "ON_ENTER" and text == "自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。":
         bounce_specs, bounce_steps = _manual_single_target(
             "SELF",
             ["FRONT_LINE", "ENERGY_LINE"],
-            [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}, {"type": "NOT_SOURCE_CARD"}],
             0,
             1,
             "selected_bounce",
@@ -1116,9 +1110,6 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
         )
         steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "DECK", "target_player_mode": "CARD_CONTROLLER"})
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps, kind="TRIGGERED")
-
-=======
->>>>>>> codex/v1.0
     if event_name == "ON_ENTER" and text == "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。":
         target_specs, steps = _manual_card_set(
             "SELF",

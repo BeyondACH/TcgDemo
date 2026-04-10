@@ -496,6 +496,7 @@ func _req_player_zone_card_count_gte(state: GameState, requirement: Dictionary, 
 	var player = state.get_player(player_id)
 	if player == null:
 		return false
+	var filters := requirement.get("filters", [])
 	var count := 0
 	for zone_variant in requirement.get("zones", []):
 		var zone_cards = _zone_cards_for_player(player, str(zone_variant))
@@ -509,6 +510,8 @@ func _req_player_zone_card_count_gte(state: GameState, requirement: Dictionary, 
 				continue
 			var required_card_type := str(requirement.get("card_type", ""))
 			if required_card_type != "" and UATypes.card_type_to_text(card_def.card_type) != required_card_type:
+				continue
+			if not matches_filter_list(state, filters, context, card_uid, source_card_uid):
 				continue
 			count += 1
 	return count >= int(requirement.get("value", 0))

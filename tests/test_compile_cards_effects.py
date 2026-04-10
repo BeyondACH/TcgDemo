@@ -658,6 +658,48 @@ class CompileCardsEffectsTests(unittest.TestCase):
                 )
             )
 
+    def test_legacy_frontline_count_requirement_enforces_energy_cost_filter(self):
+        ability = _compile_trigger_legacy(
+            {"id": "UA45BT_TLR_1_999"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": "自分のフロントLに必要エナジーが3以下のキャラが2枚以上ある場合、このキャラをアクティブにする。",
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        requirement = ability["requirements"][0]
+        self.assertEqual(requirement["type"], "PLAYER_ZONE_CARD_COUNT_GTE")
+        self.assertEqual(
+            requirement["filters"],
+            [
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_COST_ENERGY_LTE", "value": 3},
+            ],
+        )
+
+    def test_legacy_bounce_other_character_excludes_source_card(self):
+        ability = _compile_trigger_legacy(
+            {"id": "UA45BT_TLR_1_998"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": "自分の場の他のキャラを1枚手札に戻してもよい。そうした場合、カードを2枚引き、自分の手札を1枚場外に置く。",
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        bounce_select = next(step for step in ability["steps"] if step["type"] == "SELECT_TARGETS")
+        self.assertIn(
+            {"type": "NOT_SOURCE_CARD"},
+            bounce_select["target"]["requirements"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

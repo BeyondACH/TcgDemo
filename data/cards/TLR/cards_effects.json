@@ -1702,7 +1702,16 @@
             "zones": [
               "FRONT_LINE"
             ],
-            "card_type": "CHARACTER",
+            "filters": [
+              {
+                "type": "CARD_TYPE_IS",
+                "value": "CHARACTER"
+              },
+              {
+                "type": "CARD_COST_ENERGY_LTE",
+                "value": 3
+              }
+            ],
             "value": 2
           }
         ],
@@ -8305,6 +8314,9 @@
                 {
                   "type": "CARD_TYPE_IS",
                   "value": "CHARACTER"
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
                 }
               ]
             },
@@ -8350,6 +8362,9 @@
                 {
                   "type": "CARD_TYPE_IS",
                   "value": "CHARACTER"
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
                 }
               ],
               "min": 0,
@@ -8558,6 +8573,9 @@
                 {
                   "type": "CARD_TYPE_IS",
                   "value": "CHARACTER"
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
                 }
               ]
             },
@@ -8630,6 +8648,9 @@
                 {
                   "type": "CARD_TYPE_IS",
                   "value": "CHARACTER"
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
                 }
               ],
               "min": 0,
