@@ -1126,8 +1126,8 @@ func _test_raw_preview_add_up_to_two_distinct_names_065() -> Dictionary:
 		return _fail("Raw preview 065 sample should not move cards to hand after a rejected duplicate-name selection.")
 	if invalid_player.hand.has(invalid_preview_dup_1) or invalid_player.hand.has(invalid_preview_dup_2):
 		return _fail("Raw preview 065 sample should reject duplicate-name preview cards instead of adding them to hand.")
-	if invalid_manager.game_state.pending_decisions.size() != 0:
-		return _fail("Raw preview 065 sample should clear the invalid selection decision under the current resolver flow.")
+	if invalid_manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw preview 065 sample should reinsert the target-selection decision after rejecting duplicate names.")
 	if invalid_manager.game_state.effect_queue.size() != 1:
 		return _fail("Raw preview 065 sample should requeue the unresolved effect after rejecting duplicate names.")
 
@@ -3000,7 +3000,7 @@ func _test_raw_event_dynamic_homura_threshold_066() -> Dictionary:
 	if not _ensure_color_energy(manager_upgraded, player_id, "PURPLE", 4):
 		return _fail("Raw 066 upgraded sample should prepare 4 purple energy.")
 	var source_upgraded_uid := _move_or_spawn_card_to_zone(manager_upgraded, player_id, RAW_EVENT_DYNAMIC_HOMURA_066, UATypes.Zone.HAND)
-	_spawn_named_character(manager_upgraded, player_id, "暁美 ほむら", ["魔法少女"], 1500, UATypes.Zone.FRONT_LINE)
+	_spawn_named_character(manager_upgraded, player_id, "暁美ほむら", ["魔法少女"], 1500, UATypes.Zone.FRONT_LINE)
 	var legal_target_uid := _spawn_named_character(manager_upgraded, opponent_id, "066升级5000目标", [], 5000, UATypes.Zone.FRONT_LINE)
 	manager_upgraded.play_card(source_upgraded_uid, UATypes.Zone.OUTSIDE)
 	if manager_upgraded.game_state.pending_decisions.size() != 1:
@@ -3966,6 +3966,10 @@ func _test_raw_tlr_bp_sum_limit_remove_030() -> Dictionary:
 	var legal_a := _spawn_magic_girl_named_card(manager, opponent_id, "TLR030合法目标A", 3000, UATypes.Zone.FRONT_LINE)
 	var legal_b := _spawn_magic_girl_named_card(manager, opponent_id, "TLR030合法目标B", 3000, UATypes.Zone.FRONT_LINE)
 	var illegal_target := _spawn_magic_girl_named_card(manager, opponent_id, "TLR030超限目标", 4000, UATypes.Zone.FRONT_LINE)
+	var source_card = manager.game_state.get_card(source_uid)
+	if source_card == null:
+		return _fail("Raw TLR 030 sample source runtime card should be available.")
+	source_card.flags["entered_via_raid"] = true
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": opponent_id})
 	if manager.game_state.pending_decisions.size() != 1:
 		return _fail("Raw TLR 030 sample should request explicit combination selection.")
@@ -3975,9 +3979,18 @@ func _test_raw_tlr_bp_sum_limit_remove_030() -> Dictionary:
 		return _fail("Raw TLR 030 sample should expose legal front-line targets.")
 	if not choice_values.has(illegal_target):
 		return _fail("Raw TLR 030 sample should still expose single-target choices even when one card BP is high.")
-	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+	var invalid_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choices": [legal_a, legal_b, illegal_target],
+	})
+	if bool(invalid_result.get("ok", true)):
+		return _fail("Raw TLR 030 sample should reject combinations whose total BP exceeds the 6000 limit.")
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw TLR 030 sample should keep the combination decision pending after an over-sum selection.")
+	decision = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(decision.get("resolution_id", "")),
+		"choices": [legal_a, legal_b],
 	})
 	var legal_a_card = manager.game_state.get_card(legal_a)
 	var legal_b_card = manager.game_state.get_card(legal_b)
@@ -3995,8 +4008,8 @@ func _test_raw_tlr_preview_name_contains_066() -> Dictionary:
 	var player_id := UATypes.PLAYER_ONE
 	manager.game_state.phase = UATypes.Phase.MAIN
 	_fill_ap(_player(manager, player_id), 3)
-	if not _ensure_color_energy(manager, player_id, "YELLOW", 2):
-		return _fail("Raw TLR 066 sample should prepare enough yellow energy.")
+	if not _ensure_color_energy(manager, player_id, "RED", 1):
+		return _fail("Raw TLR 066 sample should prepare enough red energy.")
 	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_TLR_PREVIEW_NAME_CONTAINS_066, UATypes.Zone.HAND)
 	if source_uid == "":
 		return _fail("Raw TLR 066 sample source card should be available.")
@@ -4061,18 +4074,20 @@ func _test_raw_tlr_preview_name_contains_066() -> Dictionary:
 		"resolution_id": str(pick_decision.get("resolution_id", "")),
 		"choice": match_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 2:
-		return _fail("Raw TLR 066 sample should continue to discard + reorder decisions after adding to hand.")
-	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
-	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
-		"resolution_id": str(discard_decision.get("resolution_id", "")),
-		"choice": match_uid,
-	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw TLR 066 sample should next request preview reorder after adding to hand.")
 	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
 	var reorder_choices := _extract_choice_values(reorder_decision.get("choices", []))
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(reorder_decision.get("resolution_id", "")),
 		"choices": reorder_choices,
+	})
+	if manager.game_state.pending_decisions.size() != 1:
+		return _fail("Raw TLR 066 sample should then request the discard decision after preview reorder.")
+	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
+		"resolution_id": str(discard_decision.get("resolution_id", "")),
+		"choice": match_uid,
 	})
 	if player.hand.size() != hand_before - 1:
 		return _fail("Raw TLR 066 sample should net -1 hand after add-then-discard chain.")

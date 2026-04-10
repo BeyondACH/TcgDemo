@@ -499,14 +499,14 @@ func _apply_selection_constraints(state: GameState, selected: Array, constraints
 		return selected
 	var result: Array = []
 	var max_count := int(constraints.get("max_count", selected.size()))
-	var max_sum_bp := constraints.get("max_sum_bp", null)
-	var max_sum_provider = constraints.get("max_sum_provider", null)
-	var threshold := -1
+	var max_sum_bp: Variant = constraints.get("max_sum_bp", null)
+	var max_sum_provider: Variant = constraints.get("max_sum_provider", null)
+	var threshold: int = -1
 	if max_sum_provider != null:
 		threshold = _resolve_numeric_value(state, max_sum_provider, context, source_card_uid)
 	elif max_sum_bp != null:
 		threshold = int(max_sum_bp)
-	var running_bp := 0
+	var running_bp: int = 0
 	for uid_variant in selected:
 		if max_count >= 0 and result.size() >= max_count:
 			break
