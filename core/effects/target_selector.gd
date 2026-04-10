@@ -270,12 +270,25 @@ func normalize_selection_payload(selected_values, max_count: int) -> Array:
 	return result
 
 func validate_selection_payload(state: GameState, normalized: Array, queued_effect: Dictionary) -> String:
+	var max_count := int(queued_effect.get("max", -1))
+	if max_count >= 0 and normalized.size() > max_count:
+		return "too_many_targets"
 	var candidate_values: Array = queued_effect.get("candidate_values", [])
 	for value_variant in normalized:
 		var value := str(value_variant)
 		if not candidate_values.has(value):
 			return "invalid_choice"
 	var constraints: Dictionary = queued_effect.get("selection_constraints", {})
+	var threshold := _resolve_sum_threshold(state, constraints, queued_effect)
+	if threshold >= 0:
+		var running_bp := 0
+		for card_uid_variant in normalized:
+			var card_uid := str(card_uid_variant)
+			var card = state.get_card(card_uid)
+			var card_bp := int(card.current_bp) if card != null else 0
+			running_bp += card_bp
+			if running_bp > threshold:
+				return "selection_sum_exceeded"
 	if str(constraints.get("distinct_by", "")) == "CARD_NAME":
 		var seen_names: Dictionary = {}
 		for card_uid_variant in normalized:
@@ -290,6 +303,19 @@ func validate_selection_payload(state: GameState, normalized: Array, queued_effe
 				return "duplicate_card_name"
 			seen_names[card_def.name] = true
 	return ""
+
+func _resolve_sum_threshold(state: GameState, constraints: Dictionary, queued_effect: Dictionary) -> int:
+	if constraints.is_empty():
+		return -1
+	var max_sum_provider = constraints.get("max_sum_provider", null)
+	if max_sum_provider != null and _effect_resolver != null and _effect_resolver.has_method("_resolve_numeric_value"):
+		var context: Dictionary = queued_effect.get("context", {})
+		var source_card_uid := str(queued_effect.get("source_card_uid", ""))
+		return int(_effect_resolver._resolve_numeric_value(state, max_sum_provider, context, source_card_uid))
+	var max_sum_bp = constraints.get("max_sum_bp", null)
+	if max_sum_bp != null:
+		return int(max_sum_bp)
+	return -1
 
 # ============================================================
 # 辅助函数
