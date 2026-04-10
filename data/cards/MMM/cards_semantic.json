@@ -2205,7 +2205,8 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "CONDITIONAL_DRAW"
     ],
     "abilities": [
       {
@@ -2214,7 +2215,7 @@
         "status": "SUPPORTED",
         "text": "自分の場に〈鹿目 まどか〉がある場合、カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "CONDITIONAL_DRAW"
       }
     ],
     "can_be_expressed_by_dsl": true,

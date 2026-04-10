@@ -2378,7 +2378,250 @@ def _bp_remove_with_requirements_builder_factory(
     return _builder
 
 
+def _preview_top_then_choose_top_or_bottom_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    target_specs = []
+    steps = [
+        {"type": "PREVIEW_TOP_DECK", "count": 1, "var": "preview_cards"},
+        {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_destination",
+            "target": {
+                "type": "OPTION_SET",
+                "options": ["TOP", "BOTTOM"],
+                "min": 1,
+                "max": 1,
+                "selection_mode": "MANUAL",
+                "manual": True,
+            },
+        },
+        {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position_from_var": "selected_preview_destination",
+            "target_player_mode": "SOURCE",
+        },
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _conditional_draw_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    requirements: list[dict] = []
+    if match.group(1):
+        requirements.append({"type": "CONTROLLER_OTHER_CARDS_COUNT_GTE", "value": int(match.group(1))})
+    elif match.group(2):
+        requirements.append({"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(2)})
+    steps = [{"type": "DRAW", "value": int(match.group(3))}]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        requirements,
+        [],
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _self_other_bp_modifier_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, select_steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE", "BACK_LINE"],
+        [{"type": "CARD_UID_NE", "value": "SOURCE_CARD"}],
+        1,
+        1,
+    )
+    steps = select_steps + [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(match.group(1)), "expires": "END_OF_TURN"}]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _optional_pay_ap_deal_damage_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    requirements = [{"type": "PLAYER_LIFE_GTE", "player": "OPPONENT", "value": int(match.group(1))}]
+    steps = [
+        {
+            "type": "SELECT_TARGETS",
+            "var": "selected_optional_ap_payment",
+            "target": {
+                "type": "OPTION_SET",
+                "options": ["PAY_AP", "SKIP"],
+                "min": 1,
+                "max": 1,
+                "selection_mode": "MANUAL",
+                "manual": True,
+            },
+        },
+        {
+            "type": "PAY_AP_COST",
+            "value": int(match.group(2)),
+            "requirements": [{"type": "CONTEXT_VALUE_IS", "var": "selected_optional_ap_payment", "value": "PAY_AP"}],
+        },
+        {
+            "type": "DEAL_DAMAGE",
+            "target_player": "OPPONENT",
+            "value": int(match.group(3)),
+            "requirements": [{"type": "CONTEXT_VALUE_IS", "var": "selected_optional_ap_payment", "value": "PAY_AP"}],
+        },
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        requirements,
+        [],
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _hand_named_character_summon_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    color_map = {"赤": "RED", "青": "BLUE", "緑": "GREEN", "黄": "YELLOW", "紫": "PURPLE", "白": "WHITE", "黒": "BLACK"}
+    requirements = [
+        {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+        {"type": "CARD_COST_ENERGY_LTE", "value": int(match.group(1))},
+        {"type": "CARD_COST_AP_EQ", "value": int(match.group(2))},
+        {"type": "CARD_COLOR_IS", "value": color_map[match.group(3)]},
+        {"type": "CARD_NAME_IS", "value": match.group(4)},
+        {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": False},
+    ]
+    target_specs, select_steps = _manual_single_target("SELF", ["HAND"], requirements, 0, 1, "selected_summon_card")
+    steps = select_steps + [
+        {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon_card",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": True,
+            "allow_current_zone": False,
+        }
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _branch_choice_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    branch_texts = [
+        str(effect_entry.get("text", "")).strip().lstrip("・").strip()
+        for effect_entry in card.get("effects", [])
+        if str(effect_entry.get("text", "")).strip().startswith("・")
+    ]
+    if not branch_texts:
+        branch_texts = ["BRANCH_1", "BRANCH_2"]
+    options = [f"BRANCH_{index + 1}" for index in range(len(branch_texts))]
+    steps = [
+        {
+            "type": "SELECT_TARGETS",
+            "var": "selected_branch_option",
+            "target": {
+                "type": "OPTION_SET",
+                "options": options,
+                "min": 1,
+                "max": 1,
+                "selection_mode": "MANUAL",
+                "manual": True,
+            },
+        },
+        {
+            "type": "EXECUTE_BRANCH",
+            "branch_var": "selected_branch_option",
+            "branches": [
+                {"id": option, "steps": [{"type": "PENDING_BRANCH_EFFECT", "text": text}]}
+                for option, text in zip(options, branch_texts)
+            ],
+        },
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
 _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
+    _TemplateRule(
+        name="trigger.choice_branch.select_one",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_exact_text_match("以下から1つ選ぶ。"),
+        builder=_branch_choice_builder,
+        priority=250,
+        template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "select_one_from_following"},
+    ),
+    _TemplateRule(
+        name="trigger.preview_top.choose_top_or_bottom",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_exact_text_match("自分の山札の上から1枚見て、山札の上か下に置く。"),
+        builder=_preview_top_then_choose_top_or_bottom_builder,
+        priority=210,
+        template_metadata={"family": "PREVIEW_TOP_POSITION", "variant": "preview_one_then_choose_top_or_bottom"},
+    ),
+    _TemplateRule(
+        name="trigger.conditional_draw",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"自分の場に(?:他のカードが(\d+)枚以上ある|〈(.+)〉がある)場合、カードを(\d+)枚引く。"),
+        builder=_conditional_draw_builder,
+        priority=205,
+        template_metadata={"family": "CONDITIONAL_DRAW", "variant": "field_state_conditional_draw"},
+    ),
+    _TemplateRule(
+        name="trigger.optional_ap_damage",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"相手のライフが(\d+)以上の場合、APを(\d+)支払ってもよい。そうした場合、相手に(\d+)ダメージ。"),
+        builder=_optional_pay_ap_deal_damage_builder,
+        priority=205,
+        template_metadata={"family": "OPTIONAL_AP_DAMAGE", "variant": "pay_ap_then_deal_damage"},
+    ),
+    _TemplateRule(
+        name="trigger.hand_named_character_summon",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"自分の手札から必要エナジーが(\d+)以下で消費APが(\d+)の(赤|青|緑|黄|紫|白|黒)の〈(.+)〉を1枚まで自分の場にレストで登場させる。"),
+        builder=_hand_named_character_summon_builder,
+        priority=205,
+        template_metadata={"family": "HAND_SUMMON", "variant": "summon_named_character_from_hand"},
+    ),
+    _TemplateRule(
+        name="trigger.self_other_bp_modifier",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"自分の場の他のキャラを1枚選び、このターン中、BP\+(\d+)。"),
+        builder=_self_other_bp_modifier_builder,
+        priority=200,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "self_other_character_bp_plus"},
+    ),
     _TemplateRule(
         name="trigger.preview_add_to_hand.007_or_trait_discard",
         event_filter="ON_ENTER",
@@ -2476,6 +2719,14 @@ set_trigger_template_rules(_TRIGGER_TEMPLATE_RULES)
 
 
 _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
+    _TemplateRule(
+        name="event.choice_branch.select_one",
+        event_filter="ON_PLAY",
+        matcher=_exact_text_match("以下から1つ選ぶ。"),
+        builder=_branch_choice_builder,
+        priority=250,
+        template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "select_one_from_following"},
+    ),
     _TemplateRule(
         name="event.preview_add_to_hand.065_trait_distinct",
         event_filter="ON_PLAY",

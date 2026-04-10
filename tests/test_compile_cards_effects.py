@@ -48,6 +48,12 @@ class CompileCardsEffectsTests(unittest.TestCase):
         "自分の場に〈モモ・ベリア・デビルーク〉がある場合、『BP5000以下』に代わる。"
     )
     TLR_COMPLEX_OVERRIDE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。"
+    TLR_PREVIEW_TOP_CHOOSE_TEXT = "自分の山札の上から1枚見て、山札の上か下に置く。"
+    TLR_CONDITIONAL_DRAW_TEXT = "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。"
+    TLR_OPTIONAL_AP_DAMAGE_TEXT = "相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。"
+    TLR_HAND_SUMMON_TEXT = "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。"
+    TLR_BP_PLUS_TEXT = "自分の場の他のキャラを1枚選び、このターン中、BP+1000。"
+    TLR_BRANCH_SELECT_ONE_TEXT = "以下から1つ選ぶ。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -380,6 +386,95 @@ class CompileCardsEffectsTests(unittest.TestCase):
 
         self.assertEqual(semantic_entry["template_types"], ["SELECT_AND_MOVE", "BP_THRESHOLD_REMOVE"])
         self.assertEqual(semantic_entry["abilities"][0]["template_type"], "BP_THRESHOLD_REMOVE")
+
+    def test_compile_trigger_supports_preview_top_choose_top_or_bottom_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_010"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_PREVIEW_TOP_CHOOSE_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"][0]["type"], "PREVIEW_TOP_DECK")
+        self.assertEqual(ability["steps"][1]["type"], "SELECT_TARGETS")
+        self.assertEqual(ability["steps"][2]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_trigger_supports_conditional_draw_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_050"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_CONDITIONAL_DRAW_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["requirements"][0]["type"], "CONTROLLER_OTHER_CARDS_COUNT_GTE")
+        self.assertEqual(ability["steps"][0]["type"], "DRAW")
+
+    def test_compile_trigger_supports_optional_ap_damage_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_007"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_OPTIONAL_AP_DAMAGE_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "PAY_AP_COST", "DEAL_DAMAGE"])
+
+    def test_compile_trigger_supports_hand_summon_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_005"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_HAND_SUMMON_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"][-1]["type"], "PLAY_SELECTED_CARDS")
+        self.assertEqual(ability["steps"][-1]["state"], "RESTED")
+
+    def test_compile_trigger_supports_temp_bp_modifier_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_014"},
+            {
+                "trigger": "MAIN_ACTIVATE",
+                "source_label": "起動メイン",
+                "effect_box": "OUTER",
+                "text": self.TLR_BP_PLUS_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"][-1]["type"], "ADD_TEMP_BP_MODIFIER")
+        self.assertEqual(ability["steps"][-1]["value"], 1000)
+
+    def test_compile_event_effect_supports_branch_choice_template(self):
+        ability = _compile_event_effect(
+            {"id": "UA45BT_TLR_1_081", "card_type": "EVENT", "effects": [{"text": "・A。"}, {"text": "・B。"}]},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.TLR_BRANCH_SELECT_ONE_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "EXECUTE_BRANCH"])
+        self.assertEqual(len(ability["steps"][1]["branches"]), 2)
 
     def test_build_semantic_entry_uses_override_enum_for_complex_tlr_boundary_cases(self):
         semantic_entry = _build_semantic_entry(

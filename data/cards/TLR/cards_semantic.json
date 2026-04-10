@@ -109,22 +109,21 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "COMPOSITE",
+      "HAND_SUMMON"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_005_on_enter_411fa6e744",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "HAND_SUMMON"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。",
       "trigger": "-",
@@ -172,17 +171,18 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "DRAW_1"
+      "COMPOSITE",
+      "DRAW_1",
+      "OPTIONAL_AP_DAMAGE"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_007_on_enter_c6156983b1",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "OPTIONAL_AP_DAMAGE"
       },
       {
         "id": "UA45BT_TLR_1_007_on_life_trigger_91b04beda2",
@@ -193,10 +193,8 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このカードは〈霧崎 恭子〉としても扱う。\n相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。",
       "trigger": "カードを1枚引く。",
@@ -271,22 +269,21 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE",
+      "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_010_on_enter_248cae62b4",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から1枚見て、山札の上か下に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から1枚見て、山札の上か下に置く。",
       "trigger": "-",
@@ -386,7 +383,9 @@
     "inferred_keywords": [],
     "template_types": [
       "UNSUPPORTED",
-      "COMPOSITE"
+      "TEMP_BP",
+      "COMPOSITE",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
       {
@@ -400,10 +399,10 @@
       {
         "id": "UA45BT_TLR_1_014_main_activate_30c19abad2",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場の他のキャラを1枚選び、このターン中、BP+1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       },
       {
         "id": "UA45BT_TLR_1_014_on_life_trigger_8723e8b5cb",
@@ -1294,17 +1293,18 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "READY_AND_TEMP_BP"
+      "SELECT_AND_MOVE",
+      "READY_AND_TEMP_BP",
+      "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_042_on_enter_248cae62b4",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から1枚見て、山札の上か下に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "PREVIEW_TOP_POSITION"
       },
       {
         "id": "UA45BT_TLR_1_042_on_life_trigger_bab7196d2b",
@@ -1315,10 +1315,8 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から1枚見て、山札の上か下に置く。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -1541,22 +1539,21 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "DRAW_1",
+      "CONDITIONAL_DRAW"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_050_on_enter_4dd584f511",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "CONDITIONAL_DRAW"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場に他のカードが5枚以上ある場合、カードを1枚引く。",
       "trigger": "-",
@@ -1703,17 +1700,18 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "READY_AND_TEMP_BP"
+      "COMPOSITE",
+      "READY_AND_TEMP_BP",
+      "MULTI_BRANCH_CHOICE"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_055_on_enter_536516f54f",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "以下から1つ選ぶ。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
       },
       {
         "id": "UA45BT_TLR_1_055_on_life_trigger_bab7196d2b",
@@ -1724,10 +1722,8 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "以下から1つ選ぶ。\n・自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。\n・BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -2094,6 +2090,7 @@
     "template_types": [
       "DRAW_1",
       "SELECT_AND_MOVE",
+      "CONDITIONAL_DRAW",
       "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
@@ -2103,7 +2100,7 @@
         "status": "SUPPORTED",
         "text": "自分の場に〈ナナ・アスタ・デビルーク〉がある場合、カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "CONDITIONAL_DRAW"
       },
       {
         "id": "UA45BT_TLR_1_068_on_life_trigger_a41bad1555",
@@ -2524,7 +2521,9 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "COMPOSITE",
+      "UNSUPPORTED",
+      "MULTI_BRANCH_CHOICE"
     ],
     "abilities": [
       {
@@ -2538,10 +2537,10 @@
       {
         "id": "UA45BT_TLR_1_081_on_play_536516f54f",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "以下から1つ選ぶ。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
       },
       {
         "id": "UA45BT_TLR_1_081_on_play_b20fce8918",
