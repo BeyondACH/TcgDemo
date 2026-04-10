@@ -10211,7 +10211,7 @@
         "requirements": [
           {
             "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-            "value": "鹿目 まどか"
+            "value": "鹿目まどか"
           }
         ],
         "target_specs": [],
@@ -10229,14 +10229,19 @@
           "effect_box": "OUTER",
           "text": "自分の場に〈鹿目 まどか〉がある場合、カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "CONDITIONAL_DRAW",
+          "variant": "field_state_conditional_draw"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "DRAW_1",
+        "CONDITIONAL_DRAW"
       ]
     }
   },
