@@ -487,6 +487,38 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(branches["BRANCH_1"][0]["type"], "DRAW")
         self.assertEqual(branches["BRANCH_2"][0]["type"], "DEAL_DAMAGE")
 
+    def test_compile_event_effect_supports_branch_choice_with_target_selection_and_requirements(self):
+        ability = _compile_event_effect(
+            {
+                "id": "UA45BT_TLR_1_081",
+                "card_type": "EVENT",
+                "effects": [
+                    {"text": "・相手のライフが4以上の場合、APを1支払ってもよい。そうした場合、相手に1ダメージ。"},
+                    {"text": "・自分の場の他のキャラを1枚選び、このターン中、BP+1000。"},
+                ],
+            },
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.TLR_BRANCH_SELECT_ONE_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "EXECUTE_CHOICE_BRANCH"])
+
+        branches = ability["steps"][1]["branches"]
+        self.assertEqual(branches["BRANCH_1"][0]["type"], "RUN_COMPOSITE_IF")
+        self.assertEqual(
+            branches["BRANCH_1"][0]["if_requirements"],
+            [{"type": "PLAYER_LIFE_GTE", "player": "OPPONENT", "value": 4}],
+        )
+        self.assertEqual(
+            [step["type"] for step in branches["BRANCH_1"][0]["steps"]],
+            ["SELECT_TARGETS", "PAY_AP_COST", "DEAL_DAMAGE"],
+        )
+        self.assertEqual([step["type"] for step in branches["BRANCH_2"]], ["SELECT_TARGETS", "ADD_TEMP_BP_MODIFIER"])
+
     def test_compile_trigger_supports_bp_sum_limit_remove_template(self):
         ability = _compile_trigger(
             {"id": "UA45BT_TLR_1_030"},
