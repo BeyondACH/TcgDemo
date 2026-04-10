@@ -3153,7 +3153,7 @@
         ],
         "steps": [
           {
-            "type": "SELECT_TARGETS_WITH_SUM_LIMIT",
+            "type": "SELECT_TARGETS_BY_COMBINATION",
             "var": "selected_targets",
             "target": {
               "type": "CARD_SET",
@@ -5671,28 +5671,23 @@
             }
           },
           {
-            "type": "EXECUTE_BRANCH",
-            "branch_var": "selected_branch_option",
-            "branches": [
-              {
-                "id": "BRANCH_1",
-                "steps": [
-                  {
-                    "type": "PENDING_BRANCH_EFFECT",
-                    "text": "自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。"
-                  }
-                ]
-              },
-              {
-                "id": "BRANCH_2",
-                "steps": [
-                  {
-                    "type": "PENDING_BRANCH_EFFECT",
-                    "text": "BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。"
-                  }
-                ]
-              }
-            ]
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": {
+              "BRANCH_1": [
+                {
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。"
+                }
+              ],
+              "BRANCH_2": [
+                {
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。"
+                }
+              ]
+            },
+            "default_steps": []
           }
         ],
         "limits": {
@@ -8448,28 +8443,46 @@
             }
           },
           {
-            "type": "EXECUTE_BRANCH",
-            "branch_var": "selected_branch_option",
-            "branches": [
-              {
-                "id": "BRANCH_1",
-                "steps": [
-                  {
-                    "type": "PENDING_BRANCH_EFFECT",
-                    "text": "BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。"
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": {
+              "BRANCH_1": [
+                {
+                  "type": "SELECT_TARGETS",
+                  "var": "selected_target",
+                  "target": {
+                    "type": "CARD_SET",
+                    "owner": "OPPONENT",
+                    "zones": [
+                      "FRONT_LINE"
+                    ],
+                    "filters": [],
+                    "requirements": [
+                      {
+                        "type": "CARD_BP_LTE",
+                        "value": 4000
+                      }
+                    ],
+                    "min": 1,
+                    "max": 1,
+                    "selection_mode": "MANUAL",
+                    "manual": true
                   }
-                ]
-              },
-              {
-                "id": "BRANCH_2",
-                "steps": [
-                  {
-                    "type": "PENDING_BRANCH_EFFECT",
-                    "text": "自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。"
-                  }
-                ]
-              }
-            ]
+                },
+                {
+                  "type": "MOVE_SELECTED_CARDS",
+                  "from_var": "selected_target",
+                  "to": "OUTSIDE"
+                }
+              ],
+              "BRANCH_2": [
+                {
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。"
+                }
+              ]
+            },
+            "default_steps": []
           }
         ],
         "limits": {
