@@ -192,7 +192,16 @@ def parse_card_page(html: str, source_image: str) -> dict:
         "ruby": ruby,
     }
     if "RAID" in keywords:
-        card["special_play_rule"] = "RAID"
+        raid_target = ""
+        raid_match = re.search(r"[〈《]([^〉》]+)[〉》]", card["raw_effect_text"] or "")
+        if raid_match:
+            raid_target = raid_match.group(1)
+        card["special_play_rule"] = {
+            "type": "RAID",
+            "raid_target_name": raid_target,
+            "allow_from_hand": True,
+            "require_full_energy": True,
+        }
     return card
 
 
