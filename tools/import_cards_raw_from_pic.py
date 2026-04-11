@@ -101,6 +101,16 @@ def parse_energy_map(block_html: str) -> Dict[str, int]:
     return out
 
 
+def parse_cost_energy(block_html: str) -> Dict[str, int]:
+    parsed = parse_energy_map(block_html)
+    if parsed:
+        return parsed
+    scalar = parse_int(strip_tags(block_html))
+    if scalar <= 0:
+        return {}
+    return {"COLORLESS": scalar}
+
+
 def parse_labeled_lines(block_html: str) -> List[dict]:
     out = []
     if not block_html:
@@ -117,6 +127,24 @@ def parse_labeled_lines(block_html: str) -> List[dict]:
             labels.append(alt)
         out.append({"labels": labels, "inline_labels": labels.copy(), "text": strip_tags(line)})
     return out
+
+
+def split_effect_and_trigger_entries(entries: List[dict]) -> tuple[List[dict], List[dict]]:
+    effects: List[dict] = []
+    triggers: List[dict] = []
+    for entry in entries:
+        trigger_name = ""
+        for lb in entry.get("labels", []):
+            if lb in TRIGGER_MAP:
+                trigger_name = TRIGGER_MAP[lb]
+                break
+        if trigger_name:
+            routed = dict(entry)
+            routed["trigger"] = trigger_name
+            triggers.append(routed)
+            continue
+        effects.append(entry)
+    return effects, triggers
 
 
 def convert_number_to_id(number: str) -> str:
@@ -148,8 +176,9 @@ def parse_card_page(html: str, source_image: str) -> dict:
     traits_text = strip_tags(get_block_html(html, "attributeData"))
     traits = [normalize_space(x) for x in re.split(r"[／/]", traits_text) if normalize_space(x) and normalize_space(x) != "-"]
 
-    effects = parse_labeled_lines(get_block_html(html, "effectData"))
-    triggers = parse_labeled_lines(get_block_html(html, "triggerData"))
+    parsed_effects = parse_labeled_lines(get_block_html(html, "effectData"))
+    effects, triggers = split_effect_and_trigger_entries(parsed_effects)
+    triggers.extend(parse_labeled_lines(get_block_html(html, "triggerData")))
     for t in triggers:
         trigger_name = ""
         for lb in t.get("labels", []):
@@ -176,7 +205,7 @@ def parse_card_page(html: str, source_image: str) -> dict:
         "title_code": title_code,
         "number": number,
         "traits": traits,
-        "cost_energy": parse_int(strip_tags(get_block_html(html, "needEnergyData"))),
+        "cost_energy": parse_cost_energy(get_block_html(html, "needEnergyData")),
         "cost_ap": parse_int(strip_tags(get_block_html(html, "apData"))),
         "energy_provided": parse_energy_map(get_block_html(html, "generatedEnergyData")),
         "bp": parse_int(strip_tags(get_block_html(html, "bpData"))),
