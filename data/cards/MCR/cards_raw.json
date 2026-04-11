@@ -1,0 +1,6026 @@
+[
+  {
+    "id": "UA36BT_MCR_1_001",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-001",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "黄"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "黄"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-001.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-001",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_002",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-002",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-002.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-002",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_003",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-003",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-003.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-003",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_004",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-004",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見る。その中から〈シェリル・ノーム〉を望む枚数場外に置く。残りを望む順で自分の山札の上に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-004.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-004",
+    "raw_effect_text": "自分の山札の上から2枚見る。その中から〈シェリル・ノーム〉を望む枚数場外に置く。残りを望む順で自分の山札の上に置く。",
+    "raw_trigger_text": "",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_005",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-005",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-005.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-005",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_006",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-006",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "黄"
+        ],
+        "inline_labels": [
+          "黄"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-006.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-006",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_007",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-007",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-007.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-007",
+    "raw_effect_text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_008",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-008",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 2500,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "APを1支払う",
+          "ターン1",
+          "登場時"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "APを1支払う",
+          "ターン1",
+          "登場時"
+        ],
+        "text": "このキャラのを発動する。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-008.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-008",
+    "raw_effect_text": "自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。\nこのキャラのを発動する。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+    "ruby": "しぇりる のーむ",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_009",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-009",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする"
+        ],
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-009.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-009",
+    "raw_effect_text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\n自分の山札の上から3枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。\nカードを1枚引く。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しぇりる のーむ",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_010",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-010",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、相手のフロントLのキャラを1枚まで選び、レストにする。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする"
+        ],
+        "text": "相手のフロントLのレストのキャラを1枚選び、「このキャラは次の1回アクティブにならない。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-010.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-010",
+    "raw_effect_text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\nカードを1枚引き、相手のフロントLのキャラを1枚まで選び、レストにする。\n相手のフロントLのレストのキャラを1枚選び、「このキャラは次の1回アクティブにならない。」を与える。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しぇりる のーむ",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_011",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-011",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "自分のターン中",
+          "レイド",
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "自分のターン中",
+          "レイド",
+          "インパクト（1）"
+        ],
+        "text": "自分の場外にを持つ〈シェリル・ノーム〉が3枚以上ある場合、このキャラはBP+1000とを得る。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場外から必要エナジーが4以下の〈シェリル・ノーム〉を1枚まで手札に加える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-011.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-011",
+    "raw_effect_text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\n自分の場外にを持つ〈シェリル・ノーム〉が3枚以上ある場合、このキャラはBP+1000とを得る。\n自分の場外から必要エナジーが4以下の〈シェリル・ノーム〉を1枚まで手札に加える。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "しぇりる のーむ",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_012",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-012",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4500,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "自分のターン中",
+          "レイド",
+          "ダメージ（2）"
+        ],
+        "inline_labels": [
+          "自分のターン中",
+          "レイド",
+          "ダメージ（2）"
+        ],
+        "text": "自分の場外にを持つ〈シェリル・ノーム〉が5枚以上ある場合、このキャラはBP+500とを得る。"
+      },
+      {
+        "labels": [
+          "登場時",
+          "レイド"
+        ],
+        "inline_labels": [
+          "登場時",
+          "レイド"
+        ],
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚まで選び、退場させる。自分の場外にを持つ〈シェリル・ノーム〉が3枚以上ある場合、『BP4000以下』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-012.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-012",
+    "raw_effect_text": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\n自分の場外にを持つ〈シェリル・ノーム〉が5枚以上ある場合、このキャラはBP+500とを得る。\n『BP3000以下』の相手のフロントLのキャラを1枚まで選び、退場させる。自分の場外にを持つ〈シェリル・ノーム〉が3枚以上ある場合、『BP4000以下』に代わる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "しぇりる のーむ",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_013",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-013",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-013.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-013",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_014",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-014",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+1500。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-014.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-014",
+    "raw_effect_text": "自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+1500。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_015",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-015",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見る。その中からイベントカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-015.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-015",
+    "raw_effect_text": "自分の山札の上から2枚見る。その中からイベントカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。",
+    "raw_trigger_text": "",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_016",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-016",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-016.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-016",
+    "raw_effect_text": "カードを1枚引く。",
+    "raw_trigger_text": "",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_017",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-017",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "相手の場に青か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-017.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-017",
+    "raw_effect_text": "相手の場に青か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+    "raw_trigger_text": "",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_018",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-018",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-018.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-018",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_019",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-019",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から4枚見る。その中から黄の〔［特徴：歌（ランカ）］かフィールドカード〕を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-019.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-019",
+    "raw_effect_text": "自分の山札の上から4枚見る。その中から黄の〔［特徴：歌（ランカ）］かフィールドカード〕を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_020",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-020",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3500,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+500。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-020.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-020",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+500。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_021",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-021",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはアクティブで場に登場させる。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・カードを2枚引き、自分の手札を2枚場外に置く。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場外の黄の［特徴：歌（ランカ）］のカード名の種類数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、手札に戻す。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-021.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-021",
+    "raw_effect_text": "このキャラはアクティブで場に登場させる。\n以下から1つ選ぶ。\n・カードを2枚引き、自分の手札を2枚場外に置く。\n・自分の場外の黄の［特徴：歌（ランカ）］のカード名の種類数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、手札に戻す。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_022",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-022",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3500,
+    "keywords": [
+      "RAID",
+      "STEP"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "ステップ"
+        ],
+        "inline_labels": [
+          "ステップ"
+        ],
+        "text": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）"
+      },
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈ランカ・リー〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "このキャラはBP+500。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合"
+        ],
+        "text": "このターン中、次に手札から使用する黄の［特徴：歌（ランカ）］の消費APを-1する。〈ランカ・リー〉のこの効果は1ターンに1回のみ発動できる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-022.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-022",
+    "raw_effect_text": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n〈ランカ・リー〉アクティブにし、フロントLに移動できる\nこのキャラはBP+500。\nこのターン中、次に手札から使用する黄の［特徴：歌（ランカ）］の消費APを-1する。〈ランカ・リー〉のこの効果は1ターンに1回のみ発動できる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "らんか りー",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_023",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-023",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈ランカ・リー〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場外の黄の［特徴：歌（ランカ）］のカード名の種類数により、このキャラは以下の効果を全て得る。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "・1種類以上：カードを1枚引く。"
+      },
+      {
+        "labels": [
+          "自分のターン中",
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "自分のターン中",
+          "インパクト（1）"
+        ],
+        "text": "・3種類以上：このキャラはBP+1000と"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・4種類以上：このキャラがアタックしてブロックされなかった時、このキャラをアクティブにする。〈ランカ・リー〉のこの効果は1ターンに1回のみ発動する。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-023.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-023",
+    "raw_effect_text": "〈ランカ・リー〉アクティブにし、フロントLに移動できる\n自分の場外の黄の［特徴：歌（ランカ）］のカード名の種類数により、このキャラは以下の効果を全て得る。\n・1種類以上：カードを1枚引く。\n・3種類以上：このキャラはBP+1000と\n・4種類以上：このキャラがアタックしてブロックされなかった時、このキャラをアクティブにする。〈ランカ・リー〉のこの効果は1ターンに1回のみ発動する。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "らんか りー",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_024",
+    "name": "超時空飯店 娘々",
+    "card_type": "FIELD",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-024",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを2枚引く。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる"
+        ],
+        "text": "自分の場のキャラを1枚選び、このターン中、BP+500。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-024.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-024",
+    "raw_effect_text": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを2枚引く。\n自分の場のキャラを1枚選び、このターン中、BP+500。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ちょうじくうはんてん にゃんにゃん"
+  },
+  {
+    "id": "UA36BT_MCR_1_025",
+    "name": "みんな抱きしめて！銀河の果てまで！",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-025",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-025.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-025",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "みんなだきしめて ぎんがのはてまで"
+  },
+  {
+    "id": "UA36BT_MCR_1_026",
+    "name": "私の歌を聴けー！",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-026",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-026.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-026",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "わたしのうたをきけー"
+  },
+  {
+    "id": "UA36BT_MCR_1_027",
+    "name": "射手座☆午後九時Don't be late",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-027",
+    "traits": [
+      "歌（シェリル）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-027.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-027",
+    "raw_effect_text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "いてざ ごごくじ どんと びー れいと"
+  },
+  {
+    "id": "UA36BT_MCR_1_028",
+    "name": "ダイアモンド クレバス",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-028",
+    "traits": [
+      "歌（シェリル）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-028.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-028",
+    "raw_effect_text": "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "だいあもんど くればす",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_029",
+    "name": "ノーザンクロス",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-029",
+    "traits": [
+      "歌（シェリル）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-029.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-029",
+    "raw_effect_text": "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "のーざんくろす",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_030",
+    "name": "アイモ",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-030",
+    "traits": [
+      "歌（ランカ）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-030.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-030",
+    "raw_effect_text": "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。\n以下から1つ選ぶ。\n・相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。\n・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "あいも"
+  },
+  {
+    "id": "UA36BT_MCR_1_031",
+    "name": "星間飛行",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-031",
+    "traits": [
+      "歌（ランカ）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-031.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-031",
+    "raw_effect_text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "せいかんひこう"
+  },
+  {
+    "id": "UA36BT_MCR_1_032",
+    "name": "私の彼はパイロット",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-032",
+    "traits": [
+      "歌（ランカ）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。カードを1枚引く。自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-032.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-032",
+    "raw_effect_text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。カードを1枚引く。自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "わたしのかれはぱいろっと"
+  },
+  {
+    "id": "UA36BT_MCR_1_033",
+    "name": "What 'bout my star?",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-033",
+    "traits": [
+      "歌（シェリル）",
+      "歌（ランカ）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-033.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-033",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ほわっと あばうと まい すたー"
+  },
+  {
+    "id": "UA36BT_MCR_1_034",
+    "name": "ガルド・ゴア・ボーマン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-034",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-034.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-034",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "がるど ごあ ぼーまん"
+  },
+  {
+    "id": "UA36BT_MCR_1_035",
+    "name": "ガルド・ゴア・ボーマン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-035",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場にカード名に「イサム」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-035.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-035",
+    "raw_effect_text": "自分の場にカード名に「イサム」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。",
+    "raw_trigger_text": "",
+    "ruby": "がるど ごあ ぼーまん"
+  },
+  {
+    "id": "UA36BT_MCR_1_036",
+    "name": "ガルド・ゴア・ボーマン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-036",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "エナジーLにある場合",
+          "青"
+        ],
+        "inline_labels": [
+          "エナジーLにある場合",
+          "青"
+        ],
+        "text": "自分のフロントLにカード名に「イサム」を含むキャラがある場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-036.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-036",
+    "raw_effect_text": "自分のフロントLにカード名に「イサム」を含むキャラがある場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "がるど ごあ ぼーまん"
+  },
+  {
+    "id": "UA36BT_MCR_1_037",
+    "name": "ミュン・ファン・ローン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-037",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見る。その中からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-037.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-037",
+    "raw_effect_text": "自分の山札の上から3枚見る。その中からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "みゅん ふぁん ろーん"
+  },
+  {
+    "id": "UA36BT_MCR_1_038",
+    "name": "ヤン・ノイマン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-038",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-038.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-038",
+    "raw_effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "やん のいまん"
+  },
+  {
+    "id": "UA36BT_MCR_1_039",
+    "name": "イサム・ダイソン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-039",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-039.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-039",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "いさむ だいそん"
+  },
+  {
+    "id": "UA36BT_MCR_1_040",
+    "name": "イサム・ダイソン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-040",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場にカード名に「ガルド」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-040.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-040",
+    "raw_effect_text": "自分の場にカード名に「ガルド」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+    "raw_trigger_text": "",
+    "ruby": "いさむ だいそん"
+  },
+  {
+    "id": "UA36BT_MCR_1_041",
+    "name": "イサム・ダイソン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-041",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "ターン1"
+        ],
+        "inline_labels": [
+          "ターン1"
+        ],
+        "text": "このキャラがアクティブの場合、カード名に「イサム」か「ガルド」を含む自分の場のレイド状態のキャラのアタック終了時、そのキャラのレイド状態の上のカードを場外に置いてもよい。そうした場合、このキャラをレストにし、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードと必要エナジーが異なるカードを1枚まで、そのキャラのレイド元のカードにレイドさせる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-041.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-041",
+    "raw_effect_text": "このキャラがアクティブの場合、カード名に「イサム」か「ガルド」を含む自分の場のレイド状態のキャラのアタック終了時、そのキャラのレイド状態の上のカードを場外に置いてもよい。そうした場合、このキャラをレストにし、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードと必要エナジーが異なるカードを1枚まで、そのキャラのレイド元のカードにレイドさせる。",
+    "raw_trigger_text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+    "ruby": "いさむ だいそん",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_042",
+    "name": "ルーシー・マクミラン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-042",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "相手の場に黄か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-042.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-042",
+    "raw_effect_text": "相手の場に黄か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+    "raw_trigger_text": "",
+    "ruby": "るーしー まくみらん"
+  },
+  {
+    "id": "UA36BT_MCR_1_043",
+    "name": "YF-21（ガルド・ゴア・ボーマン）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-043",
+    "traits": [
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈ガルド・ゴア・ボーマン〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを2枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "自分のフロントLにカード名に「イサム」を含むキャラがある場合、カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-043.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-043",
+    "raw_effect_text": "〈ガルド・ゴア・ボーマン〉アクティブにし、フロントLに移動できる\nカードを2枚引き、自分の手札を1枚場外に置く。\n自分のフロントLにカード名に「イサム」を含むキャラがある場合、カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "わいえふ にじゅういち がるど ごあ ぼーまん",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_044",
+    "name": "YF-21（ガルド・ゴア・ボーマン）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-044",
+    "traits": [
+      "F形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈ガルド・ゴア・ボーマン〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラのアタック終了時、このキャラを退場させてもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、退場させる。"
+      },
+      {
+        "labels": [
+          "退場時"
+        ],
+        "inline_labels": [
+          "退場時"
+        ],
+        "text": "自分の手札から必要エナジーを満たしカード名に「イサム」を含むカードを1枚まで自分の場に『レストで登場させる』。自分のターン中の場合、『レイドさせる』に代えてもよい。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-044.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-044",
+    "raw_effect_text": "〈ガルド・ゴア・ボーマン〉アクティブにし、フロントLに移動できる\nこのキャラのアタック終了時、このキャラを退場させてもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、退場させる。\n自分の手札から必要エナジーを満たしカード名に「イサム」を含むカードを1枚まで自分の場に『レストで登場させる』。自分のターン中の場合、『レイドさせる』に代えてもよい。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "わいえふ にじゅういち がるど ごあ ぼーまん",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_045",
+    "name": "YF-19（イサム・ダイソン）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-045",
+    "traits": [
+      "新統合軍",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈イサム・ダイソン〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場か場外にカード名に「ガルド」を含むキャラがある場合、このキャラは以下の効果を全て得る。"
+      },
+      {
+        "labels": [
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（1）"
+        ],
+        "text": "・（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "・BP3500以下の相手のフロントLのキャラを1枚まで選び、『手札に戻す』。自分のアタックフェイズ中の場合、『退場させる』に代えてもよい。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-045.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-045",
+    "raw_effect_text": "〈イサム・ダイソン〉アクティブにし、フロントLに移動できる\n自分の場か場外にカード名に「ガルド」を含むキャラがある場合、このキャラは以下の効果を全て得る。\n・（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）\n・BP3500以下の相手のフロントLのキャラを1枚まで選び、『手札に戻す』。自分のアタックフェイズ中の場合、『退場させる』に代えてもよい。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "わいえふ じゅうきゅう いさむ だいそん",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_046",
+    "name": "YF-19（イサム・ダイソン）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-046",
+    "traits": [
+      "新統合軍",
+      "F形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈イサム・ダイソン〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "BP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。"
+      },
+      {
+        "labels": [
+          "アタック時",
+          "登場時"
+        ],
+        "inline_labels": [
+          "アタック時",
+          "登場時"
+        ],
+        "text": "自分のフロントLにカード名に「ガルド」を含むキャラがある場合、このキャラのを発動する。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-046.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-046",
+    "raw_effect_text": "〈イサム・ダイソン〉アクティブにし、フロントLに移動できる\nBP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。\n自分のフロントLにカード名に「ガルド」を含むキャラがある場合、このキャラのを発動する。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "わいえふ じゅうきゅう いさむ だいそん",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_047",
+    "name": "ニューエドワーズ基地",
+    "card_type": "FIELD",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-047",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このフィールドはアクティブで場に登場させる。"
+      },
+      {
+        "labels": [
+          "ターン1"
+        ],
+        "inline_labels": [
+          "ターン1"
+        ],
+        "text": "このフィールドがアクティブの場合、カード名に「イサム」か「ガルド」を含む自分の場のレイド状態のキャラのアタック終了時、そのキャラのレイド状態の上のカードを場外に置いてもよい。そうした場合、このフィールドをレストにし、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードと必要エナジーが異なるカードを1枚まで、そのキャラのレイド元のカードにレイドさせる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-047.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-047",
+    "raw_effect_text": "このフィールドはアクティブで場に登場させる。\nこのフィールドがアクティブの場合、カード名に「イサム」か「ガルド」を含む自分の場のレイド状態のキャラのアタック終了時、そのキャラのレイド状態の上のカードを場外に置いてもよい。そうした場合、このフィールドをレストにし、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードと必要エナジーが異なるカードを1枚まで、そのキャラのレイド元のカードにレイドさせる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "にゅーえどわーずきち",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_048",
+    "name": "「スーパー・ノヴァ」計画",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-048",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-048.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-048",
+    "raw_effect_text": "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "すーぱー のゔぁ けいかく",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_049",
+    "name": "ドッグファイト",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-049",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-049.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-049",
+    "raw_effect_text": "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。\nBP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "どっぐふぁいと"
+  },
+  {
+    "id": "UA36BT_MCR_1_050",
+    "name": "必殺・竜鳥飛び",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-050",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-050.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-050",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "ひっさつ りゅうちょうとび"
+  },
+  {
+    "id": "UA36BT_MCR_1_051",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-051",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "以下から1つ選ぶ。このターン中に自分の他の〈シェリル・ノーム〉が既に選んだ効果は選べない。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、BP+1000。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、「このキャラがアタックしてブロックされなかった時、カードを1枚まで引く。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-051.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-051",
+    "raw_effect_text": "以下から1つ選ぶ。このターン中に自分の他の〈シェリル・ノーム〉が既に選んだ効果は選べない。\n・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、BP+1000。\n・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、「このキャラがアタックしてブロックされなかった時、カードを1枚まで引く。」を与える。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36BT_MCR_1_052",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-052",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "以下から1つ選ぶ。このターン中に自分の他の〈ランカ・リー〉が既に選んだ効果は選べない。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分のフロントLにカード名に「アルト」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、「このキャラがアタックしてバトルに勝利した時、カードを1枚まで引く。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-052.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-052",
+    "raw_effect_text": "以下から1つ選ぶ。このターン中に自分の他の〈ランカ・リー〉が既に選んだ効果は選べない。\n・自分のフロントLにカード名に「アルト」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。\n・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、「このキャラがアタックしてバトルに勝利した時、カードを1枚まで引く。」を与える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_053",
+    "name": "キャサリン・グラス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-053",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-053.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-053",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "きゃさりん ぐらす"
+  },
+  {
+    "id": "UA36BT_MCR_1_054",
+    "name": "VF-27 ルシファー（ブレラ・スターン）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-054",
+    "traits": [
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはアクティブで場に登場させる。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場に〈ランカ・リー〉がある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3500以下の相手のフロントLのキャラを1枚まで選び、手札に戻す。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-054.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-054",
+    "raw_effect_text": "このキャラはアクティブで場に登場させる。\n自分の場に〈ランカ・リー〉がある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3500以下の相手のフロントLのキャラを1枚まで選び、手札に戻す。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ぶいえふ にじゅうなな るしふぁー ぶれら すたーん"
+  },
+  {
+    "id": "UA36BT_MCR_1_055",
+    "name": "オズマ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-055",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-055.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-055",
+    "raw_effect_text": "カードを1枚引く。",
+    "raw_trigger_text": "",
+    "ruby": "おずま りー"
+  },
+  {
+    "id": "UA36BT_MCR_1_056",
+    "name": "早乙女 アルト",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-056",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-056.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-056",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "さおとめ あると"
+  },
+  {
+    "id": "UA36BT_MCR_1_057",
+    "name": "早乙女 アルト",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-057",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-057.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-057",
+    "raw_effect_text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+    "ruby": "さおとめ あると"
+  },
+  {
+    "id": "UA36BT_MCR_1_058",
+    "name": "ミハエル・ブラン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-058",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "青"
+        ],
+        "inline_labels": [
+          "青"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-058.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-058",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "みはえる ぶらん"
+  },
+  {
+    "id": "UA36BT_MCR_1_059",
+    "name": "ルカ・アンジェローニ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-059",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-059.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-059",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "",
+    "ruby": "るか あんじぇろーに"
+  },
+  {
+    "id": "UA36BT_MCR_1_060",
+    "name": "クァドラン・レア（クラン・クラン）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-060",
+    "traits": [
+      "S.M.S",
+      "ピクシー小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3500,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈クラン・クラン〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "このキャラはBP+500。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラがアタックしてブロックされなかった時、自分の場にカード名に「ミハエル」を含むキャラがある場合、カードを1枚引く。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の手札から必要エナジーが2以下の青の〔キャラカードかフィールドカード〕を1枚まで自分の場にレストで登場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-060.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-060",
+    "raw_effect_text": "〈クラン・クラン〉アクティブにし、フロントLに移動できる\nこのキャラはBP+500。\nこのキャラがアタックしてブロックされなかった時、自分の場にカード名に「ミハエル」を含むキャラがある場合、カードを1枚引く。\n自分の手札から必要エナジーが2以下の青の〔キャラカードかフィールドカード〕を1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "くぁどらん れあ くらん くらん",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_061",
+    "name": "クラン・クラン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-061",
+    "traits": [
+      "S.M.S",
+      "ピクシー小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-061.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-061",
+    "raw_effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "くらん くらん"
+  },
+  {
+    "id": "UA36BT_MCR_1_062",
+    "name": "VF-25S メサイア（オズマ・リー）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-062",
+    "traits": [
+      "S.M.S",
+      "スカル小隊",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈オズマ・リー〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "ダメージ（2）"
+        ],
+        "inline_labels": [
+          "ダメージ（2）"
+        ],
+        "text": "自分の場に〈ランカ・リー〉がある場合、このキャラは（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）を得る。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "手札を2枚場外に置く",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "手札を2枚場外に置く",
+          "ターン1"
+        ],
+        "text": "このキャラはこのターン中、「BP2000以下のキャラにブロックされない。」を得る。"
+      },
+      {
+        "labels": [
+          "ブロック時"
+        ],
+        "inline_labels": [
+          "ブロック時"
+        ],
+        "text": "アタックしている相手のキャラがレイド状態の場合、このキャラはこのターン中、BP+500。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-062.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-062",
+    "raw_effect_text": "〈オズマ・リー〉アクティブにし、フロントLに移動できる\n自分の場に〈ランカ・リー〉がある場合、このキャラは（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）を得る。\nこのキャラはこのターン中、「BP2000以下のキャラにブロックされない。」を得る。\nアタックしている相手のキャラがレイド状態の場合、このキャラはこのターン中、BP+500。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ぶいえふ にじゅうごえす めさいあ おずま りー",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_063",
+    "name": "VF-25F メサイア（早乙女 アルト）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-063",
+    "traits": [
+      "S.M.S",
+      "スカル小隊",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈早乙女 アルト〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "以下から『1つ』まで選ぶ。APを1支払ってもよい。そうした場合、『2つ』に代わる。"
+      },
+      {
+        "labels": [
+          "2回アタック"
+        ],
+        "inline_labels": [
+          "2回アタック"
+        ],
+        "text": "・自分の場に〈シェリル・ノーム〉がある場合、このキャラはこのターン中、（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場に〈ランカ・リー〉がある場合、BP3000以下の相手のフロントLのキャラを1枚まで選び、退場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-063.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-063",
+    "raw_effect_text": "〈早乙女 アルト〉アクティブにし、フロントLに移動できる\n以下から『1つ』まで選ぶ。APを1支払ってもよい。そうした場合、『2つ』に代わる。\n・自分の場に〈シェリル・ノーム〉がある場合、このキャラはこのターン中、（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。\n・自分の場に〈ランカ・リー〉がある場合、BP3000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ぶいえふ にじゅうごえふ めさいあ さおとめ あると",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_064",
+    "name": "マクロス・クォーター",
+    "card_type": "FIELD",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-064",
+    "traits": [
+      "S.M.S"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このフィールドはアクティブで場に登場させる。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "手札を2枚場外に置く",
+          "APを1支払う",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "手札を2枚場外に置く",
+          "APを1支払う",
+          "ターン1"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-064.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-064",
+    "raw_effect_text": "このフィールドはアクティブで場に登場させる。\nカードを1枚引き、自分の手札を1枚場外に置く。\n相手のフロントLのキャラを1枚選び、退場させる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "まくろす くぉーたー"
+  },
+  {
+    "id": "UA36BT_MCR_1_065",
+    "name": "トライアングラー",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-065",
+    "traits": [
+      "歌（シェリル）",
+      "歌（ランカ）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-065.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-065",
+    "raw_effect_text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "とらいあんぐらー"
+  },
+  {
+    "id": "UA36BT_MCR_1_066",
+    "name": "ライオン",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-066",
+    "traits": [
+      "歌（シェリル）",
+      "歌（ランカ）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-066.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-066",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "らいおん"
+  },
+  {
+    "id": "UA36BT_MCR_1_067",
+    "name": "リン・ミンメイ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-067",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [
+      "STEP"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "ステップ"
+        ],
+        "inline_labels": [
+          "ステップ"
+        ],
+        "text": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "text": "自分の場の他のキャラ全ては、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-067.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-067",
+    "raw_effect_text": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分の場の他のキャラ全ては、このターン中、BP+1000。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "りん みんめい"
+  },
+  {
+    "id": "UA36BT_MCR_1_068",
+    "name": "一条 輝",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-068",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "APを1支払ってもよい。そうした場合、自分の場外から〈リン・ミンメイ〉か〈早瀬 未沙〉を1枚まで手札に加える。"
+      },
+      {
+        "labels": [
+          "起動メイン"
+        ],
+        "inline_labels": [
+          "起動メイン"
+        ],
+        "text": "このキャラのBPが5000以上の場合、このキャラをアクティブにする。〈一条 輝〉のこの効果は1ターンに1回のみ発動できる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-068.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-068",
+    "raw_effect_text": "APを1支払ってもよい。そうした場合、自分の場外から〈リン・ミンメイ〉か〈早瀬 未沙〉を1枚まで手札に加える。\nこのキャラのBPが5000以上の場合、このキャラをアクティブにする。〈一条 輝〉のこの効果は1ターンに1回のみ発動できる。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "いちじょう ひかる"
+  },
+  {
+    "id": "UA36BT_MCR_1_069",
+    "name": "早瀬 未沙",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-069",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・BP4000以上の自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・手札を1枚場外に置く。そうした場合、自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-069.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-069",
+    "raw_effect_text": "以下から1つ選ぶ。\n・BP4000以上の自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。\n・手札を1枚場外に置く。そうした場合、自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "はやせ みさ"
+  },
+  {
+    "id": "UA36BT_MCR_1_070",
+    "name": "グババ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-070",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "赤"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "赤"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-070.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-070",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "ぐばば"
+  },
+  {
+    "id": "UA36BT_MCR_1_071",
+    "name": "花束の少女",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-071",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から4枚見る。その中からカード名に「バサラ」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-071.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-071",
+    "raw_effect_text": "自分の山札の上から4枚見る。その中からカード名に「バサラ」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "",
+    "ruby": "はなたばのしょうじょ"
+  },
+  {
+    "id": "UA36BT_MCR_1_072",
+    "name": "ミリア・ファリーナ・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-072",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-072.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-072",
+    "raw_effect_text": "",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "みりあ ふぁりーな じーなす"
+  },
+  {
+    "id": "UA36BT_MCR_1_073",
+    "name": "ミリア・ファリーナ・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-073",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "自分の場にカード名に「マクシミリアン・ジーナス」か「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-073.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-073",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場にカード名に「マクシミリアン・ジーナス」か「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "",
+    "ruby": "みりあ ふぁりーな じーなす"
+  },
+  {
+    "id": "UA36BT_MCR_1_074",
+    "name": "エキセドル・フォルモ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-074",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-074.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-074",
+    "raw_effect_text": "自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、以下から1つ選ぶ。\n・自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。\n・自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "えきせどる ふぉるも"
+  },
+  {
+    "id": "UA36BT_MCR_1_075",
+    "name": "サリー・セイント・フォード",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-075",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-075.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-075",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "",
+    "ruby": "さりー せいんと ふぉーど"
+  },
+  {
+    "id": "UA36BT_MCR_1_076",
+    "name": "マクシミリアン・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-076",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-076.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-076",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "まくしみりあん じーなす"
+  },
+  {
+    "id": "UA36BT_MCR_1_077",
+    "name": "マクシミリアン・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-077",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "自分の場にカード名に「ミリア・ファリーナ・ジーナス」か「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-077.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-077",
+    "raw_effect_text": "自分の場にカード名に「ミリア・ファリーナ・ジーナス」か「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "まくしみりあん じーなす"
+  },
+  {
+    "id": "UA36BT_MCR_1_078",
+    "name": "美保 美穂",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-078",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "相手の場に黄か青のカードがある場合、手札にあるこのカードの必要エナジーを減らす。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-078.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-078",
+    "raw_effect_text": "相手の場に黄か青のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+    "raw_trigger_text": "",
+    "ruby": "みほ みほ"
+  },
+  {
+    "id": "UA36BT_MCR_1_079",
+    "name": "VF-22S（ミリア・ファリーナ・ジーナス）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-079",
+    "traits": [
+      "F形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈ミリア・ファリーナ・ジーナス〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から5枚見る。その中からカード名に「ジーナス」を含む赤のキャラカードを1枚まで公開し『手札に加える』。残りを望む順で自分の山札の下に置く。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがあり、公開したカードの必要エナジーが2以下の場合、『自分の場にレストで登場させる』に代えてもよい。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-079.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-079",
+    "raw_effect_text": "〈ミリア・ファリーナ・ジーナス〉アクティブにし、フロントLに移動できる\n自分の山札の上から5枚見る。その中からカード名に「ジーナス」を含む赤のキャラカードを1枚まで公開し『手札に加える』。残りを望む順で自分の山札の下に置く。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがあり、公開したカードの必要エナジーが2以下の場合、『自分の場にレストで登場させる』に代えてもよい。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ぶいえふ にじゅうにえす みりあ ふぁりーな じーなす",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_080",
+    "name": "熱気 バサラ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-080",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-080.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-080",
+    "raw_effect_text": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ねっき ばさら"
+  },
+  {
+    "id": "UA36BT_MCR_1_081",
+    "name": "熱気 バサラ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-081",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "このキャラはBP+1000。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-081.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-081",
+    "raw_effect_text": "このキャラはBP+1000。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。",
+    "raw_trigger_text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "ねっき ばさら"
+  },
+  {
+    "id": "UA36BT_MCR_1_082",
+    "name": "熱気 バサラ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-082",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分と相手はカードを1枚引く。"
+      },
+      {
+        "labels": [
+          "起動メイン"
+        ],
+        "inline_labels": [
+          "起動メイン"
+        ],
+        "text": "このターン中に自分がカードを4枚以上引いている場合のみ発動できる。このキャラをアクティブにする。〈熱気 バサラ〉のこの効果は1ターンに1回のみ発動できる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-082_1.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-082",
+    "raw_effect_text": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。\n自分と相手はカードを1枚引く。\nこのターン中に自分がカードを4枚以上引いている場合のみ発動できる。このキャラをアクティブにする。〈熱気 バサラ〉のこの効果は1ターンに1回のみ発動できる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ねっき ばさら"
+  },
+  {
+    "id": "UA36BT_MCR_1_083",
+    "name": "ビヒーダ・フィーズ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-083",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の手札が5枚以上の場合、このキャラはBP+1500。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-083.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-083",
+    "raw_effect_text": "自分の手札が5枚以上の場合、このキャラはBP+1500。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "びひーだ ふぃーず"
+  },
+  {
+    "id": "UA36BT_MCR_1_084",
+    "name": "ミレーヌ・フレア・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-084",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-084.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-084",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "みれーぬ ふれあ じーなす"
+  },
+  {
+    "id": "UA36BT_MCR_1_085",
+    "name": "ミレーヌ・フレア・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-085",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "赤"
+        ],
+        "inline_labels": [
+          "赤"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-085.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-085",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "みれーぬ ふれあ じーなす"
+  },
+  {
+    "id": "UA36BT_MCR_1_086",
+    "name": "ミレーヌ・フレア・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-086",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "このターン中に相手がカードを引いている場合、自分はカードを1枚まで引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-086.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-086",
+    "raw_effect_text": "このターン中に相手がカードを引いている場合、自分はカードを1枚まで引く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "みれーぬ ふれあ じーなす"
+  },
+  {
+    "id": "UA36BT_MCR_1_087",
+    "name": "レイ・ラブロック",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-087",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "text": "自分の手札が5枚以上の場合のみ発動できる。自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-087.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-087",
+    "raw_effect_text": "自分の手札が5枚以上の場合のみ発動できる。自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "れい らぶろっく"
+  },
+  {
+    "id": "UA36BT_MCR_1_088",
+    "name": "シビル",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-088",
+    "traits": [
+      "プロトデビルン"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のフロントLにカード名に「バサラ」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
+      },
+      {
+        "labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場のカード名に「バサラ」を含むキャラを1枚まで選び、このターン中、「相手はこのキャラのアタックを可能ならブロックしなければならない。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-088.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-088",
+    "raw_effect_text": "自分のフロントLにカード名に「バサラ」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場のカード名に「バサラ」を含むキャラを1枚まで選び、このターン中、「相手はこのキャラのアタックを可能ならブロックしなければならない。」を与える。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しびる"
+  },
+  {
+    "id": "UA36BT_MCR_1_089",
+    "name": "ガムリン木崎",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-089",
+    "traits": [
+      "新統合軍",
+      "ダイアモンドフォース"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-089.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-089",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "がむりんきざき"
+  },
+  {
+    "id": "UA36BT_MCR_1_090",
+    "name": "ガムリン木崎",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-090",
+    "traits": [
+      "新統合軍",
+      "ダイアモンドフォース"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "相手のターン中",
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "相手のターン中",
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "自分の場にカード名に「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000と（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-090.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-090",
+    "raw_effect_text": "自分の場にカード名に「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000と（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "がむりんきざき"
+  },
+  {
+    "id": "UA36BT_MCR_1_091",
+    "name": "VF-22S（マクシミリアン・ジーナス）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-091",
+    "traits": [
+      "新統合軍",
+      "F形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "SNIPER",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈マクシミリアン・ジーナス〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（1）"
+        ],
+        "text": "このキャラのBPが5000以上の場合、このキャラはを得る。"
+      },
+      {
+        "labels": [
+          "登場時",
+          "狙い撃ち"
+        ],
+        "inline_labels": [
+          "登場時",
+          "狙い撃ち"
+        ],
+        "text": "自分の場にカード名に「ミリア・ファリーナ・ジーナス」を含むキャラがある場合、このキャラはこのターン中、BP+1000と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-091.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-091",
+    "raw_effect_text": "〈マクシミリアン・ジーナス〉アクティブにし、フロントLに移動できる\nこのキャラのBPが5000以上の場合、このキャラはを得る。\n自分の場にカード名に「ミリア・ファリーナ・ジーナス」を含むキャラがある場合、このキャラはこのターン中、BP+1000と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ぶいえふ にじゅうにえす まくしみりあん じーなす",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_092",
+    "name": "VF-11MAXL改 ミレーヌバルキリー(ミレーヌ・フレア・ジーナス)",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-092",
+    "traits": [
+      "Fire Bomber",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈ミレーヌ・フレア・ジーナス〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引く。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "このターン中、自分の手札にあるカード名に「バサラ」を含む全てのキャラカードの必要エナジーを減らす。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "自分の手札が5枚以上の場合、このキャラはこのターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-092.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-092",
+    "raw_effect_text": "〈ミレーヌ・フレア・ジーナス〉アクティブにし、フロントLに移動できる\nカードを1枚引く。\nこのターン中、自分の手札にあるカード名に「バサラ」を含む全てのキャラカードの必要エナジーを減らす。\n自分の手札が5枚以上の場合、このキャラはこのターン中、BP+1000。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ぶいえふ じゅういち まくせるかい みれーぬばるきりー みれーぬ ふれあ じーなす",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_093",
+    "name": "VF-19改 ファイヤーバルキリー（熱気 バサラ）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-093",
+    "traits": [
+      "Fire Bomber",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 5000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはレイド以外で登場できない。"
+      },
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈熱気 バサラ〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（1）"
+        ],
+        "text": "（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）"
+      },
+      {
+        "labels": [
+          "ダメージ（2）"
+        ],
+        "inline_labels": [
+          "ダメージ（2）"
+        ],
+        "text": "自分の手札が5枚以上の場合、このキャラはを得る。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分と相手はカードを1枚引く。その後、『BP3000以下』の相手のフロントLのキャラを1枚まで選び、相手の山札の下に置く。自分の手札が5枚以上の場合、『BP4000以下』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-093.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-093",
+    "raw_effect_text": "このキャラはレイド以外で登場できない。\n〈熱気 バサラ〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）\n自分の手札が5枚以上の場合、このキャラはを得る。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。\n自分と相手はカードを1枚引く。その後、『BP3000以下』の相手のフロントLのキャラを1枚まで選び、相手の山札の下に置く。自分の手札が5枚以上の場合、『BP4000以下』に代わる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ぶいえふ じゅうきゅうかい ふぁいやーばるきりー ねっき ばさら",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_094",
+    "name": "ギギル",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-094",
+    "traits": [
+      "バロータ軍",
+      "プロトデビルン"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 3500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "フロントLにある場合"
+        ],
+        "inline_labels": [
+          "フロントLにある場合"
+        ],
+        "text": "自分の場の〈シビル〉が相手の効果によって退場する場合、代わりにこのキャラを退場させてもよい。"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "同じラインにカード名に「バサラ」を含むキャラがある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-094.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-094",
+    "raw_effect_text": "自分の場の〈シビル〉が相手の効果によって退場する場合、代わりにこのキャラを退場させてもよい。\n同じラインにカード名に「バサラ」を含むキャラがある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "ぎぎる"
+  },
+  {
+    "id": "UA36BT_MCR_1_095",
+    "name": "VF-17 ナイトメア(ガムリン木崎）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-095",
+    "traits": [
+      "新統合軍",
+      "ダイアモンドフォース",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈ガムリン木崎〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場にカード名に「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、カードを2枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "自分の場のカード名に「バサラ」を含むキャラを1枚まで選び、このターン中、「このキャラはBP3000以下のキャラにブロックされない。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-095.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-095",
+    "raw_effect_text": "〈ガムリン木崎〉アクティブにし、フロントLに移動できる\n自分の場にカード名に「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、カードを2枚引き、自分の手札を1枚場外に置く。\n自分の場のカード名に「バサラ」を含むキャラを1枚まで選び、このターン中、「このキャラはBP3000以下のキャラにブロックされない。」を与える。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ぶいえふ じゅうなな ないとめあ がむりんきざき",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36BT_MCR_1_096",
+    "name": "バトル7",
+    "card_type": "FIELD",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-096",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-096.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-096",
+    "raw_effect_text": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。\n自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ばとるせぶん"
+  },
+  {
+    "id": "UA36BT_MCR_1_097",
+    "name": "俺の歌を聞けぇ！",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-097",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-097.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-097",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "おれのうたをきけぇ"
+  },
+  {
+    "id": "UA36BT_MCR_1_098",
+    "name": "マイクロミサイル",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-098",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、『BP5000以下』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-098.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-098",
+    "raw_effect_text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、『BP5000以下』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "まいくろみさいる"
+  },
+  {
+    "id": "UA36BT_MCR_1_099",
+    "name": "突撃ラブハート",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-099",
+    "traits": [
+      "歌（Fire Bomber）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-099.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-099",
+    "raw_effect_text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "とつげきらぶはーと"
+  },
+  {
+    "id": "UA36BT_MCR_1_100",
+    "name": "TRY AGAIN",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36BT/MCR-1-100",
+    "traits": [
+      "歌（Fire Bomber）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト（+1）",
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（+1）",
+          "インパクト（1）"
+        ],
+        "text": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36BT-MCR-1-100.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36BT/MCR-1-100",
+    "raw_effect_text": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "とらい あげいん"
+  },
+  {
+    "id": "UA36ST_MCR_1_053",
+    "name": "キャサリン・グラス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-053",
+    "traits": [
+      "新統合軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-053.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-053",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "きゃさりん ぐらす"
+  },
+  {
+    "id": "UA36ST_MCR_1_055",
+    "name": "オズマ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-055",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-055.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-055",
+    "raw_effect_text": "カードを1枚引く。",
+    "raw_trigger_text": "",
+    "ruby": "おずま りー"
+  },
+  {
+    "id": "UA36ST_MCR_1_056",
+    "name": "早乙女 アルト",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-056",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-056.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-056",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "さおとめ あると"
+  },
+  {
+    "id": "UA36ST_MCR_1_057",
+    "name": "早乙女 アルト",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-057",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-057.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-057",
+    "raw_effect_text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+    "ruby": "さおとめ あると"
+  },
+  {
+    "id": "UA36ST_MCR_1_058",
+    "name": "ミハエル・ブラン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-058",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "青"
+        ],
+        "inline_labels": [
+          "青"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-058.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-058",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "みはえる ぶらん"
+  },
+  {
+    "id": "UA36ST_MCR_1_059",
+    "name": "ルカ・アンジェローニ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-059",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-059.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-059",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "",
+    "ruby": "るか あんじぇろーに"
+  },
+  {
+    "id": "UA36ST_MCR_1_061",
+    "name": "クラン・クラン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-061",
+    "traits": [
+      "S.M.S",
+      "ピクシー小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-061.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-061",
+    "raw_effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "くらん くらん"
+  },
+  {
+    "id": "UA36ST_MCR_1_065",
+    "name": "トライアングラー",
+    "card_type": "EVENT",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-065",
+    "traits": [
+      "歌（シェリル）",
+      "歌（ランカ）"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-065.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-065",
+    "raw_effect_text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "とらいあんぐらー"
+  },
+  {
+    "id": "UA36ST_MCR_1_101",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-101",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分のフロントLにカード名に「アルト」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-101.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-101",
+    "raw_effect_text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\n自分のフロントLにカード名に「アルト」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。",
+    "raw_trigger_text": "",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36ST_MCR_1_102",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-102",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分のフロントLにカード名に「アルト」を含むキャラがある場合、BP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-102.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-102",
+    "raw_effect_text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\n自分のフロントLにカード名に「アルト」を含むキャラがある場合、BP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。",
+    "raw_trigger_text": "",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36ST_MCR_1_103",
+    "name": "ボビー・マルゴ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-103",
+    "traits": [
+      "S.M.S"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-103.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-103",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ぼびー まるご"
+  },
+  {
+    "id": "UA36ST_MCR_1_104",
+    "name": "オズマ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-104",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-104.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-104",
+    "raw_effect_text": "",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "おずま りー"
+  },
+  {
+    "id": "UA36ST_MCR_1_105",
+    "name": "早乙女 アルト",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-105",
+    "traits": [
+      "S.M.S",
+      "スカル小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "自分の場に〈シェリル・ノーム〉がある場合、このキャラは（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場に〈ランカ・リー〉がある場合、カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-105.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-105",
+    "raw_effect_text": "自分の場に〈シェリル・ノーム〉がある場合、このキャラは（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。\n自分の場に〈ランカ・リー〉がある場合、カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "さおとめ あると"
+  },
+  {
+    "id": "UA36ST_MCR_1_106",
+    "name": "クラン・クラン",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-106",
+    "traits": [
+      "S.M.S",
+      "ピクシー小隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-106.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-106",
+    "raw_effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "くらん くらん"
+  },
+  {
+    "id": "UA36ST_MCR_1_107",
+    "name": "VF-25F メサイア（早乙女 アルト）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-107",
+    "traits": [
+      "S.M.S",
+      "スカル小隊",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈早乙女 アルト〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "自分のターン中",
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "自分のターン中",
+          "インパクト（1）"
+        ],
+        "text": "自分の場に〈シェリル・ノーム〉か〈ランカ・リー〉がある場合、このキャラはBP+1000。自分の場に〈シェリル・ノーム〉と〈ランカ・リー〉があるなら、さらに（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-107.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-107",
+    "raw_effect_text": "〈早乙女 アルト〉アクティブにし、フロントLに移動できる\n自分の場に〈シェリル・ノーム〉か〈ランカ・リー〉がある場合、このキャラはBP+1000。自分の場に〈シェリル・ノーム〉と〈ランカ・リー〉があるなら、さらに（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。\nカードを1枚引く。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ぶいえふ にじゅうごえふ めさいあ さおとめ あると",
+    "special_play_rule": "RAID"
+  },
+  {
+    "id": "UA36ST_MCR_1_108",
+    "name": "VF-25G メサイア（ミハエル・ブラン）",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-108",
+    "traits": [
+      "S.M.S",
+      "スカル小隊",
+      "B形態"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "SNIPER"
+    ],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはアクティブで場に登場させる。"
+      },
+      {
+        "labels": [
+          "登場時",
+          "狙い撃ち"
+        ],
+        "inline_labels": [
+          "登場時",
+          "狙い撃ち"
+        ],
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラはこのターン中、「このキャラはエナジーLからアタックできる。」と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-108.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-108",
+    "raw_effect_text": "このキャラはアクティブで場に登場させる。\n自分の手札を1枚場外に置いてもよい。そうした場合、このキャラはこのターン中、「このキャラはエナジーLからアタックできる。」と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ぶいえふ にじゅうごじー めさいあ みはえる ぶらん"
+  },
+  {
+    "id": "UA36ST_MCR_1_109",
+    "name": "スナイパーライフル",
+    "card_type": "FIELD",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-109",
+    "traits": [
+      "S.M.S"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "場外にある場合"
+        ],
+        "inline_labels": [
+          "場外にある場合"
+        ],
+        "text": "自分の場のカード名に「ミハエル」を含むキャラが退場した時、場外のこのカードを手札に加えてもよい。〈スナイパーライフル〉のこの効果は1ターンに1回のみ発動できる。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場にカード名に「ミハエル」を含むキャラがある場合、このフィールドをアクティブにする。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる",
+          "インパクト（+1）",
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる",
+          "インパクト（+1）",
+          "インパクト（1）"
+        ],
+        "text": "自分の場の［特徴：S.M.S］を1枚まで選び、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-109.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-109",
+    "raw_effect_text": "自分の場のカード名に「ミハエル」を含むキャラが退場した時、場外のこのカードを手札に加えてもよい。〈スナイパーライフル〉のこの効果は1ターンに1回のみ発動できる。\n自分の場にカード名に「ミハエル」を含むキャラがある場合、このフィールドをアクティブにする。\n自分の場の［特徴：S.M.S］を1枚まで選び、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "すないぱーらいふる"
+  },
+  {
+    "id": "UA36ST_MCR_1_110",
+    "name": "シェリル・ノーム",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-110",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "黄"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "黄"
+        ],
+        "text": "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、このキャラはこのターン中、発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-110.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-110",
+    "raw_effect_text": "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、このキャラはこのターン中、発生エナジー+。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "しぇりる のーむ"
+  },
+  {
+    "id": "UA36ST_MCR_1_111",
+    "name": "ランカ・リー",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-111",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-111.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-111",
+    "raw_effect_text": "自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "らんか りー"
+  },
+  {
+    "id": "UA36ST_MCR_1_112",
+    "name": "熱気 バサラ",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-112",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "inline_labels": [
+          "インパクト無効",
+          "インパクト"
+        ],
+        "text": "自分の手札が5枚以上の場合、このキャラはBP+500と（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-112.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-112",
+    "raw_effect_text": "自分の手札が5枚以上の場合、このキャラはBP+500と（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ねっき ばさら"
+  },
+  {
+    "id": "UA36ST_MCR_1_113",
+    "name": "ミレーヌ・フレア・ジーナス",
+    "card_type": "CHARACTER",
+    "title_code": "MCR",
+    "number": "UA36ST/MCR-1-113",
+    "traits": [
+      "Fire Bomber"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から4枚見る。その中から［特徴：Fire Bomber］かカード名に「ガムリン木崎」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "R",
+    "series_title": "マクロス",
+    "source_image": "UA36ST-MCR-1-113.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA36ST/MCR-1-113",
+    "raw_effect_text": "自分の山札の上から4枚見る。その中から［特徴：Fire Bomber］かカード名に「ガムリン木崎」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "",
+    "ruby": "みれーぬ ふれあ じーなす"
+  }
+]
