@@ -1,0 +1,3207 @@
+[
+  {
+    "card_id": "UA36BT_MCR_1_001",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_002",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_002_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_003",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_003_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_004",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から2枚見る。その中から〈シェリル・ノーム〉を望む枚数場外に置く。残りを望む順で自分の山札の上に置く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_005",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_005_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_006",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_006_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_007",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_008",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_008_on_life_trigger_8723e8b5cb",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。\nこのキャラのを発動する。",
+      "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_009",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_009_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\n自分の山札の上から3枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。\nカードを1枚引く。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_010",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_010_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\nカードを1枚引き、相手のフロントLのキャラを1枚まで選び、レストにする。\n相手のフロントLのレストのキャラを1枚選び、「このキャラは次の1回アクティブにならない。」を与える。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_011",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_011_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\n自分の場外にを持つ〈シェリル・ノーム〉が3枚以上ある場合、このキャラはBP+1000とを得る。\n自分の場外から必要エナジーが4以下の〈シェリル・ノーム〉を1枚まで手札に加える。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_012",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_012_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈シェリル・ノーム〉アクティブにし、フロントLに移動できる\n自分の場外にを持つ〈シェリル・ノーム〉が5枚以上ある場合、このキャラはBP+500とを得る。\n『BP3000以下』の相手のフロントLのキャラを1枚まで選び、退場させる。自分の場外にを持つ〈シェリル・ノーム〉が3枚以上ある場合、『BP4000以下』に代わる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_013",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_013_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_014",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_014_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+1500。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_015",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から2枚見る。その中からイベントカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_016",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "カードを1枚引く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_017",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "相手の場に青か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_018",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_019",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_019_on_life_trigger_8723e8b5cb",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から4枚見る。その中から黄の〔［特徴：歌（ランカ）］かフィールドカード〕を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_020",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_020_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+500。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_021",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_021_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはアクティブで場に登場させる。\n以下から1つ選ぶ。\n・カードを2枚引き、自分の手札を2枚場外に置く。\n・自分の場外の黄の［特徴：歌（ランカ）］のカード名の種類数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、手札に戻す。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_022",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "STEP"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_022_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n〈ランカ・リー〉アクティブにし、フロントLに移動できる\nこのキャラはBP+500。\nこのターン中、次に手札から使用する黄の［特徴：歌（ランカ）］の消費APを-1する。〈ランカ・リー〉のこの効果は1ターンに1回のみ発動できる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_023",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_023_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈ランカ・リー〉アクティブにし、フロントLに移動できる\n自分の場外の黄の［特徴：歌（ランカ）］のカード名の種類数により、このキャラは以下の効果を全て得る。\n・1種類以上：カードを1枚引く。\n・3種類以上：このキャラはBP+1000と\n・4種類以上：このキャラがアタックしてブロックされなかった時、このキャラをアクティブにする。〈ランカ・リー〉のこの効果は1ターンに1回のみ発動する。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_024",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_024_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを2枚引く。\n自分の場のキャラを1枚選び、このターン中、BP+500。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_025",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_025_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA36BT_MCR_1_025_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_026",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_026_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA36BT_MCR_1_026_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_027",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_027_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA36BT_MCR_1_027_on_play_012a9a566c",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_028",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_028_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA36BT_MCR_1_028_on_play_e933708831",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_029",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_029_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      },
+      {
+        "id": "UA36BT_MCR_1_029_on_play_6337d8f975",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_030",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED",
+      "COMPOSITE",
+      "MULTI_BRANCH_CHOICE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_030_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA36BT_MCR_1_030_on_play_5f120a4382",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_030_on_play_536516f54f",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "以下から1つ選ぶ。",
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
+      },
+      {
+        "id": "UA36BT_MCR_1_030_on_play_d1fad109d5",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_030_on_play_e691196af1",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。\n以下から1つ選ぶ。\n・相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。\n・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_031",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_031_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA36BT_MCR_1_031_on_play_1371b24591",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_032",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_032_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      },
+      {
+        "id": "UA36BT_MCR_1_032_on_play_613917d606",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。カードを1枚引く。自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。カードを1枚引く。自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_033",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_033_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      },
+      {
+        "id": "UA36BT_MCR_1_033_on_play_6dc2561660",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_034",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_034_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_035",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場にカード名に「イサム」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_036",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分のフロントLにカード名に「イサム」を含むキャラがある場合、このキャラの発生エナジー+。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_037",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_037_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見る。その中からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_038",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_038_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_039",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_039_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_040",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場にカード名に「ガルド」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_041",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_041_on_life_trigger_01fec7cba9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、カード名に「イサム」か「ガルド」を含む自分の場のレイド状態のキャラのアタック終了時、そのキャラのレイド状態の上のカードを場外に置いてもよい。そうした場合、このキャラをレストにし、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードと必要エナジーが異なるカードを1枚まで、そのキャラのレイド元のカードにレイドさせる。",
+      "trigger": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_042",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "相手の場に黄か赤のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_043",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_043_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈ガルド・ゴア・ボーマン〉アクティブにし、フロントLに移動できる\nカードを2枚引き、自分の手札を1枚場外に置く。\n自分のフロントLにカード名に「イサム」を含むキャラがある場合、カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_044",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_044_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈ガルド・ゴア・ボーマン〉アクティブにし、フロントLに移動できる\nこのキャラのアタック終了時、このキャラを退場させてもよい。そうした場合、相手のフロントLのキャラを1枚まで選び、退場させる。\n自分の手札から必要エナジーを満たしカード名に「イサム」を含むカードを1枚まで自分の場に『レストで登場させる』。自分のターン中の場合、『レイドさせる』に代えてもよい。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_045",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_045_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈イサム・ダイソン〉アクティブにし、フロントLに移動できる\n自分の場か場外にカード名に「ガルド」を含むキャラがある場合、このキャラは以下の効果を全て得る。\n・（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）\n・BP3500以下の相手のフロントLのキャラを1枚まで選び、『手札に戻す』。自分のアタックフェイズ中の場合、『退場させる』に代えてもよい。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_046",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_046_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈イサム・ダイソン〉アクティブにし、フロントLに移動できる\nBP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。\n自分のフロントLにカード名に「ガルド」を含むキャラがある場合、このキャラのを発動する。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_047",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_047_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このフィールドはアクティブで場に登場させる。\nこのフィールドがアクティブの場合、カード名に「イサム」か「ガルド」を含む自分の場のレイド状態のキャラのアタック終了時、そのキャラのレイド状態の上のカードを場外に置いてもよい。そうした場合、このフィールドをレストにし、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードと必要エナジーが異なるカードを1枚まで、そのキャラのレイド元のカードにレイドさせる。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_048",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_048_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA36BT_MCR_1_048_on_play_210e126786",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。",
+        "reason": "SEMANTIC_OVERRIDE_REQUIRED",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "SEMANTIC_OVERRIDE_REQUIRED"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_049",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_049_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA36BT_MCR_1_049_on_play_72831cf0e3",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_049_on_play_2d32b02032",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。\nBP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_050",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_050_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA36BT_MCR_1_050_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_051",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_051_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "以下から1つ選ぶ。このターン中に自分の他の〈シェリル・ノーム〉が既に選んだ効果は選べない。\n・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、BP+1000。\n・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、「このキャラがアタックしてブロックされなかった時、カードを1枚まで引く。」を与える。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_052",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_052_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "以下から1つ選ぶ。このターン中に自分の他の〈ランカ・リー〉が既に選んだ効果は選べない。\n・自分のフロントLにカード名に「アルト」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。\n・自分のフロントLのカード名に「アルト」を含むキャラを1枚選び、このターン中、「このキャラがアタックしてバトルに勝利した時、カードを1枚まで引く。」を与える。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_053",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_054",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_054_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはアクティブで場に登場させる。\n自分の場に〈ランカ・リー〉がある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3500以下の相手のフロントLのキャラを1枚まで選び、手札に戻す。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_055",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "カードを1枚引く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_056",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_056_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_057",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_057_on_life_trigger_01fec7cba9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_058",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_058_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_059",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_060",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_060_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈クラン・クラン〉アクティブにし、フロントLに移動できる\nこのキャラはBP+500。\nこのキャラがアタックしてブロックされなかった時、自分の場にカード名に「ミハエル」を含むキャラがある場合、カードを1枚引く。\n自分の手札から必要エナジーが2以下の青の〔キャラカードかフィールドカード〕を1枚まで自分の場にレストで登場させる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_061",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_061_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_062",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_062_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈オズマ・リー〉アクティブにし、フロントLに移動できる\n自分の場に〈ランカ・リー〉がある場合、このキャラは（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）を得る。\nこのキャラはこのターン中、「BP2000以下のキャラにブロックされない。」を得る。\nアタックしている相手のキャラがレイド状態の場合、このキャラはこのターン中、BP+500。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_063",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_063_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈早乙女 アルト〉アクティブにし、フロントLに移動できる\n以下から『1つ』まで選ぶ。APを1支払ってもよい。そうした場合、『2つ』に代わる。\n・自分の場に〈シェリル・ノーム〉がある場合、このキャラはこのターン中、（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。\n・自分の場に〈ランカ・リー〉がある場合、BP3000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_064",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_064_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このフィールドはアクティブで場に登場させる。\nカードを1枚引き、自分の手札を1枚場外に置く。\n相手のフロントLのキャラを1枚選び、退場させる。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_065",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_065_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA36BT_MCR_1_065_on_play_7a8ea21d90",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_065_on_play_78e3e36e0b",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_065_on_play_d2ce3bcead",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_065_on_play_4dbdce4273",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_066",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_066_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA36BT_MCR_1_066_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_067",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "STEP"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_067_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分の場の他のキャラ全ては、このターン中、BP+1000。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_068",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_068_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "APを1支払ってもよい。そうした場合、自分の場外から〈リン・ミンメイ〉か〈早瀬 未沙〉を1枚まで手札に加える。\nこのキャラのBPが5000以上の場合、このキャラをアクティブにする。〈一条 輝〉のこの効果は1ターンに1回のみ発動できる。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_069",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_069_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "以下から1つ選ぶ。\n・BP4000以上の自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。\n・手札を1枚場外に置く。そうした場合、自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_070",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_071",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から4枚見る。その中からカード名に「バサラ」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_072",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_072_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_073",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場にカード名に「マクシミリアン・ジーナス」か「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_074",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_074_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、以下から1つ選ぶ。\n・自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。\n・自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_075",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_076",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_076_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_077",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_077_on_life_trigger_a41bad1555",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場にカード名に「ミリア・ファリーナ・ジーナス」か「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000。",
+      "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_078",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "相手の場に黄か青のカードがある場合、手札にあるこのカードの必要エナジーを減らす。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_079",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_079_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈ミリア・ファリーナ・ジーナス〉アクティブにし、フロントLに移動できる\n自分の山札の上から5枚見る。その中からカード名に「ジーナス」を含む赤のキャラカードを1枚まで公開し『手札に加える』。残りを望む順で自分の山札の下に置く。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがあり、公開したカードの必要エナジーが2以下の場合、『自分の場にレストで登場させる』に代えてもよい。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_080",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_080_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_081",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "BP_THRESHOLD_REMOVE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_081_on_life_trigger_a41bad1555",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはBP+1000。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。",
+      "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_082",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_082_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。\n自分と相手はカードを1枚引く。\nこのターン中に自分がカードを4枚以上引いている場合のみ発動できる。このキャラをアクティブにする。〈熱気 バサラ〉のこの効果は1ターンに1回のみ発動できる。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_083",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_083_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札が5枚以上の場合、このキャラはBP+1500。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_084",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_084_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_085",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_085_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_086",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_086_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このターン中に相手がカードを引いている場合、自分はカードを1枚まで引く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_087",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_087_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札が5枚以上の場合のみ発動できる。自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_088",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_088_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のフロントLにカード名に「バサラ」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場のカード名に「バサラ」を含むキャラを1枚まで選び、このターン中、「相手はこのキャラのアタックを可能ならブロックしなければならない。」を与える。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_089",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_089_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_090",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_090_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場にカード名に「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、このキャラはBP+1000と（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_091",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "SNIPER",
+      "IMPACT"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_091_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈マクシミリアン・ジーナス〉アクティブにし、フロントLに移動できる\nこのキャラのBPが5000以上の場合、このキャラはを得る。\n自分の場にカード名に「ミリア・ファリーナ・ジーナス」を含むキャラがある場合、このキャラはこのターン中、BP+1000と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_092",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_092_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈ミレーヌ・フレア・ジーナス〉アクティブにし、フロントLに移動できる\nカードを1枚引く。\nこのターン中、自分の手札にあるカード名に「バサラ」を含む全てのキャラカードの必要エナジーを減らす。\n自分の手札が5枚以上の場合、このキャラはこのターン中、BP+1000。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_093",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_093_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "このキャラはレイド以外で登場できない。\n〈熱気 バサラ〉アクティブにし、フロントLに移動できる\n（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）\n自分の手札が5枚以上の場合、このキャラはを得る。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。\n自分と相手はカードを1枚引く。その後、『BP3000以下』の相手のフロントLのキャラを1枚まで選び、相手の山札の下に置く。自分の手札が5枚以上の場合、『BP4000以下』に代わる。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_094",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_094_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場の〈シビル〉が相手の効果によって退場する場合、代わりにこのキャラを退場させてもよい。\n同じラインにカード名に「バサラ」を含むキャラがある場合、このキャラはBP+1000。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_095",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_095_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "〈ガムリン木崎〉アクティブにし、フロントLに移動できる\n自分の場にカード名に「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、カードを2枚引き、自分の手札を1枚場外に置く。\n自分の場のカード名に「バサラ」を含むキャラを1枚まで選び、このターン中、「このキャラはBP3000以下のキャラにブロックされない。」を与える。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_096",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_096_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。\n自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_097",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "TOP_DECK_TO_LIFE",
+      "READY_AP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_097_on_life_trigger_40f54dabd9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "reason": "",
+        "template_type": "TOP_DECK_TO_LIFE"
+      },
+      {
+        "id": "UA36BT_MCR_1_097_on_play_0da85cfcde",
+        "timing": "ON_PLAY",
+        "status": "SUPPORTED",
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "reason": "",
+        "template_type": "READY_AP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のAPカードを2枚まで選び、アクティブにする。",
+      "trigger": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_098",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_098_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA36BT_MCR_1_098_on_play_0980572152",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、『BP5000以下』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_099",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_099_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA36BT_MCR_1_099_on_play_37e28311f2",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36BT_MCR_1_100",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "IMPACT"
+    ],
+    "template_types": [
+      "DRAW_1",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_100_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      },
+      {
+        "id": "UA36BT_MCR_1_100_on_play_f6143c2fa4",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_053",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_055",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "カードを1枚引く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_056",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_056_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_057",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_057_on_life_trigger_01fec7cba9",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_058",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "COMPOSITE"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_058_passive_7dbbcaedd2",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_059",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_061",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_061_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_065",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_065_on_life_trigger_a9a162adb2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA36ST_MCR_1_065_on_play_7a8ea21d90",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36ST_MCR_1_065_on_play_78e3e36e0b",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36ST_MCR_1_065_on_play_d2ce3bcead",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA36ST_MCR_1_065_on_play_4dbdce4273",
+        "timing": "ON_PLAY",
+        "status": "UNSUPPORTED",
+        "text": "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_101",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\n自分のフロントLにカード名に「アルト」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_102",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\n自分のフロントLにカード名に「アルト」を含むキャラがある場合、BP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。",
+      "trigger": "",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_103",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_103_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_104",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_104_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_105",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_105_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場に〈シェリル・ノーム〉がある場合、このキャラは（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。\n自分の場に〈ランカ・リー〉がある場合、カードを1枚引き、自分の手札を1枚場外に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_106",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_106_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_107",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_107_on_life_trigger_a342b2ffe2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "UNSUPPORTED",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
+    "source_text_jp": {
+      "effect": "〈早乙女 アルト〉アクティブにし、フロントLに移動できる\n自分の場に〈シェリル・ノーム〉か〈ランカ・リー〉がある場合、このキャラはBP+1000。自分の場に〈シェリル・ノーム〉と〈ランカ・リー〉があるなら、さらに（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。\nカードを1枚引く。",
+      "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_108",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "SNIPER"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_108_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "このキャラはアクティブで場に登場させる。\n自分の手札を1枚場外に置いてもよい。そうした場合、このキャラはこのターン中、「このキャラはエナジーLからアタックできる。」と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_109",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "IMPACT"
+    ],
+    "template_types": [
+      "MOVE_SELF"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_109_on_life_trigger_0a3e81b9d0",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "このカードを手札に加える。",
+        "reason": "",
+        "template_type": "MOVE_SELF"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場のカード名に「ミハエル」を含むキャラが退場した時、場外のこのカードを手札に加えてもよい。〈スナイパーライフル〉のこの効果は1ターンに1回のみ発動できる。\n自分の場にカード名に「ミハエル」を含むキャラがある場合、このフィールドをアクティブにする。\n自分の場の［特徴：S.M.S］を1枚まで選び、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。",
+      "trigger": "このカードを手札に加える。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_110",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_110_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、このキャラはこのターン中、発生エナジー+。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_111",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [
+      "DRAW_1"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_111_on_life_trigger_91b04beda2",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引く。",
+        "reason": "",
+        "template_type": "DRAW_1"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、このキャラはBP+1000。",
+      "trigger": "カードを1枚引く。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_112",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "template_types": [
+      "READY_AND_TEMP_BP"
+    ],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_112_on_life_trigger_bab7196d2b",
+        "timing": "ON_LIFE_TRIGGER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "reason": "",
+        "template_type": "READY_AND_TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
+    "source_text_jp": {
+      "effect": "自分の手札が5枚以上の場合、このキャラはBP+500と（このキャラとバトルをしたキャラはこのバトル中、を失う）を得る。\nこのキャラがアタックしてバトルに勝利した時、カードを1枚引き、このバトルで敗北した相手のキャラは退場する代わりに、手札に戻る。",
+      "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+      "rule": ""
+    }
+  },
+  {
+    "card_id": "UA36ST_MCR_1_113",
+    "origin": "MCR/cards_raw.json",
+    "inferred_keywords": [],
+    "template_types": [],
+    "abilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前卡牌文本尚未映射为能力对象。"
+    ],
+    "source_text_jp": {
+      "effect": "自分の山札の上から4枚見る。その中から［特徴：Fire Bomber］かカード名に「ガムリン木崎」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+      "trigger": "",
+      "rule": ""
+    }
+  }
+]
