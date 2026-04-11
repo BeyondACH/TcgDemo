@@ -101,6 +101,23 @@ def parse_energy_map(block_html: str) -> Dict[str, int]:
     return out
 
 
+def extract_raid_special_play_rule(lines: List[dict]) -> Dict[str, object]:
+    for item in lines:
+        labels = item.get("labels", [])
+        if "レイド" not in labels:
+            continue
+        text = item.get("text", "")
+        m = re.search(r"[《<＜]\s*(.+?)\s*[》>＞]", text)
+        target_name = m.group(1).strip() if m else ""
+        return {
+            "type": "RAID",
+            "raid_target_name": target_name,
+            "allow_from_hand": True,
+            "require_full_energy": True,
+        }
+    return {}
+
+
 def parse_labeled_lines(block_html: str) -> List[dict]:
     out = []
     if not block_html:
@@ -176,7 +193,7 @@ def parse_card_page(html: str, source_image: str) -> dict:
         "title_code": title_code,
         "number": number,
         "traits": traits,
-        "cost_energy": parse_int(strip_tags(get_block_html(html, "needEnergyData"))),
+        "cost_energy": parse_energy_map(get_block_html(html, "needEnergyData")),
         "cost_ap": parse_int(strip_tags(get_block_html(html, "apData"))),
         "energy_provided": parse_energy_map(get_block_html(html, "generatedEnergyData")),
         "bp": parse_int(strip_tags(get_block_html(html, "bpData"))),
@@ -192,7 +209,9 @@ def parse_card_page(html: str, source_image: str) -> dict:
         "ruby": ruby,
     }
     if "RAID" in keywords:
-        card["special_play_rule"] = "RAID"
+        special_play_rule = extract_raid_special_play_rule(effects + triggers)
+        if special_play_rule:
+            card["special_play_rule"] = special_play_rule
     return card
 
 
