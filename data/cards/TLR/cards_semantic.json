@@ -348,22 +348,20 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "TEMP_KEYWORD"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_013_on_enter_a94eb0e04a",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_KEYWORD"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
       "trigger": "-",
@@ -421,7 +419,7 @@
     ],
     "template_types": [
       "TEMP_BP",
-      "UNSUPPORTED",
+      "TEMP_KEYWORD",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
@@ -436,10 +434,10 @@
       {
         "id": "UA45BT_TLR_1_015_main_activate_d01a84b346",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_KEYWORD"
       },
       {
         "id": "UA45BT_TLR_1_015_on_life_trigger_a342b2ffe2",
@@ -450,10 +448,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "〈結城 美柑〉アクティブにし、フロントLに移動できる\nカードを1枚引く。自分の場のキャラを1枚まで選び、このターン中、BP+1000。\n必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -1097,7 +1093,7 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -1111,16 +1107,14 @@
       {
         "id": "UA45BT_TLR_1_037_on_play_52a2516601",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -1303,17 +1297,18 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "DRAW_1"
+      "TEMP_KEYWORD",
+      "DRAW_1",
+      "OPTIONAL_COST_THEN_EFFECT"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_043_on_enter_194841f0b9",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "OPTIONAL_COST_THEN_EFFECT"
       },
       {
         "id": "UA45BT_TLR_1_043_on_life_trigger_91b04beda2",
@@ -1324,10 +1319,8 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このキャラはアクティブで登場させる。\n自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。",
       "trigger": "カードを1枚引く。",
@@ -1414,7 +1407,7 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "TEMP_KEYWORD",
       "SELECT_AND_MOVE",
       "BP_THRESHOLD_REMOVE"
     ],
@@ -1422,10 +1415,10 @@
       {
         "id": "UA45BT_TLR_1_047_on_enter_f50f89224c",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_KEYWORD"
       },
       {
         "id": "UA45BT_TLR_1_047_on_life_trigger_a41bad1555",
@@ -1436,10 +1429,8 @@
         "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。",
       "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
@@ -1453,17 +1444,18 @@
       "RAID"
     ],
     "template_types": [
-      "UNSUPPORTED",
-      "LIFE_TRIGGER_RAID_CHOICE"
+      "SELECT_AND_MOVE",
+      "LIFE_TRIGGER_RAID_CHOICE",
+      "SPECIAL_OVERRIDE"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_048_on_enter_be8b243b89",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SPECIAL_OVERRIDE"
       },
       {
         "id": "UA45BT_TLR_1_048_on_life_trigger_a342b2ffe2",
@@ -1474,10 +1466,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "〈古手川 唯〉アクティブにし、フロントLに移動できる\nこのキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",

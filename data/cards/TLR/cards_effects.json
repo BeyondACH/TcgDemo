@@ -1698,8 +1698,71 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "CANNOT_BE_BLOCKED_BY_BP_GTE_4000",
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1708,15 +1771,18 @@
           "effect_box": "OUTER",
           "text": "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_KEYWORD",
+          "variant": "other_energy_lte_unblockable_bp_gate"
+        }
       }
     ],
     "analysis": {
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "TEMP_KEYWORD"
       ]
     }
   },
@@ -2067,9 +2133,87 @@
         "timing": {
           "event": "MAIN_ACTIVATE"
         },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "requirements": [
+          {
+            "type": "NOT",
+            "requirement": {
+              "type": "PLAYER_TURN_FLAG_TRUE",
+              "player": "SELF",
+              "flag": "event_used_結城美柑"
+            }
+          }
+        ],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 3
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "CANNOT_BE_BLOCKED_BY_BP_GTE_4000",
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "SET_PLAYER_TURN_FLAG",
+            "player": "SELF",
+            "flag": "event_used_結城美柑",
+            "value": true
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -2078,8 +2222,11 @@
           "effect_box": "RAID_INNER",
           "text": "必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_KEYWORD",
+          "variant": "other_energy_lte_unblockable_bp_gate"
+        }
       },
       {
         "id": "UA45BT_TLR_1_015_on_life_trigger_a342b2ffe2",
@@ -2110,7 +2257,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
-        "UNSUPPORTED",
+        "TEMP_KEYWORD",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -4718,8 +4865,96 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "金色の闇"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED_PLUS_CONTROLLER_FRONT_LINE_ENERGY_LTE_COUNT_MULTIPLIED",
+                      "value": 3000,
+                      "cost_energy_lte": 3,
+                      "multiplier": 1000
+                    },
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "金色の闇"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED_PLUS_CONTROLLER_FRONT_LINE_ENERGY_LTE_COUNT_MULTIPLIED",
+                      "value": 3000,
+                      "cost_energy_lte": 3,
+                      "multiplier": 1000
+                    },
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4728,8 +4963,11 @@
           "effect_box": "OUTER",
           "text": "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_remove_dynamic_name_gate_energy_lte_count"
+        }
       }
     ],
     "analysis": {
@@ -4737,7 +4975,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -5515,8 +5753,118 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "天条院沙姫"
+                    },
+                    {
+                      "type": "AND",
+                      "filters": [
+                        {
+                          "type": "CARD_TYPE_IS",
+                          "value": "CHARACTER"
+                        },
+                        {
+                          "type": "CARD_COST_ENERGY_LTE",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "RED"
+                },
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_IS",
+                      "value": "天条院沙姫"
+                    },
+                    {
+                      "type": "AND",
+                      "filters": [
+                        {
+                          "type": "CARD_TYPE_IS",
+                          "value": "CHARACTER"
+                        },
+                        {
+                          "type": "CARD_COST_ENERGY_LTE",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_card",
+            "to_zone": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_costs": true
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_uid": "SOURCE_CARD",
+            "keyword": "TLR_SAJI_PLACEHOLDER",
+            "expires": "END_OF_TURN",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "天条院沙姫"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -5525,8 +5873,11 @@
           "effect_box": "OUTER",
           "text": "自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "OPTIONAL_COST_THEN_EFFECT",
+          "variant": "hand_summon_named_or_energy_lte_then_conditional_keyword_placeholder"
+        }
       },
       {
         "id": "UA45BT_TLR_1_043_on_life_trigger_91b04beda2",
@@ -5557,8 +5908,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "DRAW_1"
+        "TEMP_KEYWORD",
+        "DRAW_1",
+        "OPTIONAL_COST_THEN_EFFECT"
       ]
     }
   },
@@ -5877,8 +6229,103 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 2000
+                    },
+                    "when": [
+                      {
+                        "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+                        "player": "SELF",
+                        "zones": [
+                          "FRONT_LINE",
+                          "ENERGY_LINE"
+                        ],
+                        "value": 5
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 3000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 2000
+                    },
+                    "when": [
+                      {
+                        "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+                        "player": "SELF",
+                        "zones": [
+                          "FRONT_LINE",
+                          "ENERGY_LINE"
+                        ],
+                        "value": 5
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 3000
+                    }
+                  }
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "CANNOT_BLOCK",
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -5887,8 +6334,11 @@
           "effect_box": "OUTER",
           "text": "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_KEYWORD",
+          "variant": "conditional_bp_gate_grant_cannot_block"
+        }
       },
       {
         "id": "UA45BT_TLR_1_047_on_life_trigger_a41bad1555",
@@ -5970,7 +6420,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_KEYWORD",
         "SELECT_AND_MOVE",
         "BP_THRESHOLD_REMOVE"
       ]
@@ -6025,8 +6475,66 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "SOURCE_BP_MINUS",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "SOURCE_BP_MINUS",
+                    "value": 1
+                  }
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -6035,8 +6543,11 @@
           "effect_box": "RAID_INNER",
           "text": "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "SPECIAL_OVERRIDE",
+          "variant": "self_gain_source_bp_compare_remove"
+        }
       },
       {
         "id": "UA45BT_TLR_1_048_on_life_trigger_a342b2ffe2",
@@ -6066,8 +6577,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "SELECT_AND_MOVE",
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "SPECIAL_OVERRIDE"
       ]
     }
   },

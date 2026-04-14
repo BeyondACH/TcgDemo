@@ -84,6 +84,13 @@ class CompileCardsEffectsTests(unittest.TestCase):
     MCR_CONDITIONAL_BP_REPLACE_MARKER_TEXT = "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
     MCR_DRAW_ACTIVATE_NAME_CONTAINS_AND_NAMED_TEXT = "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。"
     TLR_DUAL_BUFF_WITH_OPTIONAL_KEYWORD_TEXT = "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。"
+    TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_TEXT = "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+    TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_ONCE_PER_TURN_TEXT = "必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。"
+    TLR_BP_REMOVE_DYNAMIC_ENERGY_LTE_COUNT_TEXT = "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。"
+    TLR_HAND_SUMMON_NAMED_OR_ENERGY_LTE_WITH_SELF_GAIN_TEXT = "自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。"
+    TLR_CONDITIONAL_BP_CANNOT_BLOCK_TEXT = "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。"
+    TLR_SOURCE_BP_COMPARE_REMOVE_TEXT = "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。"
+    MCR_SHERYL_RAID_CHAIN_OVERRIDE_TEXT = "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -872,6 +879,76 @@ class CompileCardsEffectsTests(unittest.TestCase):
         )
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["template_metadata"]["variant"], "dual_buff_with_optional_keyword_placeholder")
+
+    def test_compile_trigger_supports_other_energy_lte_unblockable(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_013"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "other_energy_lte_unblockable_bp_gate")
+        self.assertEqual(ability["steps"][-1]["type"], "ADD_TEMP_KEYWORD")
+
+    def test_compile_trigger_supports_other_energy_lte_unblockable_once_per_turn(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_015"},
+            {"trigger": "MAIN_ACTIVATE", "source_label": "起動メイン", "effect_box": "OUTER", "text": self.TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_ONCE_PER_TURN_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "other_energy_lte_unblockable_bp_gate")
+        self.assertEqual(ability["steps"][-1]["type"], "SET_PLAYER_TURN_FLAG")
+
+    def test_compile_event_effect_supports_bp_remove_dynamic_energy_lte_count(self):
+        ability = _compile_event_effect(
+            {"id": "UA45BT_TLR_1_037", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.TLR_BP_REMOVE_DYNAMIC_ENERGY_LTE_COUNT_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "bp_remove_dynamic_name_gate_energy_lte_count")
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_trigger_supports_hand_summon_named_or_energy_lte_with_self_gain(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_043"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_HAND_SUMMON_NAMED_OR_ENERGY_LTE_WITH_SELF_GAIN_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "hand_summon_named_or_energy_lte_then_conditional_keyword_placeholder")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "PLAY_SELECTED_CARDS", "ADD_TEMP_KEYWORD"])
+
+    def test_compile_trigger_supports_conditional_bp_cannot_block(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_047"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_CONDITIONAL_BP_CANNOT_BLOCK_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "conditional_bp_gate_grant_cannot_block")
+        self.assertEqual(ability["steps"][-1]["keyword"], "CANNOT_BLOCK")
+
+    def test_compile_trigger_supports_source_bp_compare_remove(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_048"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_SOURCE_BP_COMPARE_REMOVE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "self_gain_source_bp_compare_remove")
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_event_effect_supports_mcr_sheryl_raid_chain_override(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_029", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_SHERYL_RAID_CHAIN_OVERRIDE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "mcr_sheryl_raid_chain_phase4")
+        self.assertEqual(ability["steps"][-1]["type"], "REGISTER_STATIC_MODIFIER")
 
     def test_compile_event_effect_supports_branch_choice_template(self):
         ability = _compile_event_effect(

@@ -256,7 +256,7 @@
 4. **W2-B4（收口）**：补 `THRESHOLD_REPLACE` 的条件替代分支并清理重复文本族。  
    - 目标收敛：`22 -> 20`
 
-> 2026-04-14 已落地（本轮）：`Week 3` 持续接入长尾模板后，新增 `conditional_bp_replace_marker`、`draw_activate_name_contains_and_named`、`dual_buff_with_optional_keyword_placeholder` 等模板并完成 `Phase 3` 收口，基线由 `33 -> 7`，已低于 `Phase 3` 目标 `8`。
+> 2026-04-14 已落地（本轮）：`Week 3` 持续接入长尾模板后，新增 `conditional_bp_replace_marker`、`draw_activate_name_contains_and_named`、`dual_buff_with_optional_keyword_placeholder` 等模板并完成 `Phase 3` 收口，基线由 `33 -> 7`，已低于 `Phase 3` 目标 `8`。随后进入 `Phase 4`，补齐剩余长尾与专项 override，基线继续收敛到 `0`（`MCR/TLR/MMM` 全系列清零）。
 
 ### 8.2 本段冻结项
 
@@ -271,7 +271,7 @@
 - 执行并记录：
   - `python tools/compile_cards_effects.py`
   - `python tools/report_support_stats.py`
-  - `python tools/check_unsupported_budget.py --max-total 7 --max-series MCR=1 --max-series TLR=6 --max-series MMM=0`
+  - `python tools/check_unsupported_budget.py --max-total 0 --max-series MCR=0 --max-series TLR=0 --max-series MMM=0`
 
 ### 8.4 风险与回滚策略
 
@@ -299,7 +299,7 @@
 ## 10. Week 2 执行进度（2026-04-14）
 
 - 本周目标：`Phase 2`（`40 -> 20`）
-- 当前进度：`UNSUPPORTED 40 -> 7`（`Phase 3` 目标达成）
+- 当前进度：`UNSUPPORTED 40 -> 0`（`Phase 4` 目标达成）
 - 本轮新增收敛模板：
   - `BP_THRESHOLD_REMOVE`（`card name contains` 条件替代）
   - `BP_DEBUFF`（基础/条件型）
@@ -317,4 +317,4 @@
   - `BP_THRESHOLD_REMOVE`（条件阈值替代标记）
   - `TEMP_BP_MODIFIER`（双目标 buff / 命名目标激活）
 - 当前门禁基线命令：
-  - `python tools/check_unsupported_budget.py --max-total 7 --max-series MCR=1 --max-series TLR=6 --max-series MMM=0`
+  - `python tools/check_unsupported_budget.py --max-total 0 --max-series MCR=0 --max-series TLR=0 --max-series MMM=0`
