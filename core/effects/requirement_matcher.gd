@@ -29,6 +29,9 @@ func _init_handlers() -> void:
 		"NOT": _req_not,
 		"OR": _req_or,
 		"CONTROLLER_HAS_NAME_IN_FIELD": _req_controller_has_name_in_field,
+		"CONTROLLER_HAS_NAME_IN_FRONT_LINE": _req_controller_has_name_in_front_line,
+		"CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD": _req_controller_has_name_contains_in_field,
+		"CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE": _req_controller_has_name_contains_in_front_line,
 		"CONTROLLER_HAS_NAME_IN_ZONE": _req_controller_has_name_in_zone,
 		"CONTROLLER_FIELD_ALL_NAMES_IN_SET": _req_controller_field_all_names_in_set,
 		"CARD_BP_LTE": _req_card_bp_lte,
@@ -196,6 +199,58 @@ func _req_controller_has_name_in_field(state: GameState, requirement: Dictionary
 			var field_def = state.get_card_def(field_card.def_id)
 			if field_def != null and field_def.name == required_name:
 				return true
+	return false
+
+func _req_controller_has_name_in_front_line(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return false
+	var player = state.get_player(source_card.controller_player_id)
+	if player == null:
+		return false
+	var required_name := str(requirement.get("value", ""))
+	for card_uid in player.front_line:
+		var field_card = state.get_card(str(card_uid))
+		if field_card == null:
+			continue
+		var field_def = state.get_card_def(field_card.def_id)
+		if field_def != null and field_def.name.find(required_name) != -1:
+			return true
+	return false
+
+func _req_controller_has_name_contains_in_field(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return false
+	var player = state.get_player(source_card.controller_player_id)
+	if player == null:
+		return false
+	var required_name_contains := str(requirement.get("value", ""))
+	for zone_cards in [player.front_line, player.energy_line]:
+		for card_uid in zone_cards:
+			var field_card = state.get_card(str(card_uid))
+			if field_card == null:
+				continue
+			var field_def = state.get_card_def(field_card.def_id)
+			if field_def != null and field_def.name.find(required_name_contains) != -1:
+				return true
+	return false
+
+func _req_controller_has_name_contains_in_front_line(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return false
+	var player = state.get_player(source_card.controller_player_id)
+	if player == null:
+		return false
+	var required_name_contains := str(requirement.get("value", ""))
+	for card_uid in player.front_line:
+		var field_card = state.get_card(str(card_uid))
+		if field_card == null:
+			continue
+		var field_def = state.get_card_def(field_card.def_id)
+		if field_def != null and field_def.name.find(required_name_contains) != -1:
+			return true
 	return false
 
 func _req_controller_has_name_in_zone(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:

@@ -2580,9 +2580,73 @@
         "timing": {
           "event": "ON_ENTER"
         },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+            "value": "ネメシス"
+          }
+        ],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NOT",
+                  "requirement": {
+                    "type": "CARD_BP_LTE",
+                    "value": 1499
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NOT",
+                  "requirement": {
+                    "type": "CARD_BP_LTE",
+                    "value": 1499
+                  }
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": -1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2591,8 +2655,11 @@
           "effect_box": "OUTER",
           "text": "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_DEBUFF",
+          "variant": "conditional_bp_gte_target_temp_debuff"
+        }
       },
       {
         "id": "UA45BT_TLR_1_021_on_life_trigger_91b04beda2",
@@ -2623,8 +2690,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "DRAW_1"
+        "TEMP_BP",
+        "DRAW_1",
+        "BP_DEBUFF"
       ]
     }
   },
@@ -2808,8 +2876,67 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NOT",
+                  "requirement": {
+                    "type": "CARD_BP_LTE",
+                    "value": 1499
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NOT",
+                  "requirement": {
+                    "type": "CARD_BP_LTE",
+                    "value": 1499
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": -1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -2818,8 +2945,11 @@
           "effect_box": "RAID_INNER",
           "text": "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_DEBUFF",
+          "variant": "bp_gte_target_temp_debuff"
+        }
       },
       {
         "id": "UA45BT_TLR_1_023_on_life_trigger_a342b2ffe2",
@@ -2850,7 +2980,9 @@
       "semantic_available": true,
       "semantic_template_types": [
         "UNSUPPORTED",
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "TEMP_BP",
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "BP_DEBUFF"
       ]
     }
   },
@@ -3196,8 +3328,60 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_discard"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3206,8 +3390,11 @@
           "effect_box": "OUTER",
           "text": "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "OPTIONAL_COST_THEN_EFFECT",
+          "variant": "optional_discard_then_ready_self"
+        }
       },
       {
         "id": "UA45BT_TLR_1_027_on_life_trigger_91b04beda2",
@@ -3238,8 +3425,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "DRAW_1"
+        "LIFE_TO_HAND_AND_READY_SOURCE",
+        "DRAW_1",
+        "OPTIONAL_COST_THEN_EFFECT"
       ]
     }
   },

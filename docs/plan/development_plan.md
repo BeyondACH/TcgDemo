@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-04-09
+更新时间：2026-04-14
 
 ## 1. 计划摘要
 
@@ -91,6 +91,21 @@
 - `P2-2` 已新增原子复用矩阵脚本：`tools/report_atom_usage_matrix.py`，并产出 `docs/plan/atom_usage_matrix.md`。
 - `P2-3` 已新增编译产物快照脚本：`tools/snapshot_compiler_metrics.py`，并写入基线 `docs/plan/compiler_metrics_snapshot.json`。
 - `P2-4` 已新增准入规范：`docs/plan/new_capability_checklist.md`，用于后续能力接入标准化。
+
+
+## 2.7 2026-04-14 cards 未支持能力全量清零计划补充
+
+- 已新增 `docs/plan/cards_unsupported_abilities_plan.md`，作为“`UNSUPPORTED 60 -> 0`”专项实施主文档，覆盖分阶段目标、模板族优先级、按卡号清单、DoD 与滚动排期。
+- 本轮专项以“先模板族、再组合链、后长尾与 override”为主线，且继续遵守 `rule.md` 口径与“禁止按卡硬编码”约束。
+- 阶段里程碑按 `Phase 0~5` 管理：
+  - `Phase 1` 目标：`60 -> 40`（高频模板族）。
+  - `Phase 2` 目标：`40 -> 20`（分支与组合能力）。
+  - `Phase 3` 目标：`20 -> 8`（enter/activate/attack 长尾）。
+  - `Phase 4` 目标：`8 -> 0`（含 `UA36BT_MCR_1_048` 专项收口）。
+- `Phase 0` 已落地第一批执行资产：`tools/check_unsupported_budget.py` + `docs/plan/unsupported_budget_baseline.json`，用于在 PR 阶段阻止 `UNSUPPORTED` 回升。
+- `Week 1` 已执行完成：`python tools/compile_cards_effects.py` 基线已收敛至 `Unsupported abilities: 40`，与 `Phase 1` 里程碑对齐。
+- `Week 2` 当前执行进度：基线已继续收敛到 `Unsupported abilities: 33`，并完成首批分支/条件模板化，后续继续按 `Phase 2` 目标推进到 `20`。
+- 若后续执行导致里程碑顺序、接口冻结项、测试策略或 DSL/IR 契约调整，必须先同步本文件与专项计划，再进入实现。
 
 ## 3. 开发阶段规划
 

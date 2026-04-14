@@ -56,6 +56,16 @@ class CompileCardsEffectsTests(unittest.TestCase):
     TLR_HAND_SUMMON_TEXT = "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。"
     TLR_BP_PLUS_TEXT = "自分の場の他のキャラを1枚選び、このターン中、BP+1000。"
     TLR_BRANCH_SELECT_ONE_TEXT = "以下から1つ選ぶ。"
+    MCR_LIFE_TRIGGER_RAID_CHOICE_TEXT = "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+    MCR_BP_BOUNCE_TEXT = "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。"
+    MCR_CONDITIONAL_PREVIEW_TEXT = "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+    MCR_PLAY_CONDITION_TEXT = "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。"
+    MCR_PLAY_CONDITION_NAME_CONTAINS_TEXT = "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。"
+    MCR_AP_REDUCE_NAME_CONTAINS_TEXT = "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
+    MCR_BP_DYNAMIC_NAME_CONTAINS_TEXT = "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、『BP5000以下』に代わる。"
+    TLR_BP_DEBUFF_TEXT = "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。"
+    TLR_CONDITIONAL_BP_DEBUFF_TEXT = "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+    TLR_OPTIONAL_DISCARD_READY_SELF_TEXT = "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -258,20 +268,184 @@ class CompileCardsEffectsTests(unittest.TestCase):
             },
         )
 
-        semantic_entry = _build_semantic_entry(
+    def test_compile_trigger_supports_life_trigger_raid_choice_template(self):
+        ability = _compile_trigger(
+            {"id": "UA36BT_MCR_1_011"},
             {
-                "id": "UA31BT_MMM_1_094",
-                "analysis": {"source": "test-source"},
-                "card_meta": {
-                    "keywords": [],
-                    "text": {"effect": self.BP_THRESHOLD_TEXT, "trigger": "", "rule": ""},
-                },
-                "abilities": [ability],
-            }
+                "trigger": "ON_LIFE_TRIGGER",
+                "source_label": "ライフトリガー",
+                "effect_box": "OUTER",
+                "text": self.MCR_LIFE_TRIGGER_RAID_CHOICE_TEXT,
+            },
+            {},
         )
 
-        self.assertEqual(semantic_entry["template_types"], ["SELECT_AND_MOVE", "BP_THRESHOLD_REMOVE"])
-        self.assertEqual(semantic_entry["abilities"][0]["template_type"], "BP_THRESHOLD_REMOVE")
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"], [{"type": "LIFE_TRIGGER_RAID_CHOICE"}])
+        self.assertEqual(
+            ability["template_metadata"],
+            {
+                "family": "LIFE_TRIGGER_RAID_CHOICE",
+                "variant": "add_to_hand_or_raid_if_possible",
+            },
+        )
+
+    def test_compile_trigger_supports_bp_bounce_to_hand_template(self):
+        ability = _compile_trigger(
+            {"id": "UA36BT_MCR_1_041"},
+            {
+                "trigger": "ON_LIFE_TRIGGER",
+                "source_label": "ライフトリガー",
+                "effect_box": "OUTER",
+                "text": self.MCR_BP_BOUNCE_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["template_metadata"],
+            {
+                "family": "BP_FILTER_BOUNCE",
+                "variant": "bp_threshold_return_to_hand_required",
+            },
+        )
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+        self.assertEqual(ability["steps"][-1]["to"], "HAND")
+
+    def test_compile_event_effect_supports_conditional_preview_top_template(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_065", "card_type": "EVENT"},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.MCR_CONDITIONAL_PREVIEW_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["template_metadata"],
+            {
+                "family": "PREVIEW_TOP_POSITION",
+                "variant": "conditional_preview_one_then_choose_top_or_bottom",
+            },
+        )
+        self.assertEqual(
+            ability["requirements"],
+            [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "ランカ・リー"}],
+        )
+
+    def test_compile_event_effect_supports_front_line_play_condition(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_030", "card_type": "EVENT"},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.MCR_PLAY_CONDITION_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["requirements"],
+            [{"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": "ランカ・リー"}],
+        )
+
+    def test_compile_event_effect_supports_name_contains_play_condition(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_049", "card_type": "EVENT"},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.MCR_PLAY_CONDITION_NAME_CONTAINS_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["requirements"][0]["type"], "OR")
+
+    def test_compile_event_effect_skips_name_contains_ap_cost_modifier_text(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_065", "card_type": "EVENT"},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.MCR_AP_REDUCE_NAME_CONTAINS_TEXT,
+            },
+            {},
+        )
+        self.assertIsNone(ability)
+
+    def test_compile_event_effect_supports_dynamic_bp_remove_name_contains(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_098", "card_type": "EVENT"},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.MCR_BP_DYNAMIC_NAME_CONTAINS_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["template_metadata"],
+            {
+                "family": "BP_THRESHOLD_REMOVE",
+                "variant": "bp_threshold_remove_dynamic_name_contains_gate",
+            },
+        )
+
+    def test_compile_trigger_supports_bp_debuff_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_023"},
+            {
+                "trigger": "MAIN_ACTIVATE",
+                "source_label": "起動メイン",
+                "effect_box": "OUTER",
+                "text": self.TLR_BP_DEBUFF_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "BP_DEBUFF")
+
+    def test_compile_trigger_supports_conditional_bp_debuff_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_021"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_CONDITIONAL_BP_DEBUFF_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["requirements"],
+            [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "ネメシス"}],
+        )
+
+    def test_compile_trigger_supports_optional_discard_ready_self_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_027"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_OPTIONAL_DISCARD_READY_SELF_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "OPTIONAL_COST_THEN_EFFECT")
 
     def test_build_semantic_entry_extends_mixed_template_types_with_stable_family(self):
         semantic_entry = _build_semantic_entry(
