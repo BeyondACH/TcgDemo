@@ -717,7 +717,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -726,15 +730,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -785,7 +792,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -794,15 +805,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -1400,7 +1414,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1409,15 +1427,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -1469,7 +1490,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -1478,15 +1503,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -2195,7 +2223,12 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
-      "requirements": [],
+      "requirements": [
+        {
+          "type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE",
+          "value": "ランカ・リー"
+        }
+      ],
       "enter_state": "RESTED"
     },
     "abilities": [
@@ -2229,7 +2262,12 @@
         "timing": {
           "event": "ON_PLAY"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE",
+            "value": "ランカ・リー"
+          }
+        ],
         "target_specs": [],
         "steps": [],
         "limits": {
@@ -2240,8 +2278,7 @@
           "effect_box": "OUTER",
           "text": "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA36BT_MCR_1_030_on_play_536516f54f",
@@ -2347,8 +2384,9 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED",
+        "NO_OP",
         "COMPOSITE",
+        "UNSUPPORTED",
         "MULTI_BRANCH_CHOICE"
       ]
     }
@@ -3181,8 +3219,61 @@
           "event": "ON_LIFE_TRIGGER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 3500
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 3500
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "HAND",
+            "target_player_mode": "CARD_CONTROLLER"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3191,15 +3282,19 @@
           "effect_box": "OUTER",
           "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_FILTER_BOUNCE",
+          "variant": "bp_threshold_return_to_hand_required"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE",
+        "BP_FILTER_BOUNCE"
       ]
     }
   },
@@ -3364,7 +3459,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3373,15 +3472,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -3436,7 +3538,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -3445,15 +3551,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -3792,7 +3901,21 @@
         "timing": {
           "event": "ON_PLAY"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "OR",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "ガルド"
+              }
+            ]
+          }
+        ],
         "target_specs": [],
         "steps": [],
         "limits": {
@@ -3803,8 +3926,7 @@
           "effect_box": "OUTER",
           "text": "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       },
       {
         "id": "UA36BT_MCR_1_049_on_play_2d32b02032",
@@ -3832,6 +3954,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
+        "NO_OP",
         "UNSUPPORTED"
       ]
     }
@@ -4384,8 +4507,61 @@
           "event": "ON_LIFE_TRIGGER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 3500
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 3500
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "HAND",
+            "target_player_mode": "CARD_CONTROLLER"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4394,15 +4570,19 @@
           "effect_box": "OUTER",
           "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_FILTER_BOUNCE",
+          "variant": "bp_threshold_return_to_hand_required"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE",
+        "BP_FILTER_BOUNCE"
       ]
     }
   },
@@ -4568,7 +4748,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4577,15 +4761,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -4748,7 +4935,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4757,15 +4948,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -4820,7 +5014,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4829,15 +5027,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -4932,7 +5133,23 @@
     "play_rule": {
       "mode": "NORMAL",
       "special_modes": [],
-      "cost_modifiers": [],
+      "cost_modifiers": [
+        {
+          "type": "SELF_HAND_AP_DELTA",
+          "from_zone": "HAND",
+          "ap_delta": -1,
+          "requirements": [
+            {
+              "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+              "value": "アルト"
+            }
+          ],
+          "ui": {
+            "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。",
+            "effect_box": "OUTER"
+          }
+        }
+      ],
       "requirements": [],
       "enter_state": "RESTED"
     },
@@ -4999,26 +5216,6 @@
         "status": "SUPPORTED"
       },
       {
-        "id": "UA36BT_MCR_1_065_on_play_7a8ea21d90",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
-        },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
-      },
-      {
         "id": "UA36BT_MCR_1_065_on_play_78e3e36e0b",
         "kind": "TRIGGERED",
         "timing": {
@@ -5064,9 +5261,42 @@
         "timing": {
           "event": "ON_PLAY"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+            "value": "ランカ・リー"
+          }
+        ],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 1,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_destination",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "BOTTOM"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position_from_var": "selected_preview_destination",
+            "target_player_mode": "SOURCE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -5075,8 +5305,11 @@
           "effect_box": "OUTER",
           "text": "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_TOP_POSITION",
+          "variant": "conditional_preview_one_then_choose_top_or_bottom"
+        }
       }
     ],
     "analysis": {
@@ -5084,7 +5317,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "UNSUPPORTED",
+        "PREVIEW_TOP_POSITION"
       ]
     }
   },
@@ -6006,7 +6240,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -6015,15 +6253,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -6987,7 +7228,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -6996,15 +7241,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -7058,7 +7306,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7067,15 +7319,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -7130,7 +7385,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7139,15 +7398,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },
@@ -7544,8 +7806,92 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                        "value": "マクシミリアン・ジーナス"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                        "value": "マクシミリアン・ジーナス"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7554,8 +7900,11 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、『BP5000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_dynamic_name_contains_gate"
+        }
       }
     ],
     "analysis": {
@@ -7563,7 +7912,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -7957,8 +8306,61 @@
           "event": "ON_LIFE_TRIGGER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 3500
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 3500
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "HAND",
+            "target_player_mode": "CARD_CONTROLLER"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7967,15 +8369,19 @@
           "effect_box": "OUTER",
           "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_FILTER_BOUNCE",
+          "variant": "bp_threshold_return_to_hand_required"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE",
+        "BP_FILTER_BOUNCE"
       ]
     }
   },
@@ -8225,7 +8631,23 @@
     "play_rule": {
       "mode": "NORMAL",
       "special_modes": [],
-      "cost_modifiers": [],
+      "cost_modifiers": [
+        {
+          "type": "SELF_HAND_AP_DELTA",
+          "from_zone": "HAND",
+          "ap_delta": -1,
+          "requirements": [
+            {
+              "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+              "value": "アルト"
+            }
+          ],
+          "ui": {
+            "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。",
+            "effect_box": "OUTER"
+          }
+        }
+      ],
       "requirements": [],
       "enter_state": "RESTED"
     },
@@ -8292,26 +8714,6 @@
         "status": "SUPPORTED"
       },
       {
-        "id": "UA36ST_MCR_1_065_on_play_7a8ea21d90",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
-        },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
-      },
-      {
         "id": "UA36ST_MCR_1_065_on_play_78e3e36e0b",
         "kind": "TRIGGERED",
         "timing": {
@@ -8357,9 +8759,42 @@
         "timing": {
           "event": "ON_PLAY"
         },
-        "requirements": [],
+        "requirements": [
+          {
+            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+            "value": "ランカ・リー"
+          }
+        ],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 1,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_destination",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "BOTTOM"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position_from_var": "selected_preview_destination",
+            "target_player_mode": "SOURCE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -8368,8 +8803,11 @@
           "effect_box": "OUTER",
           "text": "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_TOP_POSITION",
+          "variant": "conditional_preview_one_then_choose_top_or_bottom"
+        }
       }
     ],
     "analysis": {
@@ -8377,7 +8815,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "UNSUPPORTED",
+        "PREVIEW_TOP_POSITION"
       ]
     }
   },
@@ -8858,7 +9297,11 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "LIFE_TRIGGER_RAID_CHOICE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -8867,15 +9310,18 @@
           "effect_box": "OUTER",
           "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "LIFE_TRIGGER_RAID_CHOICE",
+          "variant": "add_to_hand_or_raid_if_possible"
+        }
       }
     ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
   },

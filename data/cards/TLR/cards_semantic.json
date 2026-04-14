@@ -602,17 +602,18 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "DRAW_1"
+      "TEMP_BP",
+      "DRAW_1",
+      "BP_DEBUFF"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_021_on_enter_68ca61c02a",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_DEBUFF"
       },
       {
         "id": "UA45BT_TLR_1_021_on_life_trigger_91b04beda2",
@@ -623,10 +624,8 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
       "trigger": "カードを1枚引く。",
@@ -666,7 +665,9 @@
     ],
     "template_types": [
       "UNSUPPORTED",
-      "LIFE_TRIGGER_RAID_CHOICE"
+      "TEMP_BP",
+      "LIFE_TRIGGER_RAID_CHOICE",
+      "BP_DEBUFF"
     ],
     "abilities": [
       {
@@ -680,10 +681,10 @@
       {
         "id": "UA45BT_TLR_1_023_main_activate_ba34325275",
         "timing": "MAIN_ACTIVATE",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_DEBUFF"
       },
       {
         "id": "UA45BT_TLR_1_023_on_life_trigger_a342b2ffe2",
@@ -795,17 +796,18 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "DRAW_1"
+      "LIFE_TO_HAND_AND_READY_SOURCE",
+      "DRAW_1",
+      "OPTIONAL_COST_THEN_EFFECT"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_027_on_enter_02e747d62b",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "OPTIONAL_COST_THEN_EFFECT"
       },
       {
         "id": "UA45BT_TLR_1_027_on_life_trigger_91b04beda2",
@@ -816,10 +818,8 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1000。\n自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。",
       "trigger": "カードを1枚引く。",

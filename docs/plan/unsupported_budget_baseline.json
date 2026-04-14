@@ -1,0 +1,8 @@
+{
+  "total_unsupported": 33,
+  "per_series_unsupported": {
+    "MCR": 15,
+    "MMM": 0,
+    "TLR": 18
+  }
+}

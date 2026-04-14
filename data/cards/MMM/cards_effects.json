@@ -3670,6 +3670,10 @@
               "value": "アルティメットまどか"
             }
           ]
+        },
+        {
+          "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+          "value": "鹿目 まどか〉か〈アルティメットまどか"
         }
       ],
       "enter_state": "RESTED"

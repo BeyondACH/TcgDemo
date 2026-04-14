@@ -81,6 +81,12 @@ def _build_play_requirements(card: dict) -> list[dict]:
                     ],
                 }
             )
+        match = re.fullmatch(r"このカードは自分のフロントLに〈(.+)〉がある場合のみ使用できる。", text)
+        if match:
+            requirements.append({"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": match.group(1)})
+        match = re.fullmatch(r"このカードは自分の場に〈(.+)〉がある場合のみ使用できる。", text)
+        if match:
+            requirements.append({"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(1)})
         match = re.fullmatch(r"〈(.+)〉は1ターンに1枚のみ使用できる。", text)
         if match:
             requirements.append(
@@ -134,6 +140,28 @@ def _build_play_cost_modifiers(card: dict) -> list[dict]:
                 "requirements": [
                     {
                         "type": "CONTEXT_TARGET_NAME_IS",
+                        "value": match.group(1),
+                    }
+                ],
+                "ui": {
+                    "text": text,
+                    "effect_box": str(effect_entry.get("effect_box", "OUTER")),
+                },
+            }
+        )
+    for effect_entry in card.get("effects", []):
+        text = str(effect_entry.get("text", "")).strip()
+        match = re.fullmatch(r"自分の場にカード名に「(.+)」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。", text)
+        if not match:
+            continue
+        modifiers.append(
+            {
+                "type": "SELF_HAND_AP_DELTA",
+                "from_zone": "HAND",
+                "ap_delta": -1,
+                "requirements": [
+                    {
+                        "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
                         "value": match.group(1),
                     }
                 ],
@@ -2053,6 +2081,49 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
             "TRIGGERED",
         )
 
+    match = re.fullmatch(r"このカードは自分のフロントLに〈(.+)〉がある場合のみ使用できる。", text)
+    if match:
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [{"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": match.group(1)}],
+            [],
+            [],
+            "TRIGGERED",
+        )
+
+    match = re.fullmatch(r"このカードは自分の場に〈(.+)〉がある場合のみ使用できる。", text)
+    if match:
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(1)}],
+            [],
+            [],
+            "TRIGGERED",
+        )
+    match = re.fullmatch(r"このカードは自分の場にカード名に「(.+)」か「(.+)」を含むキャラがある場合のみ使用できる。", text)
+    if match:
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [
+                {
+                    "type": "OR",
+                    "requirements": [
+                        {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(1)},
+                        {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(2)},
+                    ],
+                }
+            ],
+            [],
+            [],
+            "TRIGGERED",
+        )
+
     match = re.fullmatch(r"〈(.+)〉は1ターンに1枚のみ使用できる。", text)
     if match:
         return _supported_ability(
@@ -2291,6 +2362,8 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
     if re.fullmatch(r"自分の場に〈(.+)〉がある場合、手札にあるこのカードの消費APを-1する。", text):
         return None
     if re.fullmatch(r"〈(.+)〉を選んで使用する場合、このカードの消費APを-1する。", text):
+        return None
+    if re.fullmatch(r"自分の場にカード名に「(.+)」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。", text):
         return None
 
     if text == "自分のフロントLのキャラを1枚選び、このターン中、BP+2000と（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分の場に〈暁美 ほむら〉がある場合、カードを1枚引く。":
@@ -2686,6 +2759,31 @@ def _build_bp_remove_ability(
     )
 
 
+def _build_bp_bounce_to_hand_ability(
+    card: dict,
+    trigger_entry: dict,
+    event_name: str,
+    requirements: list[dict],
+    *,
+    min_count: int = 1,
+    max_count: int = 1,
+    kind: str | None = None,
+    template_metadata: dict | None = None,
+) -> dict:
+    target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements, min_count, max_count)
+    steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "HAND", "target_player_mode": "CARD_CONTROLLER"})
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        kind,
+        template_metadata=template_metadata,
+    )
+
+
 def _bp_remove_from_match_builder_factory(*, min_count: int = 1, max_count: int = 1, kind: str | None = None):
     def _builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
         requirements = [{"type": "CARD_BP_LTE", "value": int(payload["match"].group(1))}]
@@ -2703,6 +2801,34 @@ def _bp_remove_from_match_builder_factory(*, min_count: int = 1, max_count: int 
     return _builder
 
 
+def _life_trigger_raid_choice_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        [{"type": "LIFE_TRIGGER_RAID_CHOICE"}],
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _bp_bounce_to_hand_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    requirements = [{"type": "CARD_BP_LTE", "value": int(payload["match"].group(1))}]
+    max_count = int(payload["match"].group(2))
+    return _build_bp_bounce_to_hand_ability(
+        card,
+        trigger_entry,
+        event_name,
+        requirements,
+        min_count=max_count,
+        max_count=max_count,
+        kind=payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
 def _bp_remove_dynamic_name_gate_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
     requirements = [
@@ -2711,6 +2837,28 @@ def _bp_remove_dynamic_name_gate_builder(card: dict, trigger_entry: dict, event_
             "value_provider": _conditional_value_provider(
                 _fixed_value_provider(int(match.group(1))),
                 [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(2)}],
+                _fixed_value_provider(int(match.group(3))),
+            ),
+        }
+    ]
+    return _build_bp_remove_ability(
+        card,
+        trigger_entry,
+        event_name,
+        requirements,
+        kind=payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _bp_remove_dynamic_name_contains_gate_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    requirements = [
+        {
+            "type": "CARD_BP_LTE_DYNAMIC",
+            "value_provider": _conditional_value_provider(
+                _fixed_value_provider(int(match.group(1))),
+                [{"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(2)}],
                 _fixed_value_provider(int(match.group(3))),
             ),
         }
@@ -2929,6 +3077,13 @@ def _preview_top_then_choose_top_or_bottom_builder(card: dict, trigger_entry: di
     )
 
 
+def _conditional_preview_top_then_choose_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    ability = _preview_top_then_choose_top_or_bottom_builder(card, trigger_entry, event_name, _text, _card_id, payload)
+    ability["requirements"] = [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(1)}]
+    return ability
+
+
 def _conditional_draw_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
     requirements: list[dict] = []
@@ -2943,6 +3098,80 @@ def _conditional_draw_builder(card: dict, trigger_entry: dict, event_name: str, 
         trigger_entry,
         requirements,
         [],
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _bp_debuff_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    threshold = int(match.group(1))
+    debuff = int(match.group(2))
+    target_specs, steps = _manual_single_target(
+        "OPPONENT",
+        ["FRONT_LINE"],
+        [{"type": "NOT", "requirement": {"type": "CARD_BP_LTE", "value": threshold - 1}}],
+        1,
+        1,
+        "selected_target",
+    )
+    steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": -debuff, "expires": "END_OF_TURN"})
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _conditional_bp_debuff_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    threshold = int(match.group(2))
+    debuff = int(match.group(3))
+    target_specs, steps = _manual_single_target(
+        "OPPONENT",
+        ["FRONT_LINE"],
+        [{"type": "NOT", "requirement": {"type": "CARD_BP_LTE", "value": threshold - 1}}],
+        0,
+        1,
+        "selected_target",
+    )
+    steps.append({"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": -debuff, "expires": "END_OF_TURN"})
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(1)}],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _optional_discard_ready_self_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    discard_count = int(match.group(1))
+    target_specs, steps = _manual_single_target("SELF", ["HAND"], [], 0, discard_count, "selected_discard")
+    steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_discard", "to": "OUTSIDE"})
+    steps.append(
+        {
+            "type": "ACTIVATE_CARD",
+            "target_uid": "SOURCE_CARD",
+            "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_discard"}],
+        }
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
         steps,
         payload.get("kind"),
         template_metadata=payload.get("template_metadata"),
@@ -3088,6 +3317,14 @@ def _branch_choice_builder(card: dict, trigger_entry: dict, event_name: str, _te
 
 _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     _TemplateRule(
+        name="trigger.life_trigger.raid_choice",
+        event_filter="ON_LIFE_TRIGGER",
+        matcher=_exact_text_match("このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"),
+        builder=_life_trigger_raid_choice_builder,
+        priority=260,
+        template_metadata={"family": "LIFE_TRIGGER_RAID_CHOICE", "variant": "add_to_hand_or_raid_if_possible"},
+    ),
+    _TemplateRule(
         name="trigger.choice_branch.select_one",
         event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
         matcher=_exact_text_match("以下から1つ選ぶ。"),
@@ -3110,6 +3347,30 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_conditional_draw_builder,
         priority=205,
         template_metadata={"family": "CONDITIONAL_DRAW", "variant": "field_state_conditional_draw"},
+    ),
+    _TemplateRule(
+        name="trigger.bp_debuff",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_regex_match(r"BP(\d+)以上の相手のフロントLのキャラを1枚選び、このターン中、BP-(\d+)。"),
+        builder=_bp_debuff_builder,
+        priority=204,
+        template_metadata={"family": "BP_DEBUFF", "variant": "bp_gte_target_temp_debuff"},
+    ),
+    _TemplateRule(
+        name="trigger.conditional_bp_debuff",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_regex_match(r"自分の場に〈(.+)〉がある場合、BP(\d+)以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-(\d+)。"),
+        builder=_conditional_bp_debuff_builder,
+        priority=204,
+        template_metadata={"family": "BP_DEBUFF", "variant": "conditional_bp_gte_target_temp_debuff"},
+    ),
+    _TemplateRule(
+        name="trigger.optional_discard_ready_self",
+        event_filter="ON_ENTER",
+        matcher=_regex_match(r"自分の手札を(\d+)枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。"),
+        builder=_optional_discard_ready_self_builder,
+        priority=203,
+        template_metadata={"family": "OPTIONAL_COST_THEN_EFFECT", "variant": "optional_discard_then_ready_self"},
     ),
     _TemplateRule(
         name="trigger.optional_ap_damage",
@@ -3227,6 +3488,14 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         template_metadata={"family": "BP_SUM_LIMIT_REMOVE", "variant": "bp_sum_limit_remove_dynamic_energy_line"},
     ),
     _TemplateRule(
+        name="trigger.bp_bounce_to_hand",
+        event_filter=("ON_ENTER", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを(\d+)枚選び、手札に戻す。"),
+        builder=_bp_bounce_to_hand_builder,
+        priority=134,
+        template_metadata={"family": "BP_FILTER_BOUNCE", "variant": "bp_threshold_return_to_hand_required"},
+    ),
+    _TemplateRule(
         name="trigger.preview_add_to_hand.name_contains_discard",
         event_filter="ON_ENTER",
         matcher=_regex_match(r"自分の山札の上から(\d+)枚見て、カード名に「(.+)」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
@@ -3265,6 +3534,14 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "select_one_from_following"},
     ),
     _TemplateRule(
+        name="event.conditional_preview_top.choose_top_or_bottom",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"・?自分の場に〈(.+)〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"),
+        builder=_conditional_preview_top_then_choose_builder,
+        priority=211,
+        template_metadata={"family": "PREVIEW_TOP_POSITION", "variant": "conditional_preview_one_then_choose_top_or_bottom"},
+    ),
+    _TemplateRule(
         name="event.preview_add_to_hand.065_trait_distinct",
         event_filter="ON_PLAY",
         matcher=_exact_text_match("自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"),
@@ -3301,6 +3578,14 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_bp_remove_dynamic_name_gate_builder,
         priority=125,
         template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_dynamic_name_gate"},
+    ),
+    _TemplateRule(
+        name="event.bp_remove.dynamic_name_contains_gate",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「(.+)」を含むキャラがある場合、『?BP(\d+)以下』?に代わる。"),
+        builder=_bp_remove_dynamic_name_contains_gate_builder,
+        priority=126,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_dynamic_name_contains_gate"},
     ),
     _TemplateRule(
         name="event.bp_remove.dynamic_sayaka_life",
