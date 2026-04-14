@@ -2856,8 +2856,74 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value_provider": {
+              "type": "CONDITIONAL",
+              "default": {
+                "type": "FIXED",
+                "value": 0
+              },
+              "when": [
+                {
+                  "type": "NOT",
+                  "requirement": {
+                    "type": "CARD_BP_LTE",
+                    "value": 2499
+                  }
+                }
+              ],
+              "then": {
+                "type": "FIXED",
+                "value": -2000
+              }
+            },
+            "expires": "UNTIL_NEXT_SELF_TURN_START"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2866,8 +2932,11 @@
           "effect_box": "RAID_INNER",
           "text": "相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "REST_CONTROL",
+          "variant": "rest_then_conditional_bp_debuff_until_next_turn"
+        }
       },
       {
         "id": "UA45BT_TLR_1_023_main_activate_ba34325275",
@@ -2979,9 +3048,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
         "TEMP_BP",
         "LIFE_TRIGGER_RAID_CHOICE",
+        "REST_CONTROL",
         "BP_DEBUFF"
       ]
     }
@@ -4734,8 +4803,92 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "ネメシス"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 3000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "ネメシス"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "REMOVED"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4744,8 +4897,11 @@
           "effect_box": "OUTER",
           "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_to_removed_dynamic_name_gate"
+        }
       }
     ],
     "analysis": {
@@ -4753,7 +4909,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -6186,8 +6342,84 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value_provider": {
+              "type": "CONDITIONAL",
+              "default": {
+                "type": "FIXED",
+                "value": 1000
+              },
+              "when": [
+                {
+                  "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+                  "player": "SELF",
+                  "zones": [
+                    "FRONT_LINE",
+                    "ENERGY_LINE"
+                  ],
+                  "value": 5
+                }
+              ],
+              "then": {
+                "type": "FIXED",
+                "value": 2000
+              }
+            },
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -6196,8 +6428,11 @@
           "effect_box": "OUTER",
           "text": "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_BP_MODIFIER",
+          "variant": "self_other_character_bp_plus_conditional_upgrade"
+        }
       },
       {
         "id": "UA45BT_TLR_1_052_on_life_trigger_91b04beda2",
@@ -6228,8 +6463,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "DRAW_1"
+        "TEMP_BP",
+        "DRAW_1",
+        "TEMP_BP_MODIFIER"
       ]
     }
   },
@@ -7119,9 +7355,79 @@
         "timing": {
           "event": "ON_ENTER"
         },
-        "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "requirements": [
+          {
+            "type": "NOT",
+            "requirement": {
+              "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+              "player": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "value": 4
+            }
+          }
+        ],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NAME_CONTAINS",
+                  "value": "デビルーク"
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NAME_CONTAINS",
+                  "value": "デビルーク"
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "FRONT_LINE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7130,8 +7436,11 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "ZONE_MOVE",
+          "variant": "energy_to_front_if_slot_open_name_contains"
+        }
       },
       {
         "id": "UA45BT_TLR_1_060_on_life_trigger_91b04beda2",
@@ -7162,8 +7471,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "DRAW_1"
+        "SELECT_AND_MOVE",
+        "DRAW_1",
+        "ZONE_MOVE"
       ]
     }
   },
@@ -7257,7 +7567,84 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_branch_option",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "BRANCH_1",
+                "BRANCH_2"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": {
+              "BRANCH_1": [
+                {
+                  "type": "RUN_COMPOSITE_IF",
+                  "if_requirements": [
+                    {
+                      "type": "NOT",
+                      "requirement": {
+                        "type": "PLAYER_TURN_FLAG_TRUE",
+                        "player": "SELF",
+                        "flag": "UA45BT_TLR_1_062_branch_1_used_this_turn"
+                      }
+                    }
+                  ],
+                  "steps": [
+                    {
+                      "type": "PENDING_BRANCH_EFFECT",
+                      "text": "自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+                    },
+                    {
+                      "type": "SET_PLAYER_TURN_FLAG",
+                      "player": "SELF",
+                      "flag": "UA45BT_TLR_1_062_branch_1_used_this_turn",
+                      "value": true
+                    }
+                  ]
+                }
+              ],
+              "BRANCH_2": [
+                {
+                  "type": "RUN_COMPOSITE_IF",
+                  "if_requirements": [
+                    {
+                      "type": "NOT",
+                      "requirement": {
+                        "type": "PLAYER_TURN_FLAG_TRUE",
+                        "player": "SELF",
+                        "flag": "UA45BT_TLR_1_062_branch_2_used_this_turn"
+                      }
+                    }
+                  ],
+                  "steps": [
+                    {
+                      "type": "PENDING_BRANCH_EFFECT",
+                      "text": "自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。"
+                    },
+                    {
+                      "type": "SET_PLAYER_TURN_FLAG",
+                      "player": "SELF",
+                      "flag": "UA45BT_TLR_1_062_branch_2_used_this_turn",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            },
+            "default_steps": []
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7266,8 +7653,11 @@
           "effect_box": "RAID_INNER",
           "text": "以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "MULTI_BRANCH_CHOICE",
+          "variant": "select_one_non_repeat_per_turn"
+        }
       },
       {
         "id": "UA45BT_TLR_1_062_on_life_trigger_a342b2ffe2",
@@ -7297,8 +7687,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "COMPOSITE",
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "MULTI_BRANCH_CHOICE"
       ]
     }
   },
@@ -8068,7 +8459,84 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_branch_option",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "BRANCH_1",
+                "BRANCH_2"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": {
+              "BRANCH_1": [
+                {
+                  "type": "RUN_COMPOSITE_IF",
+                  "if_requirements": [
+                    {
+                      "type": "NOT",
+                      "requirement": {
+                        "type": "PLAYER_TURN_FLAG_TRUE",
+                        "player": "SELF",
+                        "flag": "UA45BT_TLR_1_069_branch_1_used_this_turn"
+                      }
+                    }
+                  ],
+                  "steps": [
+                    {
+                      "type": "PENDING_BRANCH_EFFECT",
+                      "text": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+                    },
+                    {
+                      "type": "SET_PLAYER_TURN_FLAG",
+                      "player": "SELF",
+                      "flag": "UA45BT_TLR_1_069_branch_1_used_this_turn",
+                      "value": true
+                    }
+                  ]
+                }
+              ],
+              "BRANCH_2": [
+                {
+                  "type": "RUN_COMPOSITE_IF",
+                  "if_requirements": [
+                    {
+                      "type": "NOT",
+                      "requirement": {
+                        "type": "PLAYER_TURN_FLAG_TRUE",
+                        "player": "SELF",
+                        "flag": "UA45BT_TLR_1_069_branch_2_used_this_turn"
+                      }
+                    }
+                  ],
+                  "steps": [
+                    {
+                      "type": "PENDING_BRANCH_EFFECT",
+                      "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。"
+                    },
+                    {
+                      "type": "SET_PLAYER_TURN_FLAG",
+                      "player": "SELF",
+                      "flag": "UA45BT_TLR_1_069_branch_2_used_this_turn",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            },
+            "default_steps": []
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -8077,8 +8545,11 @@
           "effect_box": "RAID_INNER",
           "text": "以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "MULTI_BRANCH_CHOICE",
+          "variant": "select_one_non_repeat_per_turn"
+        }
       },
       {
         "id": "UA45BT_TLR_1_069_on_life_trigger_a342b2ffe2",
@@ -8108,8 +8579,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "COMPOSITE",
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "MULTI_BRANCH_CHOICE"
       ]
     }
   },
@@ -8347,8 +8819,61 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_top_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_top_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 2,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_top_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_top_cards",
+            "to": "DECK",
+            "to_position": "TOP",
+            "remove_from_var": "preview_cards",
+            "target_player_mode": "SOURCE"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position": "BOTTOM",
+            "target_player_mode": "SOURCE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -8357,15 +8882,19 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_TOP_POSITION",
+          "variant": "preview_two_reorder_top_bottom_split"
+        }
       }
     ],
     "analysis": {
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE",
+        "PREVIEW_TOP_POSITION"
       ]
     }
   },
@@ -9854,8 +10383,60 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 4000
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 4000
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -9864,8 +10445,11 @@
           "effect_box": "OUTER",
           "text": "・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_threshold_remove_required"
+        }
       },
       {
         "id": "UA45BT_TLR_1_081_on_play_b341867df9",
@@ -9895,7 +10479,8 @@
         "SELECT_AND_MOVE",
         "COMPOSITE",
         "UNSUPPORTED",
-        "MULTI_BRANCH_CHOICE"
+        "MULTI_BRANCH_CHOICE",
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
