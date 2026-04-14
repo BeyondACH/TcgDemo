@@ -281,6 +281,17 @@
 - Week 3：Phase 3 + Phase 4
 - Week 4+：Phase 5 持续防回归
 
+### 8.5 Phase 5 门禁（防回退）
+
+- 固化数据回归用例：`tests/test_phase5_regression_guards.py`
+  - 校验 `MCR/TLR/MMM` 三系列 `UNSUPPORTED == 0`
+  - 校验 Phase 4 关键尾项卡的 `template_metadata.variant` 不回退
+- PR 门禁最小命令集：
+  - `python -m unittest tests.test_compile_cards_effects tests.test_check_unsupported_budget tests.test_phase5_regression_guards`
+  - `python tools/compile_cards_effects.py`
+  - `python tools/report_support_stats.py`
+  - `python tools/check_unsupported_budget.py --max-total 0 --max-series MCR=0 --max-series TLR=0 --max-series MMM=0`
+
 ---
 
 ## 9. Week 1 执行结果（2026-04-14）
