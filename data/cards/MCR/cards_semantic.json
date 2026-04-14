@@ -669,7 +669,8 @@
     ],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE",
+      "OPTIONAL_COST_THEN_EFFECT"
     ],
     "abilities": [
       {
@@ -683,16 +684,14 @@
       {
         "id": "UA36BT_MCR_1_028_on_play_e933708831",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "OPTIONAL_COST_THEN_EFFECT"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。",
       "trigger": "カードを1枚引く。",
@@ -707,7 +706,8 @@
     ],
     "template_types": [
       "READY_AND_TEMP_BP",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE",
+      "SPECIAL_OVERRIDE"
     ],
     "abilities": [
       {
@@ -721,16 +721,14 @@
       {
         "id": "UA36BT_MCR_1_029_on_play_6337d8f975",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SPECIAL_OVERRIDE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -745,8 +743,10 @@
       "DRAW_1",
       "NO_OP",
       "COMPOSITE",
-      "UNSUPPORTED",
-      "MULTI_BRANCH_CHOICE"
+      "SELECT_AND_MOVE",
+      "MULTI_BRANCH_CHOICE",
+      "REST_CONTROL",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -776,24 +776,22 @@
       {
         "id": "UA36BT_MCR_1_030_on_play_d1fad109d5",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "REST_CONTROL"
       },
       {
         "id": "UA36BT_MCR_1_030_on_play_e691196af1",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "PREVIEW_ADD_TO_HAND"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。\n以下から1つ選ぶ。\n・相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。\n・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
       "trigger": "カードを1枚引く。",
@@ -806,7 +804,7 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -820,16 +818,14 @@
       {
         "id": "UA36BT_MCR_1_031_on_play_1371b24591",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -842,7 +838,8 @@
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
-      "UNSUPPORTED"
+      "TEMP_BP",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
       {
@@ -856,16 +853,14 @@
       {
         "id": "UA36BT_MCR_1_032_on_play_613917d606",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。カードを1枚引く。自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。カードを1枚引く。自分の場外に黄の［特徴：歌（ランカ）］のカード名が3種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -878,7 +873,8 @@
     "inferred_keywords": [],
     "template_types": [
       "READY_AND_TEMP_BP",
-      "UNSUPPORTED"
+      "DRAW_THEN_SELECT_AND_MOVE",
+      "OPTIONAL_COST_THEN_EFFECT"
     ],
     "abilities": [
       {
@@ -892,16 +888,14 @@
       {
         "id": "UA36BT_MCR_1_033_on_play_6dc2561660",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "OPTIONAL_COST_THEN_EFFECT"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -1244,7 +1238,8 @@
     ],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -1258,16 +1253,14 @@
       {
         "id": "UA36BT_MCR_1_048_on_play_210e126786",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。",
-        "reason": "SEMANTIC_OVERRIDE_REQUIRED",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "PREVIEW_ADD_TO_HAND"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "SEMANTIC_OVERRIDE_REQUIRED"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。",
       "trigger": "カードを1枚引く。",
@@ -1281,7 +1274,7 @@
     "template_types": [
       "SELECT_AND_MOVE",
       "NO_OP",
-      "UNSUPPORTED"
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -1303,16 +1296,14 @@
       {
         "id": "UA36BT_MCR_1_049_on_play_2d32b02032",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。\nBP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -1689,7 +1680,9 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED",
+      "COMPOSITE",
+      "MULTI_BRANCH_CHOICE",
+      "BP_THRESHOLD_REMOVE",
       "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
@@ -1704,18 +1697,18 @@
       {
         "id": "UA36BT_MCR_1_065_on_play_78e3e36e0b",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
       },
       {
         "id": "UA36BT_MCR_1_065_on_play_d2ce3bcead",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       },
       {
         "id": "UA36BT_MCR_1_065_on_play_4dbdce4273",
@@ -1726,10 +1719,8 @@
         "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -2575,7 +2566,7 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "ZONE_MOVE"
     ],
     "abilities": [
       {
@@ -2589,16 +2580,14 @@
       {
         "id": "UA36BT_MCR_1_099_on_play_37e28311f2",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "ZONE_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -2613,7 +2602,8 @@
     ],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "TEMP_KEYWORD",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
       {
@@ -2627,16 +2617,14 @@
       {
         "id": "UA36BT_MCR_1_100_on_play_f6143c2fa4",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。",
       "trigger": "カードを1枚引く。",
@@ -2798,7 +2786,9 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED",
+      "COMPOSITE",
+      "MULTI_BRANCH_CHOICE",
+      "BP_THRESHOLD_REMOVE",
       "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
@@ -2813,18 +2803,18 @@
       {
         "id": "UA36ST_MCR_1_065_on_play_78e3e36e0b",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
       },
       {
         "id": "UA36ST_MCR_1_065_on_play_d2ce3bcead",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       },
       {
         "id": "UA36ST_MCR_1_065_on_play_4dbdce4273",
@@ -2835,10 +2825,8 @@
         "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
