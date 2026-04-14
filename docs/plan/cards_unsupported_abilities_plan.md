@@ -287,6 +287,7 @@
   - 校验 `MCR/TLR/MMM` 三系列 `UNSUPPORTED == 0`
   - 校验 Phase 4 关键尾项卡的 `template_metadata.variant` 不回退
 - PR 门禁最小命令集：
+  - `python tools/run_phase5_guardrails.py`
   - `python -m unittest tests.test_compile_cards_effects tests.test_check_unsupported_budget tests.test_phase5_regression_guards`
   - `python tools/compile_cards_effects.py`
   - `python tools/report_support_stats.py`

@@ -2,6 +2,8 @@ import json
 import unittest
 from pathlib import Path
 
+from tools.run_phase5_guardrails import _commands
+
 
 class Phase5RegressionGuardsTests(unittest.TestCase):
     def setUp(self):
@@ -60,3 +62,14 @@ class Phase5RegressionGuardsTests(unittest.TestCase):
                 msg=f"{card_id} {event_name} template regression",
             )
 
+    def test_phase5_guardrail_command_set_contains_zero_budget_gate(self):
+        commands = _commands(include_compile=True, include_utf8=True)
+        flattened = [" ".join(cmd) for cmd in commands]
+        self.assertTrue(any("tools/check_unsupported_budget.py --max-total 0" in cmd for cmd in flattened))
+        self.assertTrue(any("tests.test_phase5_regression_guards" in cmd for cmd in flattened))
+
+    def test_phase5_guardrail_commands_can_skip_optional_steps(self):
+        commands = _commands(include_compile=False, include_utf8=False)
+        flattened = [" ".join(cmd) for cmd in commands]
+        self.assertFalse(any("tools/compile_cards_effects.py" in cmd for cmd in flattened))
+        self.assertFalse(any("tools/check_utf8_docs.py" in cmd for cmd in flattened))
