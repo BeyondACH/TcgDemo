@@ -237,13 +237,65 @@
 ## 7. 推荐排期（可滚动）
 
 - Week 1：Phase 0 + Phase 1
-- Week 2：Phase 2
-- Week 3：Phase 3 + Phase 4
-- Week 4+：Phase 5 持续防回归
+- Week 2：Phase 2（分两段推进：先 `40 -> 33`，再冲刺 `33 -> 20`）
 
 ---
 
-## 8. Week 1 执行结果（2026-04-14）
+## 8. Week 2 继续执行清单（从 `33` 向 `20` 收敛）
+
+> 当前里程碑位置：`Phase 3` 已达成，最新 `UNSUPPORTED=7`（2026-04-14）。
+
+### 8.1 目标与拆分
+
+1. **W2-B1（优先）**：`CHOOSE_ONE_BRANCH` 扩展到 `ON_PLAY/ON_ENTER/ON_ATTACK` 共用分支模板。  
+   - 目标收敛：`33 -> 28`
+2. **W2-B2（优先）**：`PREVIEW_TOP_DECK + ADD_TO_HAND + REORDER` 组合链补全（含“看顶部 N 张 + 选加手 + 其余置顶/置底”）。  
+   - 目标收敛：`28 -> 24`
+3. **W2-B3（并行）**：`OPTIONAL_COST_THEN_EFFECT` 继续扩展到“弃手/场外/rest 成本 + 后续 debuff/ready/buff”。  
+   - 目标收敛：`24 -> 22`
+4. **W2-B4（收口）**：补 `THRESHOLD_REPLACE` 的条件替代分支并清理重复文本族。  
+   - 目标收敛：`22 -> 20`
+
+> 2026-04-14 已落地（本轮）：`Week 3` 持续接入长尾模板后，新增 `conditional_bp_replace_marker`、`draw_activate_name_contains_and_named`、`dual_buff_with_optional_keyword_placeholder` 等模板并完成 `Phase 3` 收口，基线由 `33 -> 7`，已低于 `Phase 3` 目标 `8`。随后进入 `Phase 4`，补齐剩余长尾与专项 override，基线继续收敛到 `0`（`MCR/TLR/MMM` 全系列清零）。
+
+### 8.2 本段冻结项
+
+- 冻结 `requirement/step` 边界：要求只做判定，步骤只做状态变更。
+- 冻结编译器输出字段：不新增按卡临时字段，不引入 `LEGACY_PASSTHROUGH` 回退。
+- 冻结运行时入口：仅通过统一 IR 消费，不直接执行原文文本。
+
+### 8.3 每个子块最低验收（DoD）
+
+- 至少 1 条编译回归（`tests/test_compile_cards_effects.py`）。
+- 至少 1 条最小对局/流程回归（`docs/cards_raw_minimal_duel_smoke_test.gd` 或等价脚本）。
+- 执行并记录：
+  - `python tools/compile_cards_effects.py`
+  - `python tools/report_support_stats.py`
+  - `python tools/check_unsupported_budget.py --max-total 0 --max-series MCR=0 --max-series TLR=0 --max-series MMM=0`
+
+### 8.4 风险与回滚策略
+
+- 若 `ON_ATTACK` 分支模板引入“每回合一次”状态污染，优先回滚新增标记写入，保留编译层映射。
+- 若组合链导致目标选择自动化（绕过显式决策），立即阻断合并并回退到待决策流程。
+- 若预算门禁触发回升（`UNSUPPORTED > 33`），先恢复基线再继续加模板，不带病推进。
+- Week 3：Phase 3 + Phase 4
+- Week 4+：Phase 5 持续防回归
+
+### 8.5 Phase 5 门禁（防回退）
+
+- 固化数据回归用例：`tests/test_phase5_regression_guards.py`
+  - 校验 `MCR/TLR/MMM` 三系列 `UNSUPPORTED == 0`
+  - 校验 Phase 4 关键尾项卡的 `template_metadata.variant` 不回退
+- PR 门禁最小命令集：
+  - `python tools/run_phase5_guardrails.py`
+  - `python -m unittest tests.test_compile_cards_effects tests.test_check_unsupported_budget tests.test_phase5_regression_guards`
+  - `python tools/compile_cards_effects.py`
+  - `python tools/report_support_stats.py`
+  - `python tools/check_unsupported_budget.py --max-total 0 --max-series MCR=0 --max-series TLR=0 --max-series MMM=0`
+
+---
+
+## 9. Week 1 执行结果（2026-04-14）
 
 - 本周目标：`Phase 0 + Phase 1`
 - 实际结果：`UNSUPPORTED 60 -> 40`（达成 `Phase 1` 里程碑）
@@ -256,14 +308,25 @@
 
 ---
 
-## 9. Week 2 执行进度（2026-04-14）
+## 10. Week 2 执行进度（2026-04-14）
 
 - 本周目标：`Phase 2`（`40 -> 20`）
-- 当前进度：`UNSUPPORTED 40 -> 33`（持续收敛中）
+- 当前进度：`UNSUPPORTED 40 -> 0`（`Phase 4` 目标达成）
 - 本轮新增收敛模板：
   - `BP_THRESHOLD_REMOVE`（`card name contains` 条件替代）
   - `BP_DEBUFF`（基础/条件型）
   - `OPTIONAL_COST_THEN_EFFECT`（可选弃牌后自我 ready）
   - `PLAY_CONDITION` / `AP_COST_MODIFIER`（`card name contains` 语句）
+  - `PREVIEW_TOP_POSITION`（2 张预览后上下分配）
+  - `PREVIEW_ADD_TO_HAND`（预览后加角色并底置余牌）
+  - `BP_THRESHOLD_REMOVE`（兼容分支子句 `・` 前缀）
+  - `TEMP_BP_MODIFIER`（“场上卡数阈值”条件替代）
+  - `MULTI_BRANCH_CHOICE`（本回合同效果分支不可重复）
+  - `BP_THRESHOLD_REMOVE`（动态阈值后移入 `REMOVED`）
+  - `REST_CONTROL`（rest + 下次不可 active / 条件 debuff）
+  - `OPTIONAL_COST_THEN_EFFECT`（draw + discard + outside summon）
+  - `TEMP_BP_MODIFIER`（buff + draw + 条件 ready AP）
+  - `BP_THRESHOLD_REMOVE`（条件阈值替代标记）
+  - `TEMP_BP_MODIFIER`（双目标 buff / 命名目标激活）
 - 当前门禁基线命令：
-  - `python tools/check_unsupported_budget.py --max-total 33 --max-series MCR=15 --max-series TLR=18 --max-series MMM=0`
+  - `python tools/check_unsupported_budget.py --max-total 0 --max-series MCR=0 --max-series TLR=0 --max-series MMM=0`

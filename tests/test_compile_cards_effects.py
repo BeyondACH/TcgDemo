@@ -56,9 +56,13 @@ class CompileCardsEffectsTests(unittest.TestCase):
     TLR_HAND_SUMMON_TEXT = "自分の手札から必要エナジーが3以下で消費APが1の黄の〈金色の闇〉を1枚まで自分の場にレストで登場させる。"
     TLR_BP_PLUS_TEXT = "自分の場の他のキャラを1枚選び、このターン中、BP+1000。"
     TLR_BRANCH_SELECT_ONE_TEXT = "以下から1つ選ぶ。"
+    TLR_PREVIEW_TOP_TWO_SPLIT_TEXT = "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。"
     MCR_LIFE_TRIGGER_RAID_CHOICE_TEXT = "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
     MCR_BP_BOUNCE_TEXT = "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。"
     MCR_CONDITIONAL_PREVIEW_TEXT = "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+    MCR_PREVIEW_ADD_CHARACTER_TEXT = "自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
+    MCR_PREVIEW_ADD_CHARACTER_BULLET_TEXT = "・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
+    MCR_BRANCH_BULLET_BP_REMOVE_TEXT = "・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。"
     MCR_PLAY_CONDITION_TEXT = "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。"
     MCR_PLAY_CONDITION_NAME_CONTAINS_TEXT = "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。"
     MCR_AP_REDUCE_NAME_CONTAINS_TEXT = "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
@@ -66,6 +70,27 @@ class CompileCardsEffectsTests(unittest.TestCase):
     TLR_BP_DEBUFF_TEXT = "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。"
     TLR_CONDITIONAL_BP_DEBUFF_TEXT = "自分の場に〈ネメシス〉がある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
     TLR_OPTIONAL_DISCARD_READY_SELF_TEXT = "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする。"
+    TLR_BP_PLUS_CONDITIONAL_UPGRADE_TEXT = "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。"
+    TLR_BRANCH_SELECT_ONE_NON_REPEAT_TEXT = "以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。"
+    TLR_BP_REMOVE_TO_REMOVED_DYNAMIC_TEXT = "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。"
+    TLR_REST_AND_LOCK_DEBUFF_TEXT = "相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。"
+    MCR_DRAW_DISCARD_OUTSIDE_SUMMON_TEXT = "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。"
+    MCR_BP_REMOVE_THEN_CHOICE_TEXT = "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。"
+    TLR_BUFF_THEN_CONDITIONAL_ACTIVATE_NAMED_TEXT = "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。"
+    MCR_BP_REMOVE_OPTIONAL_AP_ADD_OUTSIDE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。"
+    MCR_OUTSIDE_TO_HAND_OPTIONAL_REST_AP_TEXT = "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。"
+    MCR_PREVIEW_NAME_CONTAINS_DUAL_READY_AP_TEXT = "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。"
+    MCR_MOVE_TO_DECK_TOP_BOTTOM_NAME_GATE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。"
+    MCR_CONDITIONAL_BP_REPLACE_MARKER_TEXT = "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
+    MCR_DRAW_ACTIVATE_NAME_CONTAINS_AND_NAMED_TEXT = "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。"
+    TLR_DUAL_BUFF_WITH_OPTIONAL_KEYWORD_TEXT = "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。"
+    TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_TEXT = "必要エナジーが3以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+    TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_ONCE_PER_TURN_TEXT = "必要エナジーが3以下の自分の場の他のキャラを1枚選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。〈結城 美柑〉のこの効果は1ターンに1回のみ発動できる。"
+    TLR_BP_REMOVE_DYNAMIC_ENERGY_LTE_COUNT_TEXT = "『BP3000』以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈金色の闇〉がある場合、自分のフロントLの必要エナジーが3以下のキャラ1枚につき、この効果で選べるキャラのBPの範囲+1000。"
+    TLR_HAND_SUMMON_NAMED_OR_ENERGY_LTE_WITH_SELF_GAIN_TEXT = "自分の手札から赤の〔〈天条院 沙姫〉か必要エナジーが1以下のキャラカード〕を1枚まで自分の場にレストで登場させる。自分の場に〈天条院 沙姫〉がある場合、このキャラはこのターン中、を得る。"
+    TLR_CONDITIONAL_BP_CANNOT_BLOCK_TEXT = "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。"
+    TLR_SOURCE_BP_COMPARE_REMOVE_TEXT = "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。"
+    MCR_SHERYL_RAID_CHAIN_OVERRIDE_TEXT = "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -637,6 +662,293 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["steps"][-1]["type"], "ADD_TEMP_BP_MODIFIER")
         self.assertEqual(ability["steps"][-1]["value"], 1000)
+
+    def test_compile_trigger_supports_preview_top_two_split_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_072"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_PREVIEW_TOP_TWO_SPLIT_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "PREVIEW_TOP_POSITION")
+        self.assertEqual(ability["template_metadata"]["variant"], "preview_two_reorder_top_bottom_split")
+
+    def test_compile_trigger_supports_preview_add_character_cards_template(self):
+        ability = _compile_trigger(
+            {"id": "UA36BT_MCR_1_030"},
+            {
+                "trigger": "ON_PLAY",
+                "source_label": "トリガー",
+                "effect_box": "OUTER",
+                "text": self.MCR_PREVIEW_ADD_CHARACTER_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "PREVIEW_ADD_TO_HAND")
+        self.assertEqual(ability["template_metadata"]["variant"], "preview_add_character_cards_then_reorder_bottom")
+
+    def test_compile_trigger_supports_preview_add_character_cards_template_with_bullet_prefix(self):
+        ability = _compile_trigger(
+            {"id": "UA36BT_MCR_1_030"},
+            {
+                "trigger": "ON_PLAY",
+                "source_label": "トリガー",
+                "effect_box": "OUTER",
+                "text": self.MCR_PREVIEW_ADD_CHARACTER_BULLET_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "PREVIEW_ADD_TO_HAND")
+
+    def test_compile_event_effect_supports_bp_remove_required_with_branch_bullet_prefix(self):
+        ability = _compile_event_effect(
+            {"id": "UA45BT_TLR_1_081", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_BRANCH_BULLET_BP_REMOVE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "BP_THRESHOLD_REMOVE")
+
+    def test_compile_trigger_supports_temp_bp_modifier_conditional_upgrade_template(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_052"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": self.TLR_BP_PLUS_CONDITIONAL_UPGRADE_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "TEMP_BP_MODIFIER")
+        self.assertEqual(ability["template_metadata"]["variant"], "self_other_character_bp_plus_conditional_upgrade")
+
+    def test_compile_trigger_supports_non_repeat_branch_choice_template(self):
+        ability = _compile_trigger(
+            {
+                "id": "UA45BT_TLR_1_062",
+                "effects": [
+                    {"text": "・カードを1枚引く。"},
+                    {"text": "・相手に1ダメージ。"},
+                ],
+            },
+            {
+                "trigger": "ON_ATTACK",
+                "source_label": "アタック時",
+                "effect_box": "OUTER",
+                "text": self.TLR_BRANCH_SELECT_ONE_NON_REPEAT_TEXT,
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "select_one_non_repeat_per_turn")
+        branches = ability["steps"][1]["branches"]
+        self.assertEqual(branches["BRANCH_1"][0]["type"], "RUN_COMPOSITE_IF")
+        self.assertEqual(branches["BRANCH_2"][0]["type"], "RUN_COMPOSITE_IF")
+
+    def test_compile_event_effect_supports_bp_remove_to_removed_dynamic_name_gate(self):
+        ability = _compile_event_effect(
+            {"id": "UA45BT_TLR_1_039", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.TLR_BP_REMOVE_TO_REMOVED_DYNAMIC_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "bp_threshold_remove_to_removed_dynamic_name_gate")
+        self.assertEqual(ability["steps"][-1]["to"], "REMOVED")
+
+    def test_compile_trigger_supports_rest_and_lock_with_conditional_debuff(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_023"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_REST_AND_LOCK_DEBUFF_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["family"], "REST_CONTROL")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(ability["steps"][1]["type"], "REST")
+
+    def test_compile_trigger_supports_draw_discard_then_outside_summon(self):
+        ability = _compile_trigger(
+            {"id": "UA36BT_MCR_1_033"},
+            {"trigger": "ON_PLAY", "source_label": "トリガー", "effect_box": "OUTER", "text": self.MCR_DRAW_DISCARD_OUTSIDE_SUMMON_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "draw_discard_then_outside_summon")
+        self.assertEqual(ability["steps"][-1]["type"], "PLAY_SELECTED_CARDS")
+
+    def test_compile_trigger_supports_bp_remove_then_choice_branch(self):
+        ability = _compile_trigger(
+            {
+                "id": "UA36BT_MCR_1_065",
+                "effects": [
+                    {"text": "・カードを1枚引く。"},
+                    {"text": "・相手に1ダメージ。"},
+                ],
+            },
+            {"trigger": "ON_PLAY", "source_label": "トリガー", "effect_box": "OUTER", "text": self.MCR_BP_REMOVE_THEN_CHOICE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "bp_remove_then_choice_branch")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(ability["steps"][2]["type"], "SELECT_TARGETS")
+
+    def test_compile_trigger_supports_buff_then_conditional_activate_named(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_063"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_BUFF_THEN_CONDITIONAL_ACTIVATE_NAMED_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "buff_then_conditional_activate_named")
+        self.assertEqual(ability["steps"][2]["type"], "ACTIVATE_CARD")
+
+    def test_compile_event_effect_supports_bp_remove_then_optional_pay_ap_add_outside_name_contains(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_049", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_BP_REMOVE_OPTIONAL_AP_ADD_OUTSIDE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "bp_remove_then_optional_pay_ap_add_outside_name_contains")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(ability["steps"][1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_event_effect_supports_outside_to_hand_optional_rest_ap(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_028", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_OUTSIDE_TO_HAND_OPTIONAL_REST_AP_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "outside_to_hand_optional_rest_named_ready_ap")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
+
+    def test_compile_event_effect_supports_preview_name_contains_dual_then_ready_ap(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_048", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_PREVIEW_NAME_CONTAINS_DUAL_READY_AP_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "preview_name_contains_dual_then_conditional_ready_ap")
+        self.assertEqual(ability["steps"][-1]["type"], "ACTIVATE_AP_SLOTS")
+
+    def test_compile_event_effect_supports_move_to_deck_top_bottom_with_name_gate(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_099", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_MOVE_TO_DECK_TOP_BOTTOM_NAME_GATE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "move_to_deck_top_or_bottom_with_name_gate")
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_event_effect_supports_conditional_bp_replace_marker(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_065", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_CONDITIONAL_BP_REPLACE_MARKER_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "conditional_bp_replace_marker")
+
+    def test_compile_event_effect_supports_draw_activate_name_contains_and_named(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_100", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_DRAW_ACTIVATE_NAME_CONTAINS_AND_NAMED_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "draw_activate_name_contains_and_named")
+
+    def test_compile_trigger_supports_dual_buff_with_optional_keyword(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_001"},
+            {"trigger": "MAIN_ACTIVATE", "source_label": "起動メイン", "effect_box": "OUTER", "text": self.TLR_DUAL_BUFF_WITH_OPTIONAL_KEYWORD_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "dual_buff_with_optional_keyword_placeholder")
+
+    def test_compile_trigger_supports_other_energy_lte_unblockable(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_013"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "other_energy_lte_unblockable_bp_gate")
+        self.assertEqual(ability["steps"][-1]["type"], "ADD_TEMP_KEYWORD")
+
+    def test_compile_trigger_supports_other_energy_lte_unblockable_once_per_turn(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_015"},
+            {"trigger": "MAIN_ACTIVATE", "source_label": "起動メイン", "effect_box": "OUTER", "text": self.TLR_OTHER_ENERGY_LTE_UNBLOCKABLE_ONCE_PER_TURN_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "other_energy_lte_unblockable_bp_gate")
+        self.assertEqual(ability["steps"][-1]["type"], "SET_PLAYER_TURN_FLAG")
+
+    def test_compile_event_effect_supports_bp_remove_dynamic_energy_lte_count(self):
+        ability = _compile_event_effect(
+            {"id": "UA45BT_TLR_1_037", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.TLR_BP_REMOVE_DYNAMIC_ENERGY_LTE_COUNT_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "bp_remove_dynamic_name_gate_energy_lte_count")
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_trigger_supports_hand_summon_named_or_energy_lte_with_self_gain(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_043"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_HAND_SUMMON_NAMED_OR_ENERGY_LTE_WITH_SELF_GAIN_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "hand_summon_named_or_energy_lte_then_conditional_keyword_placeholder")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_TARGETS", "PLAY_SELECTED_CARDS", "ADD_TEMP_KEYWORD"])
+
+    def test_compile_trigger_supports_conditional_bp_cannot_block(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_047"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_CONDITIONAL_BP_CANNOT_BLOCK_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "conditional_bp_gate_grant_cannot_block")
+        self.assertEqual(ability["steps"][-1]["keyword"], "CANNOT_BLOCK")
+
+    def test_compile_trigger_supports_source_bp_compare_remove(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_048"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_SOURCE_BP_COMPARE_REMOVE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "self_gain_source_bp_compare_remove")
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_event_effect_supports_mcr_sheryl_raid_chain_override(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_029", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_SHERYL_RAID_CHAIN_OVERRIDE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "mcr_sheryl_raid_chain_phase4")
+        self.assertEqual(ability["steps"][-1]["type"], "REGISTER_STATIC_MODIFIER")
 
     def test_compile_event_effect_supports_branch_choice_template(self):
         ability = _compile_event_effect(
