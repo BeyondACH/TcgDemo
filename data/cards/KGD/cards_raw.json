@@ -1,0 +1,6066 @@
+[
+  {
+    "id": "UA48BT_KGD_1_001",
+    "name": "オルド",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-001",
+    "traits": [
+      "燕"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "インパクト無効"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-001.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-001",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "おるど"
+  },
+  {
+    "id": "UA48BT_KGD_1_002",
+    "name": "オルド",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-002",
+    "traits": [
+      "燕"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "インパクト無効"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "自分の場の黄のカードの特徴が3種類以上ある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-002.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-002",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場の黄のカードの特徴が3種類以上ある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "おるど"
+  },
+  {
+    "id": "UA48BT_KGD_1_003",
+    "name": "成恢",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-003",
+    "traits": [
+      "韓"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分のターン中で、自分の場の黄のカードの特徴が3種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3000以下の相手のフロントLのキャラを1枚まで選び、レストにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-003.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-003",
+    "raw_effect_text": "自分のターン中で、自分の場の黄のカードの特徴が3種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3000以下の相手のフロントLのキャラを1枚まで選び、レストにする。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "せいかい"
+  },
+  {
+    "id": "UA48BT_KGD_1_004",
+    "name": "呉鳳明",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-004",
+    "traits": [
+      "魏"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-004.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-004",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ごほうめい"
+  },
+  {
+    "id": "UA48BT_KGD_1_005",
+    "name": "呉鳳明",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-005",
+    "traits": [
+      "魏"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-005.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-005",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "",
+    "ruby": "ごほうめい"
+  },
+  {
+    "id": "UA48BT_KGD_1_006",
+    "name": "呉鳳明",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-006",
+    "traits": [
+      "魏"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈呉鳳明〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の山札の上から自分の場の黄のカードの特徴の種類数分カードを見て、キャラカードかフィールドカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・このキャラはこのターン中、「このキャラはBP4000以上のキャラにブロックされない。」を得る。〈呉鳳明〉のこの効果は1ターンに1回のみ選べる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-006.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-006",
+    "raw_effect_text": "〈呉鳳明〉アクティブにし、フロントLに移動できる\n以下から1つ選ぶ。\n・自分の山札の上から自分の場の黄のカードの特徴の種類数分カードを見て、キャラカードかフィールドカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。\n・このキャラはこのターン中、「このキャラはBP4000以上のキャラにブロックされない。」を得る。〈呉鳳明〉のこの効果は1ターンに1回のみ選べる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ごほうめい",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "呉鳳明",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_007",
+    "name": "媧燐",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-007",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見て、［特徴：楚］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-007.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-007",
+    "raw_effect_text": "自分の山札の上から3枚見て、［特徴：楚］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+    "ruby": "かりん"
+  },
+  {
+    "id": "UA48BT_KGD_1_008",
+    "name": "媧燐",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-008",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "このキャラのBPが4000以上の場合、カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-008.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-008",
+    "raw_effect_text": "このキャラのBPが4000以上の場合、カードを1枚引く。",
+    "raw_trigger_text": "",
+    "ruby": "かりん"
+  },
+  {
+    "id": "UA48BT_KGD_1_009",
+    "name": "媧燐",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-009",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン"
+        ],
+        "inline_labels": [
+          "起動メイン"
+        ],
+        "text": "このカードはフロントLに登場できず、このカードの以外でフロントLに移動できない。"
+      },
+      {
+        "labels": [
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（1）"
+        ],
+        "text": "（アタックしてバトルに勝利した時、相手に1ダメージ）"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "text": "このキャラのBPが5000以上の場合のみ発動できる。このキャラを別のラインに移動させる。"
+      },
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈媧燐〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "text": "このキャラのレイド元のカードを自分のフロントLにアクティブで登場させる。そのキャラはこのターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-009.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-009",
+    "raw_effect_text": "このカードはフロントLに登場できず、このカードの以外でフロントLに移動できない。\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nこのキャラのBPが5000以上の場合のみ発動できる。このキャラを別のラインに移動させる。\n〈媧燐〉アクティブにし、フロントLに移動できる\nこのキャラのレイド元のカードを自分のフロントLにアクティブで登場させる。そのキャラはこのターン中、BP+1000。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "かりん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "媧燐",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_010",
+    "name": "汗明",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-010",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-010.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-010",
+    "raw_effect_text": "",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "かんめい"
+  },
+  {
+    "id": "UA48BT_KGD_1_011",
+    "name": "汗明",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-011",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "黄"
+        ],
+        "inline_labels": [
+          "黄"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-011.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-011",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "かんめい"
+  },
+  {
+    "id": "UA48BT_KGD_1_012",
+    "name": "汗明",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-012",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 5000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈汗明〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "ダメージ（2）"
+        ],
+        "inline_labels": [
+          "ダメージ（2）"
+        ],
+        "text": "（このキャラがアタックで与える直接ダメージは2ダメージ）"
+      },
+      {
+        "labels": [
+          "自分のターン中",
+          "フロントLにある場合"
+        ],
+        "inline_labels": [
+          "自分のターン中",
+          "フロントLにある場合"
+        ],
+        "text": "自分の場の［特徴：楚］全ては、BP+2000。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "text": "カードを1枚引く。自分のフロントLに他のキャラがない場合、このターン中、次に手札から使用する〈誰が至強か!?〉か〈ドドンド ドンドン 汗明!!〉の消費APを-1する。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-012.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-012",
+    "raw_effect_text": "〈汗明〉アクティブにし、フロントLに移動できる\n（このキャラがアタックで与える直接ダメージは2ダメージ）\n自分の場の［特徴：楚］全ては、BP+2000。\nカードを1枚引く。自分のフロントLに他のキャラがない場合、このターン中、次に手札から使用する〈誰が至強か!?〉か〈ドドンド ドンドン 汗明!!〉の消費APを-1する。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "かんめい",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "汗明",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_013",
+    "name": "項翼",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-013",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（1）"
+        ],
+        "text": "このキャラのBPが4000以上の場合、このキャラは（アタックしてバトルに勝利した時、相手に1ダメージ）を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-013.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-013",
+    "raw_effect_text": "このキャラのBPが4000以上の場合、このキャラは（アタックしてバトルに勝利した時、相手に1ダメージ）を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "こうよく"
+  },
+  {
+    "id": "UA48BT_KGD_1_014",
+    "name": "春申君",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-014",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このカードはフロントLに登場できず、フロントLに移動できない。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする"
+        ],
+        "text": "自分のフロントLの黄のキャラを望む枚数選び、エナジーLに移動させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-014.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-014",
+    "raw_effect_text": "このカードはフロントLに登場できず、フロントLに移動できない。\n自分のフロントLの黄のキャラを望む枚数選び、エナジーLに移動させる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しゅんしんくん"
+  },
+  {
+    "id": "UA48BT_KGD_1_015",
+    "name": "白麗",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-015",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・元々のBPが4000以上の自分の場のキャラを1枚まで選び、このターン中、BP+1000。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の手札を1枚場外に置く。そうした場合、自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-015.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-015",
+    "raw_effect_text": "以下から1つ選ぶ。\n・元々のBPが4000以上の自分の場のキャラを1枚まで選び、このターン中、BP+1000。\n・自分の手札を1枚場外に置く。そうした場合、自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "はくれい"
+  },
+  {
+    "id": "UA48BT_KGD_1_016",
+    "name": "バミュウ",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-016",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [
+      "STEP"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "ステップ"
+        ],
+        "inline_labels": [
+          "ステップ"
+        ],
+        "text": "自分の場に〈媧燐〉がある場合、このキャラはBP+1000と（自分の移動フェイズにフロントLからエナジーLへ移動できる）を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-016.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-016",
+    "raw_effect_text": "自分の場に〈媧燐〉がある場合、このキャラはBP+1000と（自分の移動フェイズにフロントLからエナジーLへ移動できる）を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ばみゅう"
+  },
+  {
+    "id": "UA48BT_KGD_1_017",
+    "name": "臨武君",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-017",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "インパクト無効"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の黄の［特徴：楚］を1枚まで自分の場にアクティブで登場させる。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "text": "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-017.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-017",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の黄の［特徴：楚］を1枚まで自分の場にアクティブで登場させる。\nこのキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "りんぶくん"
+  },
+  {
+    "id": "UA48BT_KGD_1_018",
+    "name": "カイネ",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-018",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-018.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-018",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "",
+    "ruby": "かいね"
+  },
+  {
+    "id": "UA48BT_KGD_1_019",
+    "name": "カイネ",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-019",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "退場時"
+        ],
+        "inline_labels": [
+          "退場時"
+        ],
+        "text": "自分の場に〈李牧〉がある場合、自分の手札から〈カイネ〉以外の必要エナジーが2以下で消費APが1の黄のキャラカードを1枚まで自分の場にレストで登場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-019.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-019",
+    "raw_effect_text": "自分の場に〈李牧〉がある場合、自分の手札から〈カイネ〉以外の必要エナジーが2以下で消費APが1の黄のキャラカードを1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "かいね"
+  },
+  {
+    "id": "UA48BT_KGD_1_020",
+    "name": "慶舎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-020",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "SNIPER"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "相手のターン中",
+          "狙い撃ち"
+        ],
+        "inline_labels": [
+          "相手のターン中",
+          "狙い撃ち"
+        ],
+        "text": "相手は効果でこのキャラを選ぶ際とでこのキャラを指定する際に、追加で自身の手札を1枚場外に置かないとそれらを行えない。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを2枚引き、自分の手札を1枚場外に置く。自分の場の黄のカードの特徴が3種類以上ある場合、このキャラをアクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-020.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-020",
+    "raw_effect_text": "相手は効果でこのキャラを選ぶ際とでこのキャラを指定する際に、追加で自身の手札を1枚場外に置かないとそれらを行えない。\nカードを2枚引き、自分の手札を1枚場外に置く。自分の場の黄のカードの特徴が3種類以上ある場合、このキャラをアクティブにする。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "けいしゃ"
+  },
+  {
+    "id": "UA48BT_KGD_1_021",
+    "name": "傅抵",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-021",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-021.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-021",
+    "raw_effect_text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "",
+    "ruby": "ふてい"
+  },
+  {
+    "id": "UA48BT_KGD_1_022",
+    "name": "龐煖",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-022",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 5000,
+    "keywords": [
+      "IMPACT",
+      "STEP"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "ステップ"
+        ],
+        "inline_labels": [
+          "ステップ"
+        ],
+        "text": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）"
+      },
+      {
+        "labels": [
+          "フロントLにある場合"
+        ],
+        "inline_labels": [
+          "フロントLにある場合"
+        ],
+        "text": "自分のアタックフェイズ終了時、自分のフロントLに元々のBPが4500以上の他のキャラがあるか、このターン中にこのキャラが移動していない場合、このキャラを自分の山札の下に置く。"
+      },
+      {
+        "labels": [
+          "アタック時",
+          "インパクト（1）",
+          "ダメージ（2）"
+        ],
+        "inline_labels": [
+          "アタック時",
+          "インパクト（1）",
+          "ダメージ（2）"
+        ],
+        "text": "このキャラはこのターン中、かを得る。"
+      },
+      {
+        "labels": [
+          "退場時"
+        ],
+        "inline_labels": [
+          "退場時"
+        ],
+        "text": "このカードを自分の山札の下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-022.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-022",
+    "raw_effect_text": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分のアタックフェイズ終了時、自分のフロントLに元々のBPが4500以上の他のキャラがあるか、このターン中にこのキャラが移動していない場合、このキャラを自分の山札の下に置く。\nこのキャラはこのターン中、かを得る。\nこのカードを自分の山札の下に置く。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+    "ruby": "ほうけん"
+  },
+  {
+    "id": "UA48BT_KGD_1_023",
+    "name": "万極",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-023",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "黄"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "黄"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-023.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-023",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "まんごく"
+  },
+  {
+    "id": "UA48BT_KGD_1_024",
+    "name": "李牧",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-024",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-024.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-024",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "りぼく"
+  },
+  {
+    "id": "UA48BT_KGD_1_025",
+    "name": "李牧",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-025",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-025.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-025",
+    "raw_effect_text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
+    "raw_trigger_text": "",
+    "ruby": "りぼく"
+  },
+  {
+    "id": "UA48BT_KGD_1_026",
+    "name": "李牧",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-026",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈李牧〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から4枚見て、必要エナジーが『0』以下で消費APが1の黄のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で山札の下に置く。自分の場の黄のカードの特徴1種類につき、この効果で登場させるキャラの必要エナジーの範囲+1。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "text": "自分のフロントLの他のキャラと自分のエナジーLのキャラを1枚ずつ選び、それらの位置を入れ替える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-026.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-026",
+    "raw_effect_text": "〈李牧〉アクティブにし、フロントLに移動できる\n自分の山札の上から4枚見て、必要エナジーが『0』以下で消費APが1の黄のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で山札の下に置く。自分の場の黄のカードの特徴1種類につき、この効果で登場させるキャラの必要エナジーの範囲+1。\n自分のフロントLの他のキャラと自分のエナジーLのキャラを1枚ずつ選び、それらの位置を入れ替える。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "りぼく",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "李牧",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_027",
+    "name": "井闌車",
+    "card_type": "FIELD",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-027",
+    "traits": [
+      "魏"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場に〈呉鳳明〉がある場合、自分の場のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる"
+        ],
+        "text": "自分の場のキャラを1枚まで選び、別のラインに移動させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-027.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-027",
+    "raw_effect_text": "自分の場に〈呉鳳明〉がある場合、自分の場のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。\n自分の場のキャラを1枚まで選び、別のラインに移動させる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "せいらんしゃ"
+  },
+  {
+    "id": "UA48BT_KGD_1_028",
+    "name": "合従軍集結",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-028",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "カードを2枚引く。自分の場の黄のカードの特徴が3種類以上ある場合、さらにカードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-028.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-028",
+    "raw_effect_text": "カードを2枚引く。自分の場の黄のカードの特徴が3種類以上ある場合、さらにカードを1枚引く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "がっしょうぐんしゅうけつ"
+  },
+  {
+    "id": "UA48BT_KGD_1_029",
+    "name": "全軍前進です",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-029",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-029.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-029",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "ぜんぐんぜんしんです"
+  },
+  {
+    "id": "UA48BT_KGD_1_030",
+    "name": "誰が至強か!?",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-030",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場の［特徴：楚］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。自分の場にBP5000以上の［特徴：楚］がある場合、自分の場の［特徴：楚］を1枚まで選び、別のラインに移動させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-030.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-030",
+    "raw_effect_text": "自分の場の［特徴：楚］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。自分の場にBP5000以上の［特徴：楚］がある場合、自分の場の［特徴：楚］を1枚まで選び、別のラインに移動させる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "だれがしきょうか"
+  },
+  {
+    "id": "UA48BT_KGD_1_031",
+    "name": "ドドンド ドンドン 汗明!!",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-031",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-031.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-031",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "どどんど どんどん かんめい"
+  },
+  {
+    "id": "UA48BT_KGD_1_032",
+    "name": "万に一つも勝ち目はない",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-032",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈李牧〉がある場合、『BP5000以下』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-032.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-032",
+    "raw_effect_text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈李牧〉がある場合、『BP5000以下』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "まんにひとつもかちめはない"
+  },
+  {
+    "id": "UA48BT_KGD_1_033",
+    "name": "我 武神 龐煖也",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-033",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の山札の下を1枚公開し『手札に加える』。公開したカードが消費APが1の黄の〈龐煖〉の場合、『自分の場にレストで登場させる』に代えてもよい。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-033.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-033",
+    "raw_effect_text": "自分の山札の下を1枚公開し『手札に加える』。公開したカードが消費APが1の黄の〈龐煖〉の場合、『自分の場にレストで登場させる』に代えてもよい。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "われ　ぶしん　ほうけんなり"
+  },
+  {
+    "id": "UA48BT_KGD_1_034",
+    "name": "嬴政",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-034",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "青"
+        ],
+        "inline_labels": [
+          "青"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-034.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-034",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "えいせい"
+  },
+  {
+    "id": "UA48BT_KGD_1_035",
+    "name": "王騎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-035",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 5000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはアクティブで登場させる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のターン開始時、このキャラを退場させる。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の他のキャラを1枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-035.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-035",
+    "raw_effect_text": "このキャラはアクティブで登場させる。\n自分のターン開始時、このキャラを退場させる。\n自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の他のキャラを1枚まで選び、アクティブにする。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "おうき"
+  },
+  {
+    "id": "UA48BT_KGD_1_036",
+    "name": "漂",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-036",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-036.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-036",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "ひょう"
+  },
+  {
+    "id": "UA48BT_KGD_1_037",
+    "name": "蒙恬",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-037",
+    "traits": [
+      "秦",
+      "楽華隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "このターンのアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。このキャラはこのターン中、「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-037.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-037",
+    "raw_effect_text": "このターンのアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。このキャラはこのターン中、「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "もうてん"
+  },
+  {
+    "id": "UA48BT_KGD_1_038",
+    "name": "蒙恬",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-038",
+    "traits": [
+      "秦",
+      "楽華隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見て、〈信〉か〈王賁〉か〈蒙恬〉を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-038.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-038",
+    "raw_effect_text": "自分の山札の上から3枚見て、〈信〉か〈王賁〉か〈蒙恬〉を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "もうてん"
+  },
+  {
+    "id": "UA48BT_KGD_1_039",
+    "name": "蒙恬",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-039",
+    "traits": [
+      "秦",
+      "楽華隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の〔〈信〉か〈王賁〉か〈蒙恬〉〕を1枚まで選び、別のラインに移動させる。"
+      },
+      {
+        "labels": [
+          "エナジーLにある場合",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "エナジーLにある場合",
+          "ターン1"
+        ],
+        "text": "自分のキャラがアタックした時、APを1支払ってもよい。そうした場合、自分のフロントLのキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-039.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-039",
+    "raw_effect_text": "自分の場の〔〈信〉か〈王賁〉か〈蒙恬〉〕を1枚まで選び、別のラインに移動させる。\n自分のキャラがアタックした時、APを1支払ってもよい。そうした場合、自分のフロントLのキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "もうてん"
+  },
+  {
+    "id": "UA48BT_KGD_1_040",
+    "name": "蒙恬",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-040",
+    "traits": [
+      "秦",
+      "楽華隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈蒙恬〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "フロントLにある場合"
+        ],
+        "inline_labels": [
+          "フロントLにある場合"
+        ],
+        "text": "自分のアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを『2枚』引き、自分の手札を1枚場外に置く。自分のフロントLに〈信〉と〈王賁〉がある場合、『3枚』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-040.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-040",
+    "raw_effect_text": "〈蒙恬〉アクティブにし、フロントLに移動できる\n自分のアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。\nカードを『2枚』引き、自分の手札を1枚場外に置く。自分のフロントLに〈信〉と〈王賁〉がある場合、『3枚』に代わる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "もうてん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "蒙恬",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_041",
+    "name": "王賁",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-041",
+    "traits": [
+      "秦",
+      "玉鳳隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "APを1支払ってもよい。そうした場合、このキャラはこのターン中、BP+2500。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-041.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-041",
+    "raw_effect_text": "APを1支払ってもよい。そうした場合、このキャラはこのターン中、BP+2500。",
+    "raw_trigger_text": "",
+    "ruby": "おうほん"
+  },
+  {
+    "id": "UA48BT_KGD_1_042",
+    "name": "王賁",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-042",
+    "traits": [
+      "秦",
+      "玉鳳隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "APを1支払ってもよい。そうした場合、このキャラはこのターン中、BP+1000と「このキャラはBP2000以下のキャラにブロックされない。」を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-042.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-042",
+    "raw_effect_text": "APを1支払ってもよい。そうした場合、このキャラはこのターン中、BP+1000と「このキャラはBP2000以下のキャラにブロックされない。」を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "おうほん"
+  },
+  {
+    "id": "UA48BT_KGD_1_043",
+    "name": "王賁",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-043",
+    "traits": [
+      "秦",
+      "玉鳳隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（1）"
+        ],
+        "text": "このキャラのアタック終了時、APを1支払ってもよい。そうした場合、自分の手札から必要エナジーを満たす〈王賁〉を1枚までレイドさせ、そのキャラにこのターン中、を与える。〈王賁〉のこの効果は1ターンに1回のみ発動できる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-043.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-043",
+    "raw_effect_text": "このキャラのアタック終了時、APを1支払ってもよい。そうした場合、自分の手札から必要エナジーを満たす〈王賁〉を1枚までレイドさせ、そのキャラにこのターン中、を与える。〈王賁〉のこの効果は1ターンに1回のみ発動できる。",
+    "raw_trigger_text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+    "ruby": "おうほん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "王賁",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_044",
+    "name": "王賁",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-044",
+    "traits": [
+      "秦",
+      "玉鳳隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈王賁〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラのアタックがブロックされなかった時、カードを『1枚』引く。自分のフロントLに〈信〉と〈蒙恬〉がある場合、『2枚』に代わる。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "「APを1支払い、相手のフロントLのキャラを1枚選ぶ。」をしてもよい。そうした場合、相手は選ばれたキャラ以外のキャラでこのアタックをブロックできない。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-044.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-044",
+    "raw_effect_text": "〈王賁〉アクティブにし、フロントLに移動できる\nこのキャラのアタックがブロックされなかった時、カードを『1枚』引く。自分のフロントLに〈信〉と〈蒙恬〉がある場合、『2枚』に代わる。\nBP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。\n「APを1支払い、相手のフロントLのキャラを1枚選ぶ。」をしてもよい。そうした場合、相手は選ばれたキャラ以外のキャラでこのアタックをブロックできない。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "おうほん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "王賁",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_045",
+    "name": "河了貂",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-045",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-045.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-045",
+    "raw_effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+    "raw_trigger_text": "",
+    "ruby": "かりょうてん"
+  },
+  {
+    "id": "UA48BT_KGD_1_046",
+    "name": "河了貂",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-046",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場外から必要エナジーが2以下の〔［特徴：飛信隊］かイベントカード〕を1枚まで手札に加える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-046.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-046",
+    "raw_effect_text": "自分の場外から必要エナジーが2以下の〔［特徴：飛信隊］かイベントカード〕を1枚まで手札に加える。",
+    "raw_trigger_text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+    "ruby": "かりょうてん"
+  },
+  {
+    "id": "UA48BT_KGD_1_047",
+    "name": "羌瘣",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-047",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見て、青の［特徴：飛信隊］を1枚まで場外に置き、残りを望む順で山札の上に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-047.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-047",
+    "raw_effect_text": "自分の山札の上から2枚見て、青の［特徴：飛信隊］を1枚まで場外に置き、残りを望む順で山札の上に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "きょうかい"
+  },
+  {
+    "id": "UA48BT_KGD_1_048",
+    "name": "羌瘣",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-048",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "このキャラが自分の効果で登場していた場合、カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-048.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-048",
+    "raw_effect_text": "このキャラが自分の効果で登場していた場合、カードを1枚引く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "きょうかい"
+  },
+  {
+    "id": "UA48BT_KGD_1_049",
+    "name": "羌瘣",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-049",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはアクティブで登場させる。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "自分の手札から必要エナジーが2以下の青のイベントカードをAPを支払わずに1枚使用できる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-049.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-049",
+    "raw_effect_text": "このキャラはアクティブで登場させる。\n自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。\n自分の手札から必要エナジーが2以下の青のイベントカードをAPを支払わずに1枚使用できる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "きょうかい"
+  },
+  {
+    "id": "UA48BT_KGD_1_050",
+    "name": "羌瘣",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-050",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈羌瘣〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "以下から『1つ』選ぶ。自分のターン中で、このキャラが自分の効果で登場していた場合、『2つ』に代わる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・相手のフロントLのレイド状態のカードを1枚まで選び、レイド状態の上のカードを1枚場外に置く。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・必要エナジーが3以下の相手のフロントLのキャラを1枚まで選び、手札に戻す。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-050.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-050",
+    "raw_effect_text": "〈羌瘣〉アクティブにし、フロントLに移動できる\n以下から『1つ』選ぶ。自分のターン中で、このキャラが自分の効果で登場していた場合、『2つ』に代わる。\n・相手のフロントLのレイド状態のカードを1枚まで選び、レイド状態の上のカードを1枚場外に置く。\n・必要エナジーが3以下の相手のフロントLのキャラを1枚まで選び、手札に戻す。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "きょうかい",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "羌瘣",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_051",
+    "name": "松左",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-051",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-051.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-051",
+    "raw_effect_text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "",
+    "ruby": "しょうさ"
+  },
+  {
+    "id": "UA48BT_KGD_1_052",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-052",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-052.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-052",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しん"
+  },
+  {
+    "id": "UA48BT_KGD_1_053",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-053",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-053.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-053",
+    "raw_effect_text": "このキャラはBP+1000。",
+    "raw_trigger_text": "",
+    "ruby": "しん"
+  },
+  {
+    "id": "UA48BT_KGD_1_054",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-054",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-054.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-054",
+    "raw_effect_text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\nカードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "しん"
+  },
+  {
+    "id": "UA48BT_KGD_1_055",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-055",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "インパクト無効"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のキャラがレイドした時、自分のターン中の場合、レストのこのキャラをアクティブにしてもよい。そうした場合、このキャラはこのターン中、BP+1000。〈信〉のこの効果は1ターンに1回のみ発動できる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-055.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-055",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分のキャラがレイドした時、自分のターン中の場合、レストのこのキャラをアクティブにしてもよい。そうした場合、このキャラはこのターン中、BP+1000。〈信〉のこの効果は1ターンに1回のみ発動できる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "信",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_056",
+    "name": "楚水",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-056",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "『カードを1枚引き、自分の手札を1枚場外に置く』。自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、『カードを1枚引く』に代えてもよい。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-056.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-056",
+    "raw_effect_text": "『カードを1枚引き、自分の手札を1枚場外に置く』。自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、『カードを1枚引く』に代えてもよい。",
+    "raw_trigger_text": "",
+    "ruby": "そすい"
+  },
+  {
+    "id": "UA48BT_KGD_1_057",
+    "name": "澤圭",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-057",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-057.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-057",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "",
+    "ruby": "たくけい"
+  },
+  {
+    "id": "UA48BT_KGD_1_058",
+    "name": "田有",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-058",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-058.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-058",
+    "raw_effect_text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "",
+    "ruby": "でんゆう"
+  },
+  {
+    "id": "UA48BT_KGD_1_059",
+    "name": "尾平",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-059",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-059.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-059",
+    "raw_effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "びへい"
+  },
+  {
+    "id": "UA48BT_KGD_1_060",
+    "name": "竜川",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-060",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "相手のターン中",
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "相手のターン中",
+          "インパクト無効"
+        ],
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラは（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）と「このキャラは移動せず、手札に戻らず、BPをマイナスする効果を受けない。」を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-060.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-060",
+    "raw_effect_text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラは（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）と「このキャラは移動せず、手札に戻らず、BPをマイナスする効果を受けない。」を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "りゅうせん"
+  },
+  {
+    "id": "UA48BT_KGD_1_061",
+    "name": "論功行賞",
+    "card_type": "FIELD",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-061",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このフィールドはアクティブで登場させる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のアタックフェイズ終了時、「アクティブのこのフィールドをレストにし、APを1支払う。」をしてもよい。そうした場合、カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-061.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-061",
+    "raw_effect_text": "このフィールドはアクティブで登場させる。\n自分のアタックフェイズ終了時、「アクティブのこのフィールドをレストにし、APを1支払う。」をしてもよい。そうした場合、カードを1枚引く。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ろんこうこうしょう"
+  },
+  {
+    "id": "UA48BT_KGD_1_062",
+    "name": "切磋琢磨",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-062",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-062.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-062",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "せっさたくま"
+  },
+  {
+    "id": "UA48BT_KGD_1_063",
+    "name": "続け飛信隊っ!!",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-063",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-063.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-063",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "つづけひしんたいっ"
+  },
+  {
+    "id": "UA48BT_KGD_1_064",
+    "name": "トーンタンタン",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-064",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "カードを1枚引く。以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の手札から必要エナジーを満たし消費APが1の〈羌瘣〉を1枚まで自分の場にレストで登場させるかレイドさせる。この効果で消費APが2の〈羌瘣〉にはレイドできない。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。選んだキャラが〈羌瘣〉の場合、さらにこのターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-064.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-064",
+    "raw_effect_text": "カードを1枚引く。以下から1つ選ぶ。\n・自分の手札から必要エナジーを満たし消費APが1の〈羌瘣〉を1枚まで自分の場にレストで登場させるかレイドさせる。この効果で消費APが2の〈羌瘣〉にはレイドできない。\n・自分の場の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。選んだキャラが〈羌瘣〉の場合、さらにこのターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "とーんたんたん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "羌瘣",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_065",
+    "name": "戦友の形",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-065",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の山札の上から6枚見て、〈信〉と〈王賁〉と〈蒙恬〉をそれぞれ1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-065.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-065",
+    "raw_effect_text": "自分の山札の上から6枚見て、〈信〉と〈王賁〉と〈蒙恬〉をそれぞれ1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "とものかたち"
+  },
+  {
+    "id": "UA48BT_KGD_1_066",
+    "name": "龍指",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-066",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『手札に戻す』。自分の場に〈王賁〉がある場合、『退場させる』に代えてもよい。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-066.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-066",
+    "raw_effect_text": "BP5000以下の相手のフロントLのキャラを1枚選び、『手札に戻す』。自分の場に〈王賁〉がある場合、『退場させる』に代えてもよい。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "りゅうし"
+  },
+  {
+    "id": "UA48BT_KGD_1_067",
+    "name": "ルアア!!",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-067",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈信〉がある場合、『BP5000以下』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-067.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-067",
+    "raw_effect_text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈信〉がある場合、『BP5000以下』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "るああ"
+  },
+  {
+    "id": "UA48BT_KGD_1_068",
+    "name": "嬴政",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-068",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-068.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-068",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "えいせい"
+  },
+  {
+    "id": "UA48BT_KGD_1_069",
+    "name": "嬴政",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-069",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見て、1枚まで場外に置き、残りを望む順で山札の上に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-069.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-069",
+    "raw_effect_text": "自分の山札の上から3枚見て、1枚まで場外に置き、残りを望む順で山札の上に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "えいせい"
+  },
+  {
+    "id": "UA48BT_KGD_1_070",
+    "name": "嬴政",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-070",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 1500,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈嬴政〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時",
+          "レイド"
+        ],
+        "inline_labels": [
+          "登場時",
+          "レイド"
+        ],
+        "text": "自分の場外から必要エナジーが4以下で消費APが1のを持たない赤のキャラカードを1枚まで自分の場にレストで登場させる。登場させた場合、アクティブのこのキャラをレストにしてもよい。そうした場合、そのキャラをアクティブにする。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "自分の場の他のキャラを1枚選び、アクティブにする。選んだキャラの必要エナジーが0の場合、そのキャラはこのターン中、BP+2000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-070.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-070",
+    "raw_effect_text": "〈嬴政〉アクティブにし、フロントLに移動できる\n自分の場外から必要エナジーが4以下で消費APが1のを持たない赤のキャラカードを1枚まで自分の場にレストで登場させる。登場させた場合、アクティブのこのキャラをレストにしてもよい。そうした場合、そのキャラをアクティブにする。\n自分の場の他のキャラを1枚選び、アクティブにする。選んだキャラの必要エナジーが0の場合、そのキャラはこのターン中、BP+2000。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "えいせい",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "嬴政",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_071",
+    "name": "蕞の住民",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-071",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "退場時"
+        ],
+        "inline_labels": [
+          "退場時"
+        ],
+        "text": "自分の場に〈嬴政〉がある場合、カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-071.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-071",
+    "raw_effect_text": "自分の場に〈嬴政〉がある場合、カードを1枚引く。",
+    "raw_trigger_text": "",
+    "ruby": "さい　じゅうみん"
+  },
+  {
+    "id": "UA48BT_KGD_1_072",
+    "name": "昌文君",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-072",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-072.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-072",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "",
+    "ruby": "しょうぶんくん"
+  },
+  {
+    "id": "UA48BT_KGD_1_073",
+    "name": "昌平君",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-073",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の山札の上から3枚見て、1枚まで場外に置き、残りを望む順で山札の上に置く。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分の場の必要エナジーが2以下のキャラを1枚手札に戻してもよい。そうした場合、自分の場の他のキャラを1枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-073.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-073",
+    "raw_effect_text": "以下から1つ選ぶ。\n・自分の山札の上から3枚見て、1枚まで場外に置き、残りを望む順で山札の上に置く。\n・自分の場の必要エナジーが2以下のキャラを1枚手札に戻してもよい。そうした場合、自分の場の他のキャラを1枚まで選び、アクティブにする。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "しょうへいくん"
+  },
+  {
+    "id": "UA48BT_KGD_1_074",
+    "name": "張唐",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-074",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-074.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-074",
+    "raw_effect_text": "",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ちょうとう"
+  },
+  {
+    "id": "UA48BT_KGD_1_075",
+    "name": "騰",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-075",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはBP2000以下のキャラにブロックされない。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のフロントLに異なるカード名のキャラが4種類以上ある場合、このキャラは「このキャラはBP4000以上のキャラにブロックされない。」を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-075.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-075",
+    "raw_effect_text": "このキャラはBP2000以下のキャラにブロックされない。\n自分のフロントLに異なるカード名のキャラが4種類以上ある場合、このキャラは「このキャラはBP4000以上のキャラにブロックされない。」を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "とう"
+  },
+  {
+    "id": "UA48BT_KGD_1_076",
+    "name": "麃公",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-076",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・このキャラはこのターン中、「このキャラのアタックがブロックされなかった時、カードを1枚まで引く。」を得る。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分のフロントLに異なるカード名のキャラが4種類以上ある場合、カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-076.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-076",
+    "raw_effect_text": "以下から1つ選ぶ。\n・このキャラはこのターン中、「このキャラのアタックがブロックされなかった時、カードを1枚まで引く。」を得る。\n・自分のフロントLに異なるカード名のキャラが4種類以上ある場合、カードを1枚引く。",
+    "raw_trigger_text": "",
+    "ruby": "ひょうこう"
+  },
+  {
+    "id": "UA48BT_KGD_1_077",
+    "name": "蒙驁",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-077",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "赤"
+        ],
+        "inline_labels": [
+          "赤"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-077.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-077",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "もうごう"
+  },
+  {
+    "id": "UA48BT_KGD_1_078",
+    "name": "蒙武",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-078",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分のターン中の場合、APを1支払ってもよい。そうした場合、以下から1つ選ぶ。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・BP4500以上の相手のフロントLのキャラを1枚まで選び、退場させる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・自分のフロントLに異なるカード名のキャラが4種類以上ある場合、BP3500以上の相手のフロントLのキャラを1枚まで選び、退場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-078.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-078",
+    "raw_effect_text": "自分のターン中の場合、APを1支払ってもよい。そうした場合、以下から1つ選ぶ。\n・BP4500以上の相手のフロントLのキャラを1枚まで選び、退場させる。\n・自分のフロントLに異なるカード名のキャラが4種類以上ある場合、BP3500以上の相手のフロントLのキャラを1枚まで選び、退場させる。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "もうぶ"
+  },
+  {
+    "id": "UA48BT_KGD_1_079",
+    "name": "呂不韋",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-079",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを『1枚』引く。場外に置いたカードが〈嬴政〉の場合、『2枚』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-079.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-079",
+    "raw_effect_text": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを『1枚』引く。場外に置いたカードが〈嬴政〉の場合、『2枚』に代わる。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "りょふい"
+  },
+  {
+    "id": "UA48BT_KGD_1_080",
+    "name": "バジオウ",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-080",
+    "traits": [
+      "山の民"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "自分の場に〈楊端和〉がある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-080.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-080",
+    "raw_effect_text": "自分の場に〈楊端和〉がある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "ばじおう"
+  },
+  {
+    "id": "UA48BT_KGD_1_081",
+    "name": "楊端和",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-081",
+    "traits": [
+      "山の民"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "インパクト無効"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）"
+      },
+      {
+        "labels": [
+          "登場時",
+          "エナジーLにある場合"
+        ],
+        "inline_labels": [
+          "登場時",
+          "エナジーLにある場合"
+        ],
+        "text": "自分の場に〈嬴政〉がある場合、APを1支払ってもよい。そうした場合、このキャラをアクティブにし、このキャラはこのターン中、「自分のキャラのアタック終了時、自分のフロントLのキャラを1枚選び、このキャラと位置を入れ替えてもよい。」を得て、自分の場のキャラを1枚まで選び、このターン中、BP+2000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-081.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-081",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場に〈嬴政〉がある場合、APを1支払ってもよい。そうした場合、このキャラをアクティブにし、このキャラはこのターン中、「自分のキャラのアタック終了時、自分のフロントLのキャラを1枚選び、このキャラと位置を入れ替えてもよい。」を得て、自分の場のキャラを1枚まで選び、このターン中、BP+2000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "ようたんわ"
+  },
+  {
+    "id": "UA48BT_KGD_1_082",
+    "name": "オギコ",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-082",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "退場時"
+        ],
+        "inline_labels": [
+          "退場時"
+        ],
+        "text": "自分のターン中の場合、自分のAPカードを1枚アクティブにする。〈オギコ〉のこの効果は1ターンに1回のみ発動する。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-082.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-082",
+    "raw_effect_text": "自分のターン中の場合、自分のAPカードを1枚アクティブにする。〈オギコ〉のこの効果は1ターンに1回のみ発動する。",
+    "raw_trigger_text": "",
+    "ruby": "おぎこ"
+  },
+  {
+    "id": "UA48BT_KGD_1_083",
+    "name": "桓騎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-083",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-083.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-083",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "かんき"
+  },
+  {
+    "id": "UA48BT_KGD_1_084",
+    "name": "桓騎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-084",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から3枚見て、［特徴：桓騎軍］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-084.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-084",
+    "raw_effect_text": "自分の山札の上から3枚見て、［特徴：桓騎軍］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "かんき"
+  },
+  {
+    "id": "UA48BT_KGD_1_085",
+    "name": "桓騎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-085",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+2000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-085.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-085",
+    "raw_effect_text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\n自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+2000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "かんき"
+  },
+  {
+    "id": "UA48BT_KGD_1_086",
+    "name": "桓騎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-086",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈桓騎〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚まで選び、アクティブにする。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1"
+        ],
+        "text": "このターン中にキャラの効果でキャラが退場していた場合のみ発動できる。以下から1つ選ぶ。このターン中に〈桓騎〉が既に選んだ効果は選べない。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・このターン中、次に手札から使用する［特徴：桓騎軍］の消費APを-1する。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "・カードを1枚引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-086.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-086",
+    "raw_effect_text": "〈桓騎〉アクティブにし、フロントLに移動できる\n自分の場の他の［特徴：桓騎軍］を1枚まで選び、アクティブにする。\nこのターン中にキャラの効果でキャラが退場していた場合のみ発動できる。以下から1つ選ぶ。このターン中に〈桓騎〉が既に選んだ効果は選べない。\n・このターン中、次に手札から使用する［特徴：桓騎軍］の消費APを-1する。\n・カードを1枚引く。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "かんき",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "桓騎",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48BT_KGD_1_087",
+    "name": "黒桜",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-087",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、カードを2枚引く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-087.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-087",
+    "raw_effect_text": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、カードを2枚引く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "こくおう"
+  },
+  {
+    "id": "UA48BT_KGD_1_088",
+    "name": "ゼノウ",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-088",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "インパクト無効"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場に〈桓騎〉がある場合、相手は自身のフロントLのキャラを1枚退場させる。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "text": "自分の手札の［特徴：桓騎軍］を1枚場外に置く。そうした場合、このキャラをアクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-088.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-088",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場に〈桓騎〉がある場合、相手は自身のフロントLのキャラを1枚退場させる。\n自分の手札の［特徴：桓騎軍］を1枚場外に置く。そうした場合、このキャラをアクティブにする。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ぜのう"
+  },
+  {
+    "id": "UA48BT_KGD_1_089",
+    "name": "那貴",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-089",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "赤"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "赤"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-089.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-089",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "なき"
+  },
+  {
+    "id": "UA48BT_KGD_1_090",
+    "name": "摩論",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-090",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時",
+          "退場時"
+        ],
+        "inline_labels": [
+          "登場時",
+          "退場時"
+        ],
+        "text": "〈摩論〉以外の自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、「このカードを手札に加える。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-090.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-090",
+    "raw_effect_text": "〈摩論〉以外の自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、「このカードを手札に加える。」を与える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "まろん"
+  },
+  {
+    "id": "UA48BT_KGD_1_091",
+    "name": "雷土",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-091",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場に〈桓騎〉がある場合、手札にあるこのカードの必要エナジーを減らす。"
+      },
+      {
+        "labels": [
+          "自分のターン中",
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "自分のターン中",
+          "インパクト（1）"
+        ],
+        "text": "このターン中にキャラの効果でキャラが退場していた場合、このキャラはBP+1000と（アタックしてバトルに勝利した時、相手に1ダメージ）を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-091.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-091",
+    "raw_effect_text": "自分の場に〈桓騎〉がある場合、手札にあるこのカードの必要エナジーを減らす。\nこのターン中にキャラの効果でキャラが退場していた場合、このキャラはBP+1000と（アタックしてバトルに勝利した時、相手に1ダメージ）を得る。",
+    "raw_trigger_text": "",
+    "ruby": "らいど"
+  },
+  {
+    "id": "UA48BT_KGD_1_092",
+    "name": "リン玉",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-092",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見て、［特徴：桓騎軍］を1枚まで場外に置く。残りを望む順で山札の上に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-092.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-092",
+    "raw_effect_text": "自分の山札の上から2枚見て、［特徴：桓騎軍］を1枚まで場外に置く。残りを望む順で山札の上に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "りんぎょく"
+  },
+  {
+    "id": "UA48BT_KGD_1_093",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-093",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 2
+    },
+    "bp": 3000,
+    "keywords": [
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "自分の場に〈嬴政〉がある場合、このキャラはBP+2000。"
+      },
+      {
+        "labels": [
+          "エナジーLにある場合",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "エナジーLにある場合",
+          "ターン1"
+        ],
+        "text": "自分のキャラのアタック終了時、このターン中にアタックしていない自分のフロントLのキャラを1枚選び、このキャラと位置を入れ替えてもよい。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "手札を2枚場外に置く",
+          "ターン1",
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "手札を2枚場外に置く",
+          "ターン1",
+          "インパクト（1）"
+        ],
+        "text": "このキャラはこのターン中、を得る。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "カラー"
+        ],
+        "inline_labels": [
+          "カラー"
+        ],
+        "text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-093.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-093",
+    "raw_effect_text": "自分の場に〈嬴政〉がある場合、このキャラはBP+2000。\n自分のキャラのアタック終了時、このターン中にアタックしていない自分のフロントLのキャラを1枚選び、このキャラと位置を入れ替えてもよい。\nこのキャラはこのターン中、を得る。",
+    "raw_trigger_text": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "しん"
+  },
+  {
+    "id": "UA48BT_KGD_1_094",
+    "name": "函谷関",
+    "card_type": "FIELD",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-094",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "このカードを退場させる"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "このカードを退場させる"
+        ],
+        "text": "自分の場の［特徴：秦］を1枚まで選び、次の自分のターン開始時まで、BP+2000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-094.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-094",
+    "raw_effect_text": "自分の場の［特徴：秦］を1枚まで選び、次の自分のターン開始時まで、BP+2000。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "かんこくかん"
+  },
+  {
+    "id": "UA48BT_KGD_1_095",
+    "name": "ご武運を",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-095",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-095.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-095",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "ごぶうんを"
+  },
+  {
+    "id": "UA48BT_KGD_1_096",
+    "name": "全部上手くいく",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-096",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-096.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-096",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "ぜんぶうまくいく"
+  },
+  {
+    "id": "UA48BT_KGD_1_097",
+    "name": "はしゃぎすぎなんだよ",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-097",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このカードは自分の場に〈桓騎〉がある場合のみ使用できる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。このターン中にキャラの効果でキャラが退場していた場合、自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-097.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-097",
+    "raw_effect_text": "このカードは自分の場に〈桓騎〉がある場合のみ使用できる。\nBP5000以下の相手のフロントLのキャラを1枚選び、退場させる。このターン中にキャラの効果でキャラが退場していた場合、自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "はしゃぎすぎなんだよ"
+  },
+  {
+    "id": "UA48BT_KGD_1_098",
+    "name": "人の持つ本質は―――光だ",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-098",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このカードは自分の場に〈嬴政〉がある場合のみ使用できる。"
+      },
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場の［特徴：秦］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-098.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-098",
+    "raw_effect_text": "このカードは自分の場に〈嬴政〉がある場合のみ使用できる。\n自分の場の［特徴：秦］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "ひとのもつほんしつは ひかりだ"
+  },
+  {
+    "id": "UA48BT_KGD_1_099",
+    "name": "本能型の武将",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-099",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [
+      "SNIPER"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "狙い撃ち"
+        ],
+        "inline_labels": [
+          "狙い撃ち"
+        ],
+        "text": "自分の場のキャラを1枚選び、このターン中、BP+2000。選んだキャラが〈麃公〉か〈信〉の場合、さらに（相手のフロントLのキャラを指定してアタックでき、その場合ブロックされない）を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-099.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-099",
+    "raw_effect_text": "自分の場のキャラを1枚選び、このターン中、BP+2000。選んだキャラが〈麃公〉か〈信〉の場合、さらに（相手のフロントLのキャラを指定してアタックでき、その場合ブロックされない）を与える。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ほんのうがたのぶしょう"
+  },
+  {
+    "id": "UA48BT_KGD_1_100",
+    "name": "我らの国を絶対に守りきるぞ！！",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48BT/KGD-1-100",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場外から必要エナジーが0の赤のキャラカードを『1枚』まで自分の場にレストで登場させる。自分のフロントLに〈嬴政〉がある場合、『2枚』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48BT-KGD-1-100.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48BT/KGD-1-100",
+    "raw_effect_text": "自分の場外から必要エナジーが0の赤のキャラカードを『1枚』まで自分の場にレストで登場させる。自分のフロントLに〈嬴政〉がある場合、『2枚』に代わる。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "われらのくにをぜったいにまもりきるぞ"
+  },
+  {
+    "id": "UA48ST_KGD_1_034",
+    "name": "嬴政",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-034",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "青"
+        ],
+        "inline_labels": [
+          "青"
+        ],
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-034.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-034",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "",
+    "ruby": "えいせい"
+  },
+  {
+    "id": "UA48ST_KGD_1_036",
+    "name": "漂",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-036",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1",
+          "青"
+        ],
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-036.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-036",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "",
+    "ruby": "ひょう"
+  },
+  {
+    "id": "UA48ST_KGD_1_045",
+    "name": "河了貂",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-045",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-045.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-045",
+    "raw_effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+    "raw_trigger_text": "",
+    "ruby": "かりょうてん"
+  },
+  {
+    "id": "UA48ST_KGD_1_049",
+    "name": "羌瘣",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-049",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはアクティブで登場させる。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "自分の手札から必要エナジーが2以下の青のイベントカードを1枚までAPを支払わずに使用する。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-049.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-049",
+    "raw_effect_text": "このキャラはアクティブで登場させる。\n自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。\n自分の手札から必要エナジーが2以下の青のイベントカードを1枚までAPを支払わずに使用する。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "きょうかい"
+  },
+  {
+    "id": "UA48ST_KGD_1_051",
+    "name": "松左",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-051",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-051.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-051",
+    "raw_effect_text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "",
+    "ruby": "しょうさ"
+  },
+  {
+    "id": "UA48ST_KGD_1_052",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-052",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-052.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-052",
+    "raw_effect_text": "",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "しん"
+  },
+  {
+    "id": "UA48ST_KGD_1_059",
+    "name": "尾平",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-059",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-059.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-059",
+    "raw_effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "びへい"
+  },
+  {
+    "id": "UA48ST_KGD_1_063",
+    "name": "続け飛信隊っ!!",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-063",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ファイナル"
+        ],
+        "inline_labels": [
+          "ファイナル"
+        ],
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-063.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-063",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "つづけひしんたいっ"
+  },
+  {
+    "id": "UA48ST_KGD_1_067",
+    "name": "ルアア!!",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-067",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈信〉がある場合、『BP5000以下』に代わる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "スペシャル"
+        ],
+        "inline_labels": [
+          "スペシャル"
+        ],
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-067.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-067",
+    "raw_effect_text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈信〉がある場合、『BP5000以下』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "るああ"
+  },
+  {
+    "id": "UA48ST_KGD_1_101",
+    "name": "嬴政",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-101",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1",
+          "アタック時"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "フロントLにある場合",
+          "ターン1",
+          "アタック時"
+        ],
+        "text": "自分の場の他のキャラを1枚選び、このターン中、「カードを1枚まで引く。」を与える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-101.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-101",
+    "raw_effect_text": "自分の場の他のキャラを1枚選び、このターン中、「カードを1枚まで引く。」を与える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "えいせい"
+  },
+  {
+    "id": "UA48ST_KGD_1_102",
+    "name": "王騎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-102",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 2,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "このキャラはアクティブで登場させる。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "カードを1枚引く。"
+      },
+      {
+        "labels": [
+          "退場時"
+        ],
+        "inline_labels": [
+          "退場時"
+        ],
+        "text": "自分の場の〈信〉を1枚まで選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-102.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-102",
+    "raw_effect_text": "このキャラはアクティブで登場させる。\nカードを1枚引く。\n自分の場の〈信〉を1枚まで選び、アクティブにし、このターン中、BP+3000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "おうき"
+  },
+  {
+    "id": "UA48ST_KGD_1_103",
+    "name": "壁",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-103",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "インパクト無効"
+        ],
+        "inline_labels": [
+          "インパクト無効"
+        ],
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "アクティブ"
+        ],
+        "inline_labels": [
+          "アクティブ"
+        ],
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-103.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-103",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "へき"
+  },
+  {
+    "id": "UA48ST_KGD_1_104",
+    "name": "河了貂",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-104",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "このカードを退場させる"
+        ],
+        "text": "自分の場外から〈河了貂〉以外の必要エナジーが2以下の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-104.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-104",
+    "raw_effect_text": "自分の場外から〈河了貂〉以外の必要エナジーが2以下の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "かりょうてん"
+  },
+  {
+    "id": "UA48ST_KGD_1_105",
+    "name": "羌瘣",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-105",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "ターン1"
+        ],
+        "text": "このキャラを別のラインに移動させる。"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-105.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-105",
+    "raw_effect_text": "このキャラを別のラインに移動させる。",
+    "raw_trigger_text": "",
+    "ruby": "きょうかい"
+  },
+  {
+    "id": "UA48ST_KGD_1_106",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-106",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-106.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-106",
+    "raw_effect_text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラはBP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "しん"
+  },
+  {
+    "id": "UA48ST_KGD_1_107",
+    "name": "信",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-107",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "〈信〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "このキャラのBPは自分の場の［特徴：飛信隊］のカード名の種類数×500プラスされる。このキャラのBPにより、このキャラは以下の効果を全て得る。"
+      },
+      {
+        "labels": [
+          "アタック時"
+        ],
+        "inline_labels": [
+          "アタック時"
+        ],
+        "text": "・BP6000以上：自分の場の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。"
+      },
+      {
+        "labels": [
+          "インパクト（1）"
+        ],
+        "inline_labels": [
+          "インパクト（1）"
+        ],
+        "text": "・BP7000以上：（アタックしてバトルに勝利した時、相手に1ダメージ）"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の手札から必要エナジーが2以下で消費APが1の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "レイド"
+        ],
+        "inline_labels": [
+          "レイド"
+        ],
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-107.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-107",
+    "raw_effect_text": "〈信〉アクティブにし、フロントLに移動できる\nこのキャラのBPは自分の場の［特徴：飛信隊］のカード名の種類数×500プラスされる。このキャラのBPにより、このキャラは以下の効果を全て得る。\n・BP6000以上：自分の場の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。\n・BP7000以上：（アタックしてバトルに勝利した時、相手に1ダメージ）\n自分の手札から必要エナジーが2以下で消費APが1の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "しん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "信",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48ST_KGD_1_108",
+    "name": "飛信隊",
+    "card_type": "FIELD",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-108",
+    "traits": [
+      "秦",
+      "飛信隊"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "青"
+        ],
+        "inline_labels": [
+          "青"
+        ],
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このフィールドの発生エナジー+。"
+      },
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の山札の上から1枚見て、山札の上か場外に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-108.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-108",
+    "raw_effect_text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このフィールドの発生エナジー+。\n自分の山札の上から1枚見て、山札の上か場外に置く。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ひしんたい"
+  },
+  {
+    "id": "UA48ST_KGD_1_109",
+    "name": "そこに道を切り開くのが飛信隊の軍師だ!!",
+    "card_type": "EVENT",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-109",
+    "traits": [],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の山札の上から6枚見て、異なるカード名の［特徴：飛信隊］をそれぞれ1枚ずつ合計2枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-109.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-109",
+    "raw_effect_text": "自分の山札の上から6枚見て、異なるカード名の［特徴：飛信隊］をそれぞれ1枚ずつ合計2枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "そこにみちをきりひらくのがひしんたいのぐんしだ"
+  },
+  {
+    "id": "UA48ST_KGD_1_110",
+    "name": "媧燐",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-110",
+    "traits": [
+      "楚"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [],
+        "inline_labels": [],
+        "text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。"
+      },
+      {
+        "labels": [
+          "自分のターン中"
+        ],
+        "inline_labels": [
+          "自分のターン中"
+        ],
+        "text": "このキャラはBP+1000。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-110.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-110",
+    "raw_effect_text": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\nこのキャラはBP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "かりん"
+  },
+  {
+    "id": "UA48ST_KGD_1_111",
+    "name": "李牧",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-111",
+    "traits": [
+      "趙"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "レストにする",
+          "ターン1"
+        ],
+        "text": "自分のエナジーLのカードを1枚選び、アクティブにする。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-111.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-111",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。\n自分のエナジーLのカードを1枚選び、アクティブにする。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "りぼく"
+  },
+  {
+    "id": "UA48ST_KGD_1_112",
+    "name": "王翦",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-112",
+    "traits": [
+      "秦"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の必要エナジーが2以下のキャラを1枚手札に戻してもよい。そうした場合、このキャラをアクティブにする。"
+      },
+      {
+        "labels": [
+          "退場時",
+          "レイド"
+        ],
+        "inline_labels": [
+          "退場時",
+          "レイド"
+        ],
+        "text": "自分のフロントLにを持つキャラがない場合、自分の手札を1枚場外に置いてもよい。そうした場合、このカードを手札に加える。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ドロー"
+        ],
+        "inline_labels": [
+          "ドロー"
+        ],
+        "text": "カードを1枚引く。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-112.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-112",
+    "raw_effect_text": "自分の場の必要エナジーが2以下のキャラを1枚手札に戻してもよい。そうした場合、このキャラをアクティブにする。\n自分のフロントLにを持つキャラがない場合、自分の手札を1枚場外に置いてもよい。そうした場合、このカードを手札に加える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "おうせん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA48ST_KGD_1_113",
+    "name": "桓騎",
+    "card_type": "CHARACTER",
+    "title_code": "KGD",
+    "number": "UA48ST/KGD-1-113",
+    "traits": [
+      "秦",
+      "桓騎軍"
+    ],
+    "cost_energy": 0,
+    "cost_ap": 1,
+    "energy_provided": {
+      "RED": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [
+      {
+        "labels": [
+          "登場時"
+        ],
+        "inline_labels": [
+          "登場時"
+        ],
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、このキャラをアクティブにする。"
+      },
+      {
+        "labels": [
+          "起動メイン",
+          "2回アタック"
+        ],
+        "inline_labels": [
+          "起動メイン",
+          "2回アタック"
+        ],
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。〈桓騎〉のこの効果は1ターンに1回のみ発動できる。"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "labels": [
+          "ゲット"
+        ],
+        "inline_labels": [
+          "ゲット"
+        ],
+        "text": "このカードを手札に加える。",
+        "trigger": "ON_LIFE_TRIGGER"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "キングダム",
+    "source_image": "UA48ST-KGD-1-113.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA48ST/KGD-1-113",
+    "raw_effect_text": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、このキャラをアクティブにする。\n自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。〈桓騎〉のこの効果は1ターンに1回のみ発動できる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "かんき"
+  }
+]
