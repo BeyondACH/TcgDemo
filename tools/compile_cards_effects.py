@@ -3787,7 +3787,7 @@ def _dual_buff_with_optional_keyword_builder(card: dict, trigger_entry: dict, ev
         [{"type": "CARD_NAME_IS", "value": match.group(1)}],
         1,
         1,
-        "selected_target",
+        "selected_summon",
     )
     steps.extend(
         [
@@ -3857,6 +3857,24 @@ def _draw_activate_name_contains_and_named_builder(card: dict, trigger_entry: di
         trigger_entry,
         [],
         first_specs + second_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _bp_remove_then_choice_branch_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, remove_steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": int(match.group(1))}], 1, 1, "selected_remove_target")
+    remove_steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_remove_target", "to": "OUTSIDE"})
+    branch_ability = _branch_choice_builder(card, trigger_entry, event_name, "以下から1つ選ぶ。", _card_id, payload)
+    steps = remove_steps + branch_ability.get("steps", [])
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs + branch_ability.get("target_specs", []),
         steps,
         payload.get("kind"),
         template_metadata=payload.get("template_metadata"),
