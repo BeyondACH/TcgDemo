@@ -2873,6 +2873,53 @@ def _bp_remove_dynamic_name_contains_gate_builder(card: dict, trigger_entry: dic
     )
 
 
+def _build_bp_remove_to_removed_ability(
+    card: dict,
+    trigger_entry: dict,
+    event_name: str,
+    requirements: list[dict],
+    *,
+    min_count: int = 1,
+    max_count: int = 1,
+    kind: str | None = None,
+    template_metadata: dict | None = None,
+) -> dict:
+    target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], requirements, min_count, max_count)
+    steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "REMOVED"})
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        kind,
+        template_metadata=template_metadata,
+    )
+
+
+def _bp_remove_to_removed_dynamic_name_gate_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    requirements = [
+        {
+            "type": "CARD_BP_LTE_DYNAMIC",
+            "value_provider": _conditional_value_provider(
+                _fixed_value_provider(int(match.group(1))),
+                [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(2)}],
+                _fixed_value_provider(int(match.group(3))),
+            ),
+        }
+    ]
+    return _build_bp_remove_to_removed_ability(
+        card,
+        trigger_entry,
+        event_name,
+        requirements,
+        kind=payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
 def _bp_remove_with_requirements_builder_factory(
     requirements: list[dict],
     *,
@@ -3200,6 +3247,622 @@ def _self_other_bp_modifier_builder(card: dict, trigger_entry: dict, event_name:
     )
 
 
+def _preview_top_two_reorder_top_bottom_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    target_specs, top_steps = _manual_context_target("preview_cards", min_count=0, max_count=2, store_as="selected_top_cards")
+    steps = [
+        {"type": "PREVIEW_TOP_DECK", "count": 2, "var": "preview_cards"},
+    ] + top_steps + [
+        {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_top_cards",
+            "to": "DECK",
+            "to_position": "TOP",
+            "remove_from_var": "preview_cards",
+            "target_player_mode": "SOURCE",
+        },
+        {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "preview_cards",
+            "to": "DECK",
+            "to_position": "BOTTOM",
+            "target_player_mode": "SOURCE",
+        },
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _preview_add_character_cards_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    return _build_preview_add_to_hand_template(
+        card,
+        trigger_entry,
+        event_name,
+        _text,
+        _card_id,
+        {
+            "params": {
+                "count": int(match.group(1)),
+                "requirements": [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+                "max_count": int(match.group(2)),
+            },
+            "template_metadata": payload.get("template_metadata"),
+        },
+    )
+
+
+def _self_other_bp_modifier_conditional_upgrade_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, select_steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE", "BACK_LINE"],
+        [{"type": "CARD_UID_NE", "value": "SOURCE_CARD"}],
+        0,
+        1,
+    )
+    steps = select_steps + [
+        {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value_provider": _conditional_value_provider(
+                _fixed_value_provider(int(match.group(1))),
+                [{"type": "PLAYER_ZONE_CARD_COUNT_GTE", "player": "SELF", "zones": ["FRONT_LINE", "ENERGY_LINE"], "value": int(match.group(2))}],
+                _fixed_value_provider(int(match.group(3))),
+            ),
+            "expires": "END_OF_TURN",
+        }
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _rest_and_lock_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [], 0, 1, "selected_target")
+    steps.extend(
+        [
+            {"type": "REST", "target_var": "selected_target"},
+            {"type": "SET_CARD_FLAG", "target_var": "selected_target", "flag": "skip_next_ready_once", "value": True},
+        ]
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _rest_and_lock_then_conditional_debuff_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [], 0, 1, "selected_target")
+    steps.extend(
+        [
+            {"type": "REST", "target_var": "selected_target"},
+            {
+                "type": "ADD_TEMP_BP_MODIFIER",
+                "target_var": "selected_target",
+                "value_provider": _conditional_value_provider(
+                    _fixed_value_provider(0),
+                    [{"type": "NOT", "requirement": {"type": "CARD_BP_LTE", "value": int(match.group(1)) - 1}}],
+                    _fixed_value_provider(-int(match.group(2))),
+                ),
+                "expires": "UNTIL_NEXT_SELF_TURN_START",
+            },
+        ]
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _conditional_rest_or_remove_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target(
+        "OPPONENT",
+        ["FRONT_LINE"],
+        [{"type": "CARD_BP_LTE", "value": int(match.group(1))}],
+        1,
+        1,
+        "selected_target",
+    )
+    has_name_req = {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(2)}
+    steps.extend(
+        [
+            {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE", "requirements": [has_name_req]},
+            {"type": "REST", "target_var": "selected_target", "requirements": [{"type": "NOT", "requirement": has_name_req}]},
+            {
+                "type": "SET_CARD_FLAG",
+                "target_var": "selected_target",
+                "flag": "skip_next_ready_once",
+                "value": True,
+                "requirements": [{"type": "NOT", "requirement": has_name_req}],
+            },
+        ]
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _draw_discard_then_outside_summon_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    discard_specs, discard_steps = _manual_single_target("SELF", ["HAND"], [], int(match.group(2)), int(match.group(2)), "selected_discard")
+    summon_specs, summon_steps = _manual_single_target(
+        "SELF",
+        ["OUTSIDE"],
+        [
+            {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+            {"type": "CARD_COST_ENERGY_LTE", "value": int(match.group(3))},
+            {"type": "CARD_COLOR_IS", "value": "YELLOW"},
+        ],
+        0,
+        1,
+        "selected_summon",
+    )
+    steps = [{"type": "DRAW", "value": int(match.group(1))}] + discard_steps + [{"type": "MOVE_SELECTED_CARDS", "from_var": "selected_discard", "to": "OUTSIDE"}] + summon_steps + [
+        {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": True,
+            "allow_current_zone": False,
+        }
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        discard_specs + summon_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _buff_draw_then_conditional_ready_ap_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target("SELF", ["FRONT_LINE", "BACK_LINE"], [], 0, 1, "selected_target")
+    steps.extend(
+        [
+            {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(match.group(1)), "expires": "END_OF_TURN"},
+            {"type": "DRAW", "value": int(match.group(2))},
+            {
+                "type": "ACTIVATE_AP_SLOTS",
+                "count": 1,
+                "requirements": [{"type": "CONTROLLER_TRAIT_NAME_COUNT_GTE", "trait": match.group(3), "value": int(match.group(4))}],
+            },
+        ]
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _energy_to_front_if_slot_open_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target(
+        "SELF",
+        ["ENERGY_LINE"],
+        [{"type": "NAME_CONTAINS", "value": match.group(1)}, {"type": "NOT_SOURCE_CARD"}],
+        0,
+        1,
+        "selected_target",
+    )
+    steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "FRONT_LINE"})
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [{"type": "NOT", "requirement": {"type": "PLAYER_ZONE_CARD_COUNT_GTE", "player": "SELF", "zones": ["FRONT_LINE"], "value": 4}}],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _bp_remove_then_choice_branch_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, remove_steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": int(match.group(1))}], 1, 1, "selected_remove_target")
+    remove_steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_remove_target", "to": "OUTSIDE"})
+    branch_ability = _branch_choice_builder(card, trigger_entry, event_name, "以下から1つ選ぶ。", _card_id, payload)
+    steps = remove_steps + branch_ability.get("steps", [])
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs + branch_ability.get("target_specs", []),
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _buff_then_conditional_activate_named_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE", "BACK_LINE"],
+        [{"type": "CARD_UID_NE", "value": "SOURCE_CARD"}],
+        0,
+        1,
+        "target_uid",
+    )
+    steps.extend(
+        [
+            {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "target_uid", "value": int(match.group(1)), "expires": "END_OF_TURN"},
+            {
+                "type": "ACTIVATE_CARD",
+                "target_var": "target_uid",
+                "requirements": [{"type": "CONTEXT_TARGET_NAME_IS", "value": match.group(2)}],
+            },
+        ]
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _bp_remove_then_optional_pay_ap_add_outside_name_contains_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    remove_specs, remove_steps = _manual_single_target(
+        "OPPONENT",
+        ["FRONT_LINE"],
+        [{"type": "CARD_BP_LTE", "value": int(match.group(1))}],
+        1,
+        1,
+        "selected_remove_target",
+    )
+    remove_steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_remove_target", "to": "OUTSIDE"})
+    gate_requirements = [
+        {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE", "value": match.group(2)},
+        {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE", "value": match.group(3)},
+    ]
+    search_specs, search_steps = _manual_single_target(
+        "SELF",
+        ["OUTSIDE"],
+        [
+            {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+            {"type": "OR", "filters": [{"type": "NAME_CONTAINS", "value": match.group(5)}, {"type": "NAME_CONTAINS", "value": match.group(6)}]},
+        ],
+        0,
+        1,
+        "selected_outside_card",
+    )
+    steps = remove_steps + [
+        {
+            "type": "SELECT_TARGETS",
+            "var": "selected_optional_ap_payment",
+            "target": {
+                "type": "OPTION_SET",
+                "options": ["PAY_AP", "SKIP"],
+                "min": 1,
+                "max": 1,
+                "selection_mode": "MANUAL",
+                "manual": True,
+            },
+            "requirements": gate_requirements,
+        },
+        {
+            "type": "PAY_AP_COST",
+            "value": int(match.group(4)),
+            "requirements": gate_requirements + [{"type": "CONTEXT_VALUE_IS", "var": "selected_optional_ap_payment", "value": "PAY_AP"}],
+        },
+    ] + [
+        dict(step, requirements=gate_requirements + [{"type": "CONTEXT_VALUE_IS", "var": "selected_optional_ap_payment", "value": "PAY_AP"}])
+        for step in search_steps
+    ] + [
+        {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_card",
+            "to": "HAND",
+            "requirements": gate_requirements + [{"type": "CONTEXT_VALUE_IS", "var": "selected_optional_ap_payment", "value": "PAY_AP"}],
+        }
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        remove_specs + search_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _outside_character_to_hand_optional_rest_named_ready_ap_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    hand_specs, hand_steps = _manual_single_target(
+        "SELF",
+        ["OUTSIDE"],
+        [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+        1,
+        1,
+        "selected_outside_card",
+    )
+    rest_specs, rest_steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE"],
+        [{"type": "CARD_NAME_IS", "value": match.group(1)}, {"type": "CARD_STATE_IS", "state": "ACTIVE"}],
+        0,
+        1,
+        "selected_rest_target",
+    )
+    steps = hand_steps + [
+        {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_outside_card", "to": "HAND"},
+    ] + rest_steps + [
+        {"type": "REST", "target_var": "selected_rest_target"},
+        {
+            "type": "ACTIVATE_AP_SLOTS",
+            "count": 1,
+            "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_rest_target"}],
+        },
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        hand_specs + rest_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _preview_name_contains_dual_then_conditional_ready_ap_builder(card: dict, trigger_entry: dict, event_name: str, text: str, card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    ability = _build_preview_add_to_hand_template(
+        card,
+        trigger_entry,
+        event_name,
+        text,
+        card_id,
+        {
+            "params": {
+                "count": int(match.group(1)),
+                "requirements": [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+                "filters": [{"type": "OR", "filters": [{"type": "NAME_CONTAINS", "value": match.group(2)}, {"type": "NAME_CONTAINS", "value": match.group(3)}]}],
+            },
+            "template_metadata": payload.get("template_metadata"),
+        },
+    )
+    ability.setdefault("steps", []).append(
+        {
+            "type": "ACTIVATE_AP_SLOTS",
+            "count": 1,
+            "requirements": [
+                {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(4)},
+                {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(5)},
+            ],
+        }
+    )
+    return ability
+
+
+def _move_to_deck_top_or_bottom_with_name_gate_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target(
+        "OPPONENT",
+        ["FRONT_LINE"],
+        [{"type": "CARD_BP_LTE", "value": int(match.group(1))}],
+        1,
+        1,
+        "selected_target",
+    )
+    steps.append(
+        {
+            "type": "SELECT_TARGETS",
+            "var": "selected_deck_position",
+            "target": {
+                "type": "OPTION_SET",
+                "options": ["TOP", "BOTTOM"],
+                "min": 1,
+                "max": 1,
+                "selection_mode": "MANUAL",
+                "manual": True,
+            },
+        }
+    )
+    steps.append(
+        {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "DECK",
+            "target_player_mode": "CARD_CONTROLLER",
+            "to_position_from_var": "selected_deck_position",
+        }
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _named_buff_then_draw_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE", "BACK_LINE"],
+        [{"type": "CARD_NAME_IS", "value": match.group(1)}],
+        0,
+        1,
+        "selected_target",
+    )
+    steps.extend(
+        [
+            {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(match.group(2)), "expires": "END_OF_TURN"},
+            {"type": "DRAW", "value": int(match.group(3))},
+        ]
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _conditional_bp_replace_marker_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(1)}],
+        [],
+        [{"type": "SET_CONTEXT_FLAG", "var": "dynamic_bp_threshold_replaced", "value": True}],
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _dual_buff_with_optional_keyword_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE"],
+        [{"type": "CARD_NAME_IS", "value": match.group(1)}],
+        1,
+        1,
+        "selected_target",
+    )
+    steps.extend(
+        [
+            {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(match.group(2)), "expires": "END_OF_TURN"},
+            {"type": "ADD_TEMP_BP_MODIFIER", "target_uid": "SOURCE_CARD", "value": int(match.group(2)), "expires": "END_OF_TURN"},
+        ]
+    )
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _rest_active_other_then_source_gain_placeholder_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    target_specs, steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE"],
+        [{"type": "NOT_SOURCE_CARD"}, {"type": "CARD_STATE_IS", "state": "ACTIVE"}],
+        1,
+        1,
+        "selected_target",
+    )
+    steps.append({"type": "REST", "target_var": "selected_target"})
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _draw_activate_name_contains_and_named_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    first_specs, first_steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE"],
+        [{"type": "NAME_CONTAINS", "value": match.group(2)}],
+        0,
+        1,
+        "selected_first_target",
+    )
+    second_specs, second_steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE"],
+        [{"type": "CARD_NAME_IS", "value": match.group(4)}],
+        0,
+        1,
+        "selected_second_target",
+    )
+    steps = [{"type": "DRAW", "value": int(match.group(1))}] + first_steps + [
+        {"type": "ACTIVATE_CARD", "target_var": "selected_first_target"},
+        {"type": "ADD_TEMP_KEYWORD", "target_var": "selected_first_target", "keyword": "IMPACT_PLUS_1", "expires": "END_OF_TURN"},
+    ] + second_steps + [{"type": "ACTIVATE_CARD", "target_var": "selected_second_target"}]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        first_specs + second_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
 def _optional_pay_ap_deal_damage_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
     requirements = [{"type": "PLAYER_LIFE_GTE", "player": "OPPONENT", "value": int(match.group(1))}]
@@ -3315,6 +3978,59 @@ def _branch_choice_builder(card: dict, trigger_entry: dict, event_name: str, _te
     )
 
 
+def _branch_choice_non_repeat_per_turn_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, card_id: str, payload: dict) -> dict:
+    branch_texts = [
+        str(effect_entry.get("text", "")).strip().lstrip("・").strip()
+        for effect_entry in card.get("effects", [])
+        if str(effect_entry.get("text", "")).strip().startswith("・")
+    ]
+    if not branch_texts:
+        branch_texts = ["BRANCH_1", "BRANCH_2"]
+    options = [f"BRANCH_{index + 1}" for index in range(len(branch_texts))]
+    safe_card_id = re.sub(r"[^A-Za-z0-9_]+", "_", card_id or str(card.get("id", "CARD")))
+    branches: dict[str, list[dict]] = {}
+    for option, text in zip(options, branch_texts):
+        flag_name = f"{safe_card_id}_{option.lower()}_used_this_turn"
+        branch_steps = _compile_branch_sub_steps(card, trigger_entry, text)
+        branches[option] = [
+            {
+                "type": "RUN_COMPOSITE_IF",
+                "if_requirements": [{"type": "NOT", "requirement": {"type": "PLAYER_TURN_FLAG_TRUE", "player": "SELF", "flag": flag_name}}],
+                "steps": branch_steps + [{"type": "SET_PLAYER_TURN_FLAG", "player": "SELF", "flag": flag_name, "value": True}],
+            }
+        ]
+    steps = [
+        {
+            "type": "SELECT_TARGETS",
+            "var": "selected_branch_option",
+            "target": {
+                "type": "OPTION_SET",
+                "options": options,
+                "min": 1,
+                "max": 1,
+                "selection_mode": "MANUAL",
+                "manual": True,
+            },
+        },
+        {
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": branches,
+            "default_steps": [],
+        },
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
 _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     _TemplateRule(
         name="trigger.life_trigger.raid_choice",
@@ -3331,6 +4047,14 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_branch_choice_builder,
         priority=250,
         template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "select_one_from_following"},
+    ),
+    _TemplateRule(
+        name="trigger.choice_branch.non_repeat_per_turn",
+        event_filter=("ON_ATTACK", "MAIN_ACTIVATE"),
+        matcher=_regex_match(r"以下から1つまで選ぶ。このターン中に〈.+〉が既に選んだ効果は選べない。"),
+        builder=_branch_choice_non_repeat_per_turn_builder,
+        priority=251,
+        template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "select_one_non_repeat_per_turn"},
     ),
     _TemplateRule(
         name="trigger.preview_top.choose_top_or_bottom",
@@ -3395,6 +4119,110 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_self_other_bp_modifier_builder,
         priority=200,
         template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "self_other_character_bp_plus"},
+    ),
+    _TemplateRule(
+        name="trigger.self_other_bp_modifier.conditional_upgrade",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_regex_match(r"自分の場の他のキャラを1枚まで選び、このターン中、『BP\+(\d+)』。自分の場に他のカードが(\d+)枚以上ある場合、『BP\+(\d+)』に代わる。"),
+        builder=_self_other_bp_modifier_conditional_upgrade_builder,
+        priority=201,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "self_other_character_bp_plus_conditional_upgrade"},
+    ),
+    _TemplateRule(
+        name="trigger.rest_and_lock_once",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK"),
+        matcher=_regex_match(r"・?相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。"),
+        builder=_rest_and_lock_builder,
+        priority=202,
+        template_metadata={"family": "REST_CONTROL", "variant": "rest_and_skip_next_ready_once"},
+    ),
+    _TemplateRule(
+        name="trigger.rest_and_lock_with_conditional_debuff",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_regex_match(r"相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが(\d+)以上の場合、そのキャラは次の自分のターン開始時まで、BP-(\d+)。"),
+        builder=_rest_and_lock_then_conditional_debuff_builder,
+        priority=202,
+        template_metadata={"family": "REST_CONTROL", "variant": "rest_then_conditional_bp_debuff_until_next_turn"},
+    ),
+    _TemplateRule(
+        name="trigger.conditional_rest_or_remove",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY"),
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈(.+)〉がある場合、『退場させる』に代わる。"),
+        builder=_conditional_rest_or_remove_builder,
+        priority=202,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "remove_or_rest_lock_by_name_gate"},
+    ),
+    _TemplateRule(
+        name="trigger.draw_discard_then_outside_summon",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY"),
+        matcher=_regex_match(r"カードを(\d+)枚引き、自分の手札を(\d+)枚場外に置く。その後、自分の場外から必要エナジーが(\d+)以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。"),
+        builder=_draw_discard_then_outside_summon_builder,
+        priority=202,
+        template_metadata={"family": "OPTIONAL_COST_THEN_EFFECT", "variant": "draw_discard_then_outside_summon"},
+    ),
+    _TemplateRule(
+        name="trigger.buff_draw_then_conditional_ready_ap",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY"),
+        matcher=_regex_match(r"自分の場のキャラを1枚まで選び、このターン中、BP\+(\d+)。カードを(\d+)枚引く。自分の場外に黄の［特徴：(.+)］のカード名が(\d+)種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。"),
+        builder=_buff_draw_then_conditional_ready_ap_builder,
+        priority=202,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "buff_draw_then_conditional_ready_ap"},
+    ),
+    _TemplateRule(
+        name="trigger.energy_to_front_if_slot_open",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_regex_match(r"自分のフロントLに空きがある場合、自分のエナジーLのカード名に「(.+)」を含む他のキャラを1枚まで選び、フロントLに移動させる。"),
+        builder=_energy_to_front_if_slot_open_builder,
+        priority=202,
+        template_metadata={"family": "ZONE_MOVE", "variant": "energy_to_front_if_slot_open_name_contains"},
+    ),
+    _TemplateRule(
+        name="trigger.buff_then_conditional_activate_named",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_regex_match(r"自分の場の他のキャラを1枚まで選び、このターン中、BP\+(\d+)。選んだキャラが〈(.+)〉の場合、そのキャラをアクティブにする。"),
+        builder=_buff_then_conditional_activate_named_builder,
+        priority=202,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "buff_then_conditional_activate_named"},
+    ),
+    _TemplateRule(
+        name="trigger.dual_buff_with_optional_keyword",
+        event_filter=("MAIN_ACTIVATE", "ON_ENTER"),
+        matcher=_regex_match(r"自分のフロントLの〈(.+)〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP\+(\d+)。さらにこのキャラはこのターン中、を得る。"),
+        builder=_dual_buff_with_optional_keyword_builder,
+        priority=202,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "dual_buff_with_optional_keyword_placeholder"},
+    ),
+    _TemplateRule(
+        name="trigger.rest_active_other_then_source_gain_placeholder",
+        event_filter=("MAIN_ACTIVATE", "ON_ENTER"),
+        matcher=_regex_match(r"自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。"),
+        builder=_rest_active_other_then_source_gain_placeholder_builder,
+        priority=202,
+        template_metadata={"family": "REST_CONTROL", "variant": "rest_active_other_then_source_gain_placeholder"},
+    ),
+    _TemplateRule(
+        name="trigger.bp_remove_then_choice_branch",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。"),
+        builder=_bp_remove_then_choice_branch_builder,
+        priority=202,
+        template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "bp_remove_then_choice_branch"},
+    ),
+    _TemplateRule(
+        name="trigger.preview_top_two_reorder_top_bottom",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
+        matcher=_exact_text_match("自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。"),
+        builder=_preview_top_two_reorder_top_bottom_builder,
+        priority=206,
+        template_metadata={"family": "PREVIEW_TOP_POSITION", "variant": "preview_two_reorder_top_bottom_split"},
+    ),
+    _TemplateRule(
+        name="trigger.preview_add_character_cards",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"・?自分の山札の上から(\d+)枚見る。その中からキャラカードを(\d+)枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"),
+        builder=_preview_add_character_cards_builder,
+        priority=191,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_character_cards_then_reorder_bottom"},
     ),
     _TemplateRule(
         name="trigger.preview_add_to_hand.007_or_trait_discard",
@@ -3542,6 +4370,110 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         template_metadata={"family": "PREVIEW_TOP_POSITION", "variant": "conditional_preview_one_then_choose_top_or_bottom"},
     ),
     _TemplateRule(
+        name="event.preview_add_character_cards",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"・?自分の山札の上から(\d+)枚見る。その中からキャラカードを(\d+)枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"),
+        builder=_preview_add_character_cards_builder,
+        priority=200,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_character_cards_then_reorder_bottom"},
+    ),
+    _TemplateRule(
+        name="event.rest_and_lock_once",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"・?相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。"),
+        builder=_rest_and_lock_builder,
+        priority=202,
+        template_metadata={"family": "REST_CONTROL", "variant": "rest_and_skip_next_ready_once"},
+    ),
+    _TemplateRule(
+        name="event.conditional_rest_or_remove",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈(.+)〉がある場合、『退場させる』に代わる。"),
+        builder=_conditional_rest_or_remove_builder,
+        priority=202,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "remove_or_rest_lock_by_name_gate"},
+    ),
+    _TemplateRule(
+        name="event.draw_discard_then_outside_summon",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"カードを(\d+)枚引き、自分の手札を(\d+)枚場外に置く。その後、自分の場外から必要エナジーが(\d+)以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。"),
+        builder=_draw_discard_then_outside_summon_builder,
+        priority=202,
+        template_metadata={"family": "OPTIONAL_COST_THEN_EFFECT", "variant": "draw_discard_then_outside_summon"},
+    ),
+    _TemplateRule(
+        name="event.buff_draw_then_conditional_ready_ap",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"自分の場のキャラを1枚まで選び、このターン中、BP\+(\d+)。カードを(\d+)枚引く。自分の場外に黄の［特徴：(.+)］のカード名が(\d+)種類以上ある場合、自分のAPカードを1枚まで選び、アクティブにする。"),
+        builder=_buff_draw_then_conditional_ready_ap_builder,
+        priority=202,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "buff_draw_then_conditional_ready_ap"},
+    ),
+    _TemplateRule(
+        name="event.bp_remove_then_choice_branch",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。"),
+        builder=_bp_remove_then_choice_branch_builder,
+        priority=202,
+        template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "bp_remove_then_choice_branch"},
+    ),
+    _TemplateRule(
+        name="event.bp_remove_then_optional_pay_ap_add_outside_name_contains",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「(.+)」を含むキャラとカード名に「(.+)」を含むキャラがある場合、APを(\d+)支払ってもよい。そうした場合、自分の場外からカード名に「(.+)」か「(.+)」を含むキャラカードを1枚まで手札に加える。"),
+        builder=_bp_remove_then_optional_pay_ap_add_outside_name_contains_builder,
+        priority=202,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_remove_then_optional_pay_ap_add_outside_name_contains"},
+    ),
+    _TemplateRule(
+        name="event.outside_character_to_hand_optional_rest_named_ready_ap",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈(.+)〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。"),
+        builder=_outside_character_to_hand_optional_rest_named_ready_ap_builder,
+        priority=202,
+        template_metadata={"family": "OPTIONAL_COST_THEN_EFFECT", "variant": "outside_to_hand_optional_rest_named_ready_ap"},
+    ),
+    _TemplateRule(
+        name="event.preview_name_contains_dual_then_conditional_ready_ap",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"自分の山札の上から(\d+)枚見る。その中からを持ちカード名に「(.+)」か「(.+)」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「(.+)」を含むキャラとカード名に「(.+)」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。"),
+        builder=_preview_name_contains_dual_then_conditional_ready_ap_builder,
+        priority=202,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_name_contains_dual_then_conditional_ready_ap"},
+    ),
+    _TemplateRule(
+        name="event.move_to_deck_top_or_bottom_with_name_gate",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"BP(\d+)以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「(.+)」を含むキャラがある場合、『自分が選んだ方』に代わる。"),
+        builder=_move_to_deck_top_or_bottom_with_name_gate_builder,
+        priority=202,
+        template_metadata={"family": "ZONE_MOVE", "variant": "move_to_deck_top_or_bottom_with_name_gate"},
+    ),
+    _TemplateRule(
+        name="event.named_buff_then_draw",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"・自分の場の〈(.+)〉を1枚まで選び、このターン中、BP\+(\d+)とを与える。カードを(\d+)枚引く。"),
+        builder=_named_buff_then_draw_builder,
+        priority=202,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "named_buff_then_draw"},
+    ),
+    _TemplateRule(
+        name="event.conditional_bp_replace_marker",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"・?自分の場に〈(.+)〉がある場合、『BP(\d+)以下』に代わる。"),
+        builder=_conditional_bp_replace_marker_builder,
+        priority=202,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "conditional_bp_replace_marker"},
+    ),
+    _TemplateRule(
+        name="event.draw_activate_name_contains_and_named",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"カードを(\d+)枚引く。自分のフロントLのカード名に「(.+)」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが\+(\d+)され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈(.+)〉を1枚まで選び、アクティブにする。"),
+        builder=_draw_activate_name_contains_and_named_builder,
+        priority=202,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "draw_activate_name_contains_and_named"},
+    ),
+    _TemplateRule(
         name="event.preview_add_to_hand.065_trait_distinct",
         event_filter="ON_PLAY",
         matcher=_exact_text_match("自分の山札の上から5枚見る。その中から［特徴：ピュエラ・マギ・ホーリー・クインテット］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"),
@@ -3558,7 +4490,7 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     _TemplateRule(
         name="event.bp_remove.required",
         event_filter="ON_PLAY",
-        matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。"),
+        matcher=_regex_match(r"・?『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、退場させる。"),
         builder=_bp_remove_from_match_builder_factory(min_count=1, max_count=1, kind="TRIGGERED"),
         priority=120,
         template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_required"},
@@ -3586,6 +4518,14 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_bp_remove_dynamic_name_contains_gate_builder,
         priority=126,
         template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_dynamic_name_contains_gate"},
+    ),
+    _TemplateRule(
+        name="event.bp_remove_to_removed.dynamic_name_gate",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"『?BP(\d+)以下』?の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈(.+)〉がある場合、『?BP(\d+)以下』?に代わる。"),
+        builder=_bp_remove_to_removed_dynamic_name_gate_builder,
+        priority=127,
+        template_metadata={"family": "BP_THRESHOLD_REMOVE", "variant": "bp_threshold_remove_to_removed_dynamic_name_gate"},
     ),
     _TemplateRule(
         name="event.bp_remove.dynamic_sayaka_life",
