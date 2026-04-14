@@ -7732,8 +7732,73 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "target_uid",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "target_uid"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "target_uid",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "target_uid",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "ACTIVATE_CARD",
+            "target_var": "target_uid",
+            "requirements": [
+              {
+                "type": "CONTEXT_TARGET_NAME_IS",
+                "value": "天条院沙姫"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7742,8 +7807,11 @@
           "effect_box": "OUTER",
           "text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_BP_MODIFIER",
+          "variant": "buff_then_conditional_activate_named"
+        }
       },
       {
         "id": "UA45BT_TLR_1_063_on_life_trigger_bab7196d2b",
@@ -7816,8 +7884,8 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "READY_AND_TEMP_BP"
+        "READY_AND_TEMP_BP",
+        "TEMP_BP_MODIFIER"
       ]
     }
   },
@@ -10458,8 +10526,67 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "古手川唯"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "古手川唯"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 2000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -10468,8 +10595,11 @@
           "effect_box": "OUTER",
           "text": "・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_BP_MODIFIER",
+          "variant": "named_buff_then_draw"
+        }
       }
     ],
     "analysis": {
@@ -10478,9 +10608,10 @@
       "semantic_template_types": [
         "SELECT_AND_MOVE",
         "COMPOSITE",
-        "UNSUPPORTED",
+        "TEMP_BP",
         "MULTI_BRANCH_CHOICE",
-        "BP_THRESHOLD_REMOVE"
+        "BP_THRESHOLD_REMOVE",
+        "TEMP_BP_MODIFIER"
       ]
     }
   },

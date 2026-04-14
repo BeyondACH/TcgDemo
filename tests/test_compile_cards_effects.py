@@ -76,6 +76,11 @@ class CompileCardsEffectsTests(unittest.TestCase):
     TLR_REST_AND_LOCK_DEBUFF_TEXT = "相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。"
     MCR_DRAW_DISCARD_OUTSIDE_SUMMON_TEXT = "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場外から必要エナジーが2以下の黄のキャラカードを1枚まで自分の場にレストで登場させる。"
     MCR_BP_REMOVE_THEN_CHOICE_TEXT = "『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。"
+    TLR_BUFF_THEN_CONDITIONAL_ACTIVATE_NAMED_TEXT = "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。"
+    MCR_BP_REMOVE_OPTIONAL_AP_ADD_OUTSIDE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。"
+    MCR_OUTSIDE_TO_HAND_OPTIONAL_REST_AP_TEXT = "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。"
+    MCR_PREVIEW_NAME_CONTAINS_DUAL_READY_AP_TEXT = "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。"
+    MCR_MOVE_TO_DECK_TOP_BOTTOM_NAME_GATE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -786,6 +791,57 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["template_metadata"]["variant"], "bp_remove_then_choice_branch")
         self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
         self.assertEqual(ability["steps"][2]["type"], "SELECT_TARGETS")
+
+    def test_compile_trigger_supports_buff_then_conditional_activate_named(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_063"},
+            {"trigger": "ON_ENTER", "source_label": "登場時", "effect_box": "OUTER", "text": self.TLR_BUFF_THEN_CONDITIONAL_ACTIVATE_NAMED_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "buff_then_conditional_activate_named")
+        self.assertEqual(ability["steps"][2]["type"], "ACTIVATE_CARD")
+
+    def test_compile_event_effect_supports_bp_remove_then_optional_pay_ap_add_outside_name_contains(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_049", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_BP_REMOVE_OPTIONAL_AP_ADD_OUTSIDE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "bp_remove_then_optional_pay_ap_add_outside_name_contains")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(ability["steps"][1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_event_effect_supports_outside_to_hand_optional_rest_ap(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_028", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_OUTSIDE_TO_HAND_OPTIONAL_REST_AP_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "outside_to_hand_optional_rest_named_ready_ap")
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
+
+    def test_compile_event_effect_supports_preview_name_contains_dual_then_ready_ap(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_048", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_PREVIEW_NAME_CONTAINS_DUAL_READY_AP_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "preview_name_contains_dual_then_conditional_ready_ap")
+        self.assertEqual(ability["steps"][-1]["type"], "ACTIVATE_AP_SLOTS")
+
+    def test_compile_event_effect_supports_move_to_deck_top_bottom_with_name_gate(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_099", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_MOVE_TO_DECK_TOP_BOTTOM_NAME_GATE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "move_to_deck_top_or_bottom_with_name_gate")
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
 
     def test_compile_event_effect_supports_branch_choice_template(self):
         ability = _compile_event_effect(

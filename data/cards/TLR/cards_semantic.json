@@ -1917,17 +1917,17 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "READY_AND_TEMP_BP"
+      "READY_AND_TEMP_BP",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_063_on_enter_ee82639273",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       },
       {
         "id": "UA45BT_TLR_1_063_on_life_trigger_bab7196d2b",
@@ -1938,10 +1938,8 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。選んだキャラが〈天条院 沙姫〉の場合、そのキャラをアクティブにする。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -2481,9 +2479,10 @@
     "template_types": [
       "SELECT_AND_MOVE",
       "COMPOSITE",
-      "UNSUPPORTED",
+      "TEMP_BP",
       "MULTI_BRANCH_CHOICE",
-      "BP_THRESHOLD_REMOVE"
+      "BP_THRESHOLD_REMOVE",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
       {
@@ -2513,16 +2512,14 @@
       {
         "id": "UA45BT_TLR_1_081_on_play_b341867df9",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "以下から1つ選ぶ。\n・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。\n・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",

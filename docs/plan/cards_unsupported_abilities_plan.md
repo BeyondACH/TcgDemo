@@ -243,7 +243,7 @@
 
 ## 8. Week 2 继续执行清单（从 `33` 向 `20` 收敛）
 
-> 当前里程碑位置：`Phase 2` 已达成，最新 `UNSUPPORTED=18`（2026-04-14）。
+> 当前里程碑位置：`Phase 3` 推进中，最新 `UNSUPPORTED=12`（2026-04-14）。
 
 ### 8.1 目标与拆分
 
@@ -256,7 +256,7 @@
 4. **W2-B4（收口）**：补 `THRESHOLD_REPLACE` 的条件替代分支并清理重复文本族。  
    - 目标收敛：`22 -> 20`
 
-> 2026-04-14 已落地（本轮）：完成 `W2-B1` 与 `W2-B4` 主线收口，新增“分支不可重复（本回合）”、“阈值替代 + 移入 REMOVED”、`REST_CONTROL`、`draw_discard_then_outside_summon`、`buff_draw_then_conditional_ready_ap` 等模板族，阶段基线由 `33 -> 18`，已超过 `Phase 2` 目标（`20`）。
+> 2026-04-14 已落地（本轮）：在 `Week 3` 持续接入 `event` 长尾模板，新增 `outside_to_hand_optional_rest_named_ready_ap`、`preview_name_contains_dual_then_conditional_ready_ap`、`move_to_deck_top_or_bottom_with_name_gate`、`named_buff_then_draw`，基线由 `33 -> 12`，继续冲刺 `Phase 3` 目标 `8`。
 
 ### 8.2 本段冻结项
 
@@ -271,7 +271,7 @@
 - 执行并记录：
   - `python tools/compile_cards_effects.py`
   - `python tools/report_support_stats.py`
-  - `python tools/check_unsupported_budget.py --max-total 18 --max-series MCR=8 --max-series TLR=10 --max-series MMM=0`
+  - `python tools/check_unsupported_budget.py --max-total 12 --max-series MCR=4 --max-series TLR=8 --max-series MMM=0`
 
 ### 8.4 风险与回滚策略
 
@@ -299,7 +299,7 @@
 ## 10. Week 2 执行进度（2026-04-14）
 
 - 本周目标：`Phase 2`（`40 -> 20`）
-- 当前进度：`UNSUPPORTED 40 -> 18`（`Phase 2` 目标达成）
+- 当前进度：`UNSUPPORTED 40 -> 12`（`Phase 3` 持续收敛中）
 - 本轮新增收敛模板：
   - `BP_THRESHOLD_REMOVE`（`card name contains` 条件替代）
   - `BP_DEBUFF`（基础/条件型）
@@ -315,4 +315,4 @@
   - `OPTIONAL_COST_THEN_EFFECT`（draw + discard + outside summon）
   - `TEMP_BP_MODIFIER`（buff + draw + 条件 ready AP）
 - 当前门禁基线命令：
-  - `python tools/check_unsupported_budget.py --max-total 18 --max-series MCR=8 --max-series TLR=10 --max-series MMM=0`
+  - `python tools/check_unsupported_budget.py --max-total 12 --max-series MCR=4 --max-series TLR=8 --max-series MMM=0`

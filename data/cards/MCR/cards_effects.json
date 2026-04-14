@@ -2039,8 +2039,127 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_outside_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_outside_card"
+          },
+          {
+            "id": "selected_rest_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "シェリル・ノーム"
+                },
+                {
+                  "type": "CARD_STATE_IS",
+                  "state": "ACTIVE"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_rest_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_card",
+            "to": "HAND"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_rest_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "シェリル・ノーム"
+                },
+                {
+                  "type": "CARD_STATE_IS",
+                  "state": "ACTIVE"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_rest_target"
+          },
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "count": 1,
+            "requirements": [
+              {
+                "type": "CONTEXT_VAR_NON_EMPTY",
+                "var": "selected_rest_target"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2049,8 +2168,11 @@
           "effect_box": "OUTER",
           "text": "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "OPTIONAL_COST_THEN_EFFECT",
+          "variant": "outside_to_hand_optional_rest_named_ready_ap"
+        }
       }
     ],
     "analysis": {
@@ -2058,7 +2180,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE",
+        "OPTIONAL_COST_THEN_EFFECT"
       ]
     }
   },
@@ -4234,8 +4357,114 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 7,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "count": 1,
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "ガルド"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4244,8 +4473,11 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "SEMANTIC_OVERRIDE_REQUIRED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_name_contains_dual_then_conditional_ready_ap"
+        }
       }
     ],
     "analysis": {
@@ -4253,7 +4485,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },
@@ -4386,8 +4619,210 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_remove_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_remove_target"
+          },
+          {
+            "id": "selected_outside_card",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_outside_card"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_remove_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_remove_target",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_optional_ap_payment",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "PAY_AP",
+                "SKIP"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "ガルド"
+              }
+            ]
+          },
+          {
+            "type": "PAY_AP_COST",
+            "value": 1,
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "ガルド"
+              },
+              {
+                "type": "CONTEXT_VALUE_IS",
+                "var": "selected_optional_ap_payment",
+                "value": "PAY_AP"
+              }
+            ]
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_outside_card",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "ガルド"
+              },
+              {
+                "type": "CONTEXT_VALUE_IS",
+                "var": "selected_optional_ap_payment",
+                "value": "PAY_AP"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_outside_card",
+            "to": "HAND",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FRONT_LINE",
+                "value": "ガルド"
+              },
+              {
+                "type": "CONTEXT_VALUE_IS",
+                "var": "selected_optional_ap_payment",
+                "value": "PAY_AP"
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -4396,8 +4831,11 @@
           "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分のフロントLにカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、APを1支払ってもよい。そうした場合、自分の場外からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで手札に加える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "BP_THRESHOLD_REMOVE",
+          "variant": "bp_remove_then_optional_pay_ap_add_outside_name_contains"
+        }
       }
     ],
     "analysis": {
@@ -4406,7 +4844,7 @@
       "semantic_template_types": [
         "SELECT_AND_MOVE",
         "NO_OP",
-        "UNSUPPORTED"
+        "BP_THRESHOLD_REMOVE"
       ]
     }
   },
@@ -8589,8 +9027,77 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_deck_position",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "BOTTOM"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "DECK",
+            "target_player_mode": "CARD_CONTROLLER",
+            "to_position_from_var": "selected_deck_position"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -8599,8 +9106,11 @@
           "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "ZONE_MOVE",
+          "variant": "move_to_deck_top_or_bottom_with_name_gate"
+        }
       }
     ],
     "analysis": {
@@ -8608,7 +9118,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "ZONE_MOVE"
       ]
     }
   },
