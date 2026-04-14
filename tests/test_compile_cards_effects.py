@@ -81,6 +81,9 @@ class CompileCardsEffectsTests(unittest.TestCase):
     MCR_OUTSIDE_TO_HAND_OPTIONAL_REST_AP_TEXT = "自分の場外からを持つキャラカードを1枚手札に加える。自分のフロントLのアクティブの〈シェリル・ノーム〉を1枚レストにしてもよい。そうした場合、自分のAPカードを1枚まで選び、アクティブにする。"
     MCR_PREVIEW_NAME_CONTAINS_DUAL_READY_AP_TEXT = "自分の山札の上から7枚見る。その中からを持ちカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。自分の場にカード名に「イサム」を含むキャラとカード名に「ガルド」を含むキャラがある場合、自分のAPカードを1枚まで選び、アクティブにする。"
     MCR_MOVE_TO_DECK_TOP_BOTTOM_NAME_GATE_TEXT = "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の上か下の『相手が選んだ方』に置く。自分の場にカード名に「バサラ」を含むキャラがある場合、『自分が選んだ方』に代わる。"
+    MCR_CONDITIONAL_BP_REPLACE_MARKER_TEXT = "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
+    MCR_DRAW_ACTIVATE_NAME_CONTAINS_AND_NAMED_TEXT = "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。"
+    TLR_DUAL_BUFF_WITH_OPTIONAL_KEYWORD_TEXT = "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -842,6 +845,33 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["template_metadata"]["variant"], "move_to_deck_top_or_bottom_with_name_gate")
         self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_event_effect_supports_conditional_bp_replace_marker(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_065", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_CONDITIONAL_BP_REPLACE_MARKER_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "conditional_bp_replace_marker")
+
+    def test_compile_event_effect_supports_draw_activate_name_contains_and_named(self):
+        ability = _compile_event_effect(
+            {"id": "UA36BT_MCR_1_100", "card_type": "EVENT"},
+            {"source_label": "", "effect_box": "OUTER", "text": self.MCR_DRAW_ACTIVATE_NAME_CONTAINS_AND_NAMED_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "draw_activate_name_contains_and_named")
+
+    def test_compile_trigger_supports_dual_buff_with_optional_keyword(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_001"},
+            {"trigger": "MAIN_ACTIVATE", "source_label": "起動メイン", "effect_box": "OUTER", "text": self.TLR_DUAL_BUFF_WITH_OPTIONAL_KEYWORD_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "dual_buff_with_optional_keyword_placeholder")
 
     def test_compile_event_effect_supports_branch_choice_template(self):
         ability = _compile_event_effect(

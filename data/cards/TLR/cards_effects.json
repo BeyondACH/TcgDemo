@@ -38,8 +38,67 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "ルン・エルシ・ジュエリア"
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_NAME_IS",
+                  "value": "ルン・エルシ・ジュエリア"
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_uid": "SOURCE_CARD",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -48,8 +107,11 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLの〈ルン・エルシ・ジュエリア〉を1枚選ぶ。そうした場合、そのキャラとこのキャラはこのターン中、BP+1000。さらにこのキャラはこのターン中、を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_BP_MODIFIER",
+          "variant": "dual_buff_with_optional_keyword_placeholder"
+        }
       },
       {
         "id": "UA45BT_TLR_1_001_on_life_trigger_0a3e81b9d0",
@@ -80,8 +142,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "MOVE_SELF"
+        "TEMP_BP",
+        "MOVE_SELF",
+        "TEMP_BP_MODIFIER"
       ]
     }
   },
@@ -3267,8 +3330,65 @@
           "event": "MAIN_ACTIVATE"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NOT_SOURCE_CARD"
+                },
+                {
+                  "type": "CARD_STATE_IS",
+                  "state": "ACTIVE"
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "NOT_SOURCE_CARD"
+                },
+                {
+                  "type": "CARD_STATE_IS",
+                  "state": "ACTIVE"
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "REST",
+            "target_var": "selected_target"
+          }
+        ],
         "limits": {
           "once_per_turn": true
         },
@@ -3277,8 +3397,11 @@
           "effect_box": "OUTER",
           "text": "自分のフロントLのアクティブの他のキャラを1枚レストにする。そうした場合、このキャラはこのターン中、を得る。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "REST_CONTROL",
+          "variant": "rest_active_other_then_source_gain_placeholder"
+        }
       },
       {
         "id": "UA45BT_TLR_1_026_on_life_trigger_bab7196d2b",
@@ -3351,8 +3474,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
-        "READY_AND_TEMP_BP"
+        "COMPOSITE",
+        "READY_AND_TEMP_BP",
+        "REST_CONTROL"
       ]
     }
   },

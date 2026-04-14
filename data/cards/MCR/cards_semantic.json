@@ -1681,8 +1681,9 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED",
+      "COMPOSITE",
       "MULTI_BRANCH_CHOICE",
+      "BP_THRESHOLD_REMOVE",
       "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
@@ -1705,10 +1706,10 @@
       {
         "id": "UA36BT_MCR_1_065_on_play_d2ce3bcead",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       },
       {
         "id": "UA36BT_MCR_1_065_on_play_4dbdce4273",
@@ -1719,10 +1720,8 @@
         "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -2604,7 +2603,8 @@
     ],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "TEMP_KEYWORD",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
       {
@@ -2618,16 +2618,14 @@
       {
         "id": "UA36BT_MCR_1_100_on_play_f6143c2fa4",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "カードを2枚引く。自分のフロントLのカード名に「バサラ」を含むキャラを1枚まで選び、アクティブにし、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。自分のフロントLの〈シビル〉を1枚まで選び、アクティブにする。",
       "trigger": "カードを1枚引く。",
@@ -2789,8 +2787,9 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED",
+      "COMPOSITE",
       "MULTI_BRANCH_CHOICE",
+      "BP_THRESHOLD_REMOVE",
       "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
@@ -2813,10 +2812,10 @@
       {
         "id": "UA36ST_MCR_1_065_on_play_d2ce3bcead",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       },
       {
         "id": "UA36ST_MCR_1_065_on_play_4dbdce4273",
@@ -2827,10 +2826,8 @@
         "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
