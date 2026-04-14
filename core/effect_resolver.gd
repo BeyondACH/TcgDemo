@@ -938,6 +938,7 @@ func _resolve_numeric_value(state: GameState, provider_variant, context: Diction
 				var zone_def = state.get_card_def(zone_card.def_id) if zone_card != null else null
 				if zone_def == null:
 					continue
+				var required_card_type := str(provider.get("card_type", ""))
 				if required_card_type != "" and UATypes.card_type_to_text(zone_def.card_type) != required_card_type:
 					continue
 				total += 1
