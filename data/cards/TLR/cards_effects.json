@@ -7380,6 +7380,10 @@
               "filters": [],
               "requirements": [
                 {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
                   "type": "NAME_CONTAINS",
                   "value": "デビルーク"
                 },
@@ -7408,6 +7412,10 @@
               ],
               "filters": [],
               "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
                 {
                   "type": "NAME_CONTAINS",
                   "value": "デビルーク"

@@ -842,6 +842,29 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["template_metadata"]["variant"], "move_to_deck_top_or_bottom_with_name_gate")
         self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+        self.assertEqual(ability["steps"][1]["requirements"], [{"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": "バサラ"}])
+        self.assertEqual(
+            ability["steps"][2]["requirements"],
+            [{"type": "NOT", "requirement": {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": "バサラ"}}],
+        )
+
+    def test_compile_trigger_supports_energy_to_front_if_slot_open_character_only(self):
+        ability = _compile_trigger(
+            {"id": "UA36BT_MCR_1_102"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": "自分のフロントLに空きがある場合、自分のエナジーLのカード名に「音夢」を含む他のキャラを1枚まで選び、フロントLに移動させる。",
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["template_metadata"]["variant"], "energy_to_front_if_slot_open_name_contains")
+        self.assertEqual(
+            ability["steps"][0]["target"]["requirements"][0],
+            {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+        )
 
     def test_compile_event_effect_supports_branch_choice_template(self):
         ability = _compile_event_effect(

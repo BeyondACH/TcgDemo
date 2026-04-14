@@ -3486,7 +3486,7 @@ def _energy_to_front_if_slot_open_builder(card: dict, trigger_entry: dict, event
     target_specs, steps = _manual_single_target(
         "SELF",
         ["ENERGY_LINE"],
-        [{"type": "NAME_CONTAINS", "value": match.group(1)}, {"type": "NOT_SOURCE_CARD"}],
+        [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}, {"type": "NAME_CONTAINS", "value": match.group(1)}, {"type": "NOT_SOURCE_CARD"}],
         0,
         1,
         "selected_target",
@@ -3694,6 +3694,8 @@ def _preview_name_contains_dual_then_conditional_ready_ap_builder(card: dict, tr
 
 def _move_to_deck_top_or_bottom_with_name_gate_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
+    chooser_gate = [{"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(2)}]
+    chooser_gate_not_met = [{"type": "NOT", "requirement": chooser_gate[0]}]
     target_specs, steps = _manual_single_target(
         "OPPONENT",
         ["FRONT_LINE"],
@@ -3705,7 +3707,7 @@ def _move_to_deck_top_or_bottom_with_name_gate_builder(card: dict, trigger_entry
     steps.append(
         {
             "type": "SELECT_TARGETS",
-            "var": "selected_deck_position",
+            "var": "selected_deck_position_self",
             "target": {
                 "type": "OPTION_SET",
                 "options": ["TOP", "BOTTOM"],
@@ -3714,6 +3716,23 @@ def _move_to_deck_top_or_bottom_with_name_gate_builder(card: dict, trigger_entry
                 "selection_mode": "MANUAL",
                 "manual": True,
             },
+            "requirements": chooser_gate,
+        }
+    )
+    steps.append(
+        {
+            "type": "SELECT_TARGETS",
+            "var": "selected_deck_position_opponent",
+            "target": {
+                "type": "OPTION_SET",
+                "options": ["TOP", "BOTTOM"],
+                "min": 1,
+                "max": 1,
+                "selection_mode": "MANUAL",
+                "manual": True,
+                "owner": "OPPONENT",
+            },
+            "requirements": chooser_gate_not_met,
         }
     )
     steps.append(
@@ -3722,7 +3741,18 @@ def _move_to_deck_top_or_bottom_with_name_gate_builder(card: dict, trigger_entry
             "from_var": "selected_target",
             "to": "DECK",
             "target_player_mode": "CARD_CONTROLLER",
-            "to_position_from_var": "selected_deck_position",
+            "to_position_from_var": "selected_deck_position_self",
+            "requirements": chooser_gate,
+        }
+    )
+    steps.append(
+        {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "DECK",
+            "target_player_mode": "CARD_CONTROLLER",
+            "to_position_from_var": "selected_deck_position_opponent",
+            "requirements": chooser_gate_not_met,
         }
     )
     return _supported_ability(
@@ -4004,7 +4034,7 @@ def _energy_to_front_if_slot_open_builder(card: dict, trigger_entry: dict, event
     target_specs, steps = _manual_single_target(
         "SELF",
         ["ENERGY_LINE"],
-        [{"type": "NAME_CONTAINS", "value": match.group(1)}, {"type": "NOT_SOURCE_CARD"}],
+        [{"type": "CARD_TYPE_IS", "value": "CHARACTER"}, {"type": "NAME_CONTAINS", "value": match.group(1)}, {"type": "NOT_SOURCE_CARD"}],
         0,
         1,
         "selected_target",

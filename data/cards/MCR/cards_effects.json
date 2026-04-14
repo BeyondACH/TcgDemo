@@ -9077,7 +9077,7 @@
           },
           {
             "type": "SELECT_TARGETS",
-            "var": "selected_deck_position",
+            "var": "selected_deck_position_self",
             "target": {
               "type": "OPTION_SET",
               "options": [
@@ -9088,14 +9088,67 @@
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
-            }
+            },
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "バサラ"
+              }
+            ]
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_deck_position_opponent",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "BOTTOM"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "owner": "OPPONENT"
+            },
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                  "value": "バサラ"
+                }
+              }
+            ]
           },
           {
             "type": "MOVE_SELECTED_CARDS",
             "from_var": "selected_target",
             "to": "DECK",
             "target_player_mode": "CARD_CONTROLLER",
-            "to_position_from_var": "selected_deck_position"
+            "to_position_from_var": "selected_deck_position_self",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "バサラ"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "DECK",
+            "target_player_mode": "CARD_CONTROLLER",
+            "to_position_from_var": "selected_deck_position_opponent",
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                  "value": "バサラ"
+                }
+              }
+            ]
           }
         ],
         "limits": {
