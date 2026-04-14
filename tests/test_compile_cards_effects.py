@@ -793,7 +793,27 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["template_metadata"]["variant"], "bp_remove_then_choice_branch")
         self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
-        self.assertEqual(ability["steps"][2]["type"], "SELECT_TARGETS")
+        self.assertEqual(ability["steps"][1]["type"], "SELECT_TARGETS")
+
+
+    def test_compile_trigger_bp_remove_then_choice_branch_applies_branch_gated_bp_replacement(self):
+        ability = _compile_trigger(
+            {
+                "id": "UA36BT_MCR_1_065",
+                "effects": [
+                    {"text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"},
+                    {"text": "・カードを1枚引く。"},
+                ],
+            },
+            {"trigger": "ON_PLAY", "source_label": "トリガー", "effect_box": "OUTER", "text": self.MCR_BP_REMOVE_THEN_CHOICE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        remove_target_req = ability["steps"][1]["target"]["requirements"][0]
+        self.assertEqual(remove_target_req["type"], "CARD_BP_LTE_DYNAMIC")
+        when_reqs = remove_target_req["value_provider"]["when"]
+        self.assertIn({"type": "CONTEXT_VALUE_IS", "var": "selected_branch_option", "value": "BRANCH_1"}, when_reqs)
+        self.assertIn({"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "シェリル・ノーム"}, when_reqs)
 
     def test_compile_trigger_supports_buff_then_conditional_activate_named(self):
         ability = _compile_trigger(
@@ -844,16 +864,16 @@ class CompileCardsEffectsTests(unittest.TestCase):
         )
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["template_metadata"]["variant"], "move_to_deck_top_or_bottom_with_name_gate")
-        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+        self.assertEqual(ability["steps"][1]["target"]["decision_player_mode"], "OPPONENT_OF_SOURCE")
+        self.assertEqual(ability["steps"][2]["target"]["decision_player_mode"], "SOURCE")
 
-    def test_compile_event_effect_supports_conditional_bp_replace_marker(self):
+    def test_compile_event_effect_conditional_bp_replace_marker_is_not_standalone_supported(self):
         ability = _compile_event_effect(
             {"id": "UA36BT_MCR_1_065", "card_type": "EVENT"},
             {"source_label": "", "effect_box": "OUTER", "text": self.MCR_CONDITIONAL_BP_REPLACE_MARKER_TEXT},
             {},
         )
-        self.assertEqual(ability["status"], "SUPPORTED")
-        self.assertEqual(ability["template_metadata"]["variant"], "conditional_bp_replace_marker")
+        self.assertEqual(ability["status"], "UNSUPPORTED")
 
     def test_compile_event_effect_supports_draw_activate_name_contains_and_named(self):
         ability = _compile_event_effect(

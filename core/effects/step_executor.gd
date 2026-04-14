@@ -10,6 +10,7 @@ const CardInstance = preload("res://data/card_instance.gd")
 const ZoneManager = preload("res://core/zone_manager.gd")
 const RulesEngine = preload("res://core/rules_engine.gd")
 const VictoryChecker = preload("res://core/victory_checker.gd")
+const PlayerUtils = preload("res://core/player_utils.gd")
 
 var _zone_manager
 var _victory_checker: VictoryChecker
@@ -449,8 +450,7 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 			context[selected_var] = [] if max_count != 1 else ""
 			return false
 		return false
-	var source_card = state.get_card(source_card_uid)
-	var owner_player_id = source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
+	var owner_player_id := _resolve_selection_owner_player_id(state, source_card_uid, target, context)
 	var resolution_id := state.next_runtime_id("target_select")
 	var choices: Array[Dictionary] = []
 	var candidate_values: Array[String] = []
@@ -493,6 +493,17 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 		"title": str(ui_meta.get("title", "")),
 	})
 	return true
+
+
+func _resolve_selection_owner_player_id(state: GameState, source_card_uid: String, target: Dictionary, context: Dictionary) -> String:
+	var source_card = state.get_card(source_card_uid)
+	var source_player_id := source_card.controller_player_id if source_card != null else str(context.get("source_player_id", ""))
+	var decision_player_mode := str(target.get("decision_player_mode", "SOURCE"))
+	if decision_player_mode == "OPPONENT_OF_SOURCE":
+		return PlayerUtils.opponent_of(source_player_id)
+	if decision_player_mode == "CONTEXT_TARGET_PLAYER":
+		return str(context.get("target_player_id", source_player_id))
+	return source_player_id
 
 func _apply_selection_constraints(state: GameState, selected: Array, constraints: Dictionary, context: Dictionary, source_card_uid: String) -> Array:
 	if constraints.is_empty():

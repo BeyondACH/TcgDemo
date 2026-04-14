@@ -2885,111 +2885,6 @@
         "ui": {
           "label": "",
           "effect_box": "OUTER",
-          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
-        },
-        "status": "SUPPORTED"
-      },
-      {
-        "id": "UA36BT_MCR_1_031_on_play_1371b24591",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [
-          {
-            "id": "selected_target",
-            "scope": "CARD",
-            "candidate": {
-              "owner": "OPPONENT",
-              "zones": [
-                "FRONT_LINE"
-              ],
-              "filters": [],
-              "requirements": [
-                {
-                  "type": "CARD_BP_LTE",
-                  "value": 5000
-                }
-              ]
-            },
-            "select": {
-              "min": 1,
-              "max": 1,
-              "mode": "MANUAL"
-            },
-            "store_as": "selected_target"
-          }
-        ],
-        "steps": [
-          {
-            "type": "SELECT_TARGETS",
-            "var": "selected_target",
-            "target": {
-              "type": "CARD_SET",
-              "owner": "OPPONENT",
-              "zones": [
-                "FRONT_LINE"
-              ],
-              "filters": [],
-              "requirements": [
-                {
-                  "type": "CARD_BP_LTE",
-                  "value": 5000
-                }
-              ],
-              "min": 1,
-              "max": 1,
-              "selection_mode": "MANUAL",
-              "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_target",
-            "to": "OUTSIDE",
-            "requirements": [
-              {
-                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                "value": "ランカ・リー"
-              }
-            ]
-          },
-          {
-            "type": "REST",
-            "target_var": "selected_target",
-            "requirements": [
-              {
-                "type": "NOT",
-                "requirement": {
-                  "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                  "value": "ランカ・リー"
-                }
-              }
-            ]
-          },
-          {
-            "type": "SET_CARD_FLAG",
-            "target_var": "selected_target",
-            "flag": "skip_next_ready_once",
-            "value": true,
-            "requirements": [
-              {
-                "type": "NOT",
-                "requirement": {
-                  "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                  "value": "ランカ・リー"
-                }
-              }
-            ]
-          }
-        ],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。"
         },
         "status": "SUPPORTED",
@@ -4443,131 +4338,6 @@
           {
             "type": "DRAW",
             "value": 1
-          }
-        ],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": "カードを1枚引く。"
-        },
-        "status": "SUPPORTED"
-      },
-      {
-        "id": "UA36BT_MCR_1_048_on_play_210e126786",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [
-          {
-            "id": "selected_preview_cards",
-            "scope": "CARD",
-            "candidate": {
-              "source_var": "preview_cards",
-              "filters": [
-                {
-                  "type": "OR",
-                  "filters": [
-                    {
-                      "type": "NAME_CONTAINS",
-                      "value": "イサム"
-                    },
-                    {
-                      "type": "NAME_CONTAINS",
-                      "value": "ガルド"
-                    }
-                  ]
-                }
-              ],
-              "requirements": [
-                {
-                  "type": "CARD_TYPE_IS",
-                  "value": "CHARACTER"
-                }
-              ]
-            },
-            "select": {
-              "min": 0,
-              "max": 1,
-              "mode": "MANUAL",
-              "constraints": {}
-            },
-            "store_as": "selected_preview_cards"
-          }
-        ],
-        "steps": [
-          {
-            "type": "PREVIEW_TOP_DECK",
-            "count": 7,
-            "var": "preview_cards"
-          },
-          {
-            "type": "SELECT_TARGETS",
-            "var": "selected_preview_cards",
-            "target": {
-              "type": "CONTEXT_CARD_SET",
-              "source_var": "preview_cards",
-              "filters": [
-                {
-                  "type": "OR",
-                  "filters": [
-                    {
-                      "type": "NAME_CONTAINS",
-                      "value": "イサム"
-                    },
-                    {
-                      "type": "NAME_CONTAINS",
-                      "value": "ガルド"
-                    }
-                  ]
-                }
-              ],
-              "requirements": [
-                {
-                  "type": "CARD_TYPE_IS",
-                  "value": "CHARACTER"
-                }
-              ],
-              "min": 0,
-              "max": 1,
-              "selection_mode": "MANUAL",
-              "manual": true,
-              "selection_constraints": {}
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_preview_cards",
-            "to": "HAND",
-            "remove_from_var": "preview_cards"
-          },
-          {
-            "type": "REORDER_CONTEXT_CARDS",
-            "from_var": "preview_cards",
-            "var": "ordered_preview_cards"
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "ordered_preview_cards",
-            "to": "DECK"
-          },
-          {
-            "type": "ACTIVATE_AP_SLOTS",
-            "count": 1,
-            "requirements": [
-              {
-                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
-                "value": "イサム"
-              },
-              {
-                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
-                "value": "ガルド"
-              }
-            ]
           }
         ],
         "limits": {
@@ -6353,8 +6123,29 @@
               "filters": [],
               "requirements": [
                 {
-                  "type": "CARD_BP_LTE",
-                  "value": 4000
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 4000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTEXT_VALUE_IS",
+                        "var": "selected_branch_option",
+                        "value": "BRANCH_1"
+                      },
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "シェリル・ノーム"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
                 }
               ]
             },
@@ -6369,33 +6160,6 @@
         "steps": [
           {
             "type": "SELECT_TARGETS",
-            "var": "selected_remove_target",
-            "target": {
-              "type": "CARD_SET",
-              "owner": "OPPONENT",
-              "zones": [
-                "FRONT_LINE"
-              ],
-              "filters": [],
-              "requirements": [
-                {
-                  "type": "CARD_BP_LTE",
-                  "value": 4000
-                }
-              ],
-              "min": 1,
-              "max": 1,
-              "selection_mode": "MANUAL",
-              "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_remove_target",
-            "to": "OUTSIDE"
-          },
-          {
-            "type": "SELECT_TARGETS",
             "var": "selected_branch_option",
             "target": {
               "type": "OPTION_SET",
@@ -6408,6 +6172,54 @@
               "selection_mode": "MANUAL",
               "manual": true
             }
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_remove_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 4000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTEXT_VALUE_IS",
+                        "var": "selected_branch_option",
+                        "value": "BRANCH_1"
+                      },
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "シェリル・ノーム"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_remove_target",
+            "to": "OUTSIDE"
           },
           {
             "type": "EXECUTE_CHOICE_BRANCH",
@@ -6417,157 +6229,6 @@
                 {
                   "type": "PENDING_BRANCH_EFFECT",
                   "text": "自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
-                }
-              ],
-              "BRANCH_2": [
-                {
-                  "type": "RUN_COMPOSITE_IF",
-                  "if_requirements": [
-                    {
-                      "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                      "value": "ランカ・リー"
-                    }
-                  ],
-                  "steps": [
-                    {
-                      "type": "PREVIEW_TOP_DECK",
-                      "count": 1,
-                      "var": "preview_cards"
-                    },
-                    {
-                      "type": "SELECT_TARGETS",
-                      "var": "selected_preview_destination",
-                      "target": {
-                        "type": "OPTION_SET",
-                        "options": [
-                          "TOP",
-                          "BOTTOM"
-                        ],
-                        "min": 1,
-                        "max": 1,
-                        "selection_mode": "MANUAL",
-                        "manual": true
-                      }
-                    },
-                    {
-                      "type": "MOVE_SELECTED_CARDS",
-                      "from_var": "preview_cards",
-                      "to": "DECK",
-                      "to_position_from_var": "selected_preview_destination",
-                      "target_player_mode": "SOURCE"
-                    }
-                  ]
-                }
-              ]
-            },
-            "default_steps": []
-          }
-        ],
-        "limits": {
-          "once_per_turn": false
-        },
-        "ui": {
-          "label": "",
-          "effect_box": "OUTER",
-          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
-        },
-        "status": "SUPPORTED"
-      },
-      {
-        "id": "UA36BT_MCR_1_065_on_play_78e3e36e0b",
-        "kind": "TRIGGERED",
-        "timing": {
-          "event": "ON_PLAY"
-        },
-        "requirements": [],
-        "target_specs": [
-          {
-            "id": "selected_remove_target",
-            "scope": "CARD",
-            "candidate": {
-              "owner": "OPPONENT",
-              "zones": [
-                "FRONT_LINE"
-              ],
-              "filters": [],
-              "requirements": [
-                {
-                  "type": "CARD_BP_LTE",
-                  "value": 4000
-                }
-              ]
-            },
-            "select": {
-              "min": 1,
-              "max": 1,
-              "mode": "MANUAL"
-            },
-            "store_as": "selected_remove_target"
-          }
-        ],
-        "steps": [
-          {
-            "type": "SELECT_TARGETS",
-            "var": "selected_remove_target",
-            "target": {
-              "type": "CARD_SET",
-              "owner": "OPPONENT",
-              "zones": [
-                "FRONT_LINE"
-              ],
-              "filters": [],
-              "requirements": [
-                {
-                  "type": "CARD_BP_LTE",
-                  "value": 4000
-                }
-              ],
-              "min": 1,
-              "max": 1,
-              "selection_mode": "MANUAL",
-              "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_remove_target",
-            "to": "OUTSIDE"
-          },
-          {
-            "type": "SELECT_TARGETS",
-            "var": "selected_branch_option",
-            "target": {
-              "type": "OPTION_SET",
-              "options": [
-                "BRANCH_1",
-                "BRANCH_2"
-              ],
-              "min": 1,
-              "max": 1,
-              "selection_mode": "MANUAL",
-              "manual": true
-            }
-          },
-          {
-            "type": "EXECUTE_CHOICE_BRANCH",
-            "mode_var": "selected_branch_option",
-            "branches": {
-              "BRANCH_1": [
-                {
-                  "type": "RUN_COMPOSITE_IF",
-                  "if_requirements": [
-                    {
-                      "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                      "value": "シェリル・ノーム"
-                    }
-                  ],
-                  "steps": [
-                    {
-                      "type": "SET_CONTEXT_FLAG",
-                      "var": "dynamic_bp_threshold_replaced",
-                      "value": true
-                    }
-                  ]
                 }
               ],
               "BRANCH_2": [
@@ -6634,20 +6295,9 @@
         "timing": {
           "event": "ON_PLAY"
         },
-        "requirements": [
-          {
-            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-            "value": "シェリル・ノーム"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
-        "steps": [
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "dynamic_bp_threshold_replaced",
-            "value": true
-          }
-        ],
+        "steps": [],
         "limits": {
           "once_per_turn": false
         },
@@ -6656,11 +6306,8 @@
           "effect_box": "OUTER",
           "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "SUPPORTED",
-        "template_metadata": {
-          "family": "BP_THRESHOLD_REMOVE",
-          "variant": "conditional_bp_replace_marker"
-        }
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "BP 阈值替换语句需要与前置移除步骤合并编译，当前不支持独立结算。"
       },
       {
         "id": "UA36BT_MCR_1_065_on_play_4dbdce4273",
@@ -6724,9 +6371,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "COMPOSITE",
+        "UNSUPPORTED",
         "MULTI_BRANCH_CHOICE",
-        "BP_THRESHOLD_REMOVE",
         "PREVIEW_TOP_POSITION"
       ]
     }
@@ -9473,7 +9119,16 @@
           },
           {
             "type": "SELECT_TARGETS",
-            "var": "selected_deck_position",
+            "var": "selected_deck_position_opponent",
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                  "value": "バサラ"
+                }
+              }
+            ],
             "target": {
               "type": "OPTION_SET",
               "options": [
@@ -9483,7 +9138,30 @@
               "min": 1,
               "max": 1,
               "selection_mode": "MANUAL",
-              "manual": true
+              "manual": true,
+              "decision_player_mode": "OPPONENT_OF_SOURCE"
+            }
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_deck_position_self",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "バサラ"
+              }
+            ],
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "TOP",
+                "BOTTOM"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "decision_player_mode": "SOURCE"
             }
           },
           {
@@ -9491,7 +9169,29 @@
             "from_var": "selected_target",
             "to": "DECK",
             "target_player_mode": "CARD_CONTROLLER",
-            "to_position_from_var": "selected_deck_position"
+            "to_position_from_var": "selected_deck_position_opponent",
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                  "value": "バサラ"
+                }
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "DECK",
+            "target_player_mode": "CARD_CONTROLLER",
+            "to_position_from_var": "selected_deck_position_self",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "バサラ"
+              }
+            ]
           }
         ],
         "limits": {
@@ -10327,8 +10027,29 @@
               "filters": [],
               "requirements": [
                 {
-                  "type": "CARD_BP_LTE",
-                  "value": 4000
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 4000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTEXT_VALUE_IS",
+                        "var": "selected_branch_option",
+                        "value": "BRANCH_1"
+                      },
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "シェリル・ノーム"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
                 }
               ]
             },
@@ -10341,33 +10062,6 @@
           }
         ],
         "steps": [
-          {
-            "type": "SELECT_TARGETS",
-            "var": "selected_remove_target",
-            "target": {
-              "type": "CARD_SET",
-              "owner": "OPPONENT",
-              "zones": [
-                "FRONT_LINE"
-              ],
-              "filters": [],
-              "requirements": [
-                {
-                  "type": "CARD_BP_LTE",
-                  "value": 4000
-                }
-              ],
-              "min": 1,
-              "max": 1,
-              "selection_mode": "MANUAL",
-              "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_remove_target",
-            "to": "OUTSIDE"
-          },
           {
             "type": "SELECT_TARGETS",
             "var": "selected_branch_option",
@@ -10384,25 +10078,61 @@
             }
           },
           {
+            "type": "SELECT_TARGETS",
+            "var": "selected_remove_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "CONDITIONAL",
+                    "default": {
+                      "type": "FIXED",
+                      "value": 4000
+                    },
+                    "when": [
+                      {
+                        "type": "CONTEXT_VALUE_IS",
+                        "var": "selected_branch_option",
+                        "value": "BRANCH_1"
+                      },
+                      {
+                        "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                        "value": "シェリル・ノーム"
+                      }
+                    ],
+                    "then": {
+                      "type": "FIXED",
+                      "value": 5000
+                    }
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_remove_target",
+            "to": "OUTSIDE"
+          },
+          {
             "type": "EXECUTE_CHOICE_BRANCH",
             "mode_var": "selected_branch_option",
             "branches": {
               "BRANCH_1": [
                 {
-                  "type": "RUN_COMPOSITE_IF",
-                  "if_requirements": [
-                    {
-                      "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-                      "value": "シェリル・ノーム"
-                    }
-                  ],
-                  "steps": [
-                    {
-                      "type": "SET_CONTEXT_FLAG",
-                      "var": "dynamic_bp_threshold_replaced",
-                      "value": true
-                    }
-                  ]
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
                 }
               ],
               "BRANCH_2": [
@@ -10469,20 +10199,9 @@
         "timing": {
           "event": "ON_PLAY"
         },
-        "requirements": [
-          {
-            "type": "CONTROLLER_HAS_NAME_IN_FIELD",
-            "value": "シェリル・ノーム"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
-        "steps": [
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "dynamic_bp_threshold_replaced",
-            "value": true
-          }
-        ],
+        "steps": [],
         "limits": {
           "once_per_turn": false
         },
@@ -10491,11 +10210,8 @@
           "effect_box": "OUTER",
           "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"
         },
-        "status": "SUPPORTED",
-        "template_metadata": {
-          "family": "BP_THRESHOLD_REMOVE",
-          "variant": "conditional_bp_replace_marker"
-        }
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "BP 阈值替换语句需要与前置移除步骤合并编译，当前不支持独立结算。"
       },
       {
         "id": "UA36ST_MCR_1_065_on_play_4dbdce4273",
@@ -10559,9 +10275,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "COMPOSITE",
+        "UNSUPPORTED",
         "MULTI_BRANCH_CHOICE",
-        "BP_THRESHOLD_REMOVE",
         "PREVIEW_TOP_POSITION"
       ]
     }

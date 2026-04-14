@@ -40,7 +40,7 @@
         "requirements": [],
         "target_specs": [
           {
-            "id": "selected_target",
+            "id": "selected_summon",
             "scope": "CARD",
             "candidate": {
               "owner": "SELF",
@@ -60,13 +60,13 @@
               "max": 1,
               "mode": "MANUAL"
             },
-            "store_as": "selected_target"
+            "store_as": "selected_summon"
           }
         ],
         "steps": [
           {
             "type": "SELECT_TARGETS",
-            "var": "selected_target",
+            "var": "selected_summon",
             "target": {
               "type": "CARD_SET",
               "owner": "SELF",

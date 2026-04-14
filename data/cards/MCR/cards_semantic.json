@@ -1681,9 +1681,8 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "COMPOSITE",
+      "UNSUPPORTED",
       "MULTI_BRANCH_CHOICE",
-      "BP_THRESHOLD_REMOVE",
       "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
@@ -1706,10 +1705,10 @@
       {
         "id": "UA36BT_MCR_1_065_on_play_d2ce3bcead",
         "timing": "ON_PLAY",
-        "status": "SUPPORTED",
+        "status": "UNSUPPORTED",
         "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
-        "reason": "",
-        "template_type": "BP_THRESHOLD_REMOVE"
+        "reason": "BP 阈值替换语句需要与前置移除步骤合并编译，当前不支持独立结算。",
+        "template_type": "UNSUPPORTED"
       },
       {
         "id": "UA36BT_MCR_1_065_on_play_4dbdce4273",
@@ -1720,8 +1719,10 @@
         "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "BP 阈值替换语句需要与前置移除步骤合并编译，当前不支持独立结算。"
+    ],
     "source_text_jp": {
       "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -2787,9 +2788,8 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "COMPOSITE",
+      "UNSUPPORTED",
       "MULTI_BRANCH_CHOICE",
-      "BP_THRESHOLD_REMOVE",
       "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
@@ -2812,10 +2812,10 @@
       {
         "id": "UA36ST_MCR_1_065_on_play_d2ce3bcead",
         "timing": "ON_PLAY",
-        "status": "SUPPORTED",
+        "status": "UNSUPPORTED",
         "text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。",
-        "reason": "",
-        "template_type": "BP_THRESHOLD_REMOVE"
+        "reason": "BP 阈值替换语句需要与前置移除步骤合并编译，当前不支持独立结算。",
+        "template_type": "UNSUPPORTED"
       },
       {
         "id": "UA36ST_MCR_1_065_on_play_4dbdce4273",
@@ -2826,8 +2826,10 @@
         "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "BP 阈值替换语句需要与前置移除步骤合并编译，当前不支持独立结算。"
+    ],
     "source_text_jp": {
       "effect": "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。\n『BP4000以下』の相手のフロントLのキャラを1枚選び、退場させる。以下から1つ選ぶ。\n・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。\n・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",

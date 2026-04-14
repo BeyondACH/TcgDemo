@@ -3506,10 +3506,47 @@ def _energy_to_front_if_slot_open_builder(card: dict, trigger_entry: dict, event
 
 def _bp_remove_then_choice_branch_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
-    target_specs, remove_steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": int(match.group(1))}], 1, 1, "selected_remove_target")
+    base_threshold = int(match.group(1))
+    branch_texts = [
+        str(effect_entry.get("text", "")).strip().lstrip("・").strip()
+        for effect_entry in card.get("effects", [])
+        if str(effect_entry.get("text", "")).strip().startswith("・")
+    ]
+    replacement_branch_index = -1
+    replacement_requirements: list[dict] = []
+    replacement_threshold = base_threshold
+    for index, branch_text in enumerate(branch_texts):
+        replacement_match = re.fullmatch(r"自分の場に〈(.+)〉がある場合、『?BP(\d+)以下』?に代わる。", branch_text)
+        if replacement_match:
+            replacement_branch_index = index
+            replacement_requirements = [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": replacement_match.group(1)}]
+            replacement_threshold = int(replacement_match.group(2))
+            break
+
+    remove_requirements: list[dict] = [{"type": "CARD_BP_LTE", "value": base_threshold}]
+    if replacement_branch_index >= 0:
+        remove_requirements = [
+            {
+                "type": "CARD_BP_LTE_DYNAMIC",
+                "value_provider": _conditional_value_provider(
+                    _fixed_value_provider(base_threshold),
+                    [
+                        {"type": "CONTEXT_VALUE_IS", "var": "selected_branch_option", "value": f"BRANCH_{replacement_branch_index + 1}"},
+                        *replacement_requirements,
+                    ],
+                    _fixed_value_provider(replacement_threshold),
+                ),
+            }
+        ]
+
+    target_specs, remove_steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], remove_requirements, 1, 1, "selected_remove_target")
     remove_steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_remove_target", "to": "OUTSIDE"})
     branch_ability = _branch_choice_builder(card, trigger_entry, event_name, "以下から1つ選ぶ。", _card_id, payload)
-    steps = remove_steps + branch_ability.get("steps", [])
+    branch_steps = branch_ability.get("steps", [])
+    if branch_steps:
+        steps = [branch_steps[0]] + remove_steps + branch_steps[1:]
+    else:
+        steps = remove_steps
     return _supported_ability(
         card,
         event_name,
@@ -3694,6 +3731,7 @@ def _preview_name_contains_dual_then_conditional_ready_ap_builder(card: dict, tr
 
 def _move_to_deck_top_or_bottom_with_name_gate_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
+    gate_requirement = {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(2)}
     target_specs, steps = _manual_single_target(
         "OPPONENT",
         ["FRONT_LINE"],
@@ -3702,28 +3740,53 @@ def _move_to_deck_top_or_bottom_with_name_gate_builder(card: dict, trigger_entry
         1,
         "selected_target",
     )
-    steps.append(
-        {
-            "type": "SELECT_TARGETS",
-            "var": "selected_deck_position",
-            "target": {
-                "type": "OPTION_SET",
-                "options": ["TOP", "BOTTOM"],
-                "min": 1,
-                "max": 1,
-                "selection_mode": "MANUAL",
-                "manual": True,
+    steps.extend(
+        [
+            {
+                "type": "SELECT_TARGETS",
+                "var": "selected_deck_position_opponent",
+                "requirements": [{"type": "NOT", "requirement": gate_requirement}],
+                "target": {
+                    "type": "OPTION_SET",
+                    "options": ["TOP", "BOTTOM"],
+                    "min": 1,
+                    "max": 1,
+                    "selection_mode": "MANUAL",
+                    "manual": True,
+                    "decision_player_mode": "OPPONENT_OF_SOURCE",
+                },
             },
-        }
-    )
-    steps.append(
-        {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_target",
-            "to": "DECK",
-            "target_player_mode": "CARD_CONTROLLER",
-            "to_position_from_var": "selected_deck_position",
-        }
+            {
+                "type": "SELECT_TARGETS",
+                "var": "selected_deck_position_self",
+                "requirements": [gate_requirement],
+                "target": {
+                    "type": "OPTION_SET",
+                    "options": ["TOP", "BOTTOM"],
+                    "min": 1,
+                    "max": 1,
+                    "selection_mode": "MANUAL",
+                    "manual": True,
+                    "decision_player_mode": "SOURCE",
+                },
+            },
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "selected_target",
+                "to": "DECK",
+                "target_player_mode": "CARD_CONTROLLER",
+                "to_position_from_var": "selected_deck_position_opponent",
+                "requirements": [{"type": "NOT", "requirement": gate_requirement}],
+            },
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "selected_target",
+                "to": "DECK",
+                "target_player_mode": "CARD_CONTROLLER",
+                "to_position_from_var": "selected_deck_position_self",
+                "requirements": [gate_requirement],
+            },
+        ]
     )
     return _supported_ability(
         card,
@@ -3766,16 +3829,11 @@ def _named_buff_then_draw_builder(card: dict, trigger_entry: dict, event_name: s
 
 
 def _conditional_bp_replace_marker_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
-    match = payload["match"]
-    return _supported_ability(
+    return _unsupported_ability(
         card,
         event_name,
         trigger_entry,
-        [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": match.group(1)}],
-        [],
-        [{"type": "SET_CONTEXT_FLAG", "var": "dynamic_bp_threshold_replaced", "value": True}],
-        payload.get("kind"),
-        template_metadata=payload.get("template_metadata"),
+        "BP 阈值替换语句需要与前置移除步骤合并编译，当前不支持独立结算。",
     )
 
 
@@ -3865,10 +3923,47 @@ def _draw_activate_name_contains_and_named_builder(card: dict, trigger_entry: di
 
 def _bp_remove_then_choice_branch_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
-    target_specs, remove_steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": int(match.group(1))}], 1, 1, "selected_remove_target")
+    base_threshold = int(match.group(1))
+    branch_texts = [
+        str(effect_entry.get("text", "")).strip().lstrip("・").strip()
+        for effect_entry in card.get("effects", [])
+        if str(effect_entry.get("text", "")).strip().startswith("・")
+    ]
+    replacement_branch_index = -1
+    replacement_requirements: list[dict] = []
+    replacement_threshold = base_threshold
+    for index, branch_text in enumerate(branch_texts):
+        replacement_match = re.fullmatch(r"自分の場に〈(.+)〉がある場合、『?BP(\d+)以下』?に代わる。", branch_text)
+        if replacement_match:
+            replacement_branch_index = index
+            replacement_requirements = [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": replacement_match.group(1)}]
+            replacement_threshold = int(replacement_match.group(2))
+            break
+
+    remove_requirements: list[dict] = [{"type": "CARD_BP_LTE", "value": base_threshold}]
+    if replacement_branch_index >= 0:
+        remove_requirements = [
+            {
+                "type": "CARD_BP_LTE_DYNAMIC",
+                "value_provider": _conditional_value_provider(
+                    _fixed_value_provider(base_threshold),
+                    [
+                        {"type": "CONTEXT_VALUE_IS", "var": "selected_branch_option", "value": f"BRANCH_{replacement_branch_index + 1}"},
+                        *replacement_requirements,
+                    ],
+                    _fixed_value_provider(replacement_threshold),
+                ),
+            }
+        ]
+
+    target_specs, remove_steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], remove_requirements, 1, 1, "selected_remove_target")
     remove_steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_remove_target", "to": "OUTSIDE"})
     branch_ability = _branch_choice_builder(card, trigger_entry, event_name, "以下から1つ選ぶ。", _card_id, payload)
-    steps = remove_steps + branch_ability.get("steps", [])
+    branch_steps = branch_ability.get("steps", [])
+    if branch_steps:
+        steps = [branch_steps[0]] + remove_steps + branch_steps[1:]
+    else:
+        steps = remove_steps
     return _supported_ability(
         card,
         event_name,
