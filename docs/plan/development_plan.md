@@ -104,7 +104,7 @@
   - `Phase 4` 目标：`8 -> 0`（含 `UA36BT_MCR_1_048` 专项收口）。
 - `Phase 0` 已落地第一批执行资产：`tools/check_unsupported_budget.py` + `docs/plan/unsupported_budget_baseline.json`，用于在 PR 阶段阻止 `UNSUPPORTED` 回升。
 - `Week 1` 已执行完成：`python tools/compile_cards_effects.py` 基线已收敛至 `Unsupported abilities: 40`，与 `Phase 1` 里程碑对齐。
-- `Week 2` 当前执行进度：基线已继续收敛到 `Unsupported abilities: 33`，并完成首批分支/条件模板化，后续继续按 `Phase 2` 目标推进到 `20`。
+- `Week 2` 当前执行进度：基线已收敛到 `Unsupported abilities: 18`，`Phase 2` 目标（`40 -> 20`）已提前达成；新增并复用的模板族覆盖 `PREVIEW_TOP_POSITION`、`PREVIEW_ADD_TO_HAND`、`BP_THRESHOLD_REMOVE`（含动态阈值与移入 `REMOVED`）、`TEMP_BP_MODIFIER` 条件替代、`MULTI_BRANCH_CHOICE` 分支不可重复、`REST_CONTROL` 及 `draw_discard_then_outside_summon` 组合链，后续进入 Phase 3 长尾收口。
 - 若后续执行导致里程碑顺序、接口冻结项、测试策略或 DSL/IR 契约调整，必须先同步本文件与专项计划，再进入实现。
 
 ## 3. 开发阶段规划

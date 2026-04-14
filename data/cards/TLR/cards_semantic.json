@@ -664,19 +664,19 @@
       "RAID"
     ],
     "template_types": [
-      "UNSUPPORTED",
       "TEMP_BP",
       "LIFE_TRIGGER_RAID_CHOICE",
+      "REST_CONTROL",
       "BP_DEBUFF"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_023_on_enter_bad633bcf6",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "REST_CONTROL"
       },
       {
         "id": "UA45BT_TLR_1_023_main_activate_ba34325275",
@@ -695,10 +695,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "〈黒咲 芽亜〉アクティブにし、フロントLに移動できる\nこのキャラはフロントLでもエナジーを発生させる。\n相手のフロントLのキャラを1枚まで選び、レストにする。選んだキャラのBPが2500以上の場合、そのキャラは次の自分のターン開始時まで、BP-2000。\nBP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -1171,7 +1169,7 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -1185,16 +1183,14 @@
       {
         "id": "UA45BT_TLR_1_039_on_play_6ba26a141c",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "『BP3000以下』の相手のフロントLのキャラを1枚選び、リムーブエリアに置く。自分の場に〈ネメシス〉がある場合、『BP5000以下』に代わる。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -1580,17 +1576,18 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
-      "DRAW_1"
+      "TEMP_BP",
+      "DRAW_1",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_052_on_enter_7ecf134719",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       },
       {
         "id": "UA45BT_TLR_1_052_on_life_trigger_91b04beda2",
@@ -1601,10 +1598,8 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場の他のキャラを1枚まで選び、このターン中、『BP+1000』。自分の場に他のカードが5枚以上ある場合、『BP+2000』に代わる。",
       "trigger": "カードを1枚引く。",
@@ -1832,17 +1827,18 @@
       "STEP"
     ],
     "template_types": [
-      "UNSUPPORTED",
-      "DRAW_1"
+      "SELECT_AND_MOVE",
+      "DRAW_1",
+      "ZONE_MOVE"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_060_on_enter_00ae41d5e9",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "ZONE_MOVE"
       },
       {
         "id": "UA45BT_TLR_1_060_on_life_trigger_91b04beda2",
@@ -1853,10 +1849,8 @@
         "template_type": "DRAW_1"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分のフロントLに空きがある場合、自分のエナジーLのカード名に「デビルーク」を含む他のキャラを1枚まで選び、フロントLに移動させる。",
       "trigger": "カードを1枚引く。",
@@ -1888,17 +1882,18 @@
       "RAID"
     ],
     "template_types": [
-      "UNSUPPORTED",
-      "LIFE_TRIGGER_RAID_CHOICE"
+      "COMPOSITE",
+      "LIFE_TRIGGER_RAID_CHOICE",
+      "MULTI_BRANCH_CHOICE"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_062_on_attack_fa840dea3e",
         "timing": "ON_ATTACK",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
       },
       {
         "id": "UA45BT_TLR_1_062_on_life_trigger_a342b2ffe2",
@@ -1909,10 +1904,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "〈ナナ・アスタ・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈ナナ・アスタ・デビルーク〉が既に選んだ効果は選べない。\n・自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。\n・自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -2102,17 +2095,18 @@
       "RAID"
     ],
     "template_types": [
-      "UNSUPPORTED",
-      "LIFE_TRIGGER_RAID_CHOICE"
+      "COMPOSITE",
+      "LIFE_TRIGGER_RAID_CHOICE",
+      "MULTI_BRANCH_CHOICE"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_069_on_attack_b7fd01327a",
         "timing": "ON_ATTACK",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
       },
       {
         "id": "UA45BT_TLR_1_069_on_life_trigger_a342b2ffe2",
@@ -2123,10 +2117,8 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "〈モモ・ベリア・デビルーク〉アクティブにし、フロントLに移動できる\n以下から1つまで選ぶ。このターン中に〈モモ・ベリア・デビルーク〉が既に選んだ効果は選べない。\n・自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。\n・自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -2200,22 +2192,21 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE",
+      "PREVIEW_TOP_POSITION"
     ],
     "abilities": [
       {
         "id": "UA45BT_TLR_1_072_on_enter_9e7dd06bd7",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "PREVIEW_TOP_POSITION"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
       "trigger": "-",
@@ -2491,7 +2482,8 @@
       "SELECT_AND_MOVE",
       "COMPOSITE",
       "UNSUPPORTED",
-      "MULTI_BRANCH_CHOICE"
+      "MULTI_BRANCH_CHOICE",
+      "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
       {
@@ -2513,10 +2505,10 @@
       {
         "id": "UA45BT_TLR_1_081_on_play_b20fce8918",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "BP_THRESHOLD_REMOVE"
       },
       {
         "id": "UA45BT_TLR_1_081_on_play_b341867df9",
