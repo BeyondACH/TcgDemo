@@ -2817,7 +2817,7 @@
               "requirements": []
             },
             "select": {
-              "min": 1,
+              "min": 0,
               "max": 1,
               "mode": "MANUAL"
             },
@@ -2836,16 +2836,21 @@
               ],
               "filters": [],
               "requirements": [],
-              "min": 1,
+              "min": 0,
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
             }
           },
           {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_target",
-            "to": "OUTSIDE"
+            "type": "REST",
+            "target_var": "selected_target"
+          },
+          {
+            "type": "SET_CARD_FLAG",
+            "target_var": "selected_target",
+            "flag": "skip_next_ready_once",
+            "value": true
           }
         ],
         "limits": {
@@ -2854,12 +2859,16 @@
         "ui": {
           "label": "",
           "effect_box": "OUTER",
-          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+          "text": "・相手のフロントLのキャラを1枚まで選び、レストにする。それは次の1回アクティブにならない。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "REST_CONTROL",
+          "variant": "rest_and_skip_next_ready_once"
+        }
       },
       {
-        "id": "UA36BT_MCR_1_031_on_play_1371b24591",
+        "id": "UA36BT_MCR_1_030_on_play_e691196af1",
         "kind": "TRIGGERED",
         "timing": {
           "event": "ON_PLAY"
@@ -2959,7 +2968,7 @@
         "ui": {
           "label": "",
           "effect_box": "OUTER",
-          "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。"
+          "text": "・自分の山札の上から5枚見る。その中からキャラカードを2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
         },
         "status": "SUPPORTED",
         "template_metadata": {
@@ -2972,8 +2981,196 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "DRAW_1",
+        "NO_OP",
+        "COMPOSITE",
         "SELECT_AND_MOVE",
         "BP_THRESHOLD_REMOVE"
+      ]
+    }
+  },
+  {
+    "id": "UA36BT_MCR_1_031",
+    "card_meta": {
+      "name": "星間飛行",
+      "card_type": "EVENT",
+      "title_code": "MCR",
+      "number": "UA36BT/MCR-1-031",
+      "source_image": "UA36BT-MCR-1-031.png",
+      "traits": [
+        "歌（ランカ）"
+      ],
+      "cost_energy": 0,
+      "cost_ap": 1,
+      "energy_provided": {},
+      "bp": 0,
+      "keywords": [],
+      "text": {
+        "effect": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。",
+        "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
+        "rule": ""
+      }
+    },
+    "play_rule": {
+      "mode": "NORMAL",
+      "special_modes": [],
+      "cost_modifiers": [],
+      "requirements": [],
+      "enter_state": "RESTED"
+    },
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_031_on_life_trigger_a9a162adb2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_LIFE_TRIGGER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_031_on_play_1371b24591",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "count": 1,
+            "requirements": [
+              {
+                "type": "CONTROLLER_TRAIT_NAME_COUNT_GTE",
+                "trait": "歌（ランカ）",
+                "value": 3
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『レストにする。それは次の1回アクティブにならない』。自分の場に〈ランカ・リー〉がある場合、『退場させる』に代わる。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_BP_MODIFIER",
+          "variant": "buff_draw_then_conditional_ready_ap"
+        }
+      }
+    ],
+    "analysis": {
+      "source": "MCR/cards_raw.json",
+      "semantic_available": true,
+      "semantic_template_types": [
+        "READY_AND_TEMP_BP",
+        "TEMP_BP",
+        "TEMP_BP_MODIFIER"
       ]
     }
   },
@@ -3082,38 +3279,106 @@
         "requirements": [],
         "target_specs": [
           {
-            "id": "selected_target",
+            "id": "selected_discard",
             "scope": "CARD",
             "candidate": {
               "owner": "SELF",
               "zones": [
-                "FRONT_LINE",
-                "BACK_LINE"
+                "HAND"
               ],
               "filters": [],
               "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          },
+          {
+            "id": "selected_summon",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                }
+              ]
             },
             "select": {
               "min": 0,
               "max": 1,
               "mode": "MANUAL"
             },
-            "store_as": "selected_target"
+            "store_as": "selected_summon"
           }
         ],
         "steps": [
           {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
             "type": "SELECT_TARGETS",
-            "var": "selected_target",
+            "var": "selected_discard",
             "target": {
               "type": "CARD_SET",
               "owner": "SELF",
               "zones": [
-                "FRONT_LINE",
-                "BACK_LINE"
+                "HAND"
               ],
               "filters": [],
               "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_summon",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                }
+              ],
               "min": 0,
               "max": 1,
               "selection_mode": "MANUAL",
@@ -3121,25 +3386,12 @@
             }
           },
           {
-            "type": "ADD_TEMP_BP_MODIFIER",
-            "target_var": "selected_target",
-            "value": 1000,
-            "expires": "END_OF_TURN"
-          },
-          {
-            "type": "DRAW",
-            "value": 1
-          },
-          {
-            "type": "ACTIVATE_AP_SLOTS",
-            "count": 1,
-            "requirements": [
-              {
-                "type": "CONTROLLER_TRAIT_NAME_COUNT_GTE",
-                "trait": "歌（ランカ）",
-                "value": 3
-              }
-            ]
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true,
+            "allow_current_zone": false
           }
         ],
         "limits": {
@@ -3152,8 +3404,8 @@
         },
         "status": "SUPPORTED",
         "template_metadata": {
-          "family": "TEMP_BP_MODIFIER",
-          "variant": "buff_draw_then_conditional_ready_ap"
+          "family": "OPTIONAL_COST_THEN_EFFECT",
+          "variant": "draw_discard_then_outside_summon"
         }
       }
     ],
@@ -3162,8 +3414,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
-        "TEMP_BP",
-        "TEMP_BP_MODIFIER"
+        "DRAW_THEN_SELECT_AND_MOVE",
+        "OPTIONAL_COST_THEN_EFFECT"
       ]
     }
   },
@@ -3252,6 +3504,140 @@
             "target_var": "selected_target",
             "value": 3000,
             "expires": "END_OF_TURN"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_033_on_play_6dc2561660",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_discard",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_discard"
+          },
+          {
+            "id": "selected_summon",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_summon"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_discard",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_discard",
+            "to": "OUTSIDE"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_summon",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "OUTSIDE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 2
+                },
+                {
+                  "type": "CARD_COLOR_IS",
+                  "value": "YELLOW"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "PLAY_SELECTED_CARDS",
+            "from_var": "selected_summon",
+            "to": "FRONT_LINE",
+            "state": "RESTED",
+            "ignore_play_timing": true,
+            "allow_current_zone": false
           }
         ],
         "limits": {
@@ -4412,6 +4798,256 @@
           {
             "type": "DRAW",
             "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_048_on_play_210e126786",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 7,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "count": 1,
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "ガルド"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
+        "id": "UA36BT_MCR_1_048_on_play_210e126786",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_PLAY"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL",
+              "constraints": {}
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 7,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [
+                {
+                  "type": "OR",
+                  "filters": [
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "イサム"
+                    },
+                    {
+                      "type": "NAME_CONTAINS",
+                      "value": "ガルド"
+                    }
+                  ]
+                }
+              ],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {}
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          },
+          {
+            "type": "ACTIVATE_AP_SLOTS",
+            "count": 1,
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "イサム"
+              },
+              {
+                "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+                "value": "ガルド"
+              }
+            ]
           }
         ],
         "limits": {

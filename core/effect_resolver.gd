@@ -929,6 +929,7 @@ func _resolve_numeric_value(state: GameState, provider_variant, context: Diction
 		var total := 0
 		for zone_variant in provider.get("zones", []):
 			var zone_cards = _zone_cards_for_player(count_player, str(zone_variant))
+			var required_card_type := str(provider.get("card_type", ""))
 			for zone_card_uid_variant in zone_cards:
 				var zone_card_uid := str(zone_card_uid_variant)
 				if zone_card_uid == "":
