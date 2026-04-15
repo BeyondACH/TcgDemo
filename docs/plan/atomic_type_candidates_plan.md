@@ -163,6 +163,13 @@
     - `UA45BT_TLR_1_081_on_play_536516f54f`
   - 当前 `PENDING_BRANCH_EFFECT` 余量：`0`。
 
+- **M2（2026-04-15）已完成**：
+  - 已落地 `SELECT_MOVE_WITH_FALLBACK` 与 `SELECT_AND_PLAY_BY_PROFILE` 两个运行时复合原子步骤，并接入 `StepExecutor` 分发。
+  - 已完成迁移：
+    - `UA45BT_TLR_1_002_on_enter_43348ae670`（由 `SELECT_TARGETS + MOVE_SELECTED_CARDS + SET_CONTEXT_FLAG + CONTEXT_FLAG_FALSE` 收敛为 `SELECT_MOVE_WITH_FALLBACK`）
+    - `UA31BT_MMM_1_001_on_leave_b0a2383fc6`（由 `SELECT_TARGETS + PLAY_SELECTED_CARDS` 收敛为 `SELECT_AND_PLAY_BY_PROFILE`）
+  - 编译链与回归测试已更新，迁移行为保持等价。
+
 ---
 
 ## 4. 验收标准
