@@ -4584,7 +4584,21 @@
       "mode": "NORMAL",
       "special_modes": [],
       "cost_modifiers": [],
-      "requirements": [],
+      "requirements": [
+        {
+          "type": "OR",
+          "requirements": [
+            {
+              "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+              "value": "イサム"
+            },
+            {
+              "type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD",
+              "value": "ガルド"
+            }
+          ]
+        }
+      ],
       "enter_state": "RESTED"
     },
     "abilities": [

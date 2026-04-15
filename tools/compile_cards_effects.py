@@ -67,20 +67,52 @@ def _build_play_rule(card: dict) -> dict:
     }
 
 
+def _parse_field_name_or_requirements(text: str) -> list[dict]:
+    match = re.fullmatch(r"このカードは自分の場に((?:〈[^〉]+〉)(?:か〈[^〉]+〉)+)がある場合のみ使用できる。", text)
+    if not match:
+        return []
+    names = re.findall(r"〈([^〉]+)〉", match.group(1))
+    if len(names) < 2:
+        return []
+    return [
+        {
+            "type": "OR",
+            "requirements": [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": name} for name in names],
+        }
+    ]
+
+
+def _parse_field_name_contains_requirements(text: str) -> list[dict]:
+    match = re.fullmatch(r"このカードは自分の場にカード名に「([^」]+)」(?:か「([^」]+)」)?を含むキャラがある場合のみ使用できる。", text)
+    if not match:
+        return []
+    first_name = match.group(1)
+    second_name = match.group(2)
+    if second_name:
+        return [
+            {
+                "type": "OR",
+                "requirements": [
+                    {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": first_name},
+                    {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": second_name},
+                ],
+            }
+        ]
+    return [{"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": first_name}]
+
+
 def _build_play_requirements(card: dict) -> list[dict]:
     requirements: list[dict] = []
     for effect_entry in card.get("effects", []):
         text = str(effect_entry.get("text", "")).strip()
-        if text == "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。":
-            requirements.append(
-                {
-                    "type": "OR",
-                    "requirements": [
-                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"},
-                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "アルティメットまどか"},
-                    ],
-                }
-            )
+        field_name_or_requirements = _parse_field_name_or_requirements(text)
+        if field_name_or_requirements:
+            requirements.extend(field_name_or_requirements)
+            continue
+        field_name_contains_requirements = _parse_field_name_contains_requirements(text)
+        if field_name_contains_requirements:
+            requirements.extend(field_name_contains_requirements)
+            continue
         match = re.fullmatch(r"このカードは自分のフロントLに〈(.+)〉がある場合のみ使用できる。", text)
         if match:
             requirements.append({"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": match.group(1)})
@@ -2106,20 +2138,13 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
             "TRIGGERED",
         )
 
-    if card_id == "UA31BT_MMM_1_028" and text == "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。":
+    field_name_or_requirements = _parse_field_name_or_requirements(text)
+    if field_name_or_requirements:
         return _supported_ability(
             card,
             event_name,
             pseudo_trigger,
-            [
-                {
-                    "type": "OR",
-                    "requirements": [
-                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"},
-                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "アルティメットまどか"},
-                    ],
-                }
-            ],
+            field_name_or_requirements,
             [],
             [],
             "TRIGGERED",
@@ -2148,21 +2173,13 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
             [],
             "TRIGGERED",
         )
-    match = re.fullmatch(r"このカードは自分の場にカード名に「(.+)」か「(.+)」を含むキャラがある場合のみ使用できる。", text)
-    if match:
+    field_name_contains_requirements = _parse_field_name_contains_requirements(text)
+    if field_name_contains_requirements:
         return _supported_ability(
             card,
             event_name,
             pseudo_trigger,
-            [
-                {
-                    "type": "OR",
-                    "requirements": [
-                        {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(1)},
-                        {"type": "CONTROLLER_HAS_NAME_CONTAINS_IN_FIELD", "value": match.group(2)},
-                    ],
-                }
-            ],
+            field_name_contains_requirements,
             [],
             [],
             "TRIGGERED",
