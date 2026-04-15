@@ -54,6 +54,10 @@ func _init_handlers() -> void:
 		"SET_CHOICE_MODE": _step_set_choice_mode,
 		"EXECUTE_CHOICE_BRANCH": _step_execute_choice_branch,
 		"APPLY_BRANCH_EFFECT_PRESET": _step_apply_branch_effect_preset,
+		"SELECT_MOVE_WITH_FALLBACK": _step_select_move_with_fallback,
+		"SELECT_AND_PLAY_BY_PROFILE": _step_select_and_play_by_profile,
+		"REFILL_LIFE_IF_EMPTY": _step_refill_life_if_empty,
+		"REGISTER_NEXT_PLAY_COST_MODIFIER": _step_register_next_play_cost_modifier,
 		"RUN_COMPOSITE_IF": _step_run_composite_if,
 	}
 
@@ -473,6 +477,177 @@ func _step_run_composite_if(state: GameState, source_card_uid: String, step: Dic
 	var chain_result := execute_steps(state, source_card_uid, chain_steps, context, effect)
 	logs.append_array(chain_result.get("logs", []))
 	return {"logs": logs, "paused": bool(chain_result.get("paused", false))}
+
+func _step_select_move_with_fallback(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var logs: Array[String] = []
+	var primary_select: Dictionary = step.get("primary_select", {})
+	if primary_select.is_empty():
+		return {"logs": logs, "paused": false}
+	var selected_var := str(step.get("selected_var", "__select_move_primary_targets"))
+	var select_result := _step_select_targets(
+		state,
+		source_card_uid,
+		{
+			"type": "SELECT_TARGETS",
+			"var": selected_var,
+			"target": primary_select,
+		},
+		context,
+		remaining_steps,
+		effect
+	)
+	logs.append_array(select_result.get("logs", []))
+	if bool(select_result.get("paused", false)):
+		return {"logs": logs, "paused": true}
+	var selected_targets := _ensure_array(context.get(selected_var, []))
+	var success_flag_var := str(step.get("success_flag_var", "__select_move_with_fallback_success"))
+	var has_primary_selection := not selected_targets.is_empty()
+	context[success_flag_var] = has_primary_selection
+	if has_primary_selection:
+		var move_step := {
+			"type": "MOVE_SELECTED_CARDS",
+			"from_var": selected_var,
+			"to": step.get("primary_move_to", "HAND"),
+		}
+		if step.has("primary_move_position"):
+			move_step["to_position"] = step.get("primary_move_position", "")
+		var move_result := _step_move_selected_cards(state, source_card_uid, move_step, context, remaining_steps, effect)
+		logs.append_array(move_result.get("logs", []))
+		return {"logs": logs, "paused": bool(move_result.get("paused", false))}
+	var fallback_action: Dictionary = step.get("fallback_action", {})
+	if fallback_action.is_empty():
+		return {"logs": logs, "paused": false}
+	var fallback_result := execute(state, source_card_uid, fallback_action, context, remaining_steps, effect)
+	logs.append_array(fallback_result.get("logs", []))
+	return {"logs": logs, "paused": bool(fallback_result.get("paused", false))}
+
+func _step_select_and_play_by_profile(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var logs: Array[String] = []
+	var from_zones := _ensure_array(step.get("from_zones", []))
+	if from_zones.is_empty():
+		return {"logs": logs, "paused": false}
+	var selected_var := str(step.get("selected_var", "__selected_play_profile_cards"))
+	var select_config: Dictionary = step.get("select", {})
+	var selection_constraints: Dictionary = {}
+	var distinct_by := str(select_config.get("distinct_by", ""))
+	if distinct_by != "":
+		selection_constraints["distinct_by"] = distinct_by
+	var select_result := _step_select_targets(
+		state,
+		source_card_uid,
+		{
+			"type": "SELECT_TARGETS",
+			"var": selected_var,
+			"target": {
+				"type": "CARD_SET",
+				"owner": str(step.get("owner", "SELF")),
+				"zones": from_zones,
+				"filters": _ensure_array(step.get("profile_filters", [])),
+				"requirements": _ensure_array(step.get("profile_requirements", [])),
+				"min": int(select_config.get("min", 0)),
+				"max": int(select_config.get("max", 1)),
+				"selection_mode": str(select_config.get("mode", "MANUAL")),
+				"manual": str(select_config.get("mode", "MANUAL")) == "MANUAL",
+				"selection_constraints": selection_constraints,
+			},
+		},
+		context,
+		remaining_steps,
+		effect
+	)
+	logs.append_array(select_result.get("logs", []))
+	if bool(select_result.get("paused", false)):
+		return {"logs": logs, "paused": true}
+	var play_result := _step_play_selected_cards(
+		state,
+		source_card_uid,
+		{
+			"type": "PLAY_SELECTED_CARDS",
+			"from_var": selected_var,
+			"to": step.get("play_to", "FRONT_LINE"),
+			"state": step.get("play_state", "RESTED"),
+			"ignore_play_timing": bool(step.get("ignore_play_timing", false)),
+			"ignore_play_costs": bool(step.get("ignore_play_costs", false)),
+			"allow_current_zone": bool(step.get("allow_current_zone", false)),
+		},
+		context,
+		remaining_steps,
+		effect
+	)
+	logs.append_array(play_result.get("logs", []))
+	return {"logs": logs, "paused": bool(play_result.get("paused", false))}
+
+func _step_refill_life_if_empty(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var player_mode := str(step.get("player", "SELF"))
+	var source_card = state.get_card(source_card_uid)
+	var source_player_id := str(context.get("source_player_id", ""))
+	if source_card != null:
+		source_player_id = source_card.controller_player_id
+	var player_id := source_player_id
+	if player_mode == "OPPONENT":
+		player_id = state.inactive_player_id if state.active_player_id == source_player_id else state.active_player_id
+	elif player_mode == "TARGET":
+		player_id = str(context.get("target_player_id", source_player_id))
+	elif player_mode == "ACTIVE":
+		player_id = state.active_player_id
+	elif player_mode == "INACTIVE":
+		player_id = state.inactive_player_id
+	var player = state.get_player(player_id)
+	if player == null or not player.life.is_empty():
+		return {"logs": [], "paused": false}
+	var amount := maxi(0, int(step.get("amount", 1)))
+	if amount <= 0:
+		return {"logs": [], "paused": false}
+	var source_zone := str(step.get("source_zone", "DECK_TOP"))
+	if source_zone != "DECK_TOP":
+		return {"logs": [], "paused": false}
+	var logs: Array[String] = []
+	for _index in range(amount):
+		if player.deck.is_empty():
+			break
+		var top_uid := str(player.deck.pop_front())
+		if top_uid == "":
+			continue
+		player.life.append(top_uid)
+		var top_card = state.get_card(top_uid)
+		if top_card != null:
+			top_card.zone = UATypes.Zone.LIFE
+		logs.append("%s refills life with top deck card %s." % [player_id, top_uid])
+	return {"logs": logs, "paused": false}
+
+func _step_register_next_play_cost_modifier(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return {"logs": [], "paused": false}
+	var cost_delta: Dictionary = step.get("cost_delta", {})
+	var delayed_steps: Array = []
+	if cost_delta.has("ap"):
+		delayed_steps.append({"type": "MODIFY_PLAY_COST_AP", "value": int(cost_delta.get("ap", 0))})
+	if delayed_steps.is_empty():
+		return {"logs": [], "paused": false}
+	state.delayed_effects.append({
+		"id": state.next_runtime_id("delayed"),
+		"source_card_uid": source_card_uid,
+		"owner_player_id": source_card.controller_player_id,
+		"event": str(step.get("event", "ON_PLAY_CARD")),
+		"filters": _ensure_array(step.get("filters", [])).duplicate(true),
+		"steps": delayed_steps,
+		"once": bool(step.get("once", true)),
+		"expires": str(step.get("expires", "END_OF_TURN")),
+	})
+	var energy_delta: Dictionary = cost_delta.get("energy", {})
+	if not energy_delta.is_empty():
+		state.static_modifiers.append({
+			"id": state.next_runtime_id("static"),
+			"source_card_uid": source_card_uid,
+			"owner_player_id": source_card.controller_player_id,
+			"modifier_type": "HAND_PLAY_COST_ENERGY_DELTA",
+			"from_zone": "HAND",
+			"filters": _ensure_array(step.get("filters", [])).duplicate(true),
+			"energy_delta": energy_delta.duplicate(true),
+			"expires": str(step.get("expires", "END_OF_TURN")),
+		})
+	return {"logs": [], "paused": false}
 
 func _apply_branch_effect_keyword_preset(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary, keyword: String) -> Dictionary:
 	var target_spec: Dictionary = step.get("target_spec", {})

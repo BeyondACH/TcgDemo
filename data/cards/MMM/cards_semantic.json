@@ -717,7 +717,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -726,7 +726,7 @@
         "status": "SUPPORTED",
         "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "COMPOSITE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -877,7 +877,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -887,7 +887,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31BT_MMM_1_030_on_play_0da85cfcde",
@@ -911,7 +911,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -921,7 +921,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31BT_MMM_1_031_on_play_0da85cfcde",
@@ -1736,7 +1736,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -1745,7 +1745,7 @@
         "status": "SUPPORTED",
         "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "COMPOSITE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1890,7 +1890,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -1900,7 +1900,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31BT_MMM_1_063_on_play_0da85cfcde",
@@ -2528,7 +2528,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -2537,7 +2537,7 @@
         "status": "SUPPORTED",
         "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "COMPOSITE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2840,7 +2840,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -2850,7 +2850,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31BT_MMM_1_095_on_play_0da85cfcde",
@@ -2874,7 +2874,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -2884,7 +2884,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31BT_MMM_1_096_on_play_0da85cfcde",
@@ -2908,7 +2908,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -2918,7 +2918,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31BT_MMM_1_097_on_play_0da85cfcde",
@@ -3164,7 +3164,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -3173,7 +3173,7 @@
         "status": "SUPPORTED",
         "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "COMPOSITE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -3251,7 +3251,7 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -3261,7 +3261,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA31ST_MMM_1_095_on_play_0da85cfcde",

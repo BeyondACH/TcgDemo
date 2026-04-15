@@ -222,9 +222,8 @@
         ],
         "steps": [
           {
-            "type": "SELECT_TARGETS",
-            "var": "selected_primary_target",
-            "target": {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
               "type": "CARD_SET",
               "owner": "SELF",
               "zones": [
@@ -249,28 +248,15 @@
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_primary_target",
-            "to": "HAND"
-          },
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "primary_target_moved",
-            "from_var": "selected_primary_target"
-          },
-          {
-            "type": "MOVE_CARD",
-            "target_uid": "SOURCE_CARD",
-            "to": "HAND",
-            "requirements": [
-              {
-                "type": "CONTEXT_FLAG_FALSE",
-                "var": "primary_target_moved"
-              }
-            ]
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
           }
         ],
         "limits": {
@@ -288,7 +274,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "COMPOSITE"
       ]
     }
   },
@@ -5311,16 +5297,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -5362,7 +5346,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -7330,9 +7314,8 @@
         ],
         "steps": [
           {
-            "type": "SELECT_TARGETS",
-            "var": "selected_primary_target",
-            "target": {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
               "type": "CARD_SET",
               "owner": "SELF",
               "zones": [
@@ -7357,28 +7340,15 @@
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_primary_target",
-            "to": "HAND"
-          },
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "primary_target_moved",
-            "from_var": "selected_primary_target"
-          },
-          {
-            "type": "MOVE_CARD",
-            "target_uid": "SOURCE_CARD",
-            "to": "HAND",
-            "requirements": [
-              {
-                "type": "CONTEXT_FLAG_FALSE",
-                "var": "primary_target_moved"
-              }
-            ]
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
           }
         ],
         "limits": {
@@ -7396,7 +7366,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "COMPOSITE"
       ]
     }
   },
@@ -10922,16 +10892,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -10973,7 +10941,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }

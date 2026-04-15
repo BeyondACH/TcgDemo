@@ -163,6 +163,21 @@
     - `UA45BT_TLR_1_081_on_play_536516f54f`
   - 当前 `PENDING_BRANCH_EFFECT` 余量：`0`。
 
+- **M2（2026-04-15）已完成**：
+  - 已落地 `SELECT_MOVE_WITH_FALLBACK` 与 `SELECT_AND_PLAY_BY_PROFILE` 两个运行时复合原子步骤，并接入 `StepExecutor` 分发。
+  - 已完成迁移：
+    - `UA45BT_TLR_1_002_on_enter_43348ae670`（由 `SELECT_TARGETS + MOVE_SELECTED_CARDS + SET_CONTEXT_FLAG + CONTEXT_FLAG_FALSE` 收敛为 `SELECT_MOVE_WITH_FALLBACK`）
+    - `UA31BT_MMM_1_001_on_leave_b0a2383fc6`（由 `SELECT_TARGETS + PLAY_SELECTED_CARDS` 收敛为 `SELECT_AND_PLAY_BY_PROFILE`）
+  - 编译链与回归测试已更新，迁移行为保持等价。
+
+- **M3（2026-04-15，P2 优先项）已完成**：
+  - 已落地 `REFILL_LIFE_IF_EMPTY` 运行时步骤，并完成“生命为空时补命”编译迁移（移除能力级显式 `PLAYER_LIFE_IS_EMPTY` 前置，改为步骤内部判定）。
+  - 已落地 `REGISTER_NEXT_PLAY_COST_MODIFIER` 运行时步骤，并完成“下次从指定区域出牌 AP -1”编译迁移。
+  - 已迁移覆盖：
+    - `UA48BT_KGD_1_029_on_life_trigger_40f54dabd9`（及同模板能力）
+    - `UA31BT_MMM_1_001_on_enter_45dc256ee2` / 其他同模板条目
+  - 已补编译回归测试，保证两类新原子产物稳定。
+
 ---
 
 ## 4. 验收标准
