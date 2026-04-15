@@ -1327,7 +1327,7 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
         return _supported_ability(card, event_name, trigger_entry, [], [], [{"type": "MOVE_CARD", "target_uid": "SOURCE_CARD", "to": "REMOVED"}])
 
     if event_name == "ON_LEAVE" and text == "このキャラをリムーブエリアに置き、自分のリムーブエリアから〈鹿目 まどか〉以外の必要エナジーが3以下で消費APが1の異なるカード名の黄の［特徴：魔法少女］を2枚まで自分の場にレストで登場させる。":
-        target_specs, select_steps = _manual_card_set(
+        target_specs, _ = _manual_card_set(
             "SELF",
             ["REMOVED"],
             requirements=[
@@ -1351,16 +1351,27 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             [],
             target_specs,
             [{"type": "MOVE_CARD", "target_uid": "SOURCE_CARD", "to": "REMOVED"}]
-            + select_steps
             + [
                 {
-                    "type": "PLAY_SELECTED_CARDS",
-                    "from_var": "selected_removed_summons",
-                    "to": "FRONT_LINE",
-                    "state": "RESTED",
+                    "type": "SELECT_AND_PLAY_BY_PROFILE",
+                    "owner": "SELF",
+                    "from_zones": ["REMOVED"],
+                    "profile_requirements": [
+                        {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                        {"type": "CARD_COST_ENERGY_LTE", "value": 3},
+                        {"type": "CARD_COST_AP_EQ", "value": 1},
+                        {"type": "CARD_COLOR_IS", "value": "YELLOW"},
+                        {"type": "CARD_HAS_TRAIT", "value": "魔法少女"},
+                        {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": True},
+                    ],
+                    "profile_filters": [{"type": "NAME_NOT", "value": "鹿目 まどか"}],
+                    "select": {"min": 0, "max": 2, "mode": "MANUAL", "distinct_by": "CARD_NAME"},
+                    "play_to": "FRONT_LINE",
+                    "play_state": "RESTED",
                     "ignore_play_timing": True,
                     "allow_current_zone": True,
                     "ignore_play_costs": True,
+                    "selected_var": "selected_removed_summons",
                 }
             ],
         )
@@ -1818,18 +1829,16 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             1,
             "selected_primary_target",
         )
-        steps.extend(
-            [
-                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_primary_target", "to": "HAND"},
-                {"type": "SET_CONTEXT_FLAG", "var": "primary_target_moved", "from_var": "selected_primary_target"},
-                {
-                    "type": "MOVE_CARD",
-                    "target_uid": "SOURCE_CARD",
-                    "to": "HAND",
-                    "requirements": [{"type": "CONTEXT_FLAG_FALSE", "var": "primary_target_moved"}],
-                },
-            ]
-        )
+        steps = [
+            {
+                "type": "SELECT_MOVE_WITH_FALLBACK",
+                "primary_select": steps[0]["target"],
+                "primary_move_to": "HAND",
+                "fallback_action": {"type": "MOVE_CARD", "target_uid": "SOURCE_CARD", "to": "HAND"},
+                "selected_var": "selected_primary_target",
+                "success_flag_var": "primary_target_moved",
+            }
+        ]
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
     if text == "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。":

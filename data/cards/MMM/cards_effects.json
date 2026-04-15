@@ -173,65 +173,57 @@
             "to": "REMOVED"
           },
           {
-            "type": "SELECT_TARGETS",
-            "var": "selected_removed_summons",
-            "target": {
-              "type": "CARD_SET",
-              "owner": "SELF",
-              "zones": [
-                "REMOVED"
-              ],
-              "filters": [
-                {
-                  "type": "NAME_NOT",
-                  "value": "鹿目 まどか"
-                }
-              ],
-              "requirements": [
-                {
-                  "type": "CARD_TYPE_IS",
-                  "value": "CHARACTER"
-                },
-                {
-                  "type": "CARD_COST_ENERGY_LTE",
-                  "value": 3
-                },
-                {
-                  "type": "CARD_COST_AP_EQ",
-                  "value": 1
-                },
-                {
-                  "type": "CARD_COLOR_IS",
-                  "value": "YELLOW"
-                },
-                {
-                  "type": "CARD_HAS_TRAIT",
-                  "value": "魔法少女"
-                },
-                {
-                  "type": "CARD_CAN_PLAY_TO_ZONE",
-                  "zone": "FRONT_LINE",
-                  "ignore_play_timing": true,
-                  "allow_current_zone": true
-                }
-              ],
+            "type": "SELECT_AND_PLAY_BY_PROFILE",
+            "owner": "SELF",
+            "from_zones": [
+              "REMOVED"
+            ],
+            "profile_requirements": [
+              {
+                "type": "CARD_TYPE_IS",
+                "value": "CHARACTER"
+              },
+              {
+                "type": "CARD_COST_ENERGY_LTE",
+                "value": 3
+              },
+              {
+                "type": "CARD_COST_AP_EQ",
+                "value": 1
+              },
+              {
+                "type": "CARD_COLOR_IS",
+                "value": "YELLOW"
+              },
+              {
+                "type": "CARD_HAS_TRAIT",
+                "value": "魔法少女"
+              },
+              {
+                "type": "CARD_CAN_PLAY_TO_ZONE",
+                "zone": "FRONT_LINE",
+                "ignore_play_timing": true,
+                "allow_current_zone": true
+              }
+            ],
+            "profile_filters": [
+              {
+                "type": "NAME_NOT",
+                "value": "鹿目 まどか"
+              }
+            ],
+            "select": {
               "min": 0,
               "max": 2,
-              "selection_mode": "MANUAL",
-              "manual": true,
-              "selection_constraints": {
-                "distinct_by": "CARD_NAME"
-              }
-            }
-          },
-          {
-            "type": "PLAY_SELECTED_CARDS",
-            "from_var": "selected_removed_summons",
-            "to": "FRONT_LINE",
-            "state": "RESTED",
+              "mode": "MANUAL",
+              "distinct_by": "CARD_NAME"
+            },
+            "play_to": "FRONT_LINE",
+            "play_state": "RESTED",
             "ignore_play_timing": true,
             "allow_current_zone": true,
-            "ignore_play_costs": true
+            "ignore_play_costs": true,
+            "selected_var": "selected_removed_summons"
           }
         ],
         "limits": {
@@ -3337,9 +3329,8 @@
         ],
         "steps": [
           {
-            "type": "SELECT_TARGETS",
-            "var": "selected_primary_target",
-            "target": {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
               "type": "CARD_SET",
               "owner": "SELF",
               "zones": [
@@ -3364,28 +3355,15 @@
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_primary_target",
-            "to": "HAND"
-          },
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "primary_target_moved",
-            "from_var": "selected_primary_target"
-          },
-          {
-            "type": "MOVE_CARD",
-            "target_uid": "SOURCE_CARD",
-            "to": "HAND",
-            "requirements": [
-              {
-                "type": "CONTEXT_FLAG_FALSE",
-                "var": "primary_target_moved"
-              }
-            ]
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
           }
         ],
         "limits": {
@@ -3403,7 +3381,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "COMPOSITE"
       ]
     }
   },
@@ -8281,9 +8259,8 @@
         ],
         "steps": [
           {
-            "type": "SELECT_TARGETS",
-            "var": "selected_primary_target",
-            "target": {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
               "type": "CARD_SET",
               "owner": "SELF",
               "zones": [
@@ -8308,28 +8285,15 @@
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_primary_target",
-            "to": "HAND"
-          },
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "primary_target_moved",
-            "from_var": "selected_primary_target"
-          },
-          {
-            "type": "MOVE_CARD",
-            "target_uid": "SOURCE_CARD",
-            "to": "HAND",
-            "requirements": [
-              {
-                "type": "CONTEXT_FLAG_FALSE",
-                "var": "primary_target_moved"
-              }
-            ]
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
           }
         ],
         "limits": {
@@ -8347,7 +8311,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "COMPOSITE"
       ]
     }
   },
@@ -11582,9 +11546,8 @@
         ],
         "steps": [
           {
-            "type": "SELECT_TARGETS",
-            "var": "selected_primary_target",
-            "target": {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
               "type": "CARD_SET",
               "owner": "SELF",
               "zones": [
@@ -11609,28 +11572,15 @@
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_primary_target",
-            "to": "HAND"
-          },
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "primary_target_moved",
-            "from_var": "selected_primary_target"
-          },
-          {
-            "type": "MOVE_CARD",
-            "target_uid": "SOURCE_CARD",
-            "to": "HAND",
-            "requirements": [
-              {
-                "type": "CONTEXT_FLAG_FALSE",
-                "var": "primary_target_moved"
-              }
-            ]
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
           }
         ],
         "limits": {
@@ -11648,7 +11598,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "COMPOSITE"
       ]
     }
   },
@@ -14169,9 +14119,8 @@
         ],
         "steps": [
           {
-            "type": "SELECT_TARGETS",
-            "var": "selected_primary_target",
-            "target": {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
               "type": "CARD_SET",
               "owner": "SELF",
               "zones": [
@@ -14196,28 +14145,15 @@
               "max": 1,
               "selection_mode": "MANUAL",
               "manual": true
-            }
-          },
-          {
-            "type": "MOVE_SELECTED_CARDS",
-            "from_var": "selected_primary_target",
-            "to": "HAND"
-          },
-          {
-            "type": "SET_CONTEXT_FLAG",
-            "var": "primary_target_moved",
-            "from_var": "selected_primary_target"
-          },
-          {
-            "type": "MOVE_CARD",
-            "target_uid": "SOURCE_CARD",
-            "to": "HAND",
-            "requirements": [
-              {
-                "type": "CONTEXT_FLAG_FALSE",
-                "var": "primary_target_moved"
-              }
-            ]
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
           }
         ],
         "limits": {
@@ -14235,7 +14171,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "COMPOSITE"
       ]
     }
   },

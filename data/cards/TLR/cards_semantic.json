@@ -39,7 +39,7 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -48,7 +48,7 @@
         "status": "SUPPORTED",
         "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "COMPOSITE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1635,7 +1635,7 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -1644,7 +1644,7 @@
         "status": "SUPPORTED",
         "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "COMPOSITE"
       }
     ],
     "can_be_expressed_by_dsl": true,

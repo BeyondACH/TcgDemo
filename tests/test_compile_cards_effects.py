@@ -940,6 +940,42 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["template_metadata"]["variant"], "self_gain_source_bp_compare_remove")
         self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
 
+    def test_compile_trigger_supports_select_move_with_fallback_atomic(self):
+        ability = _compile_trigger(
+            {"id": "UA45BT_TLR_1_002"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["SELECT_MOVE_WITH_FALLBACK"])
+        step = ability["steps"][0]
+        self.assertEqual(step["primary_move_to"], "HAND")
+        self.assertEqual(step["fallback_action"]["type"], "MOVE_CARD")
+        self.assertEqual(step["success_flag_var"], "primary_target_moved")
+
+    def test_compile_trigger_supports_select_and_play_by_profile_atomic(self):
+        ability = _compile_trigger(
+            {"id": "UA31BT_MMM_1_001"},
+            {
+                "trigger": "ON_LEAVE",
+                "source_label": "退場時",
+                "effect_box": "OUTER",
+                "text": "このキャラをリムーブエリアに置き、自分のリムーブエリアから〈鹿目 まどか〉以外の必要エナジーが3以下で消費APが1の異なるカード名の黄の［特徴：魔法少女］を2枚まで自分の場にレストで登場させる。",
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual([step["type"] for step in ability["steps"]], ["MOVE_CARD", "SELECT_AND_PLAY_BY_PROFILE"])
+        profile_step = ability["steps"][1]
+        self.assertEqual(profile_step["select"]["distinct_by"], "CARD_NAME")
+        self.assertEqual(profile_step["play_to"], "FRONT_LINE")
+        self.assertEqual(profile_step["ignore_play_costs"], True)
+
     def test_compile_event_effect_supports_mcr_sheryl_raid_chain_override(self):
         ability = _compile_event_effect(
             {"id": "UA36BT_MCR_1_029", "card_type": "EVENT"},
