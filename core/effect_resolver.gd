@@ -280,8 +280,11 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 			continue
 		for step_variant in delayed_effect.get("steps", []):
 			var step: Dictionary = step_variant
-			if str(step.get("type", "")) == "MODIFY_PLAY_COST_AP":
+			var step_type := str(step.get("type", ""))
+			if step_type == "MODIFY_PLAY_COST_AP":
 				ap_delta += int(step.get("value", 0))
+			elif step_type == "MODIFY_PLAY_COST_ENERGY":
+				effective_cost_energy = _apply_energy_delta_map(effective_cost_energy, step.get("energy_delta", {}))
 		if bool(delayed_effect.get("once", false)):
 			consumed_delayed_effect_ids.append(str(delayed_effect.get("id", "")))
 

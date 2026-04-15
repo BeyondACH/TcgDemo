@@ -1174,6 +1174,33 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
         )
         return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
 
+    if event_name == "ON_ENTER" and text == "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの必要エナジーを減らす。":
+        energy_delta = _parse_energy_delta_from_label(str(trigger_entry.get("source_label", "")))
+        if not energy_delta:
+            return _unsupported_ability(card, event_name, trigger_entry, "MISSING_SOURCE_LABEL_ENERGY_DELTA")
+        target_specs, steps = _manual_card_set(
+            "SELF",
+            ["OUTSIDE"],
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            min_count=0,
+            max_count=2,
+            store_as="selected_outside_cards",
+        )
+        steps.extend(
+            [
+                {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_outside_cards", "to": "REMOVED"},
+                {
+                    "type": "REGISTER_NEXT_PLAY_COST_MODIFIER",
+                    "event": "ON_PLAY_CARD",
+                    "once": True,
+                    "expires": "END_OF_TURN",
+                    "filters": [{"type": "PLAYED_FROM_ZONE_IS", "value": "REMOVED"}],
+                    "cost_delta": {"energy": energy_delta},
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, trigger_entry, [], target_specs, steps)
+
     if event_name == "ON_ENTER" and text == "自分の山札の上から4枚見る。その中からキャラカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。":
         target_specs, select_steps = _manual_context_target(
             "preview_cards",

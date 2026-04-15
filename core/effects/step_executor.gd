@@ -625,6 +625,9 @@ func _step_register_next_play_cost_modifier(state: GameState, source_card_uid: S
 	var delayed_steps: Array = []
 	if cost_delta.has("ap"):
 		delayed_steps.append({"type": "MODIFY_PLAY_COST_AP", "value": int(cost_delta.get("ap", 0))})
+	var energy_delta: Dictionary = cost_delta.get("energy", {})
+	if not energy_delta.is_empty():
+		delayed_steps.append({"type": "MODIFY_PLAY_COST_ENERGY", "energy_delta": energy_delta.duplicate(true)})
 	if delayed_steps.is_empty():
 		return {"logs": [], "paused": false}
 	state.delayed_effects.append({
@@ -637,18 +640,6 @@ func _step_register_next_play_cost_modifier(state: GameState, source_card_uid: S
 		"once": bool(step.get("once", true)),
 		"expires": str(step.get("expires", "END_OF_TURN")),
 	})
-	var energy_delta: Dictionary = cost_delta.get("energy", {})
-	if not energy_delta.is_empty():
-		state.static_modifiers.append({
-			"id": state.next_runtime_id("static"),
-			"source_card_uid": source_card_uid,
-			"owner_player_id": source_card.controller_player_id,
-			"modifier_type": "HAND_PLAY_COST_ENERGY_DELTA",
-			"from_zone": "HAND",
-			"filters": _ensure_array(step.get("filters", [])).duplicate(true),
-			"energy_delta": energy_delta.duplicate(true),
-			"expires": str(step.get("expires", "END_OF_TURN")),
-		})
 	return {"logs": [], "paused": false}
 
 func _build_atomic_continuation(step: Dictionary, remaining_steps: Array) -> Array:
