@@ -1194,7 +1194,7 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -1204,7 +1204,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA45BT_TLR_1_040_on_play_0da85cfcde",
@@ -2397,7 +2397,7 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "TOP_DECK_TO_LIFE",
+      "COMPOSITE",
       "READY_AP"
     ],
     "abilities": [
@@ -2407,7 +2407,7 @@
         "status": "SUPPORTED",
         "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
         "reason": "",
-        "template_type": "TOP_DECK_TO_LIFE"
+        "template_type": "COMPOSITE"
       },
       {
         "id": "UA45BT_TLR_1_079_on_play_0da85cfcde",

@@ -5297,16 +5297,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -5348,7 +5346,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -10894,16 +10892,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -10945,7 +10941,7 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }

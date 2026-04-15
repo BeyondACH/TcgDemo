@@ -376,22 +376,19 @@
             "to": "REMOVED"
           },
           {
-            "type": "REGISTER_DELAYED_EFFECT",
+            "type": "REGISTER_NEXT_PLAY_COST_MODIFIER",
             "event": "ON_PLAY_CARD",
-            "expires": "END_OF_TURN",
             "once": true,
+            "expires": "END_OF_TURN",
             "filters": [
               {
                 "type": "PLAYED_FROM_ZONE_IS",
                 "value": "REMOVED"
               }
             ],
-            "steps": [
-              {
-                "type": "MODIFY_PLAY_COST_AP",
-                "value": -1
-              }
-            ]
+            "cost_delta": {
+              "ap": -1
+            }
           }
         ],
         "limits": {
@@ -4073,16 +4070,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -4124,7 +4119,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -4165,16 +4160,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -4216,7 +4209,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -8923,16 +8916,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -8974,7 +8965,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -12923,16 +12914,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -12974,7 +12963,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -13015,16 +13004,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -13066,7 +13053,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -13107,16 +13094,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -13158,7 +13143,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }
@@ -14531,16 +14516,14 @@
         "timing": {
           "event": "ON_LIFE_TRIGGER"
         },
-        "requirements": [
-          {
-            "type": "PLAYER_LIFE_IS_EMPTY",
-            "player": "SELF"
-          }
-        ],
+        "requirements": [],
         "target_specs": [],
         "steps": [
           {
-            "type": "MOVE_TOP_DECK_TO_LIFE"
+            "type": "REFILL_LIFE_IF_EMPTY",
+            "player": "SELF",
+            "source_zone": "DECK_TOP",
+            "amount": 1
           }
         ],
         "limits": {
@@ -14582,7 +14565,7 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "TOP_DECK_TO_LIFE",
+        "COMPOSITE",
         "READY_AP"
       ]
     }

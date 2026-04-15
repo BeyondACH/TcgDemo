@@ -1163,12 +1163,12 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             [
                 {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_outside_cards", "to": "REMOVED"},
                 {
-                    "type": "REGISTER_DELAYED_EFFECT",
+                    "type": "REGISTER_NEXT_PLAY_COST_MODIFIER",
                     "event": "ON_PLAY_CARD",
-                    "expires": "END_OF_TURN",
                     "once": True,
+                    "expires": "END_OF_TURN",
                     "filters": [{"type": "PLAYED_FROM_ZONE_IS", "value": "REMOVED"}],
-                    "steps": [{"type": "MODIFY_PLAY_COST_AP", "value": -1}],
+                    "cost_delta": {"ap": -1},
                 },
             ]
         )
@@ -1427,9 +1427,9 @@ def _compile_trigger_legacy(card: dict, trigger_entry: dict, semantic_map: dict[
             card,
             event_name,
             trigger_entry,
-            [{"type": "PLAYER_LIFE_IS_EMPTY", "player": "SELF"}],
             [],
-            [{"type": "MOVE_TOP_DECK_TO_LIFE"}],
+            [],
+            [{"type": "REFILL_LIFE_IF_EMPTY", "player": "SELF", "source_zone": "DECK_TOP", "amount": 1}],
         )
 
     if text == "自分の場外にイベントカードが2枚以上ある場合、カードを1枚引く。":
@@ -5612,6 +5612,10 @@ def _infer_template_type(ability: dict) -> str:
         return "SELECT_AND_MOVE"
     if step_types == ["MOVE_TOP_DECK_TO_LIFE"]:
         return "TOP_DECK_TO_LIFE"
+    if step_types == ["REFILL_LIFE_IF_EMPTY"]:
+        return "REFILL_LIFE_IF_EMPTY"
+    if "REGISTER_NEXT_PLAY_COST_MODIFIER" in step_types:
+        return "REGISTER_NEXT_PLAY_COST_MODIFIER"
     return "COMPOSITE"
 
 

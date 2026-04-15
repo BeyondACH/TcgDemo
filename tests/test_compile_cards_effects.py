@@ -976,6 +976,40 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(profile_step["play_to"], "FRONT_LINE")
         self.assertEqual(profile_step["ignore_play_costs"], True)
 
+    def test_compile_trigger_supports_refill_life_if_empty_atomic(self):
+        ability = _compile_trigger(
+            {"id": "UA48BT_KGD_1_029"},
+            {
+                "trigger": "ON_LIFE_TRIGGER",
+                "source_label": "ライフトリガー",
+                "effect_box": "OUTER",
+                "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["requirements"], [])
+        self.assertEqual([step["type"] for step in ability["steps"]], ["REFILL_LIFE_IF_EMPTY"])
+        self.assertEqual(ability["steps"][0]["amount"], 1)
+
+    def test_compile_trigger_supports_register_next_play_cost_modifier_atomic(self):
+        ability = _compile_trigger(
+            {"id": "UA31BT_MMM_1_001"},
+            {
+                "trigger": "ON_ENTER",
+                "source_label": "登場時",
+                "effect_box": "OUTER",
+                "text": "自分の場外にあるキャラカードを2枚までリムーブエリアに置く。このターン中、次にリムーブエリアから使用するカードの消費APを-1する。",
+            },
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertIn("REGISTER_NEXT_PLAY_COST_MODIFIER", [step["type"] for step in ability["steps"]])
+        register_step = next(step for step in ability["steps"] if step["type"] == "REGISTER_NEXT_PLAY_COST_MODIFIER")
+        self.assertEqual(register_step["cost_delta"]["ap"], -1)
+        self.assertEqual(register_step["event"], "ON_PLAY_CARD")
+        self.assertEqual(register_step["once"], True)
+
     def test_compile_event_effect_supports_mcr_sheryl_raid_chain_override(self):
         ability = _compile_event_effect(
             {"id": "UA36BT_MCR_1_029", "card_type": "EVENT"},
