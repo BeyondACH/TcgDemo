@@ -29,6 +29,7 @@ func _init(zone_manager, victory_checker: VictoryChecker, rules_engine: RulesEng
 func _init_handlers() -> void:
 	_handlers = {
 		"PREVIEW_TOP_DECK": _step_preview_top_deck,
+		"PREVIEW_BOTTOM_DECK": _step_preview_bottom_deck,
 		"SELECT_TARGETS": _step_select_targets,
 		"SET_CONTEXT_FLAG": _step_set_context_flag,
 		"SET_PLAYER_TURN_FLAG": _step_set_player_turn_flag,
@@ -119,6 +120,34 @@ func _step_preview_top_deck(state: GameState, source_card_uid: String, step: Dic
 	preview_logs.append("%s previews %d card(s) from the top of the deck." % [player_id, preview_cards.size()])
 	return {"logs": preview_logs, "paused": false}
 
+func _step_preview_bottom_deck(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var preview_logs: Array[String] = []
+	var player_mode := str(step.get("player", "SOURCE"))
+	var source_card = state.get_card(source_card_uid)
+	var player_id: String = str(context.get("source_player_id", ""))
+	if source_card != null:
+		player_id = source_card.controller_player_id
+	if player_mode == "TARGET":
+		player_id = str(context.get("target_player_id", player_id))
+	elif player_mode == "ACTIVE":
+		player_id = state.active_player_id
+	var player = state.get_player(player_id)
+	var preview_var := str(step.get("var", "preview_cards"))
+	var count := int(step.get("count", 0))
+	var preview_cards: Array = []
+	if player != null and count > 0:
+		var deck_size := player.deck.size()
+		var preview_count := mini(count, deck_size)
+		preview_cards = player.deck.slice(deck_size - preview_count, deck_size)
+	context[preview_var] = preview_cards
+	_register_preview_ui_meta(context, preview_var, {
+		"title": str(step.get("title", "查看牌堆底")),
+		"player_id": player_id,
+		"count": count,
+	})
+	preview_logs.append("%s previews %d card(s) from the bottom of the deck." % [player_id, preview_cards.size()])
+	return {"logs": preview_logs, "paused": false}
+
 func _step_select_targets(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
 	var target: Dictionary = step.get("target", {})
 	var selected := _resolve_target_set(state, source_card_uid, target, context)
@@ -203,6 +232,14 @@ func _step_move_selected_cards(state: GameState, source_card_uid: String, step: 
 			per_card_target_player_id = target_card.controller_player_id if target_card != null else target_player_id
 		_zone_manager.move_card(state, card_uid, to_zone, per_card_target_player_id, to_position)
 		move_logs.append("Moved card %s to %s." % [card_uid, UATypes.zone_to_key(to_zone)])
+	if to_zone == UATypes.Zone.OUTSIDE and not selected_cards.is_empty():
+		var source_effect_card = state.get_card(source_card_uid)
+		if source_effect_card != null:
+			var source_def = state.get_card_def(source_effect_card.def_id)
+			if source_def != null and UATypes.card_type_to_text(source_def.card_type) == "CHARACTER":
+				var flags: Dictionary = state.player_turn_flags.get(source_effect_card.controller_player_id, {})
+				flags["character_effect_caused_character_removed"] = true
+				state.player_turn_flags[source_effect_card.controller_player_id] = flags
 	var remove_from_var := str(step.get("remove_from_var", ""))
 	if remove_from_var != "":
 		context[remove_from_var] = _array_without_values(_ensure_array(context.get(remove_from_var, [])), selected_cards)

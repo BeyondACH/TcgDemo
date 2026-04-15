@@ -2001,6 +2001,14 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
         "text": text,
     }
 
+    if text.startswith("・"):
+        has_choice_anchor = any(
+            "以下から1つ選ぶ。" in str(entry.get("text", "")).strip()
+            for entry in card.get("effects", [])
+        )
+        if has_choice_anchor:
+            return None
+
     if card_id == "UA31BT_MMM_1_027" and text == "自分の手札のイベントカードを1枚場外に置く。そうした場合、このターン中、自分の手札にある全ての〈巴 マミ〉の必要エナジーを減らす。":
         target_specs, steps = _manual_single_target(
             "SELF",
@@ -2153,6 +2161,67 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
     if text == "カードを2枚引く。":
         return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 2}], "TRIGGERED")
 
+    if text == "カードを2枚引く。自分の場の黄のカードの特徴が3種類以上ある場合、さらにカードを1枚引く。":
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            [],
+            [
+                {"type": "DRAW", "value": 2},
+                {
+                    "type": "DRAW",
+                    "value": 1,
+                    "requirements": [
+                        {
+                            "type": "CONTROLLER_FIELD_TRAIT_KIND_COUNT_GTE",
+                            "color": "YELLOW",
+                            "value": 3,
+                        }
+                    ],
+                },
+            ],
+            "TRIGGERED",
+        )
+
+    if text == "カードを1枚引く。以下から1つ選ぶ。":
+        branch_texts = [
+            str(effect.get("text", "")).strip().lstrip("・").strip()
+            for effect in card.get("effects", [])
+            if str(effect.get("text", "")).strip().startswith("・")
+        ]
+        options = [f"BRANCH_{index + 1}" for index in range(len(branch_texts))]
+        return _supported_ability(
+            card,
+            event_name,
+            pseudo_trigger,
+            [],
+            [],
+            [
+                {"type": "DRAW", "value": 1},
+                {
+                    "type": "SELECT_TARGETS",
+                    "var": "selected_branch_option",
+                    "target": {
+                        "type": "OPTION_SET",
+                        "options": options,
+                        "min": 1,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": True,
+                    },
+                },
+                {
+                    "type": "EXECUTE_CHOICE_BRANCH",
+                    "mode_var": "selected_branch_option",
+                    "branches": {option: _compile_branch_sub_steps(card, pseudo_trigger, text) for option, text in zip(options, branch_texts)},
+                    "default_steps": [],
+                },
+            ],
+            "TRIGGERED",
+        )
+
     if text == "カードを2枚引く。相手は自身の手札を全て公開する。":
         return _supported_ability(card, event_name, pseudo_trigger, [], [], [{"type": "DRAW", "value": 2}], "TRIGGERED")
 
@@ -2194,6 +2263,69 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
         )
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
+    if text == "自分の山札の上から6枚見て、〈信〉と〈王賁〉と〈蒙恬〉をそれぞれ1枚まで公開し手札に加える。残りを望む順で山札の下に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=6,
+            requirements=[
+                {
+                    "type": "OR",
+                    "requirements": [
+                        {"type": "CARD_NAME_IS", "value": "信"},
+                        {"type": "CARD_NAME_IS", "value": "王賁"},
+                        {"type": "CARD_NAME_IS", "value": "蒙恬"},
+                    ],
+                }
+            ],
+            min_count=0,
+            max_count=3,
+            distinct_by="CARD_NAME",
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分の山札の上から6枚見て、異なるカード名の［特徴：飛信隊］をそれぞれ1枚ずつ合計2枚まで公開し手札に加える。残りを望む順で山札の下に置く。":
+        target_specs, steps = _preview_add_to_hand_then_reorder_steps(
+            count=6,
+            requirements=[{"type": "CARD_HAS_TRAIT", "value": "飛信隊"}],
+            min_count=0,
+            max_count=2,
+            distinct_by="CARD_NAME",
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分の山札の下を1枚公開し『手札に加える』。公開したカードが消費APが1の黄の〈龐煖〉の場合、『自分の場にレストで登場させる』に代えてもよい。":
+        target_specs, select_steps = _manual_context_target(
+            "preview_cards",
+            min_count=1,
+            max_count=1,
+            store_as="revealed_card",
+        )
+        steps = [
+            {"type": "PREVIEW_BOTTOM_DECK", "count": 1, "var": "preview_cards"},
+            *select_steps,
+            {
+                "type": "PLAY_SELECTED_CARDS",
+                "from_var": "revealed_card",
+                "to_zone": "FRONT_LINE",
+                "state": "RESTED",
+                "ignore_play_timing": True,
+                "allow_current_zone": True,
+                "requirements": [{"type": "CONTEXT_TARGET_NAME_IS", "context_var": "revealed_card", "value": "龐煖"}],
+            },
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "revealed_card",
+                "to": "HAND",
+                "remove_from_var": "preview_cards",
+                "requirements": [
+                    {
+                        "type": "NOT",
+                        "requirement": {"type": "CONTEXT_TARGET_NAME_IS", "context_var": "revealed_card", "value": "龐煖"},
+                    }
+                ],
+            },
+        ]
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
     if text == "BP5000以下の相手のフロントLのキャラを1枚選び、相手の山札の下に置く。":
         target_specs, steps = _manual_single_target(
             "OPPONENT",
@@ -2212,6 +2344,46 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
             }
         )
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分の場の［特徴：楚］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。自分の場にBP5000以上の［特徴：楚］がある場合、自分の場の［特徴：楚］を1枚まで選び、別のラインに移動させる。":
+        enemy_specs, enemy_steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": {
+                        "type": "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED",
+                        "value": 0,
+                        "trait": "楚",
+                        "multiplier": 1000,
+                    },
+                }
+            ],
+            1,
+            1,
+            "selected_enemy_target",
+        )
+        self_specs, self_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE"],
+            [{"type": "CARD_HAS_TRAIT", "value": "楚"}],
+            0,
+            1,
+            "selected_self_move_target",
+        )
+        steps = [
+            *enemy_steps,
+            {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_enemy_target", "to": "OUTSIDE"},
+            *[dict(step, requirements=[{"type": "CONTROLLER_HAS_TRAIT_BP_GTE", "trait": "楚", "value": 5000}]) for step in self_steps],
+            {
+                "type": "MOVE_SELECTED_CARDS",
+                "from_var": "selected_self_move_target",
+                "to": "FRONT_LINE",
+                "requirements": [{"type": "CONTROLLER_HAS_TRAIT_BP_GTE", "trait": "楚", "value": 5000}],
+            },
+        ]
+        return _supported_ability(card, event_name, pseudo_trigger, [], enemy_specs + self_specs, steps, "TRIGGERED")
 
     if text == "BP5000以下の相手のフロントLのキャラを1枚選び、選んだキャラとこのカードをリムーブエリアに置く。自分のリムーブエリアから使用されている場合、このカードはリムーブエリアに置く代わりに自分の山札の下に置く。":
         target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": 5000}], 1, 1, "selected_target")
@@ -2255,6 +2427,27 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
                     "flag": "skip_next_ready_once",
                     "value": True,
                     "requirements": [{"type": "NOT", "requirement": {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "巴 マミ"}}],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "BP5000以下の相手のフロントLのキャラを1枚選び、『手札に戻す』。自分の場に〈王賁〉がある場合、『退場させる』に代えてもよい。":
+        target_specs, steps = _manual_single_target("OPPONENT", ["FRONT_LINE"], [{"type": "CARD_BP_LTE", "value": 5000}], 1, 1, "selected_target")
+        steps.extend(
+            [
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "selected_target",
+                    "to": "OUTSIDE",
+                    "requirements": [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "王賁"}],
+                },
+                {
+                    "type": "MOVE_SELECTED_CARDS",
+                    "from_var": "selected_target",
+                    "to": "HAND",
+                    "target_player_mode": "CARD_CONTROLLER",
+                    "requirements": [{"type": "NOT", "requirement": {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "王賁"}}],
                 },
             ]
         )
@@ -2398,6 +2591,220 @@ def _compile_event_effect_legacy(card: dict, effect_entry: dict, semantic_map: d
             ],
         )
         steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分の場の［特徴：秦］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。":
+        target_specs, steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [
+                {
+                    "type": "CARD_BP_LTE_DYNAMIC",
+                    "value_provider": {
+                        "type": "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED",
+                        "value": 0,
+                        "trait": "秦",
+                        "multiplier": 1000,
+                    },
+                }
+            ],
+            1,
+            1,
+            "selected_target",
+        )
+        steps.append({"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "OUTSIDE"})
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。このターン中にキャラの効果でキャラが退場していた場合、自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、BP+1000。":
+        enemy_specs, enemy_steps = _manual_single_target(
+            "OPPONENT",
+            ["FRONT_LINE"],
+            [{"type": "CARD_BP_LTE", "value": 5000}],
+            1,
+            1,
+            "selected_enemy_target",
+        )
+        ally_specs, ally_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE"],
+            [{"type": "CARD_HAS_TRAIT", "value": "桓騎軍"}],
+            0,
+            1,
+            "selected_ally_target",
+        )
+        steps = [
+            *enemy_steps,
+            {"type": "MOVE_SELECTED_CARDS", "from_var": "selected_enemy_target", "to": "OUTSIDE"},
+            *[
+                dict(step, requirements=[{"type": "PLAYER_TURN_FLAG_TRUE", "player": "SELF", "flag": "character_effect_caused_character_removed"}])
+                for step in ally_steps
+            ],
+            {
+                "type": "ADD_TEMP_BP_MODIFIER",
+                "target_var": "selected_ally_target",
+                "value": 1000,
+                "expires": "END_OF_TURN",
+                "requirements": [{"type": "PLAYER_TURN_FLAG_TRUE", "player": "SELF", "flag": "character_effect_caused_character_removed"}],
+            },
+        ]
+        return _supported_ability(card, event_name, pseudo_trigger, [], enemy_specs + ally_specs, steps, "TRIGGERED")
+
+    if text == "自分の場のキャラを1枚選び、このターン中、BP+2000。選んだキャラが〈麃公〉か〈信〉の場合、さらに（相手のフロントLのキャラを指定してアタックでき、その場合ブロックされない）を与える。":
+        target_specs, steps = _manual_single_target("SELF", ["FRONT_LINE"], [], 1, 1, "selected_target")
+        steps.extend(
+            [
+                {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 2000, "expires": "END_OF_TURN"},
+                {
+                    "type": "ADD_TEMP_KEYWORD",
+                    "target_var": "selected_target",
+                    "keyword": "SNIPER",
+                    "expires": "END_OF_TURN",
+                    "requirements": [
+                        {
+                            "type": "OR",
+                            "requirements": [
+                                {"type": "CONTEXT_TARGET_NAME_IS", "context_var": "selected_target", "value": "麃公"},
+                                {"type": "CONTEXT_TARGET_NAME_IS", "context_var": "selected_target", "value": "信"},
+                            ],
+                        }
+                    ],
+                },
+                {
+                    "type": "ADD_TEMP_KEYWORD",
+                    "target_var": "selected_target",
+                    "keyword": "CANNOT_BE_BLOCKED_BY_BP_GTE_0",
+                    "expires": "END_OF_TURN",
+                    "requirements": [
+                        {
+                            "type": "OR",
+                            "requirements": [
+                                {"type": "CONTEXT_TARGET_NAME_IS", "context_var": "selected_target", "value": "麃公"},
+                                {"type": "CONTEXT_TARGET_NAME_IS", "context_var": "selected_target", "value": "信"},
+                            ],
+                        }
+                    ],
+                },
+            ]
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分の場外から必要エナジーが0の赤のキャラカードを『1枚』まで自分の場にレストで登場させる。自分のフロントLに〈嬴政〉がある場合、『2枚』に代わる。":
+        dual_specs, dual_steps = _manual_single_target(
+            "SELF",
+            ["OUTSIDE"],
+            [
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_COLOR_IS", "value": "RED"},
+                {"type": "CARD_COST_ENERGY_LTE", "value": 0},
+                {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": True},
+            ],
+            0,
+            2,
+            "selected_outside_dual",
+        )
+        single_specs, single_steps = _manual_single_target(
+            "SELF",
+            ["OUTSIDE"],
+            [
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_COLOR_IS", "value": "RED"},
+                {"type": "CARD_COST_ENERGY_LTE", "value": 0},
+                {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": True},
+            ],
+            0,
+            1,
+            "selected_outside_single",
+        )
+        steps = [
+            *[
+                dict(step, requirements=[{"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": "嬴政"}])
+                for step in dual_steps
+            ],
+            {
+                "type": "PLAY_SELECTED_CARDS",
+                "from_var": "selected_outside_dual",
+                "to_zone": "FRONT_LINE",
+                "state": "RESTED",
+                "ignore_play_timing": True,
+                "allow_current_zone": True,
+                "requirements": [{"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": "嬴政"}],
+            },
+            *[
+                dict(
+                    step,
+                    requirements=[
+                        {
+                            "type": "NOT",
+                            "requirement": {"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": "嬴政"},
+                        }
+                    ],
+                )
+                for step in single_steps
+            ],
+            {
+                "type": "PLAY_SELECTED_CARDS",
+                "from_var": "selected_outside_single",
+                "to_zone": "FRONT_LINE",
+                "state": "RESTED",
+                "ignore_play_timing": True,
+                "allow_current_zone": True,
+                "requirements": [
+                    {
+                        "type": "NOT",
+                        "requirement": {"type": "CONTROLLER_HAS_NAME_IN_FRONT_LINE", "value": "嬴政"},
+                    }
+                ],
+            },
+        ]
+        return _supported_ability(card, event_name, pseudo_trigger, [], dual_specs + single_specs, steps, "TRIGGERED")
+
+    if text == "自分の手札から必要エナジーを満たし消費APが1の〈羌瘣〉を1枚まで自分の場にレストで登場させるかレイドさせる。この効果で消費APが2の〈羌瘣〉にはレイドできない。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["HAND"],
+            [
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_COST_AP_EQ", "value": 1},
+                {"type": "CARD_NAME_IS", "value": "羌瘣"},
+                {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": True},
+            ],
+            0,
+            1,
+            "selected_target",
+        )
+        steps.append(
+            {
+                "type": "PLAY_SELECTED_CARDS",
+                "from_var": "selected_target",
+                "to_zone": "FRONT_LINE",
+                "state": "RESTED",
+                "ignore_play_timing": True,
+                "allow_current_zone": True,
+            }
+        )
+        return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
+
+    if text == "自分の場の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。選んだキャラが〈羌瘣〉の場合、さらにこのターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。":
+        target_specs, steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE"],
+            [{"type": "CARD_HAS_TRAIT", "value": "飛信隊"}],
+            0,
+            1,
+            "selected_target",
+        )
+        steps.extend(
+            [
+                {"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": 1000, "expires": "END_OF_TURN"},
+                {
+                    "type": "ADD_TEMP_KEYWORD",
+                    "target_var": "selected_target",
+                    "keyword": "CANNOT_BE_BLOCKED_BY_BP_GTE_4000",
+                    "expires": "END_OF_TURN",
+                    "requirements": [{"type": "CONTEXT_TARGET_NAME_IS", "context_var": "selected_target", "value": "羌瘣"}],
+                },
+            ]
+        )
         return _supported_ability(card, event_name, pseudo_trigger, [], target_specs, steps, "TRIGGERED")
 
     if text == "自分のフロントLのキャラを1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。":
