@@ -132,10 +132,12 @@
 
 ### 进度（2026-04-15）
 
-- 已启动 P1 首批迁移并落地三类高频模板族参数化：
+- P1 已完成收口，三类高频模板族参数化已稳定接管主路径：
   - `DRAW_SEQUENCE`：固定抽牌文本 `カードをN枚引く。`
   - `LIFE_TRIGGER_RAID_CHOICE`：生命触发二选一文本（`場合/なら` 口径统一）
   - `AP_ACTIVATE`：`AP` 激活文本（纯激活 / 抽牌后激活）
+- 已完成统一匹配管线首轮收敛：上述高频族改为声明式共享 pattern 列表生成 trigger/event 规则，减少重复注册与重复正则维护面。
+- metadata 口径已冻结：同族统一使用稳定 `family` / `variant` 命名，并由共享规则生成逻辑保证一致性。
 - 已新增模板迁移门禁配置与检查脚本：
   - `docs/plan/compiler_metrics_gate.json`
   - `tools/check_compiler_metrics_gate.py`
