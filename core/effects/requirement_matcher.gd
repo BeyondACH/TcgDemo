@@ -62,6 +62,7 @@ func _init_handlers() -> void:
 		"SOURCE_ENTERED_FROM_ZONE": _req_source_entered_from_zone,
 		"PLAYER_ZONE_CARD_COUNT_GTE": _req_player_zone_card_count_gte,
 		"CONTROLLER_TRAIT_NAME_COUNT_GTE": _req_controller_trait_name_count_gte,
+		"CONTROLLER_FIELD_TRAIT_KIND_COUNT_GTE": _req_controller_field_trait_kind_count_gte,
 		"CONTROLLER_OTHER_TRAIT_CARD_COUNT_GTE": _req_controller_other_trait_card_count_gte,
 		"TARGET_SET_BP_SUM_LTE": _req_target_set_bp_sum_lte,
 		"TARGET_SET_DYNAMIC_SUM_LTE": _req_target_set_dynamic_sum_lte,
@@ -590,6 +591,36 @@ func _req_controller_trait_name_count_gte(state: GameState, requirement: Diction
 			if d != null and d.traits.has(trait_value):
 				unique_names[d.name] = true
 	return unique_names.size() >= min_count
+
+func _req_controller_field_trait_kind_count_gte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+	var source_card = state.get_card(source_card_uid)
+	if source_card == null:
+		return false
+	var player = state.get_player(source_card.controller_player_id)
+	if player == null:
+		return false
+	var min_count := int(requirement.get("value", 0))
+	var required_color := str(requirement.get("color", ""))
+	var trait_kinds: Dictionary = {}
+	for zone_cards in [player.front_line, player.energy_line]:
+		for card_uid_v in zone_cards:
+			var cuid := str(card_uid_v)
+			if cuid == "":
+				continue
+			var c = state.get_card(cuid)
+			if c == null:
+				continue
+			var d = state.get_card_def(c.def_id)
+			if d == null:
+				continue
+			if required_color != "" and not _card_matches_color(d, required_color):
+				continue
+			for trait_variant in d.traits:
+				var trait_name := str(trait_variant)
+				if trait_name == "":
+					continue
+				trait_kinds[trait_name] = true
+	return trait_kinds.size() >= min_count
 
 func _req_controller_other_trait_card_count_gte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var source_card = state.get_card(source_card_uid)

@@ -2020,7 +2020,23 @@
         },
         "requirements": [],
         "target_specs": [],
-        "steps": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 2
+          },
+          {
+            "type": "DRAW",
+            "value": 1,
+            "requirements": [
+              {
+                "type": "CONTROLLER_FIELD_TRAIT_KIND_COUNT_GTE",
+                "color": "YELLOW",
+                "value": 3
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -2029,8 +2045,7 @@
           "effect_box": "OUTER",
           "text": "カードを2枚引く。自分の場の黄のカードの特徴が3種類以上ある場合、さらにカードを1枚引く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -2038,7 +2053,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "COMPOSITE"
       ]
     }
   },
@@ -5052,8 +5067,102 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "OR",
+                  "requirements": [
+                    {
+                      "type": "CARD_NAME_IS",
+                      "value": "信"
+                    },
+                    {
+                      "type": "CARD_NAME_IS",
+                      "value": "王賁"
+                    },
+                    {
+                      "type": "CARD_NAME_IS",
+                      "value": "蒙恬"
+                    }
+                  ]
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 3,
+              "mode": "MANUAL",
+              "constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 6,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "OR",
+                  "requirements": [
+                    {
+                      "type": "CARD_NAME_IS",
+                      "value": "信"
+                    },
+                    {
+                      "type": "CARD_NAME_IS",
+                      "value": "王賁"
+                    },
+                    {
+                      "type": "CARD_NAME_IS",
+                      "value": "蒙恬"
+                    }
+                  ]
+                }
+              ],
+              "min": 0,
+              "max": 3,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -5062,8 +5171,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から6枚見て、〈信〉と〈王賁〉と〈蒙恬〉をそれぞれ1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -5071,7 +5179,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -5171,8 +5279,81 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE",
+                  "value": 5000
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE",
+            "requirements": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "王賁"
+              }
+            ]
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "HAND",
+            "target_player_mode": "CARD_CONTROLLER",
+            "requirements": [
+              {
+                "type": "NOT",
+                "requirement": {
+                  "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                  "value": "王賁"
+                }
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -5181,16 +5362,14 @@
           "effect_box": "OUTER",
           "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『手札に戻す』。自分の場に〈王賁〉がある場合、『退場させる』に代えてもよい。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
       "source": "KGD/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },
@@ -7814,8 +7993,70 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED",
+                    "value": 0,
+                    "trait": "秦",
+                    "multiplier": 1000
+                  }
+                }
+              ]
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_BP_LTE_DYNAMIC",
+                  "value_provider": {
+                    "type": "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED",
+                    "value": 0,
+                    "trait": "秦",
+                    "multiplier": 1000
+                  }
+                }
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7824,8 +8065,7 @@
           "effect_box": "OUTER",
           "text": "自分の場の［特徴：秦］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -7833,8 +8073,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "NO_OP",
-        "UNSUPPORTED"
+        "NO_OP"
       ]
     }
   },
@@ -7941,8 +8180,97 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 2000,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "SNIPER",
+            "expires": "END_OF_TURN",
+            "requirements": [
+              {
+                "type": "OR",
+                "requirements": [
+                  {
+                    "type": "CONTEXT_TARGET_NAME_IS",
+                    "context_var": "selected_target",
+                    "value": "麃公"
+                  },
+                  {
+                    "type": "CONTEXT_TARGET_NAME_IS",
+                    "context_var": "selected_target",
+                    "value": "信"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "target_var": "selected_target",
+            "keyword": "CANNOT_BE_BLOCKED_BY_BP_GTE_0",
+            "expires": "END_OF_TURN",
+            "requirements": [
+              {
+                "type": "OR",
+                "requirements": [
+                  {
+                    "type": "CONTEXT_TARGET_NAME_IS",
+                    "context_var": "selected_target",
+                    "value": "麃公"
+                  },
+                  {
+                    "type": "CONTEXT_TARGET_NAME_IS",
+                    "context_var": "selected_target",
+                    "value": "信"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -7951,8 +8279,7 @@
           "effect_box": "OUTER",
           "text": "自分の場のキャラを1枚選び、このターン中、BP+2000。選んだキャラが〈麃公〉か〈信〉の場合、さらに（相手のフロントLのキャラを指定してアタックでき、その場合ブロックされない）を与える。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -7960,7 +8287,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "READY_AND_TEMP_BP",
-        "UNSUPPORTED"
+        "TEMP_BP"
       ]
     }
   },
@@ -9469,8 +9796,76 @@
           "event": "ON_PLAY"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_preview_cards",
+            "scope": "CARD",
+            "candidate": {
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "飛信隊"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 2,
+              "mode": "MANUAL",
+              "constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            },
+            "store_as": "selected_preview_cards"
+          }
+        ],
+        "steps": [
+          {
+            "type": "PREVIEW_TOP_DECK",
+            "count": 6,
+            "var": "preview_cards"
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_preview_cards",
+            "target": {
+              "type": "CONTEXT_CARD_SET",
+              "source_var": "preview_cards",
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_HAS_TRAIT",
+                  "value": "飛信隊"
+                }
+              ],
+              "min": 0,
+              "max": 2,
+              "selection_mode": "MANUAL",
+              "manual": true,
+              "selection_constraints": {
+                "distinct_by": "CARD_NAME"
+              }
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_preview_cards",
+            "to": "HAND",
+            "remove_from_var": "preview_cards"
+          },
+          {
+            "type": "REORDER_CONTEXT_CARDS",
+            "from_var": "preview_cards",
+            "var": "ordered_preview_cards"
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "ordered_preview_cards",
+            "to": "DECK"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -9479,8 +9874,7 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から6枚見て、異なるカード名の［特徴：飛信隊］をそれぞれ1枚ずつ合計2枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED"
       }
     ],
     "analysis": {
@@ -9488,7 +9882,7 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "UNSUPPORTED"
+        "SELECT_AND_MOVE"
       ]
     }
   },

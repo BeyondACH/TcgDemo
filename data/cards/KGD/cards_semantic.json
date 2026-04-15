@@ -653,7 +653,7 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "COMPOSITE"
     ],
     "abilities": [
       {
@@ -667,16 +667,14 @@
       {
         "id": "UA48BT_KGD_1_028_on_play_60a48c4320",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "カードを2枚引く。自分の場の黄のカードの特徴が3種類以上ある場合、さらにカードを1枚引く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "COMPOSITE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "カードを2枚引く。自分の場の黄のカードの特徴が3種類以上ある場合、さらにカードを1枚引く。",
       "trigger": "カードを1枚引く。",
@@ -1631,7 +1629,7 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -1645,16 +1643,14 @@
       {
         "id": "UA48BT_KGD_1_065_on_play_7a5593d158",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から6枚見て、〈信〉と〈王賁〉と〈蒙恬〉をそれぞれ1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から6枚見て、〈信〉と〈王賁〉と〈蒙恬〉をそれぞれ1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
       "trigger": "カードを1枚引く。",
@@ -1666,8 +1662,7 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -1681,16 +1676,14 @@
       {
         "id": "UA48BT_KGD_1_066_on_play_1d2316a028",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "BP5000以下の相手のフロントLのキャラを1枚選び、『手札に戻す』。自分の場に〈王賁〉がある場合、『退場させる』に代えてもよい。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "BP5000以下の相手のフロントLのキャラを1枚選び、『手札に戻す』。自分の場に〈王賁〉がある場合、『退場させる』に代えてもよい。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -2487,8 +2480,7 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "NO_OP",
-      "UNSUPPORTED"
+      "NO_OP"
     ],
     "abilities": [
       {
@@ -2510,16 +2502,14 @@
       {
         "id": "UA48BT_KGD_1_098_on_play_6f03d24b2e",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場の［特徴：秦］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このカードは自分の場に〈嬴政〉がある場合のみ使用できる。\n自分の場の［特徴：秦］の枚数×1000以下のBPの相手のフロントLのキャラを1枚選び、退場させる。",
       "trigger": "相手のフロントLのキャラを1枚選び、退場させる。",
@@ -2534,7 +2524,7 @@
     ],
     "template_types": [
       "READY_AND_TEMP_BP",
-      "UNSUPPORTED"
+      "TEMP_BP"
     ],
     "abilities": [
       {
@@ -2548,16 +2538,14 @@
       {
         "id": "UA48BT_KGD_1_099_on_play_a05eedfbc2",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場のキャラを1枚選び、このターン中、BP+2000。選んだキャラが〈麃公〉か〈信〉の場合、さらに（相手のフロントLのキャラを指定してアタックでき、その場合ブロックされない）を与える。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場のキャラを1枚選び、このターン中、BP+2000。選んだキャラが〈麃公〉か〈信〉の場合、さらに（相手のフロントLのキャラを指定してアタックでき、その場合ブロックされない）を与える。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -3019,7 +3007,7 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "UNSUPPORTED"
+      "SELECT_AND_MOVE"
     ],
     "abilities": [
       {
@@ -3033,16 +3021,14 @@
       {
         "id": "UA48ST_KGD_1_109_on_play_4b1733dde3",
         "timing": "ON_PLAY",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の山札の上から6枚見て、異なるカード名の［特徴：飛信隊］をそれぞれ1枚ずつ合計2枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "SELECT_AND_MOVE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から6枚見て、異なるカード名の［特徴：飛信隊］をそれぞれ1枚ずつ合計2枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
       "trigger": "カードを1枚引く。",
