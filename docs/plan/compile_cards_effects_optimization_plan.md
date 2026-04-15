@@ -94,6 +94,18 @@
 - 能稳定产出 metrics 快照并可对比前一轮。
 - 新增模板可通过指标定位“是否误伤旧规则”。
 
+### 进度（2026-04-15）
+
+- 已完成并入 `tools/compile_cards_effects.py` 的模板遥测输出：
+  - family / variant 命中次数
+  - fallback 次数、分 registry 统计与占比
+  - 同文本多命中冲突候选清单（含候选规则与样例卡）
+  - 规则命中顺序（rule order）摘要与相对前一轮差异
+- `docs/plan/compiler_metrics_snapshot.json` 已升级为阶段 P0 基线格式（含 `cards_metrics` 与 `template_telemetry` 双层口径）。
+- 当前基线快照（2026-04-15）：
+  - `dispatch_total=2004`，`hits_total=220`，`fallback_total=1784`，`fallback_ratio=0.89022`
+  - `conflict_count=1`
+
 ---
 
 ## 阶段 P1：模板家族参数化收敛（短期主线）
@@ -117,6 +129,20 @@
 
 - 同族新增文本无需新增按卡分支。
 - 同族迁移后语义产物保持一致（步骤序列/要求集合不漂移）。
+
+### 进度（2026-04-15）
+
+- 已启动 P1 首批迁移并落地三类高频模板族参数化：
+  - `DRAW_SEQUENCE`：固定抽牌文本 `カードをN枚引く。`
+  - `LIFE_TRIGGER_RAID_CHOICE`：生命触发二选一文本（`場合/なら` 口径统一）
+  - `AP_ACTIVATE`：`AP` 激活文本（纯激活 / 抽牌后激活）
+- 已新增模板迁移门禁配置与检查脚本：
+  - `docs/plan/compiler_metrics_gate.json`
+  - `tools/check_compiler_metrics_gate.py`
+- 门禁口径（当前）：
+  - `fallback_ratio <= 0.9`
+  - `conflict_count <= 2`
+  - `required_family_hits`：`LIFE_TRIGGER_RAID_CHOICE` / `DRAW_SEQUENCE` / `AP_ACTIVATE` 均需命中
 
 ---
 

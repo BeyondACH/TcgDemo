@@ -25,27 +25,46 @@ def build_snapshot(cards_root: Path) -> dict:
         per_series[effects_path.parent.name] = series_stats
         for key in totals:
             totals[key] += series_stats[key]
-    return {"totals": totals, "per_series": per_series}
+    return {"cards_metrics": {"totals": totals, "per_series": per_series}}
 
 
 def compare_snapshot(old: dict, new: dict) -> list[str]:
     lines: list[str] = []
+    old_cards_metrics = old.get("cards_metrics", old)
+    new_cards_metrics = new.get("cards_metrics", new)
     for scope in ("totals",):
         for key in ("cards", "abilities", "supported", "unsupported"):
-            delta = new[scope][key] - old[scope][key]
+            delta = new_cards_metrics[scope][key] - old_cards_metrics[scope][key]
             if delta != 0:
-                lines.append(f"{scope}.{key}: {old[scope][key]} -> {new[scope][key]} ({delta:+d})")
-    for series, stats in new["per_series"].items():
-        if series not in old["per_series"]:
+                lines.append(
+                    f"{scope}.{key}: {old_cards_metrics[scope][key]} -> {new_cards_metrics[scope][key]} ({delta:+d})"
+                )
+    for series, stats in new_cards_metrics["per_series"].items():
+        if series not in old_cards_metrics["per_series"]:
             lines.append(f"per_series.{series}: added")
             continue
-        old_stats = old["per_series"][series]
+        old_stats = old_cards_metrics["per_series"][series]
         for key in ("cards", "abilities", "supported", "unsupported"):
             delta = stats[key] - old_stats[key]
             if delta != 0:
                 lines.append(
                     f"per_series.{series}.{key}: {old_stats[key]} -> {stats[key]} ({delta:+d})"
                 )
+    old_template = old.get("template_telemetry", {})
+    new_template = new.get("template_telemetry", {})
+    for key in ("dispatch_total", "hits_total", "fallback_total", "conflict_count"):
+        if key in old_template and key in new_template and old_template[key] != new_template[key]:
+            lines.append(f"template_telemetry.{key}: {old_template[key]} -> {new_template[key]}")
+    old_ratio = old_template.get("fallback_ratio")
+    new_ratio = new_template.get("fallback_ratio")
+    if old_ratio is not None and new_ratio is not None and old_ratio != new_ratio:
+        lines.append(f"template_telemetry.fallback_ratio: {old_ratio} -> {new_ratio}")
+    old_order = old_template.get("rule_order", {})
+    new_order = new_template.get("rule_order", {})
+    for registry, new_rules in new_order.items():
+        old_rules = old_order.get(registry, [])
+        if old_rules != new_rules:
+            lines.append(f"template_telemetry.rule_order.{registry}: changed")
     return lines
 
 

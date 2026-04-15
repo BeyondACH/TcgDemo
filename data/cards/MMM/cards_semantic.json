@@ -153,7 +153,8 @@
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -170,7 +171,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -385,7 +386,8 @@
       "STEP"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -394,7 +396,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -436,7 +438,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -453,7 +456,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -470,7 +473,8 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -487,7 +491,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -878,7 +882,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -895,7 +900,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -912,7 +917,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -929,7 +935,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1013,7 +1019,8 @@
     "template_types": [
       "DRAW_1",
       "COMPOSITE",
-      "DRAW_THEN_SELECT_AND_MOVE"
+      "DRAW_THEN_SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1022,7 +1029,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA31BT_MMM_1_034_on_play_42a2213fcd",
@@ -1149,7 +1156,8 @@
     "inferred_keywords": [],
     "template_types": [
       "TEMP_BP",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1166,7 +1174,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1182,7 +1190,8 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1191,7 +1200,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1386,7 +1395,8 @@
       "IMPACT"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1395,7 +1405,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1437,7 +1447,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1454,7 +1465,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1555,7 +1566,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1572,7 +1584,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1616,7 +1628,8 @@
       "IMPACT"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1625,7 +1638,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1821,7 +1834,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "MOVE_SELF"
+      "MOVE_SELF",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1830,7 +1844,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA31BT_MMM_1_061_on_life_trigger_0a3e81b9d0",
@@ -1891,7 +1905,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -1908,7 +1923,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1959,6 +1974,7 @@
     "template_types": [
       "DRAW_1",
       "SELECT_AND_MOVE",
+      "DRAW_SEQUENCE",
       "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
@@ -1968,7 +1984,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA31BT_MMM_1_065_on_play_820af553a2",
@@ -2180,7 +2196,8 @@
       "STEP"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2189,7 +2206,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2416,7 +2433,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2433,7 +2451,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2578,7 +2596,8 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2587,7 +2606,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2739,7 +2758,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "DRAW_THEN_SELECT_AND_MOVE"
+      "DRAW_THEN_SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2748,7 +2768,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA31BT_MMM_1_092_on_play_f2b978407b",
@@ -2841,7 +2861,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -2858,7 +2879,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2875,7 +2896,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -2892,7 +2914,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2909,7 +2931,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -2926,7 +2949,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2945,7 +2968,8 @@
     ],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2954,7 +2978,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA31BT_MMM_1_098_on_play_ed61005103",
@@ -3252,7 +3276,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -3269,7 +3294,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -3440,7 +3465,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_2",
-      "READY_AND_TEMP_BP"
+      "READY_AND_TEMP_BP",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -3449,7 +3475,7 @@
         "status": "SUPPORTED",
         "text": "カードを2枚引く。",
         "reason": "",
-        "template_type": "DRAW_2"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA31ST_MMM_1_106_on_life_trigger_bab7196d2b",
@@ -3522,7 +3548,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -3531,7 +3558,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA31ST_MMM_1_109_on_play_3ded668e6e",

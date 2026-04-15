@@ -60,7 +60,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -69,7 +70,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -351,7 +352,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -360,7 +362,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -406,7 +408,8 @@
       "IMPACT"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -415,7 +418,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -447,7 +450,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -456,7 +460,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -559,7 +563,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -568,7 +573,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -653,7 +658,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "COMPOSITE"
+      "COMPOSITE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -662,7 +668,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA48BT_KGD_1_028_on_play_60a48c4320",
@@ -687,7 +693,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -704,7 +711,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -754,7 +761,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -771,7 +779,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -822,7 +830,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -831,7 +840,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA48BT_KGD_1_033_on_play_f68e7b9896",
@@ -946,7 +955,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -955,7 +965,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -971,7 +981,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -980,7 +991,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1187,7 +1198,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1196,7 +1208,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1502,7 +1514,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -1519,7 +1532,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1536,7 +1549,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -1553,7 +1567,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1572,7 +1586,8 @@
     ],
     "template_types": [
       "DRAW_1",
-      "COMPOSITE"
+      "COMPOSITE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1581,7 +1596,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA48BT_KGD_1_064_on_play_da283044a5",
@@ -1606,7 +1621,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1615,7 +1631,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA48BT_KGD_1_065_on_play_7a5593d158",
@@ -1706,7 +1722,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1715,7 +1732,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1731,7 +1748,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1740,7 +1758,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1815,7 +1833,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1824,7 +1843,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1956,7 +1975,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1965,7 +1985,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1981,7 +2001,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1990,7 +2011,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2009,7 +2030,8 @@
       "IMPACT"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2018,7 +2040,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2101,7 +2123,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2110,7 +2133,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2153,7 +2176,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2162,7 +2186,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2222,7 +2246,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2231,7 +2256,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2344,7 +2369,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -2361,7 +2387,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2378,7 +2404,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -2395,7 +2422,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2715,7 +2742,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -2732,7 +2760,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2782,7 +2810,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2791,7 +2820,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2860,7 +2889,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2869,7 +2899,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2901,7 +2931,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2910,7 +2941,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2980,7 +3011,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2989,7 +3021,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA48ST_KGD_1_109_on_play_4b1733dde3",
@@ -3013,7 +3045,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -3022,7 +3055,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -3038,7 +3071,8 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -3047,7 +3081,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -3065,7 +3099,8 @@
       "RAID"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -3074,7 +3109,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,

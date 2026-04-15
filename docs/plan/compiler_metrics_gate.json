@@ -1,0 +1,9 @@
+{
+  "max_fallback_ratio": 0.9,
+  "max_conflict_count": 2,
+  "required_family_hits": {
+    "LIFE_TRIGGER_RAID_CHOICE": 1,
+    "DRAW_SEQUENCE": 1,
+    "AP_ACTIVATE": 1
+  }
+}

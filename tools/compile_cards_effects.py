@@ -1,9 +1,11 @@
 import hashlib
+import argparse
 import json
 import re
 import sys
 from copy import deepcopy
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 if __package__ in {None, ""}:
@@ -15,12 +17,14 @@ from tools.card_effects_compiler.template_registry import _dispatch_template_rul
 from tools.card_effects_compiler.template_registry import _exact_text_match
 from tools.card_effects_compiler.template_registry import _regex_match
 from tools.card_effects_compiler.template_registry import dispatch_template_rules
+from tools.card_effects_compiler.template_registry import set_template_dispatch_observer
 from tools.card_effects_compiler.template_registry import set_trigger_template_rules
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CARDS_DIR = ROOT / "data" / "cards"
 LEGACY_SAMPLE_PATH = ROOT / "data" / "cards" / "base_cards.json"
+COMPILER_METRICS_SNAPSHOT_PATH = ROOT / "docs" / "plan" / "compiler_metrics_snapshot.json"
 SEMANTIC_OVERRIDE_REQUIRED = "SEMANTIC_OVERRIDE_REQUIRED"
 
 
@@ -3079,6 +3083,22 @@ _TEMPLATE_HIT_COUNTS: dict[str, int] = {}
 _TEMPLATE_FALLBACK_COUNTS: dict[str, int] = {}
 
 
+def _new_template_telemetry_state() -> dict:
+    return {
+        "dispatch_total": 0,
+        "hits_total": 0,
+        "fallback_total": 0,
+        "family_hits": {},
+        "variant_hits": {},
+        "rule_hits": {},
+        "fallback_by_registry": {},
+        "conflicts": {},
+    }
+
+
+_TEMPLATE_TELEMETRY_STATE = _new_template_telemetry_state()
+
+
 def _record_template_hit(name: str) -> None:
     if not _TEMPLATE_TELEMETRY_ENABLED:
         return
@@ -3089,6 +3109,143 @@ def _record_template_fallback(registry_name: str) -> None:
     if not _TEMPLATE_TELEMETRY_ENABLED:
         return
     _TEMPLATE_FALLBACK_COUNTS[registry_name] = _TEMPLATE_FALLBACK_COUNTS.get(registry_name, 0) + 1
+
+
+def _increment_counter(counter: dict[str, int], key: str) -> None:
+    if not key:
+        return
+    counter[key] = counter.get(key, 0) + 1
+
+
+def _template_observer(event: dict) -> None:
+    state = _TEMPLATE_TELEMETRY_STATE
+    state["dispatch_total"] += 1
+    if event.get("fallback", False):
+        state["fallback_total"] += 1
+        _increment_counter(state["fallback_by_registry"], str(event.get("registry", "")))
+        return
+    state["hits_total"] += 1
+    selected_rule = event.get("selected_rule") or {}
+    _increment_counter(state["rule_hits"], str(selected_rule.get("name", "")))
+    template_metadata = selected_rule.get("template_metadata") or {}
+    _increment_counter(state["family_hits"], str(template_metadata.get("family", "")))
+    _increment_counter(state["variant_hits"], str(template_metadata.get("variant", "")))
+
+    matched_rules = event.get("matched_rules") or []
+    if len(matched_rules) < 2:
+        return
+    conflict_key = hashlib.sha1(
+        f"{event.get('registry', '')}:{event.get('event', '')}:{event.get('text', '')}".encode("utf-8")
+    ).hexdigest()[:12]
+    conflict_entry = state["conflicts"].setdefault(
+        conflict_key,
+        {
+            "registry": event.get("registry", ""),
+            "event": event.get("event", ""),
+            "text": event.get("text", ""),
+            "selected_rule": selected_rule.get("name", ""),
+            "candidate_rules": [],
+            "hit_count": 0,
+            "sample_card_ids": [],
+        },
+    )
+    conflict_entry["hit_count"] += 1
+    candidate_rules = [str(rule.get("name", "")) for rule in matched_rules if str(rule.get("name", ""))]
+    for rule_name in candidate_rules:
+        if rule_name not in conflict_entry["candidate_rules"]:
+            conflict_entry["candidate_rules"].append(rule_name)
+    card_id = str(event.get("card_id", ""))
+    if card_id and card_id not in conflict_entry["sample_card_ids"] and len(conflict_entry["sample_card_ids"]) < 5:
+        conflict_entry["sample_card_ids"].append(card_id)
+
+
+def _collect_rule_order_snapshot() -> dict[str, list[str]]:
+    return {
+        "trigger": [rule.name for rule in sorted(_TRIGGER_TEMPLATE_RULES, key=lambda entry: entry.priority, reverse=True)],
+        "event": [rule.name for rule in sorted(_EVENT_TEMPLATE_RULES, key=lambda entry: entry.priority, reverse=True)],
+        "passive": [rule.name for rule in sorted(_PASSIVE_TEMPLATE_RULES, key=lambda entry: entry.priority, reverse=True)],
+    }
+
+
+def _build_rule_order_diff(previous: dict[str, object], current: dict[str, list[str]]) -> dict[str, dict]:
+    previous_order = previous.get("template_telemetry", {}).get("rule_order", {}) if isinstance(previous, dict) else {}
+    diff: dict[str, dict] = {}
+    for registry, current_list in current.items():
+        old_list = previous_order.get(registry, []) if isinstance(previous_order, dict) else []
+        if old_list == current_list:
+            continue
+        changed_entries = []
+        max_len = max(len(old_list), len(current_list))
+        for index in range(max_len):
+            old_name = old_list[index] if index < len(old_list) else ""
+            new_name = current_list[index] if index < len(current_list) else ""
+            if old_name != new_name:
+                changed_entries.append({"index": index, "old": old_name, "new": new_name})
+            if len(changed_entries) >= 8:
+                break
+        diff[registry] = {
+            "old_digest": hashlib.sha1("||".join(old_list).encode("utf-8")).hexdigest()[:10],
+            "new_digest": hashlib.sha1("||".join(current_list).encode("utf-8")).hexdigest()[:10],
+            "changed_positions": changed_entries,
+        }
+    return diff
+
+
+def _build_cards_metrics(runtime_cards: list[dict], compiled_series_cards: list[dict], series_raw_paths: list[Path]) -> dict:
+    per_series = {}
+    totals = {"cards": 0, "abilities": 0, "supported": 0, "unsupported": 0}
+    for raw_path in series_raw_paths:
+        effects_path = raw_path.parent / "cards_effects.json"
+        cards = _load_json(effects_path)
+        series_stats = {"cards": len(cards), "abilities": 0, "supported": 0, "unsupported": 0}
+        for card in cards:
+            for ability in card.get("abilities", []):
+                series_stats["abilities"] += 1
+                status = str(ability.get("status", "UNSUPPORTED"))
+                if status == "SUPPORTED":
+                    series_stats["supported"] += 1
+                elif status == "UNSUPPORTED":
+                    series_stats["unsupported"] += 1
+        per_series[raw_path.parent.name] = series_stats
+        for key in totals:
+            totals[key] += series_stats[key]
+    return {
+        "totals": totals,
+        "per_series": per_series,
+        "runtime_totals": {
+            "cards": len(runtime_cards),
+            "series_cards": len(compiled_series_cards),
+            "abilities": sum(len(card.get("abilities", [])) for card in runtime_cards),
+        },
+    }
+
+
+def _snapshot_template_telemetry(previous_snapshot: dict | None = None) -> dict:
+    previous_snapshot = previous_snapshot or {}
+    state = _TEMPLATE_TELEMETRY_STATE
+    dispatch_total = int(state["dispatch_total"])
+    fallback_total = int(state["fallback_total"])
+    fallback_ratio = round(float(fallback_total) / float(dispatch_total), 6) if dispatch_total else 0.0
+    current_rule_order = _collect_rule_order_snapshot()
+    order_diff = _build_rule_order_diff(previous_snapshot, current_rule_order)
+    conflict_entries = sorted(
+        state["conflicts"].values(),
+        key=lambda entry: (-int(entry.get("hit_count", 0)), str(entry.get("registry", ""))),
+    )
+    return {
+        "dispatch_total": dispatch_total,
+        "hits_total": int(state["hits_total"]),
+        "fallback_total": fallback_total,
+        "fallback_ratio": fallback_ratio,
+        "fallback_by_registry": dict(sorted(state["fallback_by_registry"].items())),
+        "family_hits": dict(sorted(state["family_hits"].items())),
+        "variant_hits": dict(sorted(state["variant_hits"].items())),
+        "rule_hits": dict(sorted(state["rule_hits"].items())),
+        "conflict_count": len(conflict_entries),
+        "conflicts": conflict_entries[:20],
+        "rule_order": current_rule_order,
+        "rule_order_diff": order_diff,
+    }
 
 
 def _event_matches(rule_event: str | tuple[str, ...], event_name: str) -> bool:
@@ -3254,6 +3411,52 @@ def _life_trigger_raid_choice_builder(card: dict, trigger_entry: dict, event_nam
         [],
         [],
         [{"type": "LIFE_TRIGGER_RAID_CHOICE"}],
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _simple_draw_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        [{"type": "DRAW", "value": int(match.group(1))}],
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _draw_then_ready_ap_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    steps = [
+        {"type": "DRAW", "value": int(match.group(1))},
+        {"type": "ACTIVATE_AP_SLOTS", "value": int(match.group(2))},
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _ready_ap_only_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        [{"type": "ACTIVATE_AP_SLOTS", "value": int(match.group(1))}],
         payload.get("kind"),
         template_metadata=payload.get("template_metadata"),
     )
@@ -4850,10 +5053,34 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     _TemplateRule(
         name="trigger.life_trigger.raid_choice",
         event_filter="ON_LIFE_TRIGGER",
-        matcher=_exact_text_match("このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"),
+        matcher=_regex_match(r"このカードを手札に加えるか、必要エナジーを満たしている(?:場合|なら)、レイドさせる。"),
         builder=_life_trigger_raid_choice_builder,
         priority=260,
         template_metadata={"family": "LIFE_TRIGGER_RAID_CHOICE", "variant": "add_to_hand_or_raid_if_possible"},
+    ),
+    _TemplateRule(
+        name="trigger.draw.simple",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
+        matcher=_regex_match(r"カードを(\d+)枚引く。"),
+        builder=_simple_draw_builder,
+        priority=208,
+        template_metadata={"family": "DRAW_SEQUENCE", "variant": "draw_fixed_cards"},
+    ),
+    _TemplateRule(
+        name="trigger.draw_then_ready_ap",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"カードを(\d+)枚引く。自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
+        builder=_draw_then_ready_ap_builder,
+        priority=207,
+        template_metadata={"family": "AP_ACTIVATE", "variant": "draw_then_ready_ap_slots"},
+    ),
+    _TemplateRule(
+        name="trigger.ready_ap_only",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
+        builder=_ready_ap_only_builder,
+        priority=207,
+        template_metadata={"family": "AP_ACTIVATE", "variant": "ready_ap_slots_only"},
     ),
     _TemplateRule(
         name="trigger.choice_branch.select_one",
@@ -5207,6 +5434,30 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         builder=_branch_choice_builder,
         priority=250,
         template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "select_one_from_following"},
+    ),
+    _TemplateRule(
+        name="event.draw.simple",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"カードを(\d+)枚引く。"),
+        builder=_simple_draw_builder,
+        priority=208,
+        template_metadata={"family": "DRAW_SEQUENCE", "variant": "draw_fixed_cards"},
+    ),
+    _TemplateRule(
+        name="event.draw_then_ready_ap",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"カードを(\d+)枚引く。自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
+        builder=_draw_then_ready_ap_builder,
+        priority=207,
+        template_metadata={"family": "AP_ACTIVATE", "variant": "draw_then_ready_ap_slots"},
+    ),
+    _TemplateRule(
+        name="event.ready_ap_only",
+        event_filter="ON_PLAY",
+        matcher=_regex_match(r"自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
+        builder=_ready_ap_only_builder,
+        priority=207,
+        template_metadata={"family": "AP_ACTIVATE", "variant": "ready_ap_slots_only"},
     ),
     _TemplateRule(
         name="event.conditional_preview_top.choose_top_or_bottom",
@@ -5728,6 +5979,22 @@ def _compile_series_cards(raw_path: Path) -> tuple[list[dict], list[dict]]:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--metrics-snapshot",
+        default=COMPILER_METRICS_SNAPSHOT_PATH,
+        type=Path,
+        help="path to write compiler metrics snapshot",
+    )
+    args = parser.parse_args()
+
+    global _TEMPLATE_TELEMETRY_ENABLED, _TEMPLATE_HIT_COUNTS, _TEMPLATE_FALLBACK_COUNTS, _TEMPLATE_TELEMETRY_STATE
+    _TEMPLATE_TELEMETRY_ENABLED = True
+    _TEMPLATE_HIT_COUNTS = {}
+    _TEMPLATE_FALLBACK_COUNTS = {}
+    _TEMPLATE_TELEMETRY_STATE = _new_template_telemetry_state()
+    set_template_dispatch_observer(_template_observer)
+
     compiled_all = []
     semantic_all = []
     series_raw_paths = _iter_series_raw_paths()
@@ -5753,10 +6020,48 @@ def main() -> None:
 
     supported = sum(1 for card in runtime_cards for ability in card["abilities"] if ability.get("status") == "SUPPORTED")
     unsupported = sum(1 for card in runtime_cards for ability in card["abilities"] if ability.get("status") == "UNSUPPORTED")
+    metrics_snapshot_path = Path(args.metrics_snapshot)
+    previous_snapshot = _load_json(metrics_snapshot_path) if metrics_snapshot_path.exists() else {}
+    cards_metrics = _build_cards_metrics(runtime_cards, compiled_all, series_raw_paths)
+    template_telemetry = _snapshot_template_telemetry(previous_snapshot if isinstance(previous_snapshot, dict) else {})
+    snapshot_payload = {
+        "snapshot_date": date.today().isoformat(),
+        "cards_metrics": cards_metrics,
+        "template_telemetry": template_telemetry,
+        "legacy_template_telemetry": {
+            "rule_hits": dict(sorted(_TEMPLATE_HIT_COUNTS.items())),
+            "fallback_hits": dict(sorted(_TEMPLATE_FALLBACK_COUNTS.items())),
+        },
+    }
+    metrics_snapshot_path.write_text(json.dumps(snapshot_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     print(f"Compiled {len(compiled_all)} series cards across {len(series_raw_paths)} directories.")
     print(f"Runtime card total with base samples: {len(runtime_cards)}")
     print(f"Supported abilities: {supported}")
     print(f"Unsupported abilities: {unsupported}")
+    print(
+        "Template dispatch telemetry: "
+        f"dispatch={template_telemetry['dispatch_total']} "
+        f"hits={template_telemetry['hits_total']} "
+        f"fallback={template_telemetry['fallback_total']} "
+        f"ratio={template_telemetry['fallback_ratio']}"
+    )
+    if template_telemetry["fallback_by_registry"]:
+        print(f"Template fallback by registry: {template_telemetry['fallback_by_registry']}")
+    if template_telemetry["family_hits"]:
+        top_families = sorted(template_telemetry["family_hits"].items(), key=lambda item: item[1], reverse=True)[:10]
+        print(f"Template family hits (top 10): {dict(top_families)}")
+    if template_telemetry["variant_hits"]:
+        top_variants = sorted(template_telemetry["variant_hits"].items(), key=lambda item: item[1], reverse=True)[:10]
+        print(f"Template variant hits (top 10): {dict(top_variants)}")
+    if template_telemetry["conflict_count"] > 0:
+        print(f"Template conflict candidates: {template_telemetry['conflict_count']} (saved to metrics snapshot)")
+    if template_telemetry["rule_order_diff"]:
+        print("Template rule order diff detected:")
+        for registry, summary in template_telemetry["rule_order_diff"].items():
+            print(f"- {registry}: {summary['old_digest']} -> {summary['new_digest']}")
+    print(f"Metrics snapshot written: {metrics_snapshot_path.as_posix()}")
+    set_template_dispatch_observer(None)
 
 
 if __name__ == "__main__":

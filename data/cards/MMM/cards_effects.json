@@ -978,7 +978,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
@@ -986,7 +990,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -2011,14 +2016,19 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -2206,7 +2216,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
@@ -2214,7 +2228,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -2341,7 +2356,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
@@ -2349,7 +2368,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "SELECT_AND_MOVE",
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -4108,7 +4128,11 @@
           "effect_box": "OUTER",
           "text": "自分のAPカードを2枚まで選び、アクティブにする。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "AP_ACTIVATE",
+          "variant": "ready_ap_slots_only"
+        }
       }
     ],
     "analysis": {
@@ -4116,7 +4140,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "READY_AP"
+        "READY_AP",
+        "AP_ACTIVATE"
       ]
     }
   },
@@ -4198,7 +4223,11 @@
           "effect_box": "OUTER",
           "text": "自分のAPカードを2枚まで選び、アクティブにする。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "AP_ACTIVATE",
+          "variant": "ready_ap_slots_only"
+        }
       }
     ],
     "analysis": {
@@ -4206,7 +4235,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "READY_AP"
+        "READY_AP",
+        "AP_ACTIVATE"
       ]
     }
   },
@@ -4631,7 +4661,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       },
       {
         "id": "UA31BT_MMM_1_034_on_play_42a2213fcd",
@@ -4742,7 +4776,8 @@
       "semantic_template_types": [
         "DRAW_1",
         "COMPOSITE",
-        "DRAW_THEN_SELECT_AND_MOVE"
+        "DRAW_THEN_SELECT_AND_MOVE",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -5436,7 +5471,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
@@ -5444,7 +5483,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "TEMP_BP",
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -5502,14 +5542,19 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -6686,14 +6731,19 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -6892,7 +6942,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
@@ -6900,7 +6954,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -7434,7 +7489,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
@@ -7442,7 +7501,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_THEN_SELECT_AND_MOVE",
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -7579,14 +7639,19 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -8654,7 +8719,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       },
       {
         "id": "UA31BT_MMM_1_061_on_life_trigger_0a3e81b9d0",
@@ -8686,7 +8755,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "MOVE_SELF"
+        "MOVE_SELF",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -8954,7 +9024,11 @@
           "effect_box": "OUTER",
           "text": "自分のAPカードを2枚まで選び、アクティブにする。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "AP_ACTIVATE",
+          "variant": "ready_ap_slots_only"
+        }
       }
     ],
     "analysis": {
@@ -8962,7 +9036,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "READY_AP"
+        "READY_AP",
+        "AP_ACTIVATE"
       ]
     }
   },
@@ -9199,7 +9274,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       },
       {
         "id": "UA31BT_MMM_1_065_on_play_820af553a2",
@@ -9299,6 +9378,7 @@
       "semantic_template_types": [
         "DRAW_1",
         "SELECT_AND_MOVE",
+        "DRAW_SEQUENCE",
         "PREVIEW_ADD_TO_HAND"
       ]
     }
@@ -10112,14 +10192,19 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -11100,7 +11185,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
@@ -11108,7 +11197,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -11710,14 +11800,19 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       }
     ],
     "analysis": {
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "DRAW_1",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -12371,7 +12466,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       },
       {
         "id": "UA31BT_MMM_1_092_on_play_f2b978407b",
@@ -12444,7 +12543,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "DRAW_THEN_SELECT_AND_MOVE"
+        "DRAW_THEN_SELECT_AND_MOVE",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -12952,7 +13052,11 @@
           "effect_box": "OUTER",
           "text": "自分のAPカードを2枚まで選び、アクティブにする。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "AP_ACTIVATE",
+          "variant": "ready_ap_slots_only"
+        }
       }
     ],
     "analysis": {
@@ -12960,7 +13064,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "READY_AP"
+        "READY_AP",
+        "AP_ACTIVATE"
       ]
     }
   },
@@ -13042,7 +13147,11 @@
           "effect_box": "OUTER",
           "text": "自分のAPカードを2枚まで選び、アクティブにする。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "AP_ACTIVATE",
+          "variant": "ready_ap_slots_only"
+        }
       }
     ],
     "analysis": {
@@ -13050,7 +13159,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "READY_AP"
+        "READY_AP",
+        "AP_ACTIVATE"
       ]
     }
   },
@@ -13132,7 +13242,11 @@
           "effect_box": "OUTER",
           "text": "自分のAPカードを2枚まで選び、アクティブにする。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "AP_ACTIVATE",
+          "variant": "ready_ap_slots_only"
+        }
       }
     ],
     "analysis": {
@@ -13140,7 +13254,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "READY_AP"
+        "READY_AP",
+        "AP_ACTIVATE"
       ]
     }
   },
@@ -13198,7 +13313,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       },
       {
         "id": "UA31BT_MMM_1_098_on_play_ed61005103",
@@ -13300,7 +13419,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -14554,7 +14674,11 @@
           "effect_box": "OUTER",
           "text": "自分のAPカードを2枚まで選び、アクティブにする。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "AP_ACTIVATE",
+          "variant": "ready_ap_slots_only"
+        }
       }
     ],
     "analysis": {
@@ -14562,7 +14686,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "COMPOSITE",
-        "READY_AP"
+        "READY_AP",
+        "AP_ACTIVATE"
       ]
     }
   },
@@ -15434,7 +15559,11 @@
           "effect_box": "OUTER",
           "text": "カードを2枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       },
       {
         "id": "UA31ST_MMM_1_106_on_life_trigger_bab7196d2b",
@@ -15508,7 +15637,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_2",
-        "READY_AND_TEMP_BP"
+        "READY_AND_TEMP_BP",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -15812,7 +15942,11 @@
           "effect_box": "OUTER",
           "text": "カードを1枚引く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
       },
       {
         "id": "UA31ST_MMM_1_109_on_play_3ded668e6e",
@@ -15907,7 +16041,8 @@
       "semantic_available": true,
       "semantic_template_types": [
         "DRAW_1",
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "DRAW_SEQUENCE"
       ]
     }
   }
