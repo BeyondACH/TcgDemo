@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-04-14
+更新时间：2026-04-15
 
 ## 1. 计划摘要
 
@@ -106,6 +106,13 @@
 - `Week 1` 已执行完成：`python tools/compile_cards_effects.py` 基线已收敛至 `Unsupported abilities: 40`，与 `Phase 1` 里程碑对齐。
 - `Week 3` 当前执行进度：基线已继续收敛到 `Unsupported abilities: 0`，`Phase 4` 目标（`8 -> 0`）已达成；本轮补齐剩余长尾与专项 override，覆盖了“能量阈值目标授予不可阻挡”“动态阈值按前线低费数量扩展”“手札复合条件登场 + 条件自增益”“来源 BP 比较退场”等尾项，已进入 `Phase 5` 并启用数据回归门禁（`tests/test_phase5_regression_guards.py` + `check_unsupported_budget` 零基线 + `tools/run_phase5_guardrails.py` 一键执行）。
 - 若后续执行导致里程碑顺序、接口冻结项、测试策略或 DSL/IR 契约调整，必须先同步本文件与专项计划，再进入实现。
+
+## 2.8 2026-04-15 compile_cards_effects 后续优化计划补充
+
+- 已新增 `docs/plan/compile_cards_effects_optimization_plan.md`，作为后续编译优化实施主文档。
+- 本轮计划口径聚焦四条主线：模板可观测性、模板家族参数化、模块化拆分、增量编译与质量门禁。
+- 后续执行顺序按 `P0 -> P1 -> P2 -> P3 -> P4` 推进，优先确保“规则语义不变 + 禁止按卡硬编码 + 回归资产同步补齐”。
+- 若实际推进中出现模板冲突、产物漂移或里程碑优先级变化，必须先更新本计划与当日日志，再进入下一阶段实现。
 
 ## 3. 开发阶段规划
 
