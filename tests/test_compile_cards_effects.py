@@ -6,6 +6,8 @@ import sys
 from tools.card_effects_compiler.normalization import normalize_japanese_text
 from tools.card_effects_compiler.template_registry import dispatch_template_rules
 from tools.card_effects_compiler.template_registry import dispatch_trigger_template
+from tools.card_effects_compiler.template_registry import _exact_text_match
+from tools.card_effects_compiler.template_registry import set_template_dispatch_observer
 from tools.compile_cards_effects import _build_semantic_entry
 from tools.compile_cards_effects import _build_play_rule
 from tools.compile_cards_effects import _compile_event_effect
@@ -136,6 +138,87 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertIsNotNone(ability)
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["steps"][0]["type"], "PREVIEW_TOP_DECK")
+
+    def test_dispatch_template_rules_reports_conflict_candidates_to_observer(self):
+        class _Rule:
+            def __init__(self, name, priority, template_family):
+                self.name = name
+                self.priority = priority
+                self.event_filter = "ON_PLAY"
+                self.card_filter = None
+                self.matcher = _exact_text_match("カードを1枚引く。")
+                self.template_metadata = {"family": template_family, "variant": f"{template_family.lower()}_v1"}
+
+            def builder(self, *_args):
+                return {"status": "SUPPORTED", "source_rule": self.name}
+
+        observed = []
+        set_template_dispatch_observer(lambda event: observed.append(event))
+        try:
+            ability = dispatch_template_rules(
+                "event",
+                [_Rule("rule_high", 20, "DRAW"), _Rule("rule_low", 10, "DRAW")],
+                {"id": "card-001"},
+                {"trigger": "ON_PLAY", "text": "カードを1枚引く。"},
+                lambda _card, _entry: {"status": "FALLBACK"},
+            )
+        finally:
+            set_template_dispatch_observer(None)
+
+        self.assertEqual(ability["source_rule"], "rule_high")
+        self.assertEqual(len(observed), 1)
+        self.assertFalse(observed[0]["fallback"])
+        self.assertEqual(observed[0]["selected_rule"]["name"], "rule_high")
+        self.assertEqual([entry["name"] for entry in observed[0]["matched_rules"]], ["rule_high", "rule_low"])
+
+    def test_dispatch_template_rules_reports_fallback_to_observer(self):
+        observed = []
+        set_template_dispatch_observer(lambda event: observed.append(event))
+        try:
+            result = dispatch_template_rules(
+                "event",
+                [],
+                {"id": "card-001"},
+                {"trigger": "ON_PLAY", "text": "未対応テキスト"},
+                lambda _card, _entry: {"status": "FALLBACK"},
+            )
+        finally:
+            set_template_dispatch_observer(None)
+
+        self.assertEqual(result["status"], "FALLBACK")
+        self.assertEqual(len(observed), 1)
+        self.assertTrue(observed[0]["fallback"])
+        self.assertEqual(observed[0]["registry"], "event")
+
+    def test_compile_trigger_supports_simple_draw_family_template(self):
+        ability = _compile_trigger(
+            {"id": "card-001"},
+            {"trigger": "ON_ENTER", "source_label": "", "effect_box": "OUTER", "text": "カードを2枚引く。"},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"], [{"type": "DRAW", "value": 2}])
+        self.assertEqual(ability["template_metadata"]["family"], "DRAW_SEQUENCE")
+
+    def test_compile_trigger_supports_ready_ap_family_template(self):
+        ability = _compile_trigger(
+            {"id": "card-001"},
+            {"trigger": "ON_ENTER", "source_label": "", "effect_box": "OUTER", "text": "自分のAPカードを1枚まで選び、アクティブにする。"},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"], [{"type": "ACTIVATE_AP_SLOTS", "value": 1}])
+        self.assertEqual(ability["template_metadata"]["family"], "AP_ACTIVATE")
+
+    def test_compile_trigger_supports_life_trigger_raid_choice_variant_text(self):
+        ability = _compile_trigger(
+            {"id": "card-001"},
+            {"trigger": "ON_LIFE_TRIGGER", "source_label": "", "effect_box": "OUTER", "text": "このカードを手札に加えるか、必要エナジーを満たしているなら、レイドさせる。"},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["steps"][0]["type"], "LIFE_TRIGGER_RAID_CHOICE")
+        self.assertEqual(ability["template_metadata"]["family"], "LIFE_TRIGGER_RAID_CHOICE")
 
     def test_script_style_trigger_dispatch_does_not_import_entrypoint_module(self):
         script_path = Path(__file__).resolve().parents[1] / "tools" / "compile_cards_effects.py"

@@ -170,7 +170,8 @@
     "template_types": [
       "COMPOSITE",
       "DRAW_1",
-      "OPTIONAL_AP_DAMAGE"
+      "OPTIONAL_AP_DAMAGE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -187,7 +188,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -315,7 +316,8 @@
     "template_types": [
       "SELECT_AND_MOVE",
       "DRAW_1",
-      "PREVIEW_ADD_TO_HAND"
+      "PREVIEW_ADD_TO_HAND",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -332,7 +334,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -572,7 +574,8 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -581,7 +584,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -599,7 +602,8 @@
     "template_types": [
       "TEMP_BP",
       "DRAW_1",
-      "BP_DEBUFF"
+      "BP_DEBUFF",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -616,7 +620,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -704,7 +708,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -721,7 +726,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -790,7 +795,8 @@
     "template_types": [
       "LIFE_TO_HAND_AND_READY_SOURCE",
       "DRAW_1",
-      "OPTIONAL_COST_THEN_EFFECT"
+      "OPTIONAL_COST_THEN_EFFECT",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -807,7 +813,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -826,7 +832,8 @@
     ],
     "template_types": [
       "DRAW_1",
-      "LIFE_TRIGGER_RAID_CHOICE"
+      "LIFE_TRIGGER_RAID_CHOICE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -835,7 +842,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA45BT_TLR_1_028_on_life_trigger_a342b2ffe2",
@@ -997,7 +1004,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "COMPOSITE"
+      "COMPOSITE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1006,7 +1014,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA45BT_TLR_1_034_on_life_trigger_8723e8b5cb",
@@ -1127,7 +1135,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "DRAW_2"
+      "DRAW_2",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1136,7 +1145,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA45BT_TLR_1_038_on_play_63529b5c57",
@@ -1195,7 +1204,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -1212,7 +1222,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1299,7 +1309,8 @@
     "template_types": [
       "TEMP_KEYWORD",
       "DRAW_1",
-      "OPTIONAL_COST_THEN_EFFECT"
+      "OPTIONAL_COST_THEN_EFFECT",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1316,7 +1327,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1357,7 +1368,8 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1366,7 +1378,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1566,7 +1578,8 @@
     "template_types": [
       "TEMP_BP",
       "DRAW_1",
-      "TEMP_BP_MODIFIER"
+      "TEMP_BP_MODIFIER",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1583,7 +1596,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1721,7 +1734,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "MOVE_SELF"
+      "MOVE_SELF",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1730,7 +1744,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA45BT_TLR_1_057_on_life_trigger_0a3e81b9d0",
@@ -1754,7 +1768,8 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1763,7 +1778,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -1817,7 +1832,8 @@
     "template_types": [
       "SELECT_AND_MOVE",
       "DRAW_1",
-      "ZONE_MOVE"
+      "ZONE_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -1834,7 +1850,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2119,7 +2135,8 @@
       "IMPACT"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2128,7 +2145,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2145,7 +2162,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_THEN_SELECT_AND_MOVE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2162,7 +2180,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2206,7 +2224,8 @@
       "STEP"
     ],
     "template_types": [
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2215,7 +2234,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2330,7 +2349,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "DRAW_1"
+      "DRAW_1",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2347,7 +2367,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2398,7 +2418,8 @@
     "inferred_keywords": [],
     "template_types": [
       "COMPOSITE",
-      "READY_AP"
+      "READY_AP",
+      "AP_ACTIVATE"
     ],
     "abilities": [
       {
@@ -2415,7 +2436,7 @@
         "status": "SUPPORTED",
         "text": "自分のAPカードを2枚まで選び、アクティブにする。",
         "reason": "",
-        "template_type": "READY_AP"
+        "template_type": "AP_ACTIVATE"
       }
     ],
     "can_be_expressed_by_dsl": true,
@@ -2432,7 +2453,8 @@
     "inferred_keywords": [],
     "template_types": [
       "DRAW_1",
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
@@ -2441,7 +2463,7 @@
         "status": "SUPPORTED",
         "text": "カードを1枚引く。",
         "reason": "",
-        "template_type": "DRAW_1"
+        "template_type": "DRAW_SEQUENCE"
       },
       {
         "id": "UA45BT_TLR_1_080_on_play_bd041a7f51",

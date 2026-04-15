@@ -1,6 +1,7 @@
 from .normalization import normalize_japanese_text
 
 _DEFAULT_TRIGGER_TEMPLATE_RULES = ()
+_TEMPLATE_DISPATCH_OBSERVER = None
 
 
 def _compact_japanese_text(text) -> str:
@@ -43,6 +44,7 @@ def _dispatch_template_rules(
     text = normalize_japanese_text(trigger_entry.get("text", ""))
     card_id = str(card.get("id", ""))
     ordered_rules = sorted(rules, key=lambda rule: getattr(rule, "priority", 0), reverse=True)
+    matched_candidates = []
     for rule in ordered_rules:
         if not _event_matches(rule.event_filter, event_name):
             continue
@@ -51,14 +53,39 @@ def _dispatch_template_rules(
         payload = rule.matcher(card, trigger_entry, text, card_id)
         if payload is None:
             continue
-        if isinstance(payload, dict):
-            template_metadata = getattr(rule, "template_metadata", None)
+        matched_candidates.append((rule, payload))
+    if matched_candidates:
+        selected_rule, selected_payload = matched_candidates[0]
+        if isinstance(selected_payload, dict):
+            template_metadata = getattr(selected_rule, "template_metadata", None)
             if template_metadata:
-                payload = dict(payload)
-                payload["template_metadata"] = dict(template_metadata)
-        _record_template_hit(rule.name)
-        return rule.builder(card, trigger_entry, event_name, text, card_id, payload)
+                selected_payload = dict(selected_payload)
+                selected_payload["template_metadata"] = dict(template_metadata)
+        _record_template_hit(selected_rule.name)
+        _notify_template_dispatch_observer(
+            {
+                "registry": registry_name,
+                "event": event_name,
+                "card_id": card_id,
+                "text": text,
+                "fallback": False,
+                "selected_rule": _serialize_rule(selected_rule),
+                "matched_rules": [_serialize_rule(rule) for rule, _payload in matched_candidates],
+            }
+        )
+        return selected_rule.builder(card, trigger_entry, event_name, text, card_id, selected_payload)
     _record_template_fallback(registry_name)
+    _notify_template_dispatch_observer(
+        {
+            "registry": registry_name,
+            "event": event_name,
+            "card_id": card_id,
+            "text": text,
+            "fallback": True,
+            "selected_rule": None,
+            "matched_rules": [],
+        }
+    )
     return fallback(card, trigger_entry)
 
 
@@ -77,6 +104,11 @@ def set_trigger_template_rules(rules) -> None:
     _DEFAULT_TRIGGER_TEMPLATE_RULES = rules
 
 
+def set_template_dispatch_observer(observer) -> None:
+    global _TEMPLATE_DISPATCH_OBSERVER
+    _TEMPLATE_DISPATCH_OBSERVER = observer
+
+
 def dispatch_trigger_template(card: dict, trigger_entry: dict, fallback):
     return _dispatch_template_rules("trigger", _DEFAULT_TRIGGER_TEMPLATE_RULES, card, trigger_entry, fallback)
 
@@ -93,3 +125,17 @@ def _record_template_hit(_rule_name: str) -> None:
 
 def _record_template_fallback(_registry_name: str) -> None:
     return None
+
+
+def _serialize_rule(rule) -> dict:
+    return {
+        "name": getattr(rule, "name", ""),
+        "priority": getattr(rule, "priority", 0),
+        "template_metadata": dict(getattr(rule, "template_metadata", None) or {}),
+    }
+
+
+def _notify_template_dispatch_observer(event: dict) -> None:
+    if _TEMPLATE_DISPATCH_OBSERVER is None:
+        return
+    _TEMPLATE_DISPATCH_OBSERVER(event)
