@@ -482,6 +482,8 @@ func _step_select_move_with_fallback(state: GameState, source_card_uid: String, 
 	if primary_select.is_empty():
 		return {"logs": logs, "paused": false}
 	var selected_var := str(step.get("selected_var", "__select_move_primary_targets"))
+	var composite_resume_steps: Array = [step.duplicate(true)]
+	composite_resume_steps.append_array(remaining_steps.duplicate(true))
 	var select_result := _step_select_targets(
 		state,
 		source_card_uid,
@@ -491,7 +493,7 @@ func _step_select_move_with_fallback(state: GameState, source_card_uid: String, 
 			"target": primary_select,
 		},
 		context,
-		remaining_steps,
+		composite_resume_steps,
 		effect
 	)
 	logs.append_array(select_result.get("logs", []))
@@ -525,6 +527,8 @@ func _step_select_and_play_by_profile(state: GameState, source_card_uid: String,
 	if from_zones.is_empty():
 		return {"logs": logs, "paused": false}
 	var selected_var := str(step.get("selected_var", "__selected_play_profile_cards"))
+	var composite_resume_steps: Array = [step.duplicate(true)]
+	composite_resume_steps.append_array(remaining_steps.duplicate(true))
 	var select_config: Dictionary = step.get("select", {})
 	var selection_constraints: Dictionary = {}
 	var distinct_by := str(select_config.get("distinct_by", ""))
@@ -550,7 +554,7 @@ func _step_select_and_play_by_profile(state: GameState, source_card_uid: String,
 			},
 		},
 		context,
-		remaining_steps,
+		composite_resume_steps,
 		effect
 	)
 	logs.append_array(select_result.get("logs", []))
