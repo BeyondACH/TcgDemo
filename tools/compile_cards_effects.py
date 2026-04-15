@@ -3078,6 +3078,17 @@ class _TemplateRule:
     template_metadata: dict | None = None
 
 
+@dataclass(frozen=True)
+class _SharedTemplatePattern:
+    name_suffix: str
+    matcher: object
+    builder: object
+    priority: int
+    family: str
+    variant: str
+    event_filter_overrides: dict[str, str | tuple[str, ...]] | None = None
+
+
 _TEMPLATE_TELEMETRY_ENABLED = False
 _TEMPLATE_HIT_COUNTS: dict[str, int] = {}
 _TEMPLATE_FALLBACK_COUNTS: dict[str, int] = {}
@@ -5049,6 +5060,57 @@ def _mcr_sheryl_raid_chain_override_builder(card: dict, trigger_entry: dict, eve
     return ability
 
 
+_SHARED_TEMPLATE_PATTERNS: tuple[_SharedTemplatePattern, ...] = (
+    _SharedTemplatePattern(
+        name_suffix="draw.simple",
+        matcher=_regex_match(r"カードを(\d+)枚引く。"),
+        builder=_simple_draw_builder,
+        priority=208,
+        family="DRAW_SEQUENCE",
+        variant="draw_fixed_cards",
+    ),
+    _SharedTemplatePattern(
+        name_suffix="draw_then_ready_ap",
+        matcher=_regex_match(r"カードを(\d+)枚引く。自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
+        builder=_draw_then_ready_ap_builder,
+        priority=207,
+        family="AP_ACTIVATE",
+        variant="draw_then_ready_ap_slots",
+        event_filter_overrides={
+            "trigger": ("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        },
+    ),
+    _SharedTemplatePattern(
+        name_suffix="ready_ap_only",
+        matcher=_regex_match(r"自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
+        builder=_ready_ap_only_builder,
+        priority=207,
+        family="AP_ACTIVATE",
+        variant="ready_ap_slots_only",
+        event_filter_overrides={
+            "trigger": ("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        },
+    ),
+)
+
+
+def _build_shared_template_rules(
+    registry_name: str,
+    event_filter: str | tuple[str, ...],
+) -> tuple[_TemplateRule, ...]:
+    return tuple(
+        _TemplateRule(
+            name=f"{registry_name}.{pattern.name_suffix}",
+            event_filter=(pattern.event_filter_overrides or {}).get(registry_name, event_filter),
+            matcher=pattern.matcher,
+            builder=pattern.builder,
+            priority=pattern.priority,
+            template_metadata={"family": pattern.family, "variant": pattern.variant},
+        )
+        for pattern in _SHARED_TEMPLATE_PATTERNS
+    )
+
+
 _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     _TemplateRule(
         name="trigger.life_trigger.raid_choice",
@@ -5058,29 +5120,9 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         priority=260,
         template_metadata={"family": "LIFE_TRIGGER_RAID_CHOICE", "variant": "add_to_hand_or_raid_if_possible"},
     ),
-    _TemplateRule(
-        name="trigger.draw.simple",
-        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
-        matcher=_regex_match(r"カードを(\d+)枚引く。"),
-        builder=_simple_draw_builder,
-        priority=208,
-        template_metadata={"family": "DRAW_SEQUENCE", "variant": "draw_fixed_cards"},
-    ),
-    _TemplateRule(
-        name="trigger.draw_then_ready_ap",
-        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
-        matcher=_regex_match(r"カードを(\d+)枚引く。自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
-        builder=_draw_then_ready_ap_builder,
-        priority=207,
-        template_metadata={"family": "AP_ACTIVATE", "variant": "draw_then_ready_ap_slots"},
-    ),
-    _TemplateRule(
-        name="trigger.ready_ap_only",
-        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
-        matcher=_regex_match(r"自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
-        builder=_ready_ap_only_builder,
-        priority=207,
-        template_metadata={"family": "AP_ACTIVATE", "variant": "ready_ap_slots_only"},
+    *_build_shared_template_rules(
+        "trigger",
+        ("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER", "ON_LEAVE"),
     ),
     _TemplateRule(
         name="trigger.choice_branch.select_one",
@@ -5435,30 +5477,7 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         priority=250,
         template_metadata={"family": "MULTI_BRANCH_CHOICE", "variant": "select_one_from_following"},
     ),
-    _TemplateRule(
-        name="event.draw.simple",
-        event_filter="ON_PLAY",
-        matcher=_regex_match(r"カードを(\d+)枚引く。"),
-        builder=_simple_draw_builder,
-        priority=208,
-        template_metadata={"family": "DRAW_SEQUENCE", "variant": "draw_fixed_cards"},
-    ),
-    _TemplateRule(
-        name="event.draw_then_ready_ap",
-        event_filter="ON_PLAY",
-        matcher=_regex_match(r"カードを(\d+)枚引く。自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
-        builder=_draw_then_ready_ap_builder,
-        priority=207,
-        template_metadata={"family": "AP_ACTIVATE", "variant": "draw_then_ready_ap_slots"},
-    ),
-    _TemplateRule(
-        name="event.ready_ap_only",
-        event_filter="ON_PLAY",
-        matcher=_regex_match(r"自分のAPカードを(\d+)枚まで選び、アクティブにする。"),
-        builder=_ready_ap_only_builder,
-        priority=207,
-        template_metadata={"family": "AP_ACTIVATE", "variant": "ready_ap_slots_only"},
-    ),
+    *_build_shared_template_rules("event", "ON_PLAY"),
     _TemplateRule(
         name="event.conditional_preview_top.choose_top_or_bottom",
         event_filter="ON_PLAY",

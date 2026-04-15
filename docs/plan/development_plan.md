@@ -111,7 +111,7 @@
 
 - 已新增 `docs/plan/compile_cards_effects_optimization_plan.md`，作为后续编译优化实施主文档。
 - 本轮计划口径聚焦四条主线：模板可观测性、模板家族参数化、模块化拆分、增量编译与质量门禁。
-- 已进入 P1 首批迁移：`DRAW_SEQUENCE`、`LIFE_TRIGGER_RAID_CHOICE`、`AP_ACTIVATE` 三类高频模板族完成参数化接入，并新增 `tools/check_compiler_metrics_gate.py` 与 `docs/plan/compiler_metrics_gate.json`，把 P0 指标纳入后续模板迁移门禁。
+- `P1` 已完成：`DRAW_SEQUENCE`、`LIFE_TRIGGER_RAID_CHOICE`、`AP_ACTIVATE` 三类高频模板族完成参数化接入，并已收敛到声明式共享 pattern 管线（统一生成 trigger/event 规则）；同时接入 `tools/check_compiler_metrics_gate.py` 与 `docs/plan/compiler_metrics_gate.json`，将 P0 指标纳入模板迁移门禁。
 - 后续执行顺序按 `P0 -> P1 -> P2 -> P3 -> P4` 推进，优先确保“规则语义不变 + 禁止按卡硬编码 + 回归资产同步补齐”。
 - 若实际推进中出现模板冲突、产物漂移或里程碑优先级变化，必须先更新本计划与当日日志，再进入下一阶段实现。
 
