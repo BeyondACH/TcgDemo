@@ -22,6 +22,7 @@ func _init() -> void:
 	_run_test("skip_next_ready_once 消费后不残留", _test_skip_next_ready_once_consumes_cleanly)
 	_run_test("触发式 once_per_turn 标记跨回合清空", _test_triggered_once_per_turn_flags_clear_on_next_turn)
 	_run_test("手牌玛米减费跨回合清理", _test_hand_mami_discount_expires_on_next_turn)
+	_run_test("NEXT_PLAY 能量减费仅首张生效且不低于 0", _test_next_play_energy_discount_is_once_and_clamped)
 	_run_test("事件每回合限制跨回合清理", _test_event_once_per_turn_flag_clears_on_next_turn)
 	_run_test("一次性移除区 AP 减免消费后不残留", _test_removed_ap_discount_does_not_residue)
 	_run_test("ai drive long chain leaves no pending gate residue", _test_ai_drive_finishes_without_pending_gate_residue)
@@ -615,6 +616,75 @@ func _test_hand_mami_discount_expires_on_next_turn() -> Dictionary:
 	})
 	if int((reset_preview.get("cost_energy", {}) as Dictionary).get("YELLOW", 0)) != 4:
 		return _fail("027 的手牌减费应在下个己方回合开始前完全清理")
+	return _ok()
+
+func _test_next_play_energy_discount_is_once_and_clamped() -> Dictionary:
+	var manager := _new_manager()
+	var player_id := UATypes.PLAYER_ONE
+	manager.game_state.active_player_id = player_id
+	manager.game_state.phase = UATypes.Phase.MAIN
+	var source_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_NEXT_PLAY_ENERGY_SOURCE",
+		"name": "下一次能量减费来源",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-E1",
+		"traits": ["测试角色"],
+		"cost_energy": {},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 3000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": [{
+			"trigger": "MAIN_ACTIVATE",
+			"steps": [{
+				"type": "REGISTER_NEXT_PLAY_COST_MODIFIER",
+				"event": "ON_PLAY_CARD",
+				"once": true,
+				"expires": "END_OF_TURN",
+				"filters": [{"type": "PLAYED_FROM_ZONE_IS", "value": "HAND"}],
+				"cost_delta": {"energy": {"YELLOW": -5}}
+			}]
+		}]
+	}, UATypes.Zone.FRONT_LINE, true)
+	var target_uid := _spawn_temp_card(manager, player_id, {
+		"id": "TMP_NEXT_PLAY_ENERGY_TARGET",
+		"name": "下一次能量减费目标",
+		"card_type": "CHARACTER",
+		"title_code": "TMP",
+		"number": "TMP-RESIDUE-E2",
+		"traits": ["测试角色"],
+		"cost_energy": {"YELLOW": 2, "RED": 1},
+		"cost_ap": 1,
+		"energy_provided": {"YELLOW": 1},
+		"bp": 2000,
+		"keywords": [],
+		"effects": [],
+		"trigger_effects": []
+	}, UATypes.Zone.HAND, true)
+	if source_uid == "" or target_uid == "":
+		return _fail("NEXT_PLAY 能量减费残留测试应能准备来源与手牌目标")
+	manager.request_main_activate(source_uid)
+	var preview_once := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, target_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	var discounted_cost: Dictionary = preview_once.get("cost_energy", {})
+	if int(discounted_cost.get("YELLOW", -1)) != 0:
+		return _fail("NEXT_PLAY 能量减费应把 YELLOW 成本下限钳制为 0")
+	if int(discounted_cost.get("RED", -1)) != 1:
+		return _fail("NEXT_PLAY 能量减费不应影响未声明颜色")
+	manager.effect_resolver.commit_play_modifiers(manager.game_state, preview_once)
+	var preview_after := manager.effect_resolver.preview_play_modifiers(manager.game_state, player_id, target_uid, {
+		"target_player_id": player_id,
+		"target_zone": UATypes.Zone.FRONT_LINE,
+	})
+	var reset_cost: Dictionary = preview_after.get("cost_energy", {})
+	if int(reset_cost.get("YELLOW", -1)) != 2:
+		return _fail("NEXT_PLAY 能量减费 once=true 时应在首张预览消费后失效")
+	if int(reset_cost.get("RED", -1)) != 1:
+		return _fail("NEXT_PLAY 能量减费消费后不应改变原始 RED 成本")
 	return _ok()
 
 func _test_event_once_per_turn_flag_clears_on_next_turn() -> Dictionary:
