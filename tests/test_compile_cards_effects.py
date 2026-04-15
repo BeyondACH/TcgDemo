@@ -7,6 +7,7 @@ from tools.card_effects_compiler.normalization import normalize_japanese_text
 from tools.card_effects_compiler.template_registry import dispatch_template_rules
 from tools.card_effects_compiler.template_registry import dispatch_trigger_template
 from tools.compile_cards_effects import _build_semantic_entry
+from tools.compile_cards_effects import _build_play_rule
 from tools.compile_cards_effects import _compile_event_effect
 from tools.compile_cards_effects import _compile_event_effect_legacy
 from tools.compile_cards_effects import _compile_trigger
@@ -65,6 +66,7 @@ class CompileCardsEffectsTests(unittest.TestCase):
     MCR_BRANCH_BULLET_BP_REMOVE_TEXT = "・BP4000以下の相手のフロントLのキャラを1枚選び、退場させる。"
     MCR_PLAY_CONDITION_TEXT = "このカードは自分のフロントLに〈ランカ・リー〉がある場合のみ使用できる。"
     MCR_PLAY_CONDITION_NAME_CONTAINS_TEXT = "このカードは自分の場にカード名に「イサム」か「ガルド」を含むキャラがある場合のみ使用できる。"
+    MMM_PLAY_CONDITION_OR_NAME_TEXT = "このカードは自分の場に〈鹿目 まどか〉か〈アルティメットまどか〉がある場合のみ使用できる。"
     MCR_AP_REDUCE_NAME_CONTAINS_TEXT = "自分の場にカード名に「アルト」を含むキャラがある場合、手札にあるこのカードの消費APを-1する。"
     MCR_BP_DYNAMIC_NAME_CONTAINS_TEXT = "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、『BP5000以下』に代わる。"
     TLR_BP_DEBUFF_TEXT = "BP1500以上の相手のフロントLのキャラを1枚選び、このターン中、BP-1000。"
@@ -392,6 +394,55 @@ class CompileCardsEffectsTests(unittest.TestCase):
 
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["requirements"][0]["type"], "OR")
+
+    def test_compile_event_effect_supports_or_name_play_condition_without_card_id_hardcode(self):
+        ability = _compile_event_effect(
+            {"id": "UA00BT_TEST_1_001", "card_type": "EVENT"},
+            {
+                "source_label": "",
+                "effect_box": "OUTER",
+                "text": self.MMM_PLAY_CONDITION_OR_NAME_TEXT,
+            },
+            {},
+        )
+
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(
+            ability["requirements"],
+            [
+                {
+                    "type": "OR",
+                    "requirements": [
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"},
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "アルティメットまどか"},
+                    ],
+                }
+            ],
+        )
+
+    def test_build_play_rule_supports_or_name_play_requirement_without_card_id_hardcode(self):
+        play_rule = _build_play_rule(
+            {
+                "effects": [
+                    {
+                        "text": self.MMM_PLAY_CONDITION_OR_NAME_TEXT,
+                    }
+                ]
+            }
+        )
+
+        self.assertEqual(
+            play_rule["requirements"],
+            [
+                {
+                    "type": "OR",
+                    "requirements": [
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "鹿目 まどか"},
+                        {"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "アルティメットまどか"},
+                    ],
+                }
+            ],
+        )
 
     def test_compile_event_effect_skips_name_contains_ap_cost_modifier_text(self):
         ability = _compile_event_effect(
