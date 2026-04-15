@@ -3440,6 +3440,174 @@ def _compile_branch_sub_steps(card: dict, trigger_entry: dict, branch_text: str)
     branch_text = str(branch_text).strip().lstrip("・").strip()
     if not branch_text:
         return []
+    unselectable_match = re.fullmatch(
+        r"自分の場のカード名に「(.+?)」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。",
+        branch_text,
+    )
+    if unselectable_match:
+        name_contains = unselectable_match.group(1)
+        return [
+            {
+                "type": "APPLY_BRANCH_EFFECT_PRESET",
+                "preset_id": "UNSELECTABLE_BY_OPPONENT_EFFECT_THIS_TURN",
+                "target_spec": {
+                    "owner": "SELF",
+                    "zones": ["FRONT_LINE", "ENERGY_LINE"],
+                    "requirements": [
+                        {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                        {"type": "CARD_UID_NE", "value": "SOURCE_CARD"},
+                        {"type": "CARD_NAME_CONTAINS", "value": name_contains},
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "selection_mode": "MANUAL",
+                },
+                "duration": "END_OF_TURN",
+                "params": {"name_contains": name_contains},
+            }
+        ]
+    cannot_block_match = re.fullmatch(
+        r"BP(\d+)以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「(.+?)」を含むキャラをブロックできない。」を与える。",
+        branch_text,
+    )
+    if cannot_block_match:
+        return [
+            {
+                "type": "APPLY_BRANCH_EFFECT_PRESET",
+                "preset_id": "CANNOT_BLOCK_NAME_CONTAINS_THIS_TURN",
+                "target_spec": {
+                    "owner": "OPPONENT",
+                    "zones": ["FRONT_LINE"],
+                    "requirements": [{"type": "CARD_BP_GTE", "value": int(cannot_block_match.group(1))}],
+                    "min": 0,
+                    "max": 1,
+                    "selection_mode": "MANUAL",
+                },
+                "duration": "END_OF_TURN",
+                "params": {"name_contains": cannot_block_match.group(2)},
+            }
+        ]
+    bp_override_match = re.fullmatch(
+        r"自分の場に〈(.+?)〉がある場合、『BP(\d+)以下』に代わる。",
+        branch_text,
+    )
+    if bp_override_match:
+        return [
+            {
+                "type": "APPLY_BRANCH_EFFECT_PRESET",
+                "preset_id": "BP_THRESHOLD_OVERRIDE_IF_NAME_PRESENT",
+                "duration": "END_OF_TURN",
+                "params": {
+                    "name": bp_override_match.group(1),
+                    "threshold": int(bp_override_match.group(2)),
+                    "flag_var": "dynamic_bp_threshold_replaced",
+                },
+            }
+        ]
+    outside_to_hand_match = re.fullmatch(
+        r"自分の場外から必要エナジーが(\d+)以下の〈(.+?)〉を1枚まで手札に加える。",
+        branch_text,
+    )
+    if outside_to_hand_match:
+        requirements = [
+            {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+            {"type": "CARD_COST_ENERGY_LTE", "value": int(outside_to_hand_match.group(1))},
+            {"type": "CARD_NAME_IS", "value": outside_to_hand_match.group(2)},
+        ]
+        _, select_steps = _manual_single_target("SELF", ["OUTSIDE"], requirements, 0, 1, "selected_target")
+        return select_steps + [{"type": "MOVE_SELECTED_CARDS", "from_var": "selected_target", "to": "HAND"}]
+    hand_summon_name_contains_match = re.fullmatch(
+        r"自分の手札から必要エナジーが(\d+)以下のカード名に「(.+?)」を含む(赤|青|緑|黄|紫|白|黒)のキャラカードを1枚まで自分の場にレストで登場させる。",
+        branch_text,
+    )
+    if hand_summon_name_contains_match:
+        color_map = {"赤": "RED", "青": "BLUE", "緑": "GREEN", "黄": "YELLOW", "紫": "PURPLE", "白": "WHITE", "黒": "BLACK"}
+        requirements = [
+            {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+            {"type": "CARD_COST_ENERGY_LTE", "value": int(hand_summon_name_contains_match.group(1))},
+            {"type": "CARD_COLOR_IS", "value": color_map[hand_summon_name_contains_match.group(3)]},
+            {"type": "CARD_NAME_CONTAINS", "value": hand_summon_name_contains_match.group(2)},
+            {"type": "CARD_CAN_PLAY_TO_ZONE", "zone": "FRONT_LINE", "ignore_play_timing": True, "allow_current_zone": False},
+        ]
+        _, select_steps = _manual_single_target("SELF", ["HAND"], requirements, 0, 1, "selected_summon_card")
+        return select_steps + [
+            {
+                "type": "PLAY_SELECTED_CARDS",
+                "from_var": "selected_summon_card",
+                "to": "FRONT_LINE",
+                "state": "RESTED",
+                "ignore_play_timing": True,
+                "allow_current_zone": False,
+            }
+        ]
+    optional_discard_ready_named_match = re.fullmatch(
+        r"自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈(.+?)〉を1枚まで選び、アクティブにする。",
+        branch_text,
+    )
+    if optional_discard_ready_named_match:
+        _, discard_steps = _manual_single_target("SELF", ["HAND"], [], 0, 1, "discard_from_hand")
+        _, ready_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [{"type": "CARD_NAME_IS", "value": optional_discard_ready_named_match.group(1)}],
+            0,
+            1,
+            "selected_target",
+        )
+        return (
+            discard_steps
+            + [{"type": "MOVE_SELECTED_CARDS", "from_var": "discard_from_hand", "to": "OUTSIDE"}]
+            + [
+                dict(step, requirements=[{"type": "CONTEXT_VAR_NON_EMPTY", "var": "discard_from_hand"}])
+                for step in ready_steps
+            ]
+            + [
+                {
+                    "type": "ACTIVATE",
+                    "target_var": "selected_target",
+                    "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "discard_from_hand"}],
+                }
+            ]
+        )
+    preview_name_contains_match = re.fullmatch(
+        r"自分の山札の上から(\d+)枚見て、カード名に「(.+?)」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。",
+        branch_text,
+    )
+    if preview_name_contains_match:
+        _, steps = _preview_add_to_hand_then_reorder_steps(
+            count=int(preview_name_contains_match.group(1)),
+            requirements=[{"type": "CARD_TYPE_IS", "value": "CHARACTER"}],
+            filters=[{"type": "NAME_CONTAINS", "value": preview_name_contains_match.group(2)}],
+            min_count=0,
+            max_count=1,
+        )
+        return steps
+    bp_plus_draw_named_match = re.fullmatch(
+        r"自分の場の〈(.+?)〉を1枚まで選び、このターン中、BP\+(\d+)とを与える。カードを1枚引く。",
+        branch_text,
+    )
+    if bp_plus_draw_named_match:
+        _, select_steps = _manual_single_target(
+            "SELF",
+            ["FRONT_LINE", "ENERGY_LINE"],
+            [
+                {"type": "CARD_TYPE_IS", "value": "CHARACTER"},
+                {"type": "CARD_NAME_IS", "value": bp_plus_draw_named_match.group(1)},
+            ],
+            0,
+            1,
+            "selected_target",
+        )
+        return select_steps + [
+            {
+                "type": "ADD_TEMP_BP_MODIFIER",
+                "target_var": "selected_target",
+                "value": int(bp_plus_draw_named_match.group(2)),
+                "expires": "END_OF_TURN",
+                "requirements": [{"type": "CONTEXT_VAR_NON_EMPTY", "var": "selected_target"}],
+            },
+            {"type": "DRAW", "value": 1},
+        ]
     draw_match = re.fullmatch(r"カードを(\d+)枚引く。", branch_text)
     if draw_match:
         return [{"type": "DRAW", "value": int(draw_match.group(1))}]

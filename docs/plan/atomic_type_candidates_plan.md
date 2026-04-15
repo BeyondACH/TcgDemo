@@ -148,6 +148,21 @@
 - `docs/logs/log_yyyy-MM-dd.md` 中文日志
 - 迁移清单（卡号、能力 id、变更前后结构对照）
 
+### 3.1 里程碑进度
+
+- **M1（2026-04-15）已完成**：
+  - 已落地 `APPLY_BRANCH_EFFECT_PRESET` 运行时步骤与编译产物映射，完成首批 3 个 `preset_id`：
+    1. `UNSELECTABLE_BY_OPPONENT_EFFECT_THIS_TURN`
+    2. `CANNOT_BLOCK_NAME_CONTAINS_THIS_TURN`
+    3. `BP_THRESHOLD_OVERRIDE_IF_NAME_PRESENT`
+  - 已迁移分支占位覆盖：
+    - `UA45BT_TLR_1_055_on_enter_536516f54f`
+    - `UA36BT_MCR_1_065_on_play_78e3e36e0b`
+    - `UA45BT_TLR_1_062_on_attack_fa840dea3e`
+    - `UA45BT_TLR_1_069_on_attack_b7fd01327a`
+    - `UA45BT_TLR_1_081_on_play_536516f54f`
+  - 当前 `PENDING_BRANCH_EFFECT` 余量：`0`。
+
 ---
 
 ## 4. 验收标准

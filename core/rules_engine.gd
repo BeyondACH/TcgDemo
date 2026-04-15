@@ -207,6 +207,9 @@ func can_block(state: GameState, player_id: String, card_uid: String) -> Diction
 	if bool(card.flags.get("blocked_this_turn", false)):
 		if not _card_has_keyword(card, card_def, "DOUBLE_BLOCK") or bool(card.flags.get("double_block_consumed", false)):
 			return {"ok": false, "reason": "already_blocked"}
+	var cannot_block_by_name := _cannot_block_due_to_name_contains_keyword(state, card)
+	if cannot_block_by_name:
+		return {"ok": false, "reason": "cannot_block_name_restricted"}
 	return {"ok": true}
 
 func get_legal_actions(state: GameState, player_id: String) -> Array[Dictionary]:
@@ -854,3 +857,23 @@ func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -
 		return true
 	var temp_keywords: Array = card.flags.get("temp_keywords", [])
 	return temp_keywords.has(keyword)
+
+func _cannot_block_due_to_name_contains_keyword(state: GameState, blocker: CardInstance) -> bool:
+	var attacker_uid := str(state.battle_context.get("attacker_uid", ""))
+	if attacker_uid == "":
+		return false
+	var attacker: CardInstance = state.get_card(attacker_uid)
+	if attacker == null:
+		return false
+	var attacker_def: CardDef = state.get_card_def(attacker.def_id)
+	if attacker_def == null:
+		return false
+	var temp_keywords: Array = blocker.flags.get("temp_keywords", [])
+	for value in temp_keywords:
+		var keyword := str(value)
+		if not keyword.begins_with("CANNOT_BLOCK_NAME_CONTAINS::"):
+			continue
+		var expected := keyword.trim_prefix("CANNOT_BLOCK_NAME_CONTAINS::")
+		if expected != "" and attacker_def.name.find(expected) >= 0:
+			return true
+	return false

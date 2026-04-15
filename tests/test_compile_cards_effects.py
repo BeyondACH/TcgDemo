@@ -1005,6 +1005,76 @@ class CompileCardsEffectsTests(unittest.TestCase):
         )
         self.assertEqual([step["type"] for step in branches["BRANCH_2"]], ["SELECT_TARGETS", "ADD_TEMP_BP_MODIFIER"])
 
+    def test_compile_event_effect_branch_choice_replaces_pending_with_branch_preset_steps(self):
+        ability = _compile_event_effect(
+            {
+                "id": "UA45BT_TLR_1_055",
+                "card_type": "EVENT",
+                "effects": [
+                    {"text": "・自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。"},
+                    {"text": "・BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。"},
+                ],
+            },
+            {"source_label": "", "effect_box": "OUTER", "text": self.TLR_BRANCH_SELECT_ONE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        branch_step = ability["steps"][1]
+        self.assertEqual(branch_step["type"], "EXECUTE_CHOICE_BRANCH")
+        first = branch_step["branches"]["BRANCH_1"][0]
+        second = branch_step["branches"]["BRANCH_2"][0]
+        self.assertEqual(first["type"], "APPLY_BRANCH_EFFECT_PRESET")
+        self.assertEqual(first["preset_id"], "UNSELECTABLE_BY_OPPONENT_EFFECT_THIS_TURN")
+        self.assertEqual(second["type"], "APPLY_BRANCH_EFFECT_PRESET")
+        self.assertEqual(second["preset_id"], "CANNOT_BLOCK_NAME_CONTAINS_THIS_TURN")
+
+    def test_compile_event_effect_branch_choice_supports_bp_threshold_override_preset(self):
+        ability = _compile_event_effect(
+            {
+                "id": "UA36BT_MCR_1_065",
+                "card_type": "EVENT",
+                "effects": [
+                    {"text": "・自分の場に〈シェリル・ノーム〉がある場合、『BP5000以下』に代わる。"},
+                    {"text": "・自分の場に〈ランカ・リー〉がある場合、自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"},
+                ],
+            },
+            {"source_label": "", "effect_box": "OUTER", "text": self.TLR_BRANCH_SELECT_ONE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        branch_step = ability["steps"][1]
+        self.assertEqual(branch_step["type"], "EXECUTE_CHOICE_BRANCH")
+        first = branch_step["branches"]["BRANCH_1"][0]
+        self.assertEqual(first["type"], "APPLY_BRANCH_EFFECT_PRESET")
+        self.assertEqual(first["preset_id"], "BP_THRESHOLD_OVERRIDE_IF_NAME_PRESENT")
+
+    def test_compile_event_effect_branch_choice_supports_remaining_tlr_branch_patterns_without_pending(self):
+        ability = _compile_event_effect(
+            {
+                "id": "UA45BT_TLR_1_069",
+                "card_type": "EVENT",
+                "effects": [
+                    {"text": "・自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。"},
+                    {"text": "・自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。"},
+                    {"text": "・自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"},
+                    {"text": "・自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。"},
+                    {"text": "・自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。"},
+                ],
+            },
+            {"source_label": "", "effect_box": "OUTER", "text": self.TLR_BRANCH_SELECT_ONE_TEXT},
+            {},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        branch_step = ability["steps"][1]
+        branches = branch_step["branches"]
+        self.assertEqual(branches["BRANCH_1"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(branches["BRANCH_2"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(branches["BRANCH_3"][0]["type"], "PREVIEW_TOP_DECK")
+        self.assertEqual(branches["BRANCH_4"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(branches["BRANCH_5"][0]["type"], "SELECT_TARGETS")
+        for branch_steps in branches.values():
+            self.assertNotIn("PENDING_BRANCH_EFFECT", [step.get("type", "") for step in branch_steps])
+
     def test_compile_trigger_supports_bp_sum_limit_remove_template(self):
         ability = _compile_trigger(
             {"id": "UA45BT_TLR_1_030"},
