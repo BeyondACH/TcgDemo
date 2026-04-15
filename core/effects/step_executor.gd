@@ -53,6 +53,7 @@ func _init_handlers() -> void:
 		"SELECT_TARGETS_WITH_SUM_LIMIT": _step_select_targets_with_sum_limit,
 		"SET_CHOICE_MODE": _step_set_choice_mode,
 		"EXECUTE_CHOICE_BRANCH": _step_execute_choice_branch,
+		"APPLY_BRANCH_EFFECT_PRESET": _step_apply_branch_effect_preset,
 		"RUN_COMPOSITE_IF": _step_run_composite_if,
 	}
 
@@ -422,6 +423,44 @@ func _step_execute_choice_branch(state: GameState, source_card_uid: String, step
 	logs.append_array(branch_result.get("logs", []))
 	return {"logs": logs, "paused": bool(branch_result.get("paused", false))}
 
+func _step_apply_branch_effect_preset(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
+	var preset_id := str(step.get("preset_id", ""))
+	match preset_id:
+		"UNSELECTABLE_BY_OPPONENT_EFFECT_THIS_TURN":
+			return _apply_branch_effect_keyword_preset(state, source_card_uid, step, context, remaining_steps, effect, "UNSELECTABLE_BY_OPPONENT_EFFECT")
+		"CANNOT_BLOCK_NAME_CONTAINS_THIS_TURN":
+			var params: Dictionary = step.get("params", {})
+			var name_contains := str(params.get("name_contains", ""))
+			if name_contains == "":
+				return {"logs": [], "paused": false}
+			return _apply_branch_effect_keyword_preset(
+				state,
+				source_card_uid,
+				step,
+				context,
+				remaining_steps,
+				effect,
+				"CANNOT_BLOCK_NAME_CONTAINS::%s" % name_contains
+			)
+		"BP_THRESHOLD_OVERRIDE_IF_NAME_PRESENT":
+			var params: Dictionary = step.get("params", {})
+			var required_name := str(params.get("name", ""))
+			if required_name != "" and _effect_resolver != null:
+				if not _effect_resolver._requirements_met(
+					state,
+					source_card_uid,
+					[{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": required_name}],
+					context
+				):
+					return {"logs": [], "paused": false}
+			var flag_var := str(params.get("flag_var", "dynamic_bp_threshold_replaced"))
+			if flag_var == "":
+				return {"logs": [], "paused": false}
+			context[flag_var] = bool(params.get("value", true))
+			return {"logs": ["Applied branch effect preset: %s." % preset_id], "paused": false}
+		_:
+			return {"logs": ["Unknown branch effect preset: %s." % preset_id], "paused": false}
+
 func _step_run_composite_if(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary) -> Dictionary:
 	var logs: Array[String] = []
 	var requirements: Array = step.get("if_requirements", [])
@@ -434,6 +473,49 @@ func _step_run_composite_if(state: GameState, source_card_uid: String, step: Dic
 	var chain_result := execute_steps(state, source_card_uid, chain_steps, context, effect)
 	logs.append_array(chain_result.get("logs", []))
 	return {"logs": logs, "paused": bool(chain_result.get("paused", false))}
+
+func _apply_branch_effect_keyword_preset(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary, keyword: String) -> Dictionary:
+	var target_spec: Dictionary = step.get("target_spec", {})
+	var target: Dictionary = _target_spec_to_target_dict(target_spec)
+	var selected_var := str(step.get("target_var", "__branch_preset_targets"))
+	var selected := _resolve_target_set(state, source_card_uid, target, context)
+	if bool(target.get("manual", false)) or str(target.get("selection_mode", "AUTO")) == "MANUAL":
+		if not context.has(selected_var):
+			if _enqueue_target_selection(state, source_card_uid, effect, selected_var, target, selected, context, remaining_steps, false, {}):
+				return {"logs": [], "paused": true}
+		selected = _ensure_array(context.get(selected_var, []))
+	else:
+		selected = _ensure_array(selected)
+		if int(target.get("max", -1)) == 1 and selected.size() > 1:
+			selected = [selected[0]]
+	var preset_logs: Array[String] = []
+	var expires := str(step.get("duration", step.get("expires", "END_OF_TURN")))
+	for target_uid_variant in selected:
+		var target_uid := str(target_uid_variant)
+		if target_uid == "":
+			continue
+		var keyword_step := {
+			"target_uid": target_uid,
+			"keyword": keyword,
+			"expires": expires,
+		}
+		preset_logs.append_array(_apply_temporary_keyword_modifier(state, source_card_uid, keyword_step, context))
+	return {"logs": preset_logs, "paused": false}
+
+func _target_spec_to_target_dict(target_spec: Dictionary) -> Dictionary:
+	var target: Dictionary = {
+		"type": "CARD_SET",
+		"owner": str(target_spec.get("owner", "OPPONENT")),
+		"zones": _ensure_array(target_spec.get("zones", [])),
+		"filters": _ensure_array(target_spec.get("filters", [])),
+		"requirements": _ensure_array(target_spec.get("requirements", [])),
+		"min": int(target_spec.get("min", 0)),
+		"max": int(target_spec.get("max", 1)),
+	}
+	var selection_mode := str(target_spec.get("selection_mode", "AUTO"))
+	target["selection_mode"] = selection_mode
+	target["manual"] = selection_mode == "MANUAL" or bool(target_spec.get("manual", false))
+	return target
 
 # ============================================================
 # 辅助函数 - 目标选择

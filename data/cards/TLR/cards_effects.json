@@ -7462,14 +7462,61 @@
             "branches": {
               "BRANCH_1": [
                 {
-                  "type": "PENDING_BRANCH_EFFECT",
-                  "text": "自分の場のカード名に「デビルーク」を含む他のキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。"
+                  "type": "APPLY_BRANCH_EFFECT_PRESET",
+                  "preset_id": "UNSELECTABLE_BY_OPPONENT_EFFECT_THIS_TURN",
+                  "target_spec": {
+                    "owner": "SELF",
+                    "zones": [
+                      "FRONT_LINE",
+                      "ENERGY_LINE"
+                    ],
+                    "requirements": [
+                      {
+                        "type": "CARD_TYPE_IS",
+                        "value": "CHARACTER"
+                      },
+                      {
+                        "type": "CARD_UID_NE",
+                        "value": "SOURCE_CARD"
+                      },
+                      {
+                        "type": "CARD_NAME_CONTAINS",
+                        "value": "デビルーク"
+                      }
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "selection_mode": "MANUAL"
+                  },
+                  "duration": "END_OF_TURN",
+                  "params": {
+                    "name_contains": "デビルーク"
+                  }
                 }
               ],
               "BRANCH_2": [
                 {
-                  "type": "PENDING_BRANCH_EFFECT",
-                  "text": "BP4500以上の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはカード名に「デビルーク」を含むキャラをブロックできない。」を与える。"
+                  "type": "APPLY_BRANCH_EFFECT_PRESET",
+                  "preset_id": "CANNOT_BLOCK_NAME_CONTAINS_THIS_TURN",
+                  "target_spec": {
+                    "owner": "OPPONENT",
+                    "zones": [
+                      "FRONT_LINE"
+                    ],
+                    "requirements": [
+                      {
+                        "type": "CARD_BP_GTE",
+                        "value": 4500
+                      }
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "selection_mode": "MANUAL"
+                  },
+                  "duration": "END_OF_TURN",
+                  "params": {
+                    "name_contains": "デビルーク"
+                  }
                 }
               ]
             },
@@ -8238,8 +8285,52 @@
                   ],
                   "steps": [
                     {
-                      "type": "PENDING_BRANCH_EFFECT",
-                      "text": "自分の手札から必要エナジーが3以下のカード名に「デビルーク」を含む赤のキャラカードを1枚まで自分の場にレストで登場させる。"
+                      "type": "SELECT_TARGETS",
+                      "var": "selected_summon_card",
+                      "target": {
+                        "type": "CARD_SET",
+                        "owner": "SELF",
+                        "zones": [
+                          "HAND"
+                        ],
+                        "filters": [],
+                        "requirements": [
+                          {
+                            "type": "CARD_TYPE_IS",
+                            "value": "CHARACTER"
+                          },
+                          {
+                            "type": "CARD_COST_ENERGY_LTE",
+                            "value": 3
+                          },
+                          {
+                            "type": "CARD_COLOR_IS",
+                            "value": "RED"
+                          },
+                          {
+                            "type": "CARD_NAME_CONTAINS",
+                            "value": "デビルーク"
+                          },
+                          {
+                            "type": "CARD_CAN_PLAY_TO_ZONE",
+                            "zone": "FRONT_LINE",
+                            "ignore_play_timing": true,
+                            "allow_current_zone": false
+                          }
+                        ],
+                        "min": 0,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": true
+                      }
+                    },
+                    {
+                      "type": "PLAY_SELECTED_CARDS",
+                      "from_var": "selected_summon_card",
+                      "to": "FRONT_LINE",
+                      "state": "RESTED",
+                      "ignore_play_timing": true,
+                      "allow_current_zone": false
                     },
                     {
                       "type": "SET_PLAYER_TURN_FLAG",
@@ -8265,8 +8356,39 @@
                   ],
                   "steps": [
                     {
-                      "type": "PENDING_BRANCH_EFFECT",
-                      "text": "自分の場外から必要エナジーが2以下の〈モモ・ベリア・デビルーク〉を1枚まで手札に加える。"
+                      "type": "SELECT_TARGETS",
+                      "var": "selected_target",
+                      "target": {
+                        "type": "CARD_SET",
+                        "owner": "SELF",
+                        "zones": [
+                          "OUTSIDE"
+                        ],
+                        "filters": [],
+                        "requirements": [
+                          {
+                            "type": "CARD_TYPE_IS",
+                            "value": "CHARACTER"
+                          },
+                          {
+                            "type": "CARD_COST_ENERGY_LTE",
+                            "value": 2
+                          },
+                          {
+                            "type": "CARD_NAME_IS",
+                            "value": "モモ・ベリア・デビルーク"
+                          }
+                        ],
+                        "min": 0,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": true
+                      }
+                    },
+                    {
+                      "type": "MOVE_SELECTED_CARDS",
+                      "from_var": "selected_target",
+                      "to": "HAND"
                     },
                     {
                       "type": "SET_PLAYER_TURN_FLAG",
@@ -9198,8 +9320,50 @@
                   ],
                   "steps": [
                     {
-                      "type": "PENDING_BRANCH_EFFECT",
-                      "text": "自分の山札の上から3枚見て、カード名に「デビルーク」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で山札の下に置く。"
+                      "type": "PREVIEW_TOP_DECK",
+                      "count": 3,
+                      "var": "preview_cards"
+                    },
+                    {
+                      "type": "SELECT_TARGETS",
+                      "var": "selected_preview_cards",
+                      "target": {
+                        "type": "CONTEXT_CARD_SET",
+                        "source_var": "preview_cards",
+                        "filters": [
+                          {
+                            "type": "NAME_CONTAINS",
+                            "value": "デビルーク"
+                          }
+                        ],
+                        "requirements": [
+                          {
+                            "type": "CARD_TYPE_IS",
+                            "value": "CHARACTER"
+                          }
+                        ],
+                        "min": 0,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": true,
+                        "selection_constraints": {}
+                      }
+                    },
+                    {
+                      "type": "MOVE_SELECTED_CARDS",
+                      "from_var": "selected_preview_cards",
+                      "to": "HAND",
+                      "remove_from_var": "preview_cards"
+                    },
+                    {
+                      "type": "REORDER_CONTEXT_CARDS",
+                      "from_var": "preview_cards",
+                      "var": "ordered_preview_cards"
+                    },
+                    {
+                      "type": "MOVE_SELECTED_CARDS",
+                      "from_var": "ordered_preview_cards",
+                      "to": "DECK"
                     },
                     {
                       "type": "SET_PLAYER_TURN_FLAG",
@@ -9225,8 +9389,65 @@
                   ],
                   "steps": [
                     {
-                      "type": "PENDING_BRANCH_EFFECT",
-                      "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の〈ナナ・アスタ・デビルーク〉を1枚まで選び、アクティブにする。"
+                      "type": "SELECT_TARGETS",
+                      "var": "discard_from_hand",
+                      "target": {
+                        "type": "CARD_SET",
+                        "owner": "SELF",
+                        "zones": [
+                          "HAND"
+                        ],
+                        "filters": [],
+                        "requirements": [],
+                        "min": 0,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": true
+                      }
+                    },
+                    {
+                      "type": "MOVE_SELECTED_CARDS",
+                      "from_var": "discard_from_hand",
+                      "to": "OUTSIDE"
+                    },
+                    {
+                      "type": "SELECT_TARGETS",
+                      "var": "selected_target",
+                      "target": {
+                        "type": "CARD_SET",
+                        "owner": "SELF",
+                        "zones": [
+                          "FRONT_LINE",
+                          "ENERGY_LINE"
+                        ],
+                        "filters": [],
+                        "requirements": [
+                          {
+                            "type": "CARD_NAME_IS",
+                            "value": "ナナ・アスタ・デビルーク"
+                          }
+                        ],
+                        "min": 0,
+                        "max": 1,
+                        "selection_mode": "MANUAL",
+                        "manual": true
+                      },
+                      "requirements": [
+                        {
+                          "type": "CONTEXT_VAR_NON_EMPTY",
+                          "var": "discard_from_hand"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "ACTIVATE",
+                      "target_var": "selected_target",
+                      "requirements": [
+                        {
+                          "type": "CONTEXT_VAR_NON_EMPTY",
+                          "var": "discard_from_hand"
+                        }
+                      ]
                     },
                     {
                       "type": "SET_PLAYER_TURN_FLAG",
@@ -11058,8 +11279,47 @@
               ],
               "BRANCH_2": [
                 {
-                  "type": "PENDING_BRANCH_EFFECT",
-                  "text": "自分の場の〈古手川 唯〉を1枚まで選び、このターン中、BP+2000とを与える。カードを1枚引く。"
+                  "type": "SELECT_TARGETS",
+                  "var": "selected_target",
+                  "target": {
+                    "type": "CARD_SET",
+                    "owner": "SELF",
+                    "zones": [
+                      "FRONT_LINE",
+                      "ENERGY_LINE"
+                    ],
+                    "filters": [],
+                    "requirements": [
+                      {
+                        "type": "CARD_TYPE_IS",
+                        "value": "CHARACTER"
+                      },
+                      {
+                        "type": "CARD_NAME_IS",
+                        "value": "古手川 唯"
+                      }
+                    ],
+                    "min": 0,
+                    "max": 1,
+                    "selection_mode": "MANUAL",
+                    "manual": true
+                  }
+                },
+                {
+                  "type": "ADD_TEMP_BP_MODIFIER",
+                  "target_var": "selected_target",
+                  "value": 2000,
+                  "expires": "END_OF_TURN",
+                  "requirements": [
+                    {
+                      "type": "CONTEXT_VAR_NON_EMPTY",
+                      "var": "selected_target"
+                    }
+                  ]
+                },
+                {
+                  "type": "DRAW",
+                  "value": 1
                 }
               ]
             },
