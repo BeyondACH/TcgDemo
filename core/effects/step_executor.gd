@@ -483,6 +483,7 @@ func _step_select_move_with_fallback(state: GameState, source_card_uid: String, 
 	var primary_select: Dictionary = step.get("primary_select", {})
 	if primary_select.is_empty():
 		return {"logs": logs, "paused": false}
+	var continuation_steps := _build_atomic_continuation(step, remaining_steps)
 	var selected_var := str(step.get("selected_var", "__select_move_primary_targets"))
 	var select_result := _step_select_targets(
 		state,
@@ -493,7 +494,7 @@ func _step_select_move_with_fallback(state: GameState, source_card_uid: String, 
 			"target": primary_select,
 		},
 		context,
-		remaining_steps,
+		continuation_steps,
 		effect
 	)
 	logs.append_array(select_result.get("logs", []))
@@ -526,6 +527,7 @@ func _step_select_and_play_by_profile(state: GameState, source_card_uid: String,
 	var from_zones := _ensure_array(step.get("from_zones", []))
 	if from_zones.is_empty():
 		return {"logs": logs, "paused": false}
+	var continuation_steps := _build_atomic_continuation(step, remaining_steps)
 	var selected_var := str(step.get("selected_var", "__selected_play_profile_cards"))
 	var select_config: Dictionary = step.get("select", {})
 	var selection_constraints: Dictionary = {}
@@ -552,7 +554,7 @@ func _step_select_and_play_by_profile(state: GameState, source_card_uid: String,
 			},
 		},
 		context,
-		remaining_steps,
+		continuation_steps,
 		effect
 	)
 	logs.append_array(select_result.get("logs", []))
@@ -648,6 +650,11 @@ func _step_register_next_play_cost_modifier(state: GameState, source_card_uid: S
 			"expires": str(step.get("expires", "END_OF_TURN")),
 		})
 	return {"logs": [], "paused": false}
+
+func _build_atomic_continuation(step: Dictionary, remaining_steps: Array) -> Array:
+	var continuation_steps: Array = [step.duplicate(true)]
+	continuation_steps.append_array(remaining_steps.duplicate(true))
+	return continuation_steps
 
 func _apply_branch_effect_keyword_preset(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array, effect: Dictionary, keyword: String) -> Dictionary:
 	var target_spec: Dictionary = step.get("target_spec", {})
