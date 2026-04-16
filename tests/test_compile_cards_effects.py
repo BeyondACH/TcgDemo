@@ -2,6 +2,7 @@ import unittest
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 
 from tools.card_effects_compiler.normalization import normalize_japanese_text
 from tools.card_effects_compiler.template_registry import dispatch_template_rules
@@ -15,6 +16,8 @@ from tools.compile_cards_effects import _compile_event_effect_legacy
 from tools.compile_cards_effects import _compile_trigger
 from tools.compile_cards_effects import _compile_trigger_legacy
 from tools.compile_cards_effects import _compile_series_cards
+from tools.compile_cards_effects import _build_compiler_signature
+from tools.compile_cards_effects import _build_series_input_signature
 from tools.compile_cards_effects import _TRIGGER_TEMPLATE_RULES
 from tools.compile_cards_effects import _TemplateRule
 from tools.compile_cards_effects import _validate_template_registry_consistency
@@ -1472,7 +1475,8 @@ class CompileCardsEffectsTests(unittest.TestCase):
         compiled_by_series: dict[Path, tuple[list[dict], list[dict]]] = {}
         for raw_path, card_id, expected_family in cases:
             if raw_path not in compiled_by_series:
-                compiled_by_series[raw_path] = _compile_series_cards(raw_path)
+                compiled, semantic_entries, _debug = _compile_series_cards(raw_path)
+                compiled_by_series[raw_path] = (compiled, semantic_entries)
             _compiled, semantic_entries = compiled_by_series[raw_path]
             semantic_map = {entry["card_id"]: entry for entry in semantic_entries}
             semantic_entry = semantic_map[card_id]
@@ -1485,6 +1489,25 @@ class CompileCardsEffectsTests(unittest.TestCase):
                     for ability in semantic_entry.get("abilities", [])
                 )
             )
+
+    def test_series_input_signature_changes_when_raw_changes(self):
+        compiler_signature = _build_compiler_signature()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            raw_path = Path(tmpdir) / "cards_raw.json"
+            raw_path.write_text('[{"id":"A"}]\n', encoding="utf-8")
+            signature_a = _build_series_input_signature(raw_path, compiler_signature)
+            raw_path.write_text('[{"id":"B"}]\n', encoding="utf-8")
+            signature_b = _build_series_input_signature(raw_path, compiler_signature)
+
+        self.assertNotEqual(signature_a, signature_b)
+
+    def test_compile_series_cards_can_reuse_first_pass_cache(self):
+        raw_path = Path(__file__).resolve().parents[1] / "data" / "cards" / "MMM" / "cards_raw.json"
+        _compiled, _semantic_entries, debug1 = _compile_series_cards(raw_path)
+        _compiled, _semantic_entries, debug2 = _compile_series_cards(raw_path, pass1_cache_entry=debug1)
+
+        self.assertFalse(debug1["first_pass_cache_hit"])
+        self.assertTrue(debug2["first_pass_cache_hit"])
 
 
 if __name__ == "__main__":

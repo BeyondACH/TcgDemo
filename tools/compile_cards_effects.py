@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CARDS_DIR = ROOT / "data" / "cards"
 LEGACY_SAMPLE_PATH = ROOT / "data" / "cards" / "base_cards.json"
 COMPILER_METRICS_SNAPSHOT_PATH = ROOT / "docs" / "plan" / "compiler_metrics_snapshot.json"
+COMPILER_INCREMENTAL_CACHE_PATH = ROOT / ".cache" / "card_effects_compiler" / "series_compile_cache.json"
 SEMANTIC_OVERRIDE_REQUIRED = "SEMANTIC_OVERRIDE_REQUIRED"
 
 
@@ -43,6 +44,24 @@ def _load_json(path: Path):
     if not text:
         return []
     return json.loads(text)
+
+
+def _load_incremental_cache(path: Path) -> dict:
+    if not path.exists():
+        return {"version": 1, "series": {}}
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        return {"version": 1, "series": {}}
+    payload.setdefault("version", 1)
+    payload.setdefault("series", {})
+    if not isinstance(payload.get("series"), dict):
+        payload["series"] = {}
+    return payload
+
+
+def _save_incremental_cache(path: Path, cache_payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(cache_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def _infer_keywords(card: dict) -> list[str]:
@@ -3281,6 +3300,28 @@ def _build_cards_metrics(runtime_cards: list[dict], compiled_series_cards: list[
     }
 
 
+def _carry_forward_template_telemetry_if_incremental_skip(
+    current: dict,
+    previous_snapshot: dict,
+    *,
+    compile_stats: dict[str, int],
+) -> dict:
+    if compile_stats.get("compiled_series", 0) > 0:
+        return current
+    if current.get("dispatch_total", 0) > 0:
+        return current
+    previous_telemetry = previous_snapshot.get("template_telemetry", {}) if isinstance(previous_snapshot, dict) else {}
+    if not isinstance(previous_telemetry, dict) or not previous_telemetry:
+        return current
+    carried = deepcopy(previous_telemetry)
+    carried["carried_forward_from_previous_snapshot"] = True
+    carried["incremental_skip_note"] = {
+        "compiled_series": compile_stats.get("compiled_series", 0),
+        "incremental_skipped_series": compile_stats.get("incremental_skipped_series", 0),
+    }
+    return carried
+
+
 def _snapshot_template_telemetry(previous_snapshot: dict | None = None) -> dict:
     previous_snapshot = previous_snapshot or {}
     state = _TEMPLATE_TELEMETRY_STATE
@@ -6105,17 +6146,52 @@ def _source_label_for_path(raw_path: Path) -> str:
     return raw_path.relative_to(CARDS_DIR).as_posix()
 
 
-def _compile_series_cards(raw_path: Path) -> tuple[list[dict], list[dict]]:
+def _build_compiler_signature() -> str:
+    rule_order = _collect_rule_order_snapshot()
+    payload = json.dumps(rule_order, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _build_series_input_signature(raw_path: Path, compiler_signature: str) -> str:
+    raw_bytes = raw_path.read_bytes() if raw_path.exists() else b""
+    digest = hashlib.sha256()
+    digest.update(raw_bytes)
+    digest.update(b"::")
+    digest.update(compiler_signature.encode("utf-8"))
+    return digest.hexdigest()
+
+
+def _compile_series_cards(
+    raw_path: Path,
+    *,
+    pass1_cache_entry: dict | None = None,
+) -> tuple[list[dict], list[dict], dict]:
     raw_cards = _load_json(raw_path)
     source_label = _source_label_for_path(raw_path)
 
-    compiled = [_build_card_effects(card, {}, source_label) for card in raw_cards]
-    semantic_entries = [_build_semantic_entry(card) for card in compiled]
-    semantic_map = {entry.get("card_id", ""): entry for entry in semantic_entries if entry.get("card_id")}
+    first_pass_cache_hit = False
+    first_pass_compiled: list[dict] = []
+    first_pass_semantic_entries: list[dict] = []
+    if isinstance(pass1_cache_entry, dict):
+        cached_compiled = pass1_cache_entry.get("first_pass_compiled")
+        cached_semantic_entries = pass1_cache_entry.get("first_pass_semantic_entries")
+        if isinstance(cached_compiled, list) and isinstance(cached_semantic_entries, list):
+            first_pass_compiled = deepcopy(cached_compiled)
+            first_pass_semantic_entries = deepcopy(cached_semantic_entries)
+            first_pass_cache_hit = True
+    if not first_pass_compiled or not first_pass_semantic_entries:
+        first_pass_compiled = [_build_card_effects(card, {}, source_label) for card in raw_cards]
+        first_pass_semantic_entries = [_build_semantic_entry(card) for card in first_pass_compiled]
+
+    semantic_map = {entry.get("card_id", ""): entry for entry in first_pass_semantic_entries if entry.get("card_id")}
 
     compiled = [_build_card_effects(card, semantic_map, source_label) for card in raw_cards]
     semantic_entries = [_build_semantic_entry(card) for card in compiled]
-    return compiled, semantic_entries
+    return compiled, semantic_entries, {
+        "first_pass_cache_hit": first_pass_cache_hit,
+        "first_pass_compiled": first_pass_compiled,
+        "first_pass_semantic_entries": first_pass_semantic_entries,
+    }
 
 
 def main() -> None:
@@ -6126,6 +6202,17 @@ def main() -> None:
         type=Path,
         help="path to write compiler metrics snapshot",
     )
+    parser.add_argument(
+        "--incremental-cache",
+        default=COMPILER_INCREMENTAL_CACHE_PATH,
+        type=Path,
+        help="path to incremental compile cache file",
+    )
+    parser.add_argument(
+        "--no-incremental",
+        action="store_true",
+        help="disable input signature based incremental compile skip",
+    )
     args = parser.parse_args()
 
     global _TEMPLATE_TELEMETRY_ENABLED, _TEMPLATE_HIT_COUNTS, _TEMPLATE_FALLBACK_COUNTS, _TEMPLATE_TELEMETRY_STATE
@@ -6135,17 +6222,50 @@ def main() -> None:
     _TEMPLATE_TELEMETRY_STATE = _new_template_telemetry_state()
     set_template_dispatch_observer(_template_observer)
 
+    incremental_enabled = not args.no_incremental
+    incremental_cache_path = Path(args.incremental_cache)
+    incremental_cache = _load_incremental_cache(incremental_cache_path)
+    compiler_signature = _build_compiler_signature()
+
     compiled_all = []
     semantic_all = []
+    compile_stats = {"incremental_skipped_series": 0, "pass1_cache_hits": 0, "compiled_series": 0}
     series_raw_paths = _iter_series_raw_paths()
     for raw_path in series_raw_paths:
-        compiled, semantic_entries = _compile_series_cards(raw_path)
         semantic_path = raw_path.parent / "cards_semantic.json"
         out_path = raw_path.parent / "cards_effects.json"
-        semantic_path.write_text(json.dumps(semantic_entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        out_path.write_text(json.dumps(compiled, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        raw_signature = _build_series_input_signature(raw_path, compiler_signature)
+        series_key = raw_path.parent.name
+        series_cache = incremental_cache.get("series", {}).get(series_key, {})
+
+        if (
+            incremental_enabled
+            and series_cache.get("input_signature") == raw_signature
+            and semantic_path.exists()
+            and out_path.exists()
+        ):
+            compiled = _load_json(out_path)
+            semantic_entries = _load_json(semantic_path)
+            compile_stats["incremental_skipped_series"] += 1
+        else:
+            pass1_cache_entry = series_cache if series_cache.get("input_signature") == raw_signature else None
+            compiled, semantic_entries, compile_debug = _compile_series_cards(raw_path, pass1_cache_entry=pass1_cache_entry)
+            semantic_path.write_text(json.dumps(semantic_entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            out_path.write_text(json.dumps(compiled, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            compile_stats["compiled_series"] += 1
+            if compile_debug.get("first_pass_cache_hit"):
+                compile_stats["pass1_cache_hits"] += 1
+            incremental_cache.setdefault("series", {})[series_key] = {
+                "input_signature": raw_signature,
+                "first_pass_compiled": compile_debug.get("first_pass_compiled", []),
+                "first_pass_semantic_entries": compile_debug.get("first_pass_semantic_entries", []),
+            }
+
         compiled_all.extend(compiled)
         semantic_all.extend(semantic_entries)
+
+    incremental_cache["compiler_signature"] = compiler_signature
+    _save_incremental_cache(incremental_cache_path, incremental_cache)
 
     legacy_samples = _load_json(LEGACY_SAMPLE_PATH)
     runtime_cards = list(compiled_all)
@@ -6164,6 +6284,11 @@ def main() -> None:
     previous_snapshot = _load_json(metrics_snapshot_path) if metrics_snapshot_path.exists() else {}
     cards_metrics = _build_cards_metrics(runtime_cards, compiled_all, series_raw_paths)
     template_telemetry = _snapshot_template_telemetry(previous_snapshot if isinstance(previous_snapshot, dict) else {})
+    template_telemetry = _carry_forward_template_telemetry_if_incremental_skip(
+        template_telemetry,
+        previous_snapshot if isinstance(previous_snapshot, dict) else {},
+        compile_stats=compile_stats,
+    )
     snapshot_payload = {
         "snapshot_date": date.today().isoformat(),
         "cards_metrics": cards_metrics,
@@ -6177,6 +6302,12 @@ def main() -> None:
 
     print(f"Compiled {len(compiled_all)} series cards across {len(series_raw_paths)} directories.")
     print(f"Runtime card total with base samples: {len(runtime_cards)}")
+    print(
+        "Compile optimization stats: "
+        f"compiled_series={compile_stats['compiled_series']} "
+        f"incremental_skipped_series={compile_stats['incremental_skipped_series']} "
+        f"pass1_cache_hits={compile_stats['pass1_cache_hits']}"
+    )
     print(f"Supported abilities: {supported}")
     print(f"Unsupported abilities: {unsupported}")
     print(
@@ -6201,6 +6332,7 @@ def main() -> None:
         for registry, summary in template_telemetry["rule_order_diff"].items():
             print(f"- {registry}: {summary['old_digest']} -> {summary['new_digest']}")
     print(f"Metrics snapshot written: {metrics_snapshot_path.as_posix()}")
+    print(f"Incremental cache written: {incremental_cache_path.as_posix()}")
     set_template_dispatch_observer(None)
 
 
