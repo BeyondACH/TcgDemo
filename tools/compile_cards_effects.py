@@ -6147,9 +6147,14 @@ def _source_label_for_path(raw_path: Path) -> str:
 
 
 def _build_compiler_signature() -> str:
+    compiler_bytes = Path(__file__).read_bytes()
     rule_order = _collect_rule_order_snapshot()
+    digest = hashlib.sha256()
+    digest.update(compiler_bytes)
+    digest.update(b"::")
     payload = json.dumps(rule_order, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    digest.update(payload.encode("utf-8"))
+    return digest.hexdigest()
 
 
 def _build_series_input_signature(raw_path: Path, compiler_signature: str) -> str:

@@ -3,6 +3,8 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import hashlib
+import json
 
 from tools.card_effects_compiler.normalization import normalize_japanese_text
 from tools.card_effects_compiler.template_registry import dispatch_template_rules
@@ -18,6 +20,7 @@ from tools.compile_cards_effects import _compile_trigger_legacy
 from tools.compile_cards_effects import _compile_series_cards
 from tools.compile_cards_effects import _build_compiler_signature
 from tools.compile_cards_effects import _build_series_input_signature
+from tools.compile_cards_effects import _collect_rule_order_snapshot
 from tools.compile_cards_effects import _TRIGGER_TEMPLATE_RULES
 from tools.compile_cards_effects import _TemplateRule
 from tools.compile_cards_effects import _validate_template_registry_consistency
@@ -1500,6 +1503,17 @@ class CompileCardsEffectsTests(unittest.TestCase):
             signature_b = _build_series_input_signature(raw_path, compiler_signature)
 
         self.assertNotEqual(signature_a, signature_b)
+
+    def test_compiler_signature_includes_compiler_logic_digest(self):
+        digest = hashlib.sha256()
+        compiler_path = Path(__file__).resolve().parents[1] / "tools" / "compile_cards_effects.py"
+        digest.update(compiler_path.read_bytes())
+        digest.update(b"::")
+        rule_order = _collect_rule_order_snapshot()
+        payload = json.dumps(rule_order, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        digest.update(payload.encode("utf-8"))
+
+        self.assertEqual(_build_compiler_signature(), digest.hexdigest())
 
     def test_compile_series_cards_can_reuse_first_pass_cache(self):
         raw_path = Path(__file__).resolve().parents[1] / "data" / "cards" / "MMM" / "cards_raw.json"
