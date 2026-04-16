@@ -211,6 +211,18 @@
 - 增量场景下编译耗时明显下降。
 - 全量与增量产物语义一致。
 
+### 进度（2026-04-16）
+
+- 已完成 P3 第一批实现（输入签名 + 中间结果缓存）：
+  - 新增系列输入签名：以 `cards_raw.json` 内容 + 模板规则顺序签名共同生成 series 级输入指纹。
+  - 新增增量缓存文件：默认写入 `.cache/card_effects_compiler/series_compile_cache.json`，记录每个系列的输入签名与第一遍编译中间结果。
+  - 新增第一遍中间结果复用：第二遍编译前可复用缓存的 `first_pass_compiled / first_pass_semantic_entries`，避免重复构建不可变部分。
+  - 新增增量跳过：输入签名未变化且 `cards_effects.json / cards_semantic.json` 已存在时，系列级跳过重编并直接复用现有产物聚合指标。
+  - CLI 新增控制项：`--incremental-cache`、`--no-incremental`，便于 CI 或排障切换全量模式。
+- 已补对应回归测试：
+  - 输入签名在 raw 内容变化时必须变化。
+  - `_compile_series_cards` 在注入首遍缓存后必须命中 `first_pass_cache_hit`。
+
 ---
 
 ## 阶段 P4：质量门禁与长期治理（持续）
