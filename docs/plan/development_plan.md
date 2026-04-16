@@ -112,7 +112,7 @@
 - 已新增 `docs/plan/compile_cards_effects_optimization_plan.md`，作为后续编译优化实施主文档。
 - 本轮计划口径聚焦四条主线：模板可观测性、模板家族参数化、模块化拆分、增量编译与质量门禁。
 - `P1` 已完成：`DRAW_SEQUENCE`、`LIFE_TRIGGER_RAID_CHOICE`、`AP_ACTIVATE` 三类高频模板族完成参数化接入，并已收敛到声明式共享 pattern 管线（统一生成 trigger/event 规则）；同时接入 `tools/check_compiler_metrics_gate.py` 与 `docs/plan/compiler_metrics_gate.json`，将 P0 指标纳入模板迁移门禁。
-- `P3` 已启动第一批实现：`compile_cards_effects` 已接入系列输入签名（raw 内容 + 模板顺序签名）与系列级增量缓存（含第一遍中间结果缓存），默认可在输入未变化时跳过系列重编，并支持 `--no-incremental` 强制全量回归。
+- `P3` 已完成：`compile_cards_effects` 已接入系列输入签名（raw 内容 + 模板顺序签名）与系列级增量缓存（含第一遍中间结果缓存），默认可在输入未变化时跳过系列重编，并支持 `--no-incremental` 强制全量回归；同时已补 `tools/check_compile_incremental_consistency.py` 一致性守卫，固定执行“全量 vs 增量”产物 diff 校验。
 - 后续执行顺序按 `P0 -> P1 -> P2 -> P3 -> P4` 推进，优先确保“规则语义不变 + 禁止按卡硬编码 + 回归资产同步补齐”。
 - 若实际推进中出现模板冲突、产物漂移或里程碑优先级变化，必须先更新本计划与当日日志，再进入下一阶段实现。
 
@@ -355,4 +355,4 @@
   - `template_metadata` 完整性（必须同时包含 `family` 与 `variant`）
   - `priority` 类型合法性（必须为 `int`）
 - 已补充单元测试覆盖合法与非法注册集，确保错误在编译流程早期失败并可快速定位。
-- P2 已完成：完成注册一致性校验与首批家族模块化拆分（`preview_* / bp_* / raid_* / cost_modifier_*`），后续进入 P3 编译性能优化阶段。
+- P2/P3 已完成：完成注册一致性校验、首批家族模块化拆分（`preview_* / bp_* / raid_* / cost_modifier_*`）与增量编译一致性守卫，后续进入 P4 质量门禁与长期治理阶段。
