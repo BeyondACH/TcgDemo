@@ -16,6 +16,8 @@ from tools.compile_cards_effects import _compile_trigger
 from tools.compile_cards_effects import _compile_trigger_legacy
 from tools.compile_cards_effects import _compile_series_cards
 from tools.compile_cards_effects import _TRIGGER_TEMPLATE_RULES
+from tools.compile_cards_effects import _TemplateRule
+from tools.compile_cards_effects import _validate_template_registry_consistency
 
 
 class CompileCardsEffectsTests(unittest.TestCase):
@@ -219,6 +221,41 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["steps"][0]["type"], "LIFE_TRIGGER_RAID_CHOICE")
         self.assertEqual(ability["template_metadata"]["family"], "LIFE_TRIGGER_RAID_CHOICE")
+
+    def test_validate_template_registry_consistency_accepts_valid_rules(self):
+        rules = (
+            _TemplateRule(
+                name="trigger.valid",
+                event_filter="ON_ENTER",
+                matcher=_exact_text_match("カードを1枚引く。"),
+                builder=lambda *_args: {"status": "SUPPORTED"},
+                priority=10,
+                template_metadata={"family": "DRAW_SEQUENCE", "variant": "draw_1"},
+            ),
+        )
+        _validate_template_registry_consistency("trigger", rules)
+
+    def test_validate_template_registry_consistency_rejects_invalid_rules(self):
+        rules = (
+            _TemplateRule(
+                name="event.invalid",
+                event_filter="ON_PLAY",
+                matcher=_exact_text_match("カードを1枚引く。"),
+                builder=lambda *_args: {"status": "SUPPORTED"},
+                priority="high",
+                template_metadata={"family": "DRAW_SEQUENCE"},
+            ),
+            _TemplateRule(
+                name="event.invalid",
+                event_filter="ON_PLAY",
+                matcher=_exact_text_match("カードを2枚引く。"),
+                builder=lambda *_args: {"status": "SUPPORTED"},
+                priority=1,
+                template_metadata={"family": "DRAW_SEQUENCE", "variant": "draw_2"},
+            ),
+        )
+        with self.assertRaises(RuntimeError):
+            _validate_template_registry_consistency("event", rules)
 
     def test_script_style_trigger_dispatch_does_not_import_entrypoint_module(self):
         script_path = Path(__file__).resolve().parents[1] / "tools" / "compile_cards_effects.py"

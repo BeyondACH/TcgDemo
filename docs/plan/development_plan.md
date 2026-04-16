@@ -1,6 +1,6 @@
 # TcgDemo 项目开发计划
 
-更新时间：2026-04-15
+更新时间：2026-04-16
 
 ## 1. 计划摘要
 
@@ -344,3 +344,14 @@
 - `download_images.py` 新增 `--list-works` 交互入口：脚本会先读取 `attrweblist.data.works`，打印官方作品列表并提示输入编号。
 - 选中作品后，下载链接改为使用 `weblist?works=<作品名>` 进入主流程，以覆盖该作品下全部产品的图片，不再要求用户二次选择产品。
 - `--list-products` 仍保留为按产品名下载的交互入口；`--product` 手填下载语义不变。
+
+## 8.2 2026-04-16 compile_cards_effects 阶段 P2 推进补充
+
+- 已按 `docs/plan/compile_cards_effects_optimization_plan.md` 推进 P2 子项“注册一致性检查”。
+- `tools/compile_cards_effects.py` 新增模板注册静态校验，默认覆盖 `trigger / event / passive` 三个 registry。
+- 检查项包括：
+  - 重复规则名（同 registry 下禁止重复 `name`）
+  - `template_metadata` 完整性（必须同时包含 `family` 与 `variant`）
+  - `priority` 类型合法性（必须为 `int`）
+- 已补充单元测试覆盖合法与非法注册集，确保错误在编译流程早期失败并可快速定位。
+- P2 已完成：完成注册一致性校验与首批家族模块化拆分（`preview_* / bp_* / raid_* / cost_modifier_*`），后续进入 P3 编译性能优化阶段。
