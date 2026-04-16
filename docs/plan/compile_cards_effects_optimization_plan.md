@@ -1,6 +1,6 @@
 # compile_cards_effects 后续编译优化实施方案
 
-更新时间：2026-04-15
+更新时间：2026-04-16
 
 ## 1. 目标与范围
 
@@ -168,6 +168,24 @@
 
 - 主入口仅保留编译装配逻辑。
 - 模板新增流程固定为：定义 → 注册 → 回归，不再跨文件散落。
+
+### 进度（2026-04-16）
+
+- 已完成 P2：模板注册一致性检查 + 家族模块化拆分。
+- `tools/compile_cards_effects.py` 现已改为“统一入口装配 + 家族模块拼装”模式，并保留统一优先级与外部调用方式不变。
+- 新增模板家族模块目录：`tools/card_effects_compiler/template_modules/`
+  - `preview_rules.py`
+  - `bp_rules.py`
+  - `raid_rules.py`
+  - `cost_modifier_rules.py`（当前预留空实现，供后续族扩展接入）
+- 当前一致性检查项：
+  - 重复 `name` 检查（禁止同 registry 内重复规则名）
+  - `template_metadata` 完整性检查（必须同时包含 `family` 与 `variant`）
+  - `priority` 类型检查（必须为 `int`）
+- 已补充回归验证：
+  - 编译器单元测试通过
+  - 全量编译产物统计保持不变（`Supported=557 / Unsupported=0`）
+  - UTF-8 文档校验通过。
 
 ---
 

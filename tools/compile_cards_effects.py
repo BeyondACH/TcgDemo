@@ -19,6 +19,14 @@ from tools.card_effects_compiler.template_registry import _regex_match
 from tools.card_effects_compiler.template_registry import dispatch_template_rules
 from tools.card_effects_compiler.template_registry import set_template_dispatch_observer
 from tools.card_effects_compiler.template_registry import set_trigger_template_rules
+from tools.card_effects_compiler.template_modules import build_event_bp_rules
+from tools.card_effects_compiler.template_modules import build_event_cost_modifier_rules
+from tools.card_effects_compiler.template_modules import build_event_preview_rules
+from tools.card_effects_compiler.template_modules import build_event_raid_rules
+from tools.card_effects_compiler.template_modules import build_trigger_bp_rules
+from tools.card_effects_compiler.template_modules import build_trigger_cost_modifier_rules
+from tools.card_effects_compiler.template_modules import build_trigger_preview_rules
+from tools.card_effects_compiler.template_modules import build_trigger_raid_rules
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -3110,6 +3118,48 @@ def _new_template_telemetry_state() -> dict:
 _TEMPLATE_TELEMETRY_STATE = _new_template_telemetry_state()
 
 
+def _validate_template_registry_consistency(registry_name: str, rules: tuple[_TemplateRule, ...]) -> None:
+    seen_names: set[str] = set()
+    duplicate_names: list[str] = []
+    missing_metadata_names: list[str] = []
+    invalid_priority_names: list[str] = []
+
+    for rule in rules:
+        name = str(rule.name)
+        if name in seen_names:
+            duplicate_names.append(name)
+        else:
+            seen_names.add(name)
+
+        metadata = rule.template_metadata
+        if not isinstance(metadata, dict) or not str(metadata.get("family", "")).strip() or not str(metadata.get("variant", "")).strip():
+            missing_metadata_names.append(name)
+
+        if not isinstance(rule.priority, int):
+            invalid_priority_names.append(name)
+
+    errors: list[str] = []
+    if duplicate_names:
+        deduped = sorted(set(duplicate_names))
+        errors.append(f"duplicate_names={deduped}")
+    if missing_metadata_names:
+        errors.append(f"missing_template_metadata={sorted(missing_metadata_names)}")
+    if invalid_priority_names:
+        errors.append(f"invalid_priority={sorted(invalid_priority_names)}")
+
+    if errors:
+        raise RuntimeError(f"Template registry '{registry_name}' consistency check failed: {'; '.join(errors)}")
+
+
+def _merge_module_template_rules(
+    base_rules: tuple[_TemplateRule, ...],
+    module_rules: tuple[_TemplateRule, ...],
+) -> tuple[_TemplateRule, ...]:
+    module_names = {rule.name for rule in module_rules}
+    filtered_base = tuple(rule for rule in base_rules if rule.name not in module_names)
+    return filtered_base + module_rules
+
+
 def _record_template_hit(name: str) -> None:
     if not _TEMPLATE_TELEMETRY_ENABLED:
         return
@@ -5465,6 +5515,38 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     ),
 )
 
+_TRIGGER_TEMPLATE_RULES = _merge_module_template_rules(
+    _TRIGGER_TEMPLATE_RULES,
+    build_trigger_raid_rules(
+        _TemplateRule,
+        regex_match=_regex_match,
+        life_trigger_raid_choice_builder=_life_trigger_raid_choice_builder,
+    )
+    + build_trigger_preview_rules(
+        _TemplateRule,
+        exact_text_match=_exact_text_match,
+        regex_match=_regex_match,
+        preview_top_then_choose_top_or_bottom_builder=_preview_top_then_choose_top_or_bottom_builder,
+        preview_top_two_reorder_top_bottom_builder=_preview_top_two_reorder_top_bottom_builder,
+        preview_add_character_cards_builder=_preview_add_character_cards_builder,
+        preview_add_to_hand_builder_factory=_preview_add_to_hand_builder_factory,
+        preview_add_to_hand_energy_threshold_builder=_preview_add_to_hand_energy_threshold_builder,
+        preview_add_to_hand_name_contains_builder=_preview_add_to_hand_name_contains_builder,
+    )
+    + build_trigger_bp_rules(
+        _TemplateRule,
+        regex_match=_regex_match,
+        bp_debuff_builder=_bp_debuff_builder,
+        conditional_bp_debuff_builder=_conditional_bp_debuff_builder,
+        bp_sum_limit_remove_builder=_bp_sum_limit_remove_builder,
+        bp_sum_limit_remove_dynamic_energy_builder=_bp_sum_limit_remove_dynamic_energy_builder,
+        bp_bounce_to_hand_builder=_bp_bounce_to_hand_builder,
+        bp_remove_from_match_builder_factory=_bp_remove_from_match_builder_factory,
+    )
+    + build_trigger_cost_modifier_rules(_TemplateRule),
+)
+
+_validate_template_registry_consistency("trigger", _TRIGGER_TEMPLATE_RULES)
 set_trigger_template_rules(_TRIGGER_TEMPLATE_RULES)
 
 
@@ -5713,8 +5795,47 @@ _EVENT_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
     ),
 )
 
+_EVENT_TEMPLATE_RULES = _merge_module_template_rules(
+    _EVENT_TEMPLATE_RULES,
+    build_event_raid_rules(
+        _TemplateRule,
+        exact_text_match=_exact_text_match,
+        mcr_sheryl_raid_chain_override_builder=_mcr_sheryl_raid_chain_override_builder,
+    )
+    + build_event_preview_rules(
+        _TemplateRule,
+        regex_match=_regex_match,
+        exact_text_match=_exact_text_match,
+        conditional_preview_top_then_choose_builder=_conditional_preview_top_then_choose_builder,
+        preview_add_character_cards_builder=_preview_add_character_cards_builder,
+        preview_name_contains_dual_then_conditional_ready_ap_builder=_preview_name_contains_dual_then_conditional_ready_ap_builder,
+        preview_add_to_hand_builder_factory=_preview_add_to_hand_builder_factory,
+    )
+    + build_event_bp_rules(
+        _TemplateRule,
+        regex_match=_regex_match,
+        exact_text_match=_exact_text_match,
+        conditional_rest_or_remove_builder=_conditional_rest_or_remove_builder,
+        bp_remove_then_choice_branch_builder=_bp_remove_then_choice_branch_builder,
+        bp_remove_then_optional_pay_ap_add_outside_name_contains_builder=_bp_remove_then_optional_pay_ap_add_outside_name_contains_builder,
+        conditional_bp_replace_marker_builder=_conditional_bp_replace_marker_builder,
+        bp_remove_dynamic_name_gate_energy_lte_count_builder=_bp_remove_dynamic_name_gate_energy_lte_count_builder,
+        bp_remove_from_match_builder_factory=_bp_remove_from_match_builder_factory,
+        bp_remove_dynamic_name_gate_builder=_bp_remove_dynamic_name_gate_builder,
+        bp_remove_dynamic_name_contains_gate_builder=_bp_remove_dynamic_name_contains_gate_builder,
+        bp_remove_to_removed_dynamic_name_gate_builder=_bp_remove_to_removed_dynamic_name_gate_builder,
+        bp_remove_with_requirements_builder_factory=_bp_remove_with_requirements_builder_factory,
+        bp_sum_limit_remove_dynamic_energy_builder=_bp_sum_limit_remove_dynamic_energy_builder,
+        conditional_value_provider=_conditional_value_provider,
+        fixed_value_provider=_fixed_value_provider,
+    )
+    + build_event_cost_modifier_rules(_TemplateRule),
+)
+
 
 _PASSIVE_TEMPLATE_RULES: tuple[_TemplateRule, ...] = ()
+_validate_template_registry_consistency("event", _EVENT_TEMPLATE_RULES)
+_validate_template_registry_consistency("passive", _PASSIVE_TEMPLATE_RULES)
 
 
 def _compile_trigger(card: dict, trigger_entry: dict, semantic_map: dict[str, dict]) -> dict:
