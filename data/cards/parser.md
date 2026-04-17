@@ -19,8 +19,10 @@
 
 - 卡号完全来自图片文件名，不做 OCR。
 - 文件名必须能直接映射到官网单卡编号。
+- 若图片名末尾带补档序号后缀（如 `_1`、`_2`），会先去掉该后缀再映射卡号。
 - 例如：
   - `UA31BT-MMM-1-035.png` -> 官网 `card_no=UA31BT/MMM-1-035`
+  - `UA34BT-CGD-1-033_2.png` -> 先归一化为 `UA34BT-CGD-1-033`，再映射为官网 `card_no=UA34BT/CGD-1-033`
   - `UA31ST-MMM-104.png` -> 优先尝试 `UA31ST/MMM-104`，若编号后三段只有 3 位数字，再兼容尝试 `UA31ST/MMM-1-104`
 
 脚本会同时生成：
@@ -295,6 +297,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_
 - `trigger_effects`
 - `special_play_rule`
 - `keywords`
+
+补充：若本轮卡图目录存在同号多图（如 `UA34BT-CGD-1-033.png`、`UA34BT-CGD-1-033_1.png`、`UA34BT-CGD-1-033_2.png`），在非刷新模式下预期行为是：
+
+- 首张导入成功后，后续同号图片会命中 `skipped_existing`
+- 不应重复写入同 `number` / `id` 的条目
+- 若需要覆盖旧值，统一使用 `-RefreshExisting`，不要手工改单卡
 
 ## 10. 下游同步
 
