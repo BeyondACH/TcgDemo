@@ -3036,6 +3036,36 @@
     },
     "abilities": [
       {
+        "id": "UA34BT_CGD_1_030_passive_dbac828ced",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 500,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "RAID_INNER",
+          "text": "このキャラはBP+500。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA34BT_CGD_1_030_on_enter_971b0135e1",
         "kind": "TRIGGERED",
         "timing": {
@@ -3084,8 +3114,10 @@
       "source": "CGD/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "UNSUPPORTED",
-        "MOVE_SELF"
+        "MOVE_SELF",
+        "PASSIVE_STATIC_BP"
       ]
     }
   },
@@ -5973,11 +6005,50 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA34BT_CGD_1_057_passive_f07ce6ef92",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 500,
+            "while": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "天空要塞ダモクレス"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "相手のターン中",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈天空要塞ダモクレス〉がある場合、このキャラはBP+500。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_with_name_gate"
+        }
+      }
+    ],
     "analysis": {
       "source": "CGD/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE",
+        "PASSIVE_STATIC_BP"
+      ]
     }
   },
   {

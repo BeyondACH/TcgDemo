@@ -63,3 +63,20 @@
   - 覆盖度快照：`python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json`
   - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 82 --max-series CGD=2 --max-series KGD=45 --max-series MCR=28 --max-series MMM=3 --max-series TLR=4`
   - 单测验证：`python -m pytest tests/test_compile_cards_effects.py tests/test_check_effect_text_coverage.py`
+
+## 6. P1 完成记录（2026-04-17）
+
+- 已完成 `_compile_passive_effect` 的标准落盘扩展，新增 `passive` registry 模板规则并接入模板遥测：
+  - `passive.source_bp_bonus.conditional_name_in_field`
+  - `passive.source_bp_bonus.always_on`
+- 新增 builder：`_passive_source_bp_bonus_builder`，将以下 effect 段文本标准落盘为 `STATIC` 能力项（保留原文 `ui.text`）：
+  - `自分の場に〈X〉がある場合、このキャラはBP+N。`
+  - `このキャラはBP+N。`
+- 结果（对比 P0 后基线 `25`）：
+  - 高置信漏项由 **25** 降至 **21**；
+  - 分系列由 `CGD=2, KGD=11, MCR=5, MMM=3, TLR=4` 降至 `CGD=2, KGD=9, MCR=5, MMM=2, TLR=3`。
+- 验证闭环：
+  - 单测验证：`python -m pytest tests/test_compile_cards_effects.py tests/test_check_effect_text_coverage.py`
+  - 编译验证：`python tools/compile_cards_effects.py`
+  - 覆盖度快照：`python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json`
+  - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 82 --max-series CGD=2 --max-series KGD=45 --max-series MCR=28 --max-series MMM=3 --max-series TLR=4`

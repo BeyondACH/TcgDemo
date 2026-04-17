@@ -2953,6 +2953,36 @@
     },
     "abilities": [
       {
+        "id": "UA31BT_MMM_1_022_passive_c093510579",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA31BT_MMM_1_022_on_enter_aa9f3b6d3d",
         "kind": "TRIGGERED",
         "timing": {
@@ -2986,7 +3016,9 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "DRAW_1"
+        "COMPOSITE",
+        "DRAW_1",
+        "PASSIVE_STATIC_BP"
       ]
     }
   },
@@ -11779,6 +11811,41 @@
     },
     "abilities": [
       {
+        "id": "UA31BT_MMM_1_087_passive_792b0e76be",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "佐倉杏子"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈佐倉 杏子〉がある場合、このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_with_name_gate"
+        }
+      },
+      {
         "id": "UA31BT_MMM_1_087_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -11811,7 +11878,9 @@
       "source": "MMM/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "DRAW_1",
+        "PASSIVE_STATIC_BP",
         "DRAW_SEQUENCE"
       ]
     }

@@ -5756,11 +5756,45 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_053_passive_c093510579",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      }
+    ],
     "analysis": {
       "source": "KGD/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE",
+        "PASSIVE_STATIC_BP"
+      ]
     }
   },
   {
@@ -8810,6 +8844,41 @@
     },
     "abilities": [
       {
+        "id": "UA48BT_KGD_1_080_passive_e17c033a93",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "楊端和"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈楊端和〉がある場合、このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_with_name_gate"
+        }
+      },
+      {
         "id": "UA48BT_KGD_1_080_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -8842,7 +8911,9 @@
       "source": "KGD/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "DRAW_1",
+        "PASSIVE_STATIC_BP",
         "DRAW_SEQUENCE"
       ]
     }
@@ -10159,6 +10230,41 @@
     },
     "abilities": [
       {
+        "id": "UA48BT_KGD_1_093_passive_fab1f0d46e",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 2000,
+            "while": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "嬴政"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈嬴政〉がある場合、このキャラはBP+2000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_with_name_gate"
+        }
+      },
+      {
         "id": "UA48BT_KGD_1_093_main_activate_e35105a697",
         "kind": "ACTIVATED",
         "timing": {
@@ -10258,8 +10364,10 @@
       "source": "KGD/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "UNSUPPORTED",
         "SELECT_AND_MOVE",
+        "PASSIVE_STATIC_BP",
         "BP_THRESHOLD_REMOVE"
       ]
     }
@@ -13393,6 +13501,36 @@
     },
     "abilities": [
       {
+        "id": "UA48ST_KGD_1_110_passive_c093510579",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA48ST_KGD_1_110_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -13425,7 +13563,9 @@
       "source": "KGD/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "DRAW_1",
+        "PASSIVE_STATIC_BP",
         "DRAW_SEQUENCE"
       ]
     }

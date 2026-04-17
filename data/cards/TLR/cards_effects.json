@@ -2947,6 +2947,36 @@
     },
     "abilities": [
       {
+        "id": "UA45BT_TLR_1_022_passive_c093510579",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA45BT_TLR_1_022_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
         "timing": {
@@ -3017,7 +3047,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "READY_AND_TEMP_BP"
+        "COMPOSITE",
+        "READY_AND_TEMP_BP",
+        "PASSIVE_STATIC_BP"
       ]
     }
   },
@@ -3673,6 +3705,41 @@
     },
     "abilities": [
       {
+        "id": "UA45BT_TLR_1_027_passive_16ee1aae96",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "結城美柑"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_with_name_gate"
+        }
+      },
+      {
         "id": "UA45BT_TLR_1_027_on_enter_02e747d62b",
         "kind": "TRIGGERED",
         "timing": {
@@ -3780,8 +3847,10 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "LIFE_TO_HAND_AND_READY_SOURCE",
         "DRAW_1",
+        "PASSIVE_STATIC_BP",
         "OPTIONAL_COST_THEN_EFFECT",
         "DRAW_SEQUENCE"
       ]
@@ -3831,6 +3900,41 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA45BT_TLR_1_028_passive_988beeed71",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1500,
+            "while": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "結城美柑"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "RAID_INNER",
+          "text": "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1500。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_with_name_gate"
+        }
+      },
       {
         "id": "UA45BT_TLR_1_028_on_enter_91b04beda2",
         "kind": "TRIGGERED",
@@ -3887,8 +3991,10 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "DRAW_1",
         "LIFE_TRIGGER_RAID_CHOICE",
+        "PASSIVE_STATIC_BP",
         "DRAW_SEQUENCE"
       ]
     }
@@ -3928,6 +4034,36 @@
     },
     "abilities": [
       {
+        "id": "UA45BT_TLR_1_029_passive_c093510579",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA45BT_TLR_1_029_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -3956,7 +4092,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "MOVE_SELF"
+        "COMPOSITE",
+        "MOVE_SELF",
+        "PASSIVE_STATIC_BP"
       ]
     }
   },
@@ -8248,11 +8386,50 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_061_passive_441de017d0",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1500,
+            "while": [
+              {
+                "type": "CONTROLLER_HAS_NAME_IN_FIELD",
+                "value": "モモ・ベリア・デビルーク"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "自分のターン中",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈モモ・ベリア・デビルーク〉がある場合、このキャラはBP+1500。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_with_name_gate"
+        }
+      }
+    ],
     "analysis": {
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE",
+        "PASSIVE_STATIC_BP"
+      ]
     }
   },
   {
@@ -9923,6 +10100,36 @@
     },
     "abilities": [
       {
+        "id": "UA45BT_TLR_1_073_passive_dbac828ced",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 500,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "相手のターン中",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+500。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA45BT_TLR_1_073_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -9955,7 +10162,9 @@
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "DRAW_1",
+        "PASSIVE_STATIC_BP",
         "DRAW_SEQUENCE"
       ]
     }

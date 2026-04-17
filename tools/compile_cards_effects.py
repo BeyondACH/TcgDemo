@@ -4117,6 +4117,33 @@ def _conditional_draw_builder(card: dict, trigger_entry: dict, event_name: str, 
     )
 
 
+def _passive_source_bp_bonus_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    requirements: list[dict] = []
+    value = int(match.group("value"))
+    name = match.groupdict().get("name", "")
+    if name:
+        requirements.append({"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": name})
+    steps = [
+        {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": value,
+            "while": requirements,
+        }
+    ]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        [],
+        steps,
+        "STATIC",
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
 def _bp_debuff_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
     match = payload["match"]
     threshold = int(match.group(1))
@@ -5963,7 +5990,24 @@ _EVENT_TEMPLATE_RULES = _merge_module_template_rules(
 )
 
 
-_PASSIVE_TEMPLATE_RULES: tuple[_TemplateRule, ...] = ()
+_PASSIVE_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
+    _TemplateRule(
+        name="passive.source_bp_bonus.conditional_name_in_field",
+        event_filter="PASSIVE",
+        matcher=_regex_match(r"自分の場に〈(?P<name>.+)〉がある場合、このキャラはBP\+(?P<value>\d+)。"),
+        builder=_passive_source_bp_bonus_builder,
+        priority=210,
+        template_metadata={"family": "PASSIVE_STATIC_BP", "variant": "source_bp_bonus_with_name_gate"},
+    ),
+    _TemplateRule(
+        name="passive.source_bp_bonus.always_on",
+        event_filter="PASSIVE",
+        matcher=_regex_match(r"このキャラはBP\+(?P<value>\d+)。"),
+        builder=_passive_source_bp_bonus_builder,
+        priority=200,
+        template_metadata={"family": "PASSIVE_STATIC_BP", "variant": "source_bp_bonus_always_on"},
+    ),
+)
 _validate_template_registry_consistency("event", _EVENT_TEMPLATE_RULES)
 _validate_template_registry_consistency("passive", _PASSIVE_TEMPLATE_RULES)
 

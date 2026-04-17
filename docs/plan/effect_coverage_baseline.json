@@ -1,11 +1,11 @@
 {
-  "total": 25,
+  "total": 21,
   "by_series": {
     "CGD": 2,
-    "KGD": 11,
+    "KGD": 9,
     "MCR": 5,
-    "MMM": 3,
-    "TLR": 4
+    "MMM": 2,
+    "TLR": 3
   },
   "items": [
     {
@@ -68,13 +68,6 @@
     },
     {
       "series": "KGD",
-      "card_id": "UA48BT_KGD_1_053",
-      "effect_text": "このキャラはBP+1000。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
       "card_id": "UA48BT_KGD_1_058",
       "effect_text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラはBP+1000。",
       "ability_count": 0,
@@ -86,16 +79,6 @@
       "effect_text": "自分の場に〈嬴政〉がある場合、カードを1枚引く。",
       "ability_count": 0,
       "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_080",
-      "effect_text": "自分の場に〈楊端和〉がある場合、このキャラはBP+1000。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
     },
     {
       "series": "KGD",
@@ -177,25 +160,6 @@
       "template_types": [
         "SELECT_AND_MOVE",
         "BP_THRESHOLD_REMOVE"
-      ]
-    },
-    {
-      "series": "MMM",
-      "card_id": "UA31BT_MMM_1_087",
-      "effect_text": "自分の場に〈佐倉 杏子〉がある場合、このキャラはBP+1000。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "TLR",
-      "card_id": "UA45BT_TLR_1_022",
-      "effect_text": "このキャラはBP+1000。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
       ]
     },
     {

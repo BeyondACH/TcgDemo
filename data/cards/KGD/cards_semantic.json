@@ -1671,12 +1671,22 @@
     "card_id": "UA48BT_KGD_1_053",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE",
+      "PASSIVE_STATIC_BP"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_053_passive_c093510579",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このキャラはBP+1000。",
       "trigger": "",
@@ -2475,10 +2485,20 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "COMPOSITE",
       "DRAW_1",
+      "PASSIVE_STATIC_BP",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_080_passive_e17c033a93",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈楊端和〉がある場合、このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA48BT_KGD_1_080_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2902,11 +2922,21 @@
       "IMPACT"
     ],
     "template_types": [
+      "COMPOSITE",
       "UNSUPPORTED",
       "SELECT_AND_MOVE",
+      "PASSIVE_STATIC_BP",
       "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_093_passive_fab1f0d46e",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈嬴政〉がある場合、このキャラはBP+2000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA48BT_KGD_1_093_main_activate_e35105a697",
         "timing": "MAIN_ACTIVATE",
@@ -3759,10 +3789,20 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "COMPOSITE",
       "DRAW_1",
+      "PASSIVE_STATIC_BP",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_110_passive_c093510579",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA48ST_KGD_1_110_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
