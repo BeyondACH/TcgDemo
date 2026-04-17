@@ -31,7 +31,7 @@
 1. 每轮编译后执行：
    - `python tools/check_effect_text_coverage.py --cards-root data/cards --write-json docs/plan/effect_coverage_baseline.json`
 2. 合入前门禁执行：
-   - `python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 82 --max-series CGD=2 --max-series KGD=45 --max-series MCR=28 --max-series MMM=3 --max-series TLR=4`
+   - `python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 21 --max-series CGD=2 --max-series KGD=9 --max-series MCR=5 --max-series MMM=2 --max-series TLR=3`
 3. 若门禁失败：
    - 不允许合入；
    - 必须在日志中写明新增漏项卡号与对应文本族。
@@ -61,7 +61,7 @@
 - 验证闭环：
   - 编译验证：`python tools/compile_cards_effects.py`
   - 覆盖度快照：`python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json`
-  - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 82 --max-series CGD=2 --max-series KGD=45 --max-series MCR=28 --max-series MMM=3 --max-series TLR=4`
+  - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 21 --max-series CGD=2 --max-series KGD=9 --max-series MCR=5 --max-series MMM=2 --max-series TLR=3`
   - 单测验证：`python -m pytest tests/test_compile_cards_effects.py tests/test_check_effect_text_coverage.py`
 
 ## 6. P1 完成记录（2026-04-17）
@@ -79,4 +79,18 @@
   - 单测验证：`python -m pytest tests/test_compile_cards_effects.py tests/test_check_effect_text_coverage.py`
   - 编译验证：`python tools/compile_cards_effects.py`
   - 覆盖度快照：`python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json`
-  - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 82 --max-series CGD=2 --max-series KGD=45 --max-series MCR=28 --max-series MMM=3 --max-series TLR=4`
+  - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 21 --max-series CGD=2 --max-series KGD=9 --max-series MCR=5 --max-series MMM=2 --max-series TLR=3`
+
+
+## 7. P2 完成记录（2026-04-17）
+
+- 已完成 P2 稳定期收口：
+  - 以 P1 后基线（`21`）固化高置信 effect 覆盖度门禁阈值；
+  - 在导入闭环文档中补充“快照生成 + 阈值门禁”双命令，明确合入前必须执行并通过。
+- P2 结果：
+  - 高置信漏项维持 **21**（未回升）；
+  - 分系列维持 `CGD=2, KGD=9, MCR=5, MMM=2, TLR=3`（未回升）。
+- 验证闭环：
+  - 覆盖度快照：`python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json`
+  - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 21 --max-series CGD=2 --max-series KGD=9 --max-series MCR=5 --max-series MMM=2 --max-series TLR=3`
+  - 单测验证：`python -m pytest tests/test_check_effect_text_coverage.py tests/test_compile_cards_effects.py`

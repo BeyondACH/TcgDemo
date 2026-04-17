@@ -401,6 +401,7 @@ python tools/check_unsupported_budget.py --cards-root data/cards --max-total 0
 
 # 7) effect 覆盖度门禁（高置信“effect 未落能力项”）
 python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json
+python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 21 --max-series CGD=2 --max-series KGD=9 --max-series MCR=5 --max-series MMM=2 --max-series TLR=3
 ```
 
 ### 12.3 产出物与用途
