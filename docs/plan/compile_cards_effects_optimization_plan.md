@@ -213,15 +213,17 @@
 
 ### 进度（2026-04-16）
 
-- 已完成 P3 第一批实现（输入签名 + 中间结果缓存）：
+- 已完成 P3（输入签名 + 中间结果缓存 + 一致性守卫）：
   - 新增系列输入签名：以 `cards_raw.json` 内容 + 模板规则顺序签名共同生成 series 级输入指纹。
   - 新增增量缓存文件：默认写入 `.cache/card_effects_compiler/series_compile_cache.json`，记录每个系列的输入签名与第一遍编译中间结果。
   - 新增第一遍中间结果复用：第二遍编译前可复用缓存的 `first_pass_compiled / first_pass_semantic_entries`，避免重复构建不可变部分。
   - 新增增量跳过：输入签名未变化且 `cards_effects.json / cards_semantic.json` 已存在时，系列级跳过重编并直接复用现有产物聚合指标。
   - CLI 新增控制项：`--incremental-cache`、`--no-incremental`，便于 CI 或排障切换全量模式。
+  - 新增一致性守卫脚本：`tools/check_compile_incremental_consistency.py`，默认执行“先全量、再增量”的产物对比，若任一系列 `cards_effects.json / cards_semantic.json` 出现差异则直接失败。
 - 已补对应回归测试：
   - 输入签名在 raw 内容变化时必须变化。
   - `_compile_series_cards` 在注入首遍缓存后必须命中 `first_pass_cache_hit`。
+  - 新增一致性守卫单测：覆盖 `_diff_snapshots` 的一致、差异、缺失系列三类最小回归。
 
 ---
 
@@ -286,6 +288,7 @@
 - DoD：
   - 增量编译可用于本地与 CI
   - 产物一致性可自动验证
+- 当前状态：已完成
 
 ## M5（对应 P4）
 
@@ -302,6 +305,7 @@
 
 - `python tools/compile_cards_effects.py`
 - `python -m unittest tests/test_compile_cards_effects.py`
+- `python tools/check_compile_incremental_consistency.py`
 - `python tools/check_utf8_docs.py`（文档改动后）
 
 ### 6.2 阶段性验证增强
