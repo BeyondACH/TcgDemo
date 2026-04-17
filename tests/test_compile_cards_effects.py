@@ -15,6 +15,7 @@ from tools.compile_cards_effects import _build_semantic_entry
 from tools.compile_cards_effects import _build_play_rule
 from tools.compile_cards_effects import _compile_event_effect
 from tools.compile_cards_effects import _compile_event_effect_legacy
+from tools.compile_cards_effects import _compile_passive_effect
 from tools.compile_cards_effects import _compile_trigger
 from tools.compile_cards_effects import _compile_trigger_legacy
 from tools.compile_cards_effects import _compile_series_cards
@@ -103,6 +104,9 @@ class CompileCardsEffectsTests(unittest.TestCase):
     TLR_CONDITIONAL_BP_CANNOT_BLOCK_TEXT = "『BP2000以下』の相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラはブロックできない。」を与える。自分の場に他のカードが5枚以上ある場合、『BP3000以下』に代わる。"
     TLR_SOURCE_BP_COMPARE_REMOVE_TEXT = "このキャラはこのターン中、「このキャラよりBPが低い相手のフロントLのキャラを1枚まで選び、退場させる。」を得る。"
     MCR_SHERYL_RAID_CHAIN_OVERRIDE_TEXT = "自分の山札の上から5枚見る。その中から〈シェリル・ノーム〉を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。その後、自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。"
+    KGD_OTHER_TRAIT_BP_PLUS_TEXT = "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。"
+    TEMP_ENERGY_PLUS_SELF_LEAVE_TEXT = "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+    KGD_PREVIEW_ADD_TO_HAND_DISCARD_TEXT = "自分の山札の上から3枚見て、［特徴：楚］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
     def test_normalize_japanese_text_collapses_whitespace_without_losing_japanese_punctuation(self):
         raw_text = "  召喚\n\t条件。\r\nさらに続く　、\n  終了。  "
 
@@ -227,6 +231,60 @@ class CompileCardsEffectsTests(unittest.TestCase):
         self.assertEqual(ability["status"], "SUPPORTED")
         self.assertEqual(ability["steps"][0]["type"], "LIFE_TRIGGER_RAID_CHOICE")
         self.assertEqual(ability["template_metadata"]["family"], "LIFE_TRIGGER_RAID_CHOICE")
+
+    def test_compile_passive_promotes_on_enter_other_trait_bp_plus_text(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {"labels": ["登場時"], "text": self.KGD_OTHER_TRAIT_BP_PLUS_TEXT},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["timing"]["event"], "ON_ENTER")
+        self.assertEqual(ability["steps"][-1]["type"], "ADD_TEMP_BP_MODIFIER")
+        self.assertEqual(ability["target_specs"][0]["candidate"]["requirements"][1]["value"], "飛信隊")
+
+    def test_compile_passive_other_trait_bp_plus_without_labels_does_not_auto_promote(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {"labels": [], "text": self.KGD_OTHER_TRAIT_BP_PLUS_TEXT},
+        )
+        self.assertIsNone(ability)
+
+    def test_compile_passive_promotes_main_activate_temp_energy_self_leave_with_rest_cost(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001", "energy_provided": {"yellow": 1}},
+            {"labels": ["起動メイン", "レストにする", "ターン1"], "text": self.TEMP_ENERGY_PLUS_SELF_LEAVE_TEXT},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["timing"]["event"], "MAIN_ACTIVATE")
+        self.assertEqual(ability["limits"]["once_per_turn"], True)
+        self.assertEqual(ability.get("costs"), [{"type": "REST_SOURCE"}])
+        self.assertEqual(ability["steps"][0]["type"], "REGISTER_STATIC_MODIFIER")
+        self.assertEqual(ability["steps"][1]["type"], "REGISTER_DELAYED_EFFECT")
+
+    def test_compile_passive_main_activate_temp_energy_self_leave_without_rest_label_has_no_rest_cost(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001", "energy_provided": {"yellow": 1}},
+            {"labels": ["起動メイン", "ターン1"], "text": self.TEMP_ENERGY_PLUS_SELF_LEAVE_TEXT},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertFalse("costs" in ability)
+
+    def test_compile_passive_promotes_on_enter_preview_add_to_hand_discard_text(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {"labels": ["登場時"], "text": self.KGD_PREVIEW_ADD_TO_HAND_DISCARD_TEXT},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["timing"]["event"], "ON_ENTER")
+        self.assertEqual(ability["steps"][0]["type"], "PREVIEW_TOP_DECK")
+        self.assertEqual(ability["steps"][-1]["type"], "MOVE_SELECTED_CARDS")
+
+    def test_compile_passive_preview_add_to_hand_discard_without_labels_does_not_auto_promote(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {"labels": [], "text": self.KGD_PREVIEW_ADD_TO_HAND_DISCARD_TEXT},
+        )
+        self.assertIsNone(ability)
 
     def test_validate_template_registry_consistency_accepts_valid_rules(self):
         rules = (

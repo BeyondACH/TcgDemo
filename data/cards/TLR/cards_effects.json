@@ -4343,14 +4343,19 @@
           "effect_box": "OUTER",
           "text": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
         },
-        "status": "SUPPORTED"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PREVIEW_ADD_TO_HAND",
+          "variant": "preview_add_to_hand_variable_clause_discard_on_add"
+        }
       }
     ],
     "analysis": {
       "source": "TLR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "SELECT_AND_MOVE"
+        "SELECT_AND_MOVE",
+        "PREVIEW_ADD_TO_HAND"
       ]
     }
   },

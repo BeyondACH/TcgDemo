@@ -28,11 +28,74 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_001_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "YELLOW",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "SUPPORTED",
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -235,11 +298,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_004_on_enter_7828aed868",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から2枚見る。その中から〈シェリル・ノーム〉を望む枚数場外に置く。残りを望む順で自分の山札の上に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -273,6 +359,71 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_005_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
         "id": "UA36BT_MCR_1_005_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -305,6 +456,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
         "DRAW_1",
         "DRAW_SEQUENCE"
       ]
@@ -409,11 +561,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_007_on_enter_168b2e257c",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -455,6 +630,46 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36BT_MCR_1_008_on_enter_37313b3837",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場のレイド状態の〈シェリル・ノーム〉を1枚選び、レイド状態の上のカードを場外に置いてもよい。そうした場合、カードを1枚引き、自分の手札から必要エナジーを満たしこの効果で場外に置いたカードとカードナンバーが異なる〈シェリル・ノーム〉を1枚まで、選んだキャラのレイド元のカードにレイドさせる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_008_on_enter_45637f4867",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラのを発動する。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36BT_MCR_1_008_on_life_trigger_8723e8b5cb",
         "kind": "TRIGGERED",
@@ -526,6 +741,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "COMPOSITE"
       ]
     }
@@ -570,6 +786,59 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_009_on_enter_191d40245c",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_009_main_activate_91b04beda2",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        },
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      },
+      {
         "id": "UA36BT_MCR_1_009_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -598,7 +867,10 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "MOVE_SELF"
+        "UNSUPPORTED",
+        "DRAW_1",
+        "MOVE_SELF",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -642,6 +914,46 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_010_on_enter_1ba8bbd9a2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、相手のフロントLのキャラを1枚まで選び、レストにする。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_010_main_activate_202ccb53b6",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのレストのキャラを1枚選び、「このキャラは次の1回アクティブにならない。」を与える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_010_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -670,6 +982,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -715,6 +1028,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_011_on_enter_4fb075ec8b",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場外から必要エナジーが4以下の〈シェリル・ノーム〉を1枚まで手札に加える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_011_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -746,6 +1079,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -790,6 +1124,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_012_on_enter_41a31bb810",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "『BP3000以下』の相手のフロントLのキャラを1枚まで選び、退場させる。自分の場外にを持つ〈シェリル・ノーム〉が3枚以上ある場合、『BP4000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_012_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -821,6 +1175,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -985,11 +1340,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_015_on_enter_3978cb994f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から2枚見る。その中からイベントカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -1021,11 +1399,43 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_016_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "DRAW_1",
+        "DRAW_SEQUENCE"
+      ]
     }
   },
   {
@@ -1093,11 +1503,103 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_018_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -1130,6 +1632,26 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36BT_MCR_1_019_on_enter_35a729e77e",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から4枚見る。その中から黄の〔［特徴：歌（ランカ）］かフィールドカード〕を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36BT_MCR_1_019_on_life_trigger_8723e8b5cb",
         "kind": "TRIGGERED",
@@ -1201,6 +1723,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "COMPOSITE"
       ]
     }
@@ -1344,6 +1867,64 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_021_on_enter_536516f54f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_branch_option",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "BRANCH_1",
+                "BRANCH_2"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": {
+              "BRANCH_1": [
+                {
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "カードを2枚引き、自分の手札を2枚場外に置く。"
+                }
+              ],
+              "BRANCH_2": [
+                {
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "自分の場外の黄の［特徴：歌（ランカ）］のカード名の種類数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、手札に戻す。"
+                }
+              ]
+            },
+            "default_steps": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "以下から1つ選ぶ。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "MULTI_BRANCH_CHOICE",
+          "variant": "select_one_from_following"
+        }
+      },
+      {
         "id": "UA36BT_MCR_1_021_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -1372,7 +1953,9 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "MOVE_SELF"
+        "COMPOSITE",
+        "MOVE_SELF",
+        "MULTI_BRANCH_CHOICE"
       ]
     }
   },
@@ -1417,6 +2000,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_022_main_activate_ba71626b0e",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このターン中、次に手札から使用する黄の［特徴：歌（ランカ）］の消費APを-1する。〈ランカ・リー〉のこの効果は1ターンに1回のみ発動できる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_022_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -1448,6 +2051,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -1493,6 +2097,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_023_on_enter_7dcbb3bae4",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "・1種類以上：カードを1枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_023_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -1524,6 +2148,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -1559,6 +2184,46 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_024_on_enter_51d2ed97ee",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを2枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_024_main_activate_537d5117c4",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場のキャラを1枚選び、このターン中、BP+500。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_024_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -1587,6 +2252,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -3531,11 +4197,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_035_on_enter_e14627dbcd",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場にカード名に「イサム」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -3604,6 +4293,26 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36BT_MCR_1_037_on_enter_ac61a31306",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見る。その中からカード名に「イサム」か「ガルド」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36BT_MCR_1_037_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
@@ -3675,6 +4384,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -3710,6 +4420,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_038_main_activate_3dd9d6df78",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_038_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -3742,6 +4472,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "DRAW_1",
         "DRAW_SEQUENCE"
       ]
@@ -3843,11 +4574,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_040_on_enter_970a98e4a3",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場にカード名に「ガルド」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -4057,6 +4811,71 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_043_on_enter_851e73b2d6",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 2
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを2枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
         "id": "UA36BT_MCR_1_043_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -4085,6 +4904,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
         "MOVE_SELF"
       ]
     }
@@ -4210,6 +5030,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_045_on_enter_f16800c906",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "・BP3500以下の相手のフロントLのキャラを1枚まで選び、『手札に戻す』。自分のアタックフェイズ中の場合、『退場させる』に代えてもよい。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_045_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -4241,6 +5081,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -4288,6 +5129,46 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_046_on_enter_a5491b9780",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "BP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_046_on_enter_d6680625e2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLにカード名に「ガルド」を含むキャラがある場合、このキャラのを発動する。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_046_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -4316,6 +5197,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -5082,6 +5964,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_051_main_activate_ae893b67ee",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "以下から1つ選ぶ。このターン中に自分の他の〈シェリル・ノーム〉が既に選んだ効果は選べない。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_051_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
         "timing": {
@@ -5152,6 +6054,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -5187,6 +6090,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_052_main_activate_5dd01f948c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "以下から1つ選ぶ。このターン中に自分の他の〈ランカ・リー〉が既に選んだ効果は選べない。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_052_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -5219,6 +6142,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "DRAW_1",
         "DRAW_SEQUENCE"
       ]
@@ -5255,11 +6179,74 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_053_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "BLUE",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "SUPPORTED",
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -5294,6 +6281,26 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36BT_MCR_1_054_on_enter_d105a5430c",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈ランカ・リー〉がある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3500以下の相手のフロントLのキャラを1枚まで選び、手札に戻す。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36BT_MCR_1_054_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
@@ -5365,6 +6372,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -5401,11 +6409,43 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_055_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "DRAW_1",
+        "DRAW_SEQUENCE"
+      ]
     }
   },
   {
@@ -5508,6 +6548,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_057_on_enter_8ab2633817",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_057_on_life_trigger_01fec7cba9",
         "kind": "TRIGGERED",
         "timing": {
@@ -5588,6 +6648,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "SELECT_AND_MOVE",
         "BP_FILTER_BOUNCE"
       ]
@@ -5698,11 +6759,103 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_059_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -5748,6 +6901,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_060_on_enter_4468d5d9f5",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の手札から必要エナジーが2以下の青の〔キャラカードかフィールドカード〕を1枚まで自分の場にレストで登場させる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_060_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -5779,6 +6952,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -5816,6 +6990,26 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36BT_MCR_1_061_on_enter_3dd9d6df78",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36BT_MCR_1_061_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
@@ -5887,6 +7081,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -5935,6 +7130,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_062_main_activate_ae06e6de49",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、「BP2000以下のキャラにブロックされない。」を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_062_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -5966,6 +7181,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -6014,6 +7230,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_063_on_enter_b45ba86320",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "以下から『1つ』まで選ぶ。APを1支払ってもよい。そうした場合、『2つ』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_063_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -6045,6 +7281,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -6082,6 +7319,142 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_064_main_activate_e8dcb9641f",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED",
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      },
+      {
+        "id": "UA36BT_MCR_1_064_main_activate_a9a162adb2",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "OPPONENT",
+              "zones": [
+                "FRONT_LINE"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "selected_target",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+        },
+        "status": "SUPPORTED",
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      },
+      {
         "id": "UA36BT_MCR_1_064_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -6110,6 +7483,8 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
+        "SELECT_AND_MOVE",
         "MOVE_SELF"
       ]
     }
@@ -6603,6 +7978,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_067_main_activate_069b5b7e30",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場の他のキャラ全ては、このターン中、BP+1000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_067_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -6631,6 +8026,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -6667,6 +8063,46 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36BT_MCR_1_068_on_enter_9f4eadfc4e",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "APを1支払ってもよい。そうした場合、自分の場外から〈リン・ミンメイ〉か〈早瀬 未沙〉を1枚まで手札に加える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_068_main_activate_087280a139",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラのBPが5000以上の場合、このキャラをアクティブにする。〈一条 輝〉のこの効果は1ターンに1回のみ発動できる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36BT_MCR_1_068_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
@@ -6738,6 +8174,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -6775,6 +8212,69 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_069_main_activate_536516f54f",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_branch_option",
+            "target": {
+              "type": "OPTION_SET",
+              "options": [
+                "BRANCH_1",
+                "BRANCH_2"
+              ],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "EXECUTE_CHOICE_BRANCH",
+            "mode_var": "selected_branch_option",
+            "branches": {
+              "BRANCH_1": [
+                {
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "BP4000以上の自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+                }
+              ],
+              "BRANCH_2": [
+                {
+                  "type": "PENDING_BRANCH_EFFECT",
+                  "text": "手札を1枚場外に置く。そうした場合、自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+                }
+              ]
+            },
+            "default_steps": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "以下から1つ選ぶ。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "MULTI_BRANCH_CHOICE",
+          "variant": "select_one_from_following"
+        },
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      },
+      {
         "id": "UA36BT_MCR_1_069_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -6807,7 +8307,9 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "DRAW_1",
+        "MULTI_BRANCH_CHOICE",
         "DRAW_SEQUENCE"
       ]
     }
@@ -6841,11 +8343,74 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_070_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "RED",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "SUPPORTED",
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -6877,11 +8442,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_071_on_enter_1f52a05d85",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から4枚見る。その中からカード名に「バサラ」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -7024,6 +8612,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_074_on_enter_1df4d2f953",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがある場合、以下から1つ選ぶ。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_074_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
         "timing": {
@@ -7094,6 +8702,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -7129,11 +8738,103 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36BT_MCR_1_075_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -7398,6 +9099,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_079_on_enter_d253b90e95",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から5枚見る。その中からカード名に「ジーナス」を含む赤のキャラカードを1枚まで公開し『手札に加える』。残りを望む順で自分の山札の下に置く。自分の場にカード名に「マクシミリアン・ジーナス」を含むキャラがあり、公開したカードの必要エナジーが2以下の場合、『自分の場にレストで登場させる』に代えてもよい。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_079_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -7429,6 +9150,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -7690,6 +9412,46 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_082_on_enter_d356b17431",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分と相手はカードを1枚引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_082_main_activate_95fe6b4f16",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このターン中に自分がカードを4枚以上引いている場合のみ発動できる。このキャラをアクティブにする。〈熱気 バサラ〉のこの効果は1ターンに1回のみ発動できる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_082_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -7718,6 +9480,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -7825,6 +9588,71 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_084_on_enter_e8dcb9641f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "discard_from_hand",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": []
+            },
+            "select": {
+              "min": 1,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "discard_from_hand"
+          }
+        ],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          },
+          {
+            "type": "SELECT_TARGETS",
+            "var": "discard_from_hand",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "HAND"
+              ],
+              "filters": [],
+              "requirements": [],
+              "min": 1,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "MOVE_SELECTED_CARDS",
+            "from_var": "discard_from_hand",
+            "to": "OUTSIDE"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "SUPPORTED"
+      },
+      {
         "id": "UA36BT_MCR_1_084_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -7857,6 +9685,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "DRAW_THEN_SELECT_AND_MOVE",
         "DRAW_1",
         "DRAW_SEQUENCE"
       ]
@@ -7967,6 +9796,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_086_on_enter_bd7abbc424",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このターン中に相手がカードを引いている場合、自分はカードを1枚まで引く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_086_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
         "timing": {
@@ -8037,6 +9886,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -8074,6 +9924,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_087_main_activate_be8e63ce02",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の手札が5枚以上の場合のみ発動できる。自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_087_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -8106,6 +9976,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "DRAW_1",
         "DRAW_SEQUENCE"
       ]
@@ -8147,6 +10018,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_088_on_enter_ee4f5ef4b6",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場のカード名に「バサラ」を含むキャラを1枚まで選び、このターン中、「相手はこのキャラのアタックを可能ならブロックしなければならない。」を与える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_088_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -8175,6 +10066,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -8401,6 +10293,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_091_on_enter_82775ce997",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場にカード名に「ミリア・ファリーナ・ジーナス」を含むキャラがある場合、このキャラはこのターン中、BP+1000と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_091_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -8432,6 +10344,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -8479,6 +10392,54 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_092_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
+      },
+      {
+        "id": "UA36BT_MCR_1_092_main_activate_ebb3f906d6",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このターン中、自分の手札にあるカード名に「バサラ」を含む全てのキャラカードの必要エナジーを減らす。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_092_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -8510,7 +10471,10 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "DRAW_1",
+        "UNSUPPORTED",
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -8558,6 +10522,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_093_on_enter_b677df5c8f",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分と相手はカードを1枚引く。その後、『BP3000以下』の相手のフロントLのキャラを1枚まで選び、相手の山札の下に置く。自分の手札が5枚以上の場合、『BP4000以下』に代わる。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_093_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -8589,6 +10573,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "LIFE_TRIGGER_RAID_CHOICE"
       ]
     }
@@ -8708,6 +10693,26 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_095_on_enter_820a28ff25",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場にカード名に「ミレーヌ・フレア・ジーナス」を含むキャラがある場合、カードを2枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_095_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -8736,6 +10741,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -8773,6 +10779,46 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_096_on_enter_4e3f9137ac",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36BT_MCR_1_096_main_activate_3dd9d6df78",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36BT_MCR_1_096_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -8801,6 +10847,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -9533,11 +11580,74 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_053_main_activate_4a5887f15c",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "ENERGY_BONUS",
+            "color": "BLUE",
+            "value": 1,
+            "expires": "END_OF_TURN"
+          },
+          {
+            "type": "REGISTER_DELAYED_EFFECT",
+            "event": "ON_END_MAIN_PHASE",
+            "expires": "END_OF_TURN",
+            "once": true,
+            "filters": [
+              {
+                "type": "OR",
+                "filters": [
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "FRONT_LINE"
+                  },
+                  {
+                    "type": "SELF_IN_ZONE",
+                    "zone": "ENERGY_LINE"
+                  }
+                ]
+              }
+            ],
+            "steps": [
+              {
+                "type": "MOVE_CARD",
+                "target_uid": "SOURCE_CARD",
+                "to": "OUTSIDE"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+        },
+        "status": "SUPPORTED",
+        "costs": [
+          {
+            "type": "REST_SOURCE"
+          }
+        ]
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -9572,11 +11682,43 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_055_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "DRAW_1",
+        "DRAW_SEQUENCE"
+      ]
     }
   },
   {
@@ -9679,6 +11821,26 @@
     },
     "abilities": [
       {
+        "id": "UA36ST_MCR_1_057_on_enter_8ab2633817",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から3枚見る。その中から〈シェリル・ノーム〉か〈ランカ・リー〉か［特徴：S.M.S］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36ST_MCR_1_057_on_life_trigger_01fec7cba9",
         "kind": "TRIGGERED",
         "timing": {
@@ -9759,6 +11921,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "SELECT_AND_MOVE",
         "BP_FILTER_BOUNCE"
       ]
@@ -9869,11 +12032,103 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_059_on_enter_43348ae670",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [
+          {
+            "id": "selected_primary_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_primary_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_MOVE_WITH_FALLBACK",
+            "primary_select": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "ENERGY_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_TYPE_IS",
+                  "value": "CHARACTER"
+                },
+                {
+                  "type": "CARD_COST_ENERGY_LTE",
+                  "value": 1
+                },
+                {
+                  "type": "NOT_SOURCE_CARD"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            },
+            "primary_move_to": "HAND",
+            "fallback_action": {
+              "type": "MOVE_CARD",
+              "target_uid": "SOURCE_CARD",
+              "to": "HAND"
+            },
+            "selected_var": "selected_primary_target",
+            "success_flag_var": "primary_target_moved"
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+        },
+        "status": "SUPPORTED"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "COMPOSITE"
+      ]
     }
   },
   {
@@ -9909,6 +12164,26 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36ST_MCR_1_061_on_enter_3dd9d6df78",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36ST_MCR_1_061_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
@@ -9980,6 +12255,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -10373,11 +12649,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_101_on_enter_d29870ce84",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLにカード名に「アルト」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -10409,11 +12708,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_102_on_enter_527f0f547a",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLにカード名に「アルト」を含むキャラがある場合、BP2500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-2000。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   },
   {
@@ -10671,6 +12993,26 @@
     },
     "abilities": [
       {
+        "id": "UA36ST_MCR_1_105_on_enter_447e0e1527",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場に〈ランカ・リー〉がある場合、カードを1枚引き、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36ST_MCR_1_105_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -10703,6 +13045,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "DRAW_1",
         "DRAW_SEQUENCE"
       ]
@@ -10742,6 +13085,26 @@
     },
     "abilities": [
       {
+        "id": "UA36ST_MCR_1_106_on_enter_3dd9d6df78",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36ST_MCR_1_106_on_life_trigger_91b04beda2",
         "kind": "TRIGGERED",
         "timing": {
@@ -10774,6 +13137,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "DRAW_1",
         "DRAW_SEQUENCE"
       ]
@@ -10824,6 +13188,34 @@
     },
     "abilities": [
       {
+        "id": "UA36ST_MCR_1_107_on_enter_91b04beda2",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "DRAW",
+            "value": 1
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "カードを1枚引く。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "DRAW_SEQUENCE",
+          "variant": "draw_fixed_cards"
+        }
+      },
+      {
         "id": "UA36ST_MCR_1_107_on_life_trigger_a342b2ffe2",
         "kind": "TRIGGERED",
         "timing": {
@@ -10855,7 +13247,9 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "DRAW_1",
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "DRAW_SEQUENCE"
       ]
     }
   },
@@ -10896,6 +13290,26 @@
     },
     "abilities": [
       {
+        "id": "UA36ST_MCR_1_108_on_enter_eecadee2c0",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の手札を1枚場外に置いてもよい。そうした場合、このキャラはこのターン中、「このキャラはエナジーLからアタックできる。」と（相手のフロントLのキャラを指定してアタックでき、指定した場合、相手はブロックできない）を得る。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36ST_MCR_1_108_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -10924,6 +13338,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -10963,6 +13378,46 @@
     },
     "abilities": [
       {
+        "id": "UA36ST_MCR_1_109_on_enter_9c0237fe98",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場にカード名に「ミハエル」を含むキャラがある場合、このフィールドをアクティブにする。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
+        "id": "UA36ST_MCR_1_109_main_activate_5a95ab1a40",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の場の［特徴：S.M.S］を1枚まで選び、このターン中、（インパクトの与えるダメージが+1され、インパクトを持たない場合、を得る）を与える。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
+      {
         "id": "UA36ST_MCR_1_109_on_life_trigger_0a3e81b9d0",
         "kind": "TRIGGERED",
         "timing": {
@@ -10991,6 +13446,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "MOVE_SELF"
       ]
     }
@@ -11025,6 +13481,26 @@
       "enter_state": "RESTED"
     },
     "abilities": [
+      {
+        "id": "UA36ST_MCR_1_110_main_activate_5162c30528",
+        "kind": "ACTIVATED",
+        "timing": {
+          "event": "MAIN_ACTIVATE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": true
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、このキャラはこのターン中、発生エナジー+。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      },
       {
         "id": "UA36ST_MCR_1_110_on_life_trigger_bab7196d2b",
         "kind": "TRIGGERED",
@@ -11096,6 +13572,7 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "UNSUPPORTED",
         "READY_AND_TEMP_BP"
       ]
     }
@@ -11309,11 +13786,34 @@
       "requirements": [],
       "enter_state": "RESTED"
     },
-    "abilities": [],
+    "abilities": [
+      {
+        "id": "UA36ST_MCR_1_113_on_enter_7d63753d43",
+        "kind": "TRIGGERED",
+        "timing": {
+          "event": "ON_ENTER"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "自分の山札の上から4枚見る。その中から［特徴：Fire Bomber］かカード名に「ガムリン木崎」を含むキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+        },
+        "status": "UNSUPPORTED",
+        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+      }
+    ],
     "analysis": {
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
-      "semantic_template_types": []
+      "semantic_template_types": [
+        "UNSUPPORTED"
+      ]
     }
   }
 ]

@@ -3450,6 +3450,42 @@ def _preview_add_to_hand_energy_threshold_builder(card: dict, trigger_entry: dic
     )
 
 
+def _selector_clause_to_preview_filters(selector_clause: str) -> list[dict]:
+    clause = str(selector_clause).strip()
+    if not clause:
+        return []
+    trait_match = re.fullmatch(r"［特徴：(.+)］", clause)
+    if trait_match:
+        return [{"type": "HAS_TRAIT", "value": trait_match.group(1)}]
+    name_matches = re.findall(r"〈([^〉]+)〉", clause)
+    if len(name_matches) == 1:
+        return [{"type": "NAME_IS", "value": name_matches[0]}]
+    if len(name_matches) >= 2:
+        return [{"type": "OR", "filters": [{"type": "NAME_IS", "value": name} for name in name_matches]}]
+    return []
+
+
+def _preview_add_to_hand_from_clause_with_discard_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    count = int(match.group(1))
+    filters = _selector_clause_to_preview_filters(match.group(2))
+    return _build_preview_add_to_hand_template(
+        card,
+        trigger_entry,
+        event_name,
+        _text,
+        _card_id,
+        {
+            "params": {
+                "count": count,
+                "filters": filters if filters else None,
+                "discard_after_add": True,
+            },
+            "template_metadata": payload.get("template_metadata"),
+        },
+    )
+
+
 def _build_bp_remove_ability(
     card: dict,
     trigger_entry: dict,
@@ -4165,6 +4201,31 @@ def _self_other_bp_modifier_builder(card: dict, trigger_entry: dict, event_name:
         1,
     )
     steps = select_steps + [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(match.group(1)), "expires": "END_OF_TURN"}]
+    return _supported_ability(
+        card,
+        event_name,
+        trigger_entry,
+        [],
+        target_specs,
+        steps,
+        payload.get("kind"),
+        template_metadata=payload.get("template_metadata"),
+    )
+
+
+def _self_other_trait_bp_modifier_builder(card: dict, trigger_entry: dict, event_name: str, _text: str, _card_id: str, payload: dict) -> dict:
+    match = payload["match"]
+    target_specs, select_steps = _manual_single_target(
+        "SELF",
+        ["FRONT_LINE", "BACK_LINE"],
+        [
+            {"type": "CARD_UID_NE", "value": "SOURCE_CARD"},
+            {"type": "HAS_TRAIT", "value": str(match.group(1))},
+        ],
+        0,
+        1,
+    )
+    steps = select_steps + [{"type": "ADD_TEMP_BP_MODIFIER", "target_var": "selected_target", "value": int(match.group(2)), "expires": "END_OF_TURN"}]
     return _supported_ability(
         card,
         event_name,
@@ -5308,6 +5369,14 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "self_other_character_bp_plus"},
     ),
     _TemplateRule(
+        name="trigger.self_other_trait_bp_modifier",
+        event_filter=("ON_ENTER", "MAIN_ACTIVATE", "ON_PLAY", "ON_ATTACK", "ON_BLOCK", "ON_LIFE_TRIGGER"),
+        matcher=_regex_match(r"自分の場の他の［特徴：(.+)］を1枚まで選び、このターン中、BP\+(\d+)。"),
+        builder=_self_other_trait_bp_modifier_builder,
+        priority=200,
+        template_metadata={"family": "TEMP_BP_MODIFIER", "variant": "self_other_trait_bp_plus"},
+    ),
+    _TemplateRule(
         name="trigger.self_other_bp_modifier.conditional_upgrade",
         event_filter=("ON_ENTER", "MAIN_ACTIVATE"),
         matcher=_regex_match(r"自分の場の他のキャラを1枚まで選び、このターン中、『BP\+(\d+)』。自分の場に他のカードが(\d+)枚以上ある場合、『BP\+(\d+)』に代わる。"),
@@ -5494,6 +5563,14 @@ _TRIGGER_TEMPLATE_RULES: tuple[_TemplateRule, ...] = (
         ),
         priority=200,
         template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_discard_on_add"},
+    ),
+    _TemplateRule(
+        name="trigger.preview_add_to_hand.variable_clause_discard",
+        event_filter="ON_ENTER",
+        matcher=_regex_match(r"自分の山札の上から(\d+)枚見て、((?:［特徴：[^］]+］)|(?:〈[^〉]+〉(?:か〈[^〉]+〉)*))を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"),
+        builder=_preview_add_to_hand_from_clause_with_discard_builder,
+        priority=199,
+        template_metadata={"family": "PREVIEW_ADD_TO_HAND", "variant": "preview_add_to_hand_variable_clause_discard_on_add"},
     ),
     _TemplateRule(
         name="trigger.preview_add_to_hand.yellow_event_discard",
@@ -5918,12 +5995,45 @@ def _compile_event_effect(card: dict, effect_entry: dict, semantic_map: dict[str
 
 
 def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
+    labels = effect_entry.get("labels", [])
+    if not isinstance(labels, list):
+        labels = []
+    normalized_labels = {str(label).strip() for label in labels if str(label).strip()}
+    inferred_trigger = "PASSIVE"
+    if "登場時" in normalized_labels:
+        inferred_trigger = "ON_ENTER"
+    elif "起動メイン" in normalized_labels:
+        inferred_trigger = "MAIN_ACTIVATE"
+
     pseudo_trigger = {
-        "trigger": "PASSIVE",
+        "trigger": inferred_trigger,
         "source_label": effect_entry.get("source_label", ""),
         "effect_box": effect_entry.get("effect_box", "OUTER"),
         "text": str(effect_entry.get("text", "")).strip(),
     }
+    if inferred_trigger == "MAIN_ACTIVATE":
+        if "ターン1" in normalized_labels:
+            pseudo_trigger["once_per_turn"] = True
+        if "レストにする" in normalized_labels:
+            pseudo_trigger["costs"] = [{"type": "REST_SOURCE"}]
+
+    if inferred_trigger != "PASSIVE":
+        promoted = _dispatch_template_rules(
+            "trigger",
+            _TRIGGER_TEMPLATE_RULES,
+            card,
+            pseudo_trigger,
+            lambda current_card, current_entry: _compile_trigger_legacy(current_card, current_entry, {}),
+        )
+        if (
+            isinstance(promoted, dict)
+            and promoted.get("status") == "SUPPORTED"
+            and "costs" not in promoted
+            and "costs" in pseudo_trigger
+        ):
+            promoted["costs"] = deepcopy(pseudo_trigger["costs"])
+        return promoted
+
     return _dispatch_template_rules(
         "passive",
         _PASSIVE_TEMPLATE_RULES,

@@ -3,28 +3,28 @@
   "cards_metrics": {
     "totals": {
       "cards": 521,
-      "abilities": 696,
-      "supported": 635,
-      "unsupported": 61
+      "abilities": 850,
+      "supported": 679,
+      "unsupported": 171
     },
     "per_series": {
       "CGD": {
         "cards": 79,
         "abilities": 142,
-        "supported": 81,
-        "unsupported": 61
+        "supported": 82,
+        "unsupported": 60
       },
       "KGD": {
         "cards": 122,
-        "abilities": 121,
-        "supported": 121,
-        "unsupported": 0
+        "abilities": 196,
+        "supported": 143,
+        "unsupported": 53
       },
       "MCR": {
         "cards": 121,
-        "abilities": 123,
-        "supported": 123,
-        "unsupported": 0
+        "abilities": 202,
+        "supported": 144,
+        "unsupported": 58
       },
       "MMM": {
         "cards": 117,
@@ -42,18 +42,18 @@
     "runtime_totals": {
       "cards": 536,
       "series_cards": 521,
-      "abilities": 699
+      "abilities": 853
     }
   },
   "template_telemetry": {
-    "dispatch_total": 2400,
-    "hits_total": 482,
-    "fallback_total": 1918,
-    "fallback_ratio": 0.799167,
+    "dispatch_total": 2432,
+    "hits_total": 518,
+    "fallback_total": 1914,
+    "fallback_ratio": 0.787007,
     "fallback_by_registry": {
-      "event": 114,
-      "passive": 1002,
-      "trigger": 802
+      "event": 130,
+      "passive": 694,
+      "trigger": 1090
     },
     "family_hits": {
       "AP_ACTIVATE": 46,
@@ -62,17 +62,17 @@
       "BP_SUM_LIMIT_REMOVE": 2,
       "BP_THRESHOLD_REMOVE": 60,
       "CONDITIONAL_DRAW": 6,
-      "DRAW_SEQUENCE": 202,
+      "DRAW_SEQUENCE": 214,
       "HAND_SUMMON": 2,
       "LIFE_TRIGGER_RAID_CHOICE": 48,
-      "MULTI_BRANCH_CHOICE": 18,
+      "MULTI_BRANCH_CHOICE": 26,
       "OPTIONAL_AP_DAMAGE": 2,
       "OPTIONAL_COST_THEN_EFFECT": 8,
-      "PREVIEW_ADD_TO_HAND": 20,
-      "PREVIEW_TOP_POSITION": 14,
+      "PREVIEW_ADD_TO_HAND": 28,
+      "PREVIEW_TOP_POSITION": 16,
       "REST_CONTROL": 8,
       "SPECIAL_OVERRIDE": 4,
-      "TEMP_BP_MODIFIER": 14,
+      "TEMP_BP_MODIFIER": 20,
       "TEMP_KEYWORD": 6,
       "ZONE_MOVE": 4
     },
@@ -99,7 +99,7 @@
       "conditional_preview_one_then_choose_top_or_bottom": 8,
       "draw_activate_name_contains_and_named": 2,
       "draw_discard_then_outside_summon": 2,
-      "draw_fixed_cards": 202,
+      "draw_fixed_cards": 214,
       "dual_buff_with_optional_keyword_placeholder": 2,
       "energy_to_front_if_slot_open_name_contains": 2,
       "field_state_conditional_draw": 6,
@@ -115,19 +115,21 @@
       "preview_add_to_hand_discard_on_add": 10,
       "preview_add_to_hand_distinct_names": 2,
       "preview_add_to_hand_name_contains_discard_on_add": 2,
+      "preview_add_to_hand_variable_clause_discard_on_add": 8,
       "preview_name_contains_dual_then_conditional_ready_ap": 2,
       "preview_one_then_choose_top_or_bottom": 4,
-      "preview_two_reorder_top_bottom_split": 2,
+      "preview_two_reorder_top_bottom_split": 4,
       "ready_ap_slots_only": 46,
       "remove_or_rest_lock_by_name_gate": 2,
       "rest_active_other_then_source_gain_placeholder": 2,
       "rest_and_skip_next_ready_once": 4,
       "rest_then_conditional_bp_debuff_until_next_turn": 2,
-      "select_one_from_following": 10,
+      "select_one_from_following": 18,
       "select_one_non_repeat_per_turn": 4,
       "self_gain_source_bp_compare_remove": 2,
       "self_other_character_bp_plus": 2,
       "self_other_character_bp_plus_conditional_upgrade": 2,
+      "self_other_trait_bp_plus": 6,
       "summon_named_character_from_hand": 2
     },
     "rule_hits": {
@@ -163,11 +165,11 @@
       "trigger.bp_sum_limit_remove": 2,
       "trigger.buff_then_conditional_activate_named": 2,
       "trigger.choice_branch.non_repeat_per_turn": 4,
-      "trigger.choice_branch.select_one": 6,
+      "trigger.choice_branch.select_one": 14,
       "trigger.conditional_bp_debuff": 2,
       "trigger.conditional_bp_gate_grant_cannot_block": 2,
       "trigger.conditional_draw": 6,
-      "trigger.draw.simple": 202,
+      "trigger.draw.simple": 214,
       "trigger.dual_buff_with_optional_keyword": 2,
       "trigger.energy_to_front_if_slot_open": 2,
       "trigger.hand_named_character_summon": 2,
@@ -181,14 +183,16 @@
       "trigger.preview_add_to_hand.043_name_or_trait_discard": 2,
       "trigger.preview_add_to_hand.energy_threshold_discard": 2,
       "trigger.preview_add_to_hand.name_contains_discard": 2,
+      "trigger.preview_add_to_hand.variable_clause_discard": 8,
       "trigger.preview_add_to_hand.yellow_event_discard": 2,
       "trigger.preview_top.choose_top_or_bottom": 4,
-      "trigger.preview_top_two_reorder_top_bottom": 2,
+      "trigger.preview_top_two_reorder_top_bottom": 4,
       "trigger.rest_active_other_then_source_gain_placeholder": 2,
       "trigger.rest_and_lock_with_conditional_debuff": 2,
       "trigger.self_gain_source_bp_compare_remove": 2,
       "trigger.self_other_bp_modifier": 2,
-      "trigger.self_other_bp_modifier.conditional_upgrade": 2
+      "trigger.self_other_bp_modifier.conditional_upgrade": 2,
+      "trigger.self_other_trait_bp_modifier": 6
     },
     "conflict_count": 1,
     "conflicts": [
@@ -243,9 +247,11 @@
         "trigger.conditional_bp_gate_grant_cannot_block",
         "trigger.self_other_bp_modifier.conditional_upgrade",
         "trigger.self_other_bp_modifier",
+        "trigger.self_other_trait_bp_modifier",
         "trigger.preview_add_to_hand.007_or_trait_discard",
         "trigger.preview_add_to_hand.040_name_discard",
         "trigger.preview_add_to_hand.043_name_or_trait_discard",
+        "trigger.preview_add_to_hand.variable_clause_discard",
         "trigger.preview_add_to_hand.name_contains_discard",
         "trigger.preview_add_character_cards",
         "trigger.preview_add_to_hand.energy_threshold_discard",
@@ -289,7 +295,12 @@
       ],
       "passive": []
     },
-    "rule_order_diff": {}
+    "rule_order_diff": {},
+    "carried_forward_from_previous_snapshot": true,
+    "incremental_skip_note": {
+      "compiled_series": 0,
+      "incremental_skipped_series": 5
+    }
   },
   "legacy_template_telemetry": {
     "rule_hits": {},

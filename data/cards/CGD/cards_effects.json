@@ -619,8 +619,71 @@
           "event": "ON_ENTER"
         },
         "requirements": [],
-        "target_specs": [],
-        "steps": [],
+        "target_specs": [
+          {
+            "id": "selected_target",
+            "scope": "CARD",
+            "candidate": {
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                },
+                {
+                  "type": "HAS_TRAIT",
+                  "value": "七煌星団"
+                }
+              ]
+            },
+            "select": {
+              "min": 0,
+              "max": 1,
+              "mode": "MANUAL"
+            },
+            "store_as": "selected_target"
+          }
+        ],
+        "steps": [
+          {
+            "type": "SELECT_TARGETS",
+            "var": "selected_target",
+            "target": {
+              "type": "CARD_SET",
+              "owner": "SELF",
+              "zones": [
+                "FRONT_LINE",
+                "BACK_LINE"
+              ],
+              "filters": [],
+              "requirements": [
+                {
+                  "type": "CARD_UID_NE",
+                  "value": "SOURCE_CARD"
+                },
+                {
+                  "type": "HAS_TRAIT",
+                  "value": "七煌星団"
+                }
+              ],
+              "min": 0,
+              "max": 1,
+              "selection_mode": "MANUAL",
+              "manual": true
+            }
+          },
+          {
+            "type": "ADD_TEMP_BP_MODIFIER",
+            "target_var": "selected_target",
+            "value": 1000,
+            "expires": "END_OF_TURN"
+          }
+        ],
         "limits": {
           "once_per_turn": false
         },
@@ -629,8 +692,11 @@
           "effect_box": "OUTER",
           "text": "自分の場の他の［特徴：七煌星団］を1枚まで選び、このターン中、BP+1000。"
         },
-        "status": "UNSUPPORTED",
-        "unsupported_reason": "当前原子要求/步骤模板尚未覆盖该文本模式。"
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "TEMP_BP_MODIFIER",
+          "variant": "self_other_trait_bp_plus"
+        }
       },
       {
         "id": "UA34BT_CGD_1_008_on_life_trigger_91b04beda2",
@@ -665,8 +731,9 @@
       "source": "CGD/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
-        "UNSUPPORTED",
+        "TEMP_BP",
         "DRAW_1",
+        "TEMP_BP_MODIFIER",
         "DRAW_SEQUENCE"
       ]
     }

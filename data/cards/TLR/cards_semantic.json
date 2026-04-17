@@ -953,7 +953,8 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "SELECT_AND_MOVE"
+      "SELECT_AND_MOVE",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
       {
@@ -962,7 +963,7 @@
         "status": "SUPPORTED",
         "text": "自分の山札の上から3枚見て、［特徴：変身兵器］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
         "reason": "",
-        "template_type": "SELECT_AND_MOVE"
+        "template_type": "PREVIEW_ADD_TO_HAND"
       }
     ],
     "can_be_expressed_by_dsl": true,
