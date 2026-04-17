@@ -3,56 +3,56 @@
   "cards_metrics": {
     "totals": {
       "cards": 521,
-      "abilities": 850,
-      "supported": 679,
+      "abilities": 867,
+      "supported": 696,
       "unsupported": 171
     },
     "per_series": {
       "CGD": {
         "cards": 79,
-        "abilities": 142,
-        "supported": 82,
+        "abilities": 144,
+        "supported": 84,
         "unsupported": 60
       },
       "KGD": {
         "cards": 122,
-        "abilities": 196,
-        "supported": 143,
+        "abilities": 200,
+        "supported": 147,
         "unsupported": 53
       },
       "MCR": {
         "cards": 121,
-        "abilities": 202,
-        "supported": 144,
+        "abilities": 205,
+        "supported": 147,
         "unsupported": 58
       },
       "MMM": {
         "cards": 117,
-        "abilities": 180,
-        "supported": 180,
+        "abilities": 182,
+        "supported": 182,
         "unsupported": 0
       },
       "TLR": {
         "cards": 82,
-        "abilities": 130,
-        "supported": 130,
+        "abilities": 136,
+        "supported": 136,
         "unsupported": 0
       }
     },
     "runtime_totals": {
       "cards": 536,
       "series_cards": 521,
-      "abilities": 853
+      "abilities": 870
     }
   },
   "template_telemetry": {
     "dispatch_total": 2432,
-    "hits_total": 518,
-    "fallback_total": 1914,
-    "fallback_ratio": 0.787007,
+    "hits_total": 552,
+    "fallback_total": 1880,
+    "fallback_ratio": 0.773026,
     "fallback_by_registry": {
       "event": 130,
-      "passive": 694,
+      "passive": 660,
       "trigger": 1090
     },
     "family_hits": {
@@ -68,6 +68,7 @@
       "MULTI_BRANCH_CHOICE": 26,
       "OPTIONAL_AP_DAMAGE": 2,
       "OPTIONAL_COST_THEN_EFFECT": 8,
+      "PASSIVE_STATIC_BP": 34,
       "PREVIEW_ADD_TO_HAND": 28,
       "PREVIEW_TOP_POSITION": 16,
       "REST_CONTROL": 8,
@@ -130,6 +131,8 @@
       "self_other_character_bp_plus": 2,
       "self_other_character_bp_plus_conditional_upgrade": 2,
       "self_other_trait_bp_plus": 6,
+      "source_bp_bonus_always_on": 20,
+      "source_bp_bonus_with_name_gate": 14,
       "summon_named_character_from_hand": 2
     },
     "rule_hits": {
@@ -159,6 +162,8 @@
       "event.preview_name_contains_dual_then_conditional_ready_ap": 2,
       "event.ready_ap_only": 46,
       "event.rest_and_lock_once": 4,
+      "passive.source_bp_bonus.always_on": 20,
+      "passive.source_bp_bonus.conditional_name_in_field": 14,
       "trigger.bp_bounce_to_hand": 14,
       "trigger.bp_debuff": 2,
       "trigger.bp_remove.required": 16,
@@ -293,9 +298,29 @@
         "event.bp_remove.required",
         "event.bp_remove.optional"
       ],
-      "passive": []
+      "passive": [
+        "passive.source_bp_bonus.conditional_name_in_field",
+        "passive.source_bp_bonus.always_on"
+      ]
     },
-    "rule_order_diff": {},
+    "rule_order_diff": {
+      "passive": {
+        "old_digest": "da39a3ee5e",
+        "new_digest": "a69d234559",
+        "changed_positions": [
+          {
+            "index": 0,
+            "old": "",
+            "new": "passive.source_bp_bonus.conditional_name_in_field"
+          },
+          {
+            "index": 1,
+            "old": "",
+            "new": "passive.source_bp_bonus.always_on"
+          }
+        ]
+      }
+    },
     "carried_forward_from_previous_snapshot": true,
     "incremental_skip_note": {
       "compiled_series": 0,

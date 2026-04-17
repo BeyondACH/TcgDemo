@@ -636,9 +636,19 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "READY_AND_TEMP_BP"
+      "COMPOSITE",
+      "READY_AND_TEMP_BP",
+      "PASSIVE_STATIC_BP"
     ],
     "abilities": [
+      {
+        "id": "UA45BT_TLR_1_022_passive_c093510579",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA45BT_TLR_1_022_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -793,12 +803,22 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "COMPOSITE",
       "LIFE_TO_HAND_AND_READY_SOURCE",
       "DRAW_1",
+      "PASSIVE_STATIC_BP",
       "OPTIONAL_COST_THEN_EFFECT",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA45BT_TLR_1_027_passive_16ee1aae96",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA45BT_TLR_1_027_on_enter_02e747d62b",
         "timing": "ON_ENTER",
@@ -831,11 +851,21 @@
       "RAID"
     ],
     "template_types": [
+      "COMPOSITE",
       "DRAW_1",
       "LIFE_TRIGGER_RAID_CHOICE",
+      "PASSIVE_STATIC_BP",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA45BT_TLR_1_028_passive_988beeed71",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈結城 美柑〉がある場合、このキャラはBP+1500。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA45BT_TLR_1_028_on_enter_91b04beda2",
         "timing": "ON_ENTER",
@@ -866,9 +896,19 @@
     "origin": "TLR/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "MOVE_SELF"
+      "COMPOSITE",
+      "MOVE_SELF",
+      "PASSIVE_STATIC_BP"
     ],
     "abilities": [
+      {
+        "id": "UA45BT_TLR_1_029_passive_c093510579",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA45BT_TLR_1_029_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -1868,12 +1908,22 @@
     "inferred_keywords": [
       "STEP"
     ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE",
+      "PASSIVE_STATIC_BP"
     ],
+    "abilities": [
+      {
+        "id": "UA45BT_TLR_1_061_passive_441de017d0",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈モモ・ベリア・デビルーク〉がある場合、このキャラはBP+1500。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "（自分の移動フェイズにフロントLからエナジーLへ移動できる）\n自分の場に〈モモ・ベリア・デビルーク〉がある場合、このキャラはBP+1500。",
       "trigger": "-",
@@ -2225,10 +2275,20 @@
       "STEP"
     ],
     "template_types": [
+      "COMPOSITE",
       "DRAW_1",
+      "PASSIVE_STATIC_BP",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA45BT_TLR_1_073_passive_dbac828ced",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラはBP+500。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA45BT_TLR_1_073_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",

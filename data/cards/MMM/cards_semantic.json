@@ -637,9 +637,19 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "DRAW_1"
+      "COMPOSITE",
+      "DRAW_1",
+      "PASSIVE_STATIC_BP"
     ],
     "abilities": [
+      {
+        "id": "UA31BT_MMM_1_022_passive_c093510579",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA31BT_MMM_1_022_on_enter_aa9f3b6d3d",
         "timing": "ON_ENTER",
@@ -2596,10 +2606,20 @@
     "origin": "MMM/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "COMPOSITE",
       "DRAW_1",
+      "PASSIVE_STATIC_BP",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA31BT_MMM_1_087_passive_792b0e76be",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈佐倉 杏子〉がある場合、このキャラはBP+1000。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA31BT_MMM_1_087_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",

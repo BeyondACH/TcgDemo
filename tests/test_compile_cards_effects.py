@@ -286,6 +286,31 @@ class CompileCardsEffectsTests(unittest.TestCase):
         )
         self.assertIsNone(ability)
 
+    def test_compile_passive_supports_always_on_source_bp_bonus(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {"labels": [], "text": "このキャラはBP+1000。"},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["timing"]["event"], "PASSIVE")
+        self.assertEqual(ability["kind"], "STATIC")
+        self.assertEqual(ability["steps"][0]["modifier_type"], "SOURCE_BP_BONUS")
+        self.assertEqual(ability["steps"][0]["value"], 1000)
+        self.assertEqual(ability["steps"][0]["while"], [])
+
+    def test_compile_passive_supports_name_gated_source_bp_bonus(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {"labels": [], "text": "自分の場に〈楊端和〉がある場合、このキャラはBP+1000。"},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["timing"]["event"], "PASSIVE")
+        self.assertEqual(ability["kind"], "STATIC")
+        self.assertEqual(
+            ability["steps"][0]["while"],
+            [{"type": "CONTROLLER_HAS_NAME_IN_FIELD", "value": "楊端和"}],
+        )
+
     def test_validate_template_registry_consistency_accepts_valid_rules(self):
         rules = (
             _TemplateRule(

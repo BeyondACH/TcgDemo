@@ -2000,6 +2000,36 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_022_passive_dbac828ced",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 500,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+500。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA36BT_MCR_1_022_main_activate_ba71626b0e",
         "kind": "ACTIVATED",
         "timing": {
@@ -2051,8 +2081,10 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "UNSUPPORTED",
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "PASSIVE_STATIC_BP"
       ]
     }
   },
@@ -6901,6 +6933,36 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_060_passive_dbac828ced",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 500,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+500。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA36BT_MCR_1_060_on_enter_4468d5d9f5",
         "kind": "TRIGGERED",
         "timing": {
@@ -6952,8 +7014,10 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "UNSUPPORTED",
-        "LIFE_TRIGGER_RAID_CHOICE"
+        "LIFE_TRIGGER_RAID_CHOICE",
+        "PASSIVE_STATIC_BP"
       ]
     }
   },
@@ -9295,6 +9359,36 @@
     },
     "abilities": [
       {
+        "id": "UA36BT_MCR_1_081_passive_c093510579",
+        "kind": "STATIC",
+        "timing": {
+          "event": "PASSIVE"
+        },
+        "requirements": [],
+        "target_specs": [],
+        "steps": [
+          {
+            "type": "REGISTER_STATIC_MODIFIER",
+            "modifier_type": "SOURCE_BP_BONUS",
+            "value": 1000,
+            "while": []
+          }
+        ],
+        "limits": {
+          "once_per_turn": false
+        },
+        "ui": {
+          "label": "",
+          "effect_box": "OUTER",
+          "text": "このキャラはBP+1000。"
+        },
+        "status": "SUPPORTED",
+        "template_metadata": {
+          "family": "PASSIVE_STATIC_BP",
+          "variant": "source_bp_bonus_always_on"
+        }
+      },
+      {
         "id": "UA36BT_MCR_1_081_on_life_trigger_a41bad1555",
         "kind": "TRIGGERED",
         "timing": {
@@ -9374,7 +9468,9 @@
       "source": "MCR/cards_raw.json",
       "semantic_available": true,
       "semantic_template_types": [
+        "COMPOSITE",
         "SELECT_AND_MOVE",
+        "PASSIVE_STATIC_BP",
         "BP_THRESHOLD_REMOVE"
       ]
     }

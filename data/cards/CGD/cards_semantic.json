@@ -929,10 +929,20 @@
       "RAID"
     ],
     "template_types": [
+      "COMPOSITE",
       "UNSUPPORTED",
-      "MOVE_SELF"
+      "MOVE_SELF",
+      "PASSIVE_STATIC_BP"
     ],
     "abilities": [
+      {
+        "id": "UA34BT_CGD_1_030_passive_dbac828ced",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "このキャラはBP+500。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      },
       {
         "id": "UA34BT_CGD_1_030_on_enter_971b0135e1",
         "timing": "ON_ENTER",
@@ -1834,12 +1844,22 @@
     "inferred_keywords": [
       "DOUBLE_BLOCK"
     ],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE",
+      "PASSIVE_STATIC_BP"
     ],
+    "abilities": [
+      {
+        "id": "UA34BT_CGD_1_057_passive_f07ce6ef92",
+        "timing": "PASSIVE",
+        "status": "SUPPORTED",
+        "text": "自分の場に〈天空要塞ダモクレス〉がある場合、このキャラはBP+500。",
+        "reason": "",
+        "template_type": "PASSIVE_STATIC_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "（このキャラがこのターン初めてブロックした時、アクティブにする）\n自分の場に〈天空要塞ダモクレス〉がある場合、このキャラはBP+500。",
       "trigger": "-",
