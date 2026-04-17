@@ -208,6 +208,20 @@ function Convert-NumberToId([string]$number) {
 }
 
 function Get-CardCandidates([string]$fileBaseName) {
+  $normalizedBaseName = $fileBaseName -replace '_(\d+)$', ''
+
+  if ($normalizedBaseName -match '^(UA\d+(?:BT|ST))-([A-Z0-9]+)-(.+)$') {
+    $setCode = $matches[1]
+    $titleCode = $matches[2]
+    $suffix = $matches[3]
+    $candidates = [System.Collections.ArrayList]::new()
+    [void]$candidates.Add("$setCode/$titleCode-$suffix")
+    if ($suffix -match '^\d{3}$') {
+      [void]$candidates.Add("$setCode/$titleCode-1-$suffix")
+    }
+    return @($candidates.ToArray())
+  }
+
   if ($fileBaseName -match '^(UA\d+(?:BT|ST))-([A-Z0-9]+)-(.+)$') {
     $setCode = $matches[1]
     $titleCode = $matches[2]
@@ -220,7 +234,7 @@ function Get-CardCandidates([string]$fileBaseName) {
     return @($candidates.ToArray())
   }
 
-  return @($fileBaseName)
+  return @($normalizedBaseName)
 }
 
 function Test-RequiredCardFields($card) {
