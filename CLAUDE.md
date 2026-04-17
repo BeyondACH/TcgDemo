@@ -20,22 +20,22 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 ### 运行无头冒烟测试
 ```powershell
 # 里程碑冒烟测试
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/milestone_smoke_test.gd
 
 # 正式 raw 最小对局冒烟测试
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/cards_raw_minimal_duel_smoke_test.gd
 
 # 卡组导入冒烟测试
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/deck_import_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/deck_import_smoke_test.gd
 
 # AI v2 行为冒烟测试
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/simple_ai_v2_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/simple_ai_v2_smoke_test.gd
 
 # VS AI 冒烟测试
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/vs_ai_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/vs_ai_smoke_test.gd
 
 # 运行时残留冒烟测试
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/runtime_residue_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/runtime_residue_smoke_test.gd
 ```
 
 ### 编译卡牌效果
@@ -127,11 +127,11 @@ python tools/compile_cards_effects.py
 
 ## 验证基线（2026-03-31）
 
-- `docs/milestone_smoke_test.gd`：33 通过，0 失败（规则语义）
-- `docs/cards_raw_minimal_duel_smoke_test.gd`：69 通过，0 失败（raw 样例）
-- `docs/runtime_residue_smoke_test.gd`：4 通过，0 失败（残留检查）
-- `docs/simple_ai_v2_smoke_test.gd`：6 通过，0 失败（AI 行为）
-- `docs/vs_ai_smoke_test.gd`：2 通过，0 失败（AI 流程）
+- `test/milestone_smoke_test.gd`：33 通过，0 失败（规则语义）
+- `test/cards_raw_minimal_duel_smoke_test.gd`：69 通过，0 失败（raw 样例）
+- `test/runtime_residue_smoke_test.gd`：4 通过，0 失败（残留检查）
+- `test/simple_ai_v2_smoke_test.gd`：6 通过，0 失败（AI 行为）
+- `test/vs_ai_smoke_test.gd`：2 通过，0 失败（AI 流程）
 
 ## 重要注意事项
 
