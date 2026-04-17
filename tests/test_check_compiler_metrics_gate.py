@@ -165,6 +165,54 @@ class CheckCompilerMetricsGateTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
             self.assertIn("COMPILER_METRICS_GATE_OK", result.stdout)
 
+    def test_script_fails_when_baseline_snapshot_matches_current_snapshot(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            snapshot_path = temp_path / "current.json"
+            gate_path = temp_path / "gate.json"
+
+            payload = {
+                "template_telemetry": {
+                    "fallback_ratio": 0.4,
+                    "conflict_count": 1,
+                    "conflicts": [],
+                    "rule_order_diff": {},
+                    "family_hits": {"DRAW_SEQUENCE": 3},
+                }
+            }
+            gate_payload = {
+                "max_fallback_ratio": 0.9,
+                "max_conflict_count": 2,
+                "max_conflict_delta": 0,
+                "forbid_new_conflict_keys": True,
+                "block_on_rule_order_diff": False,
+                "protected_families_no_new_conflicts": [],
+                "required_family_hits": {"DRAW_SEQUENCE": 1},
+            }
+
+            snapshot_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            gate_path.write_text(json.dumps(gate_payload, ensure_ascii=False), encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "tools/check_compiler_metrics_gate.py",
+                    "--snapshot",
+                    str(snapshot_path),
+                    "--baseline-snapshot",
+                    str(snapshot_path),
+                    "--gate",
+                    str(gate_path),
+                ],
+                cwd=Path(__file__).resolve().parents[1],
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("COMPILER_METRICS_GATE_FAILED", result.stdout)
+            self.assertIn("baseline snapshot must be distinct from snapshot path", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

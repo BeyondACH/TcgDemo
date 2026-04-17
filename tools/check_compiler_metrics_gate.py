@@ -7,6 +7,10 @@ import argparse
 import json
 from pathlib import Path
 
+DEFAULT_SNAPSHOT_PATH = Path("docs/plan/compiler_metrics_snapshot.json")
+DEFAULT_BASELINE_SNAPSHOT_PATH = Path("docs/plan/compiler_metrics_snapshot_baseline.json")
+DEFAULT_GATE_PATH = Path("docs/plan/compiler_metrics_gate.json")
+
 
 def _build_conflict_key(entry: dict) -> str:
     return f"{entry.get('registry', '')}|{entry.get('event', '')}|{entry.get('text', '')}"
@@ -41,26 +45,46 @@ def _collect_family_conflict_hits(telemetry: dict) -> dict[str, int]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--snapshot", type=Path, default=Path("docs/plan/compiler_metrics_snapshot.json"))
+    parser.add_argument("--snapshot", type=Path, default=DEFAULT_SNAPSHOT_PATH)
     parser.add_argument(
         "--baseline-snapshot",
         type=Path,
-        default=Path("docs/plan/compiler_metrics_snapshot.json"),
-        help="Baseline metrics snapshot for delta checks.",
+        default=DEFAULT_BASELINE_SNAPSHOT_PATH,
+        help="Baseline metrics snapshot for delta checks (must be distinct from --snapshot).",
     )
-    parser.add_argument("--gate", type=Path, default=Path("docs/plan/compiler_metrics_gate.json"))
+    parser.add_argument("--gate", type=Path, default=DEFAULT_GATE_PATH)
     args = parser.parse_args()
 
     snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
     gate = json.loads(args.gate.read_text(encoding="utf-8"))
+
+    baseline_required = any(
+        [
+            gate.get("max_conflict_delta") is not None,
+            bool(gate.get("forbid_new_conflict_keys", False)),
+            bool(gate.get("protected_families_no_new_conflicts", [])),
+        ]
+    )
     baseline_snapshot = {}
     if args.baseline_snapshot.exists():
         baseline_snapshot = json.loads(args.baseline_snapshot.read_text(encoding="utf-8"))
+
+    same_snapshot_path = args.snapshot.resolve() == args.baseline_snapshot.resolve()
+
+    violations: list[str] = []
+    if baseline_required and not args.baseline_snapshot.exists():
+        violations.append(
+            f"baseline snapshot is required for delta checks but missing: {args.baseline_snapshot}"
+        )
+    if baseline_required and same_snapshot_path:
+        violations.append(
+            f"baseline snapshot must be distinct from snapshot path for delta checks: {args.baseline_snapshot}"
+        )
+
     telemetry = snapshot.get("template_telemetry", {})
     baseline_telemetry = baseline_snapshot.get("template_telemetry", {}) if isinstance(baseline_snapshot, dict) else {}
     family_hits = telemetry.get("family_hits", {})
 
-    violations: list[str] = []
     fallback_ratio = float(telemetry.get("fallback_ratio", 1.0))
     max_fallback_ratio = float(gate.get("max_fallback_ratio", 1.0))
     if fallback_ratio > max_fallback_ratio:
