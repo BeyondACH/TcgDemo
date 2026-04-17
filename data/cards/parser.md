@@ -398,6 +398,9 @@ python tools/cluster_unsupported_families.py --cards-root data/cards --top-n 20 
 # 6) 编译快照比对 + unsupported 门禁
 python tools/snapshot_compiler_metrics.py --cards-root data/cards
 python tools/check_unsupported_budget.py --cards-root data/cards --max-total 0
+
+# 7) effect 覆盖度门禁（高置信“effect 未落能力项”）
+python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json
 ```
 
 ### 12.3 产出物与用途
@@ -410,6 +413,8 @@ python tools/check_unsupported_budget.py --cards-root data/cards --max-total 0
   - 将“单卡缺口”归并为“文本族缺口”，用于统一收敛
 - `docs/plan/compiler_metrics_snapshot.json`
   - 作为回归基线，配合门禁阻断能力退化
+- `docs/plan/high_confidence_effect_drop_list.md`
+  - 跟踪“effect 未落能力项”高置信疑似项，避免支持率统计漏报
 
 ### 12.4 开发计划模板（每轮导入后补齐）
 
@@ -435,5 +440,6 @@ python tools/check_unsupported_budget.py --cards-root data/cards --max-total 0
 
 - 支持率报表、原子矩阵、未支持聚类三份报告已更新
 - `check_unsupported_budget` 未回升（或有明确豁免与记录）
+- `check_effect_text_coverage` 未回升（或有明确豁免与记录）
 - 本轮计划与日志已同步，且中文文档通过 UTF-8 校验
 - 任一步骤缺失或未产出对应文件时，本轮导入不允许标记为完成
