@@ -249,21 +249,20 @@
 - PR 阶段可自动发现并阻断模板退化。
 - 新系列导入后可快速识别新增缺口并归入模板族路线。
 
-### 进度（2026-04-17）
+### 进度（2026-04-17，已完成）
 
-- 已正式进入 P4，并将本阶段拆分为“模板冲突阻断”与“长期门禁自动化”两条并行子线（在不改变既有 DSL/IR 语义前提下推进）。
-- 模板冲突阻断（当前完成）：
-  - 冻结冲突口径：继续沿用 P0 已产出的 `conflict_candidates` 作为唯一冲突来源，不新增按卡特判白名单。
-  - 冻结阻断策略：PR 门禁默认采用“冲突总量不高于基线 + 高优先级家族无新增冲突”双条件；任一不满足即失败。
-  - 冻结回滚策略：冲突门禁失败时，必须先回退模板匹配优先级或 pattern 范围，不允许通过放宽阈值直接放行。
-- 长期门禁自动化（当前完成）：
-  - 明确 CI 基线输入：`compiler_metrics_snapshot.json` 作为门禁基线源，`compiler_metrics_gate.json` 作为阈值与强制族命中策略源。
-  - 明确巡检分层：提交前运行“本地快速门禁”（指标阈值 + 必要 family 命中），合入前运行“全量门禁”（含全量/增量一致性与冲突阻断）。
-  - 明确维护职责：新增模板族时必须同步更新 gate 配置与回归样例，避免门禁长期失真。
-- 下一步（P4 持续项）：
-  1. 增补冲突门禁脚本的“规则顺序漂移 + 冲突联动”联合告警。
-  2. 形成按 family 维度的周报快照，跟踪 fallback 与冲突趋势。
-  3. 在新系列导入流程中接入自动缺口归类（先 family 归档，再决定是否扩展 IR）。
+- 模板冲突阻断（已落地）：
+  - `tools/check_compiler_metrics_gate.py` 新增基线对比能力：支持 `--baseline-snapshot`，并内置 `max_conflict_delta` / `forbid_new_conflict_keys` 校验。
+  - 新增“高优先级族冲突不回升”校验：基于冲突项中的 `candidate_families` 统计，阻断 `protected_families_no_new_conflicts` 的冲突命中回升。
+  - 新增规则顺序漂移阻断：可通过 `block_on_rule_order_diff` + `allowed_rule_order_diff_registries` 对齐变更白名单。
+- 长期门禁自动化（已落地）：
+  - `docs/plan/compiler_metrics_gate.json` 已扩展为 P4 口径：覆盖 fallback、冲突绝对值、冲突增量、新冲突键、规则顺序漂移、高优先族冲突回升、required family 命中等维度。
+  - `tools/compile_cards_effects.py` 已将冲突项扩展为携带 `candidate_families`，为 family 级冲突门禁提供稳定输入。
+  - 新增 `tests/test_check_compiler_metrics_gate.py`，覆盖阻断场景与放行场景，门禁脚本具备可回归能力。
+- 后续维护口径（持续执行）：
+  1. 新增模板族时同步更新 `compiler_metrics_gate.json` 的 `required_family_hits` 与 `protected_families_no_new_conflicts`。
+  2. 规则顺序调整需先声明允许漂移 registry，再合入变更。
+  3. 新系列导入后先跑 P4 门禁，失败时先回退模板匹配范围再补模板族，不放宽阈值。
 
 ---
 
@@ -312,7 +311,7 @@
   - 长期门禁策略与自动回归补强
 - DoD：
   - `Unsupported` 与模板冲突均纳入稳定门禁
-- 当前状态：进行中（2026-04-17 已进入执行）
+- 当前状态：已完成（2026-04-17）
 
 ---
 
