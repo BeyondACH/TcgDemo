@@ -41,6 +41,17 @@ def _snapshot_compiled_outputs(cards_root: Path) -> dict[str, dict[str, str]]:
     return snapshot
 
 
+def _invalidate_series_outputs(cards_root: Path) -> int:
+    removed_count = 0
+    for series_dir in _iter_series_dirs(cards_root):
+        for output_name in ("cards_effects.json", "cards_semantic.json"):
+            output_path = series_dir / output_name
+            if output_path.exists():
+                output_path.unlink()
+                removed_count += 1
+    return removed_count
+
+
 def _diff_snapshots(baseline: dict[str, dict[str, str]], current: dict[str, dict[str, str]]) -> dict[str, list[str]]:
     all_series = sorted(set(baseline.keys()) | set(current.keys()))
     changed: dict[str, list[str]] = {}
@@ -99,6 +110,8 @@ def main() -> int:
         ) != 0:
             return 1
         full_snapshot = _snapshot_compiled_outputs(cards_root)
+        removed_outputs = _invalidate_series_outputs(cards_root)
+        print(f"[P3-CHECK] Removed {removed_outputs} compiled artifacts before incremental run.")
 
         if _run_compile(
             repo_root,
