@@ -1,0 +1,3462 @@
+[
+  {
+    "id": "UA34BT_CGD_1_001",
+    "name": "皇 重護",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-001",
+    "traits": [],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-001.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-001",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "-",
+    "ruby": "すめらぎ　じゅうご"
+  },
+  {
+    "id": "UA34BT_CGD_1_003",
+    "name": "春柳宮 サクラ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-003",
+    "traits": [],
+    "cost_energy": {
+      "YELLOW": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-003.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-003",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "-",
+    "ruby": "はるやなぎのみや　さくら"
+  },
+  {
+    "id": "UA34BT_CGD_1_004",
+    "name": "新城 陽子",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-004",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "このキャラが登場したターン中のみ発動できる。自分の場の他の［特徴：七煌星団］を1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-004.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-004",
+    "raw_effect_text": "このキャラが登場したターン中のみ発動できる。自分の場の他の［特徴：七煌星団］を1枚選び、このターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "あらき　ようこ"
+  },
+  {
+    "id": "UA34BT_CGD_1_005",
+    "name": "小田 友臣",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-005",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "effect_box": "OUTER",
+        "source_label": "インパクト無効"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-005.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-005",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+    "raw_trigger_text": "-",
+    "ruby": "おだ　ともおみ"
+  },
+  {
+    "id": "UA34BT_CGD_1_006",
+    "name": "黒戸 剣成",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-006",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "このターン中、次に手札から使用する必要エナジーが3以下の［特徴：KMF］の消費APを-1する。〈黒戸 剣成〉のこの効果は1ターンに1回のみ発動する。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-006.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-006",
+    "raw_effect_text": "このターン中、次に手札から使用する必要エナジーが3以下の［特徴：KMF］の消費APを-1する。〈黒戸 剣成〉のこの効果は1ターンに1回のみ発動する。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "くろと　けんせい"
+  },
+  {
+    "id": "UA34BT_CGD_1_007",
+    "name": "佐野 悠里",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-007",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {
+      "YELLOW": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の場の他の［特徴：七煌星団］を1枚選び、このターン中、BP+1000。選んだキャラが［特徴：KMF］の場合、自分の山札の上から1枚見てもよい。そうした場合、そのカードを自分の山札の上か場外に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-007.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-007",
+    "raw_effect_text": "自分の場の他の［特徴：七煌星団］を1枚選び、このターン中、BP+1000。選んだキャラが［特徴：KMF］の場合、自分の山札の上から1枚見てもよい。そうした場合、そのカードを自分の山札の上か場外に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "さの　ゆうり"
+  },
+  {
+    "id": "UA34BT_CGD_1_008",
+    "name": "宗森 葵太",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-008",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の場の他の［特徴：七煌星団］を1枚まで選び、このターン中、BP+1000。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-008.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-008",
+    "raw_effect_text": "自分の場の他の［特徴：七煌星団］を1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "むねもり　しょうた"
+  },
+  {
+    "id": "UA34BT_CGD_1_009",
+    "name": "物部 勲",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-009",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "・BP2000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+        "effect_box": "OUTER"
+      },
+      {
+        "text": "・自分の手札の必要エナジーが3以下の［特徴：KMF］を1枚場外に置く。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-009.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-009",
+    "raw_effect_text": "以下から1つ選ぶ。\n・BP2000以下の相手のフロントLのキャラを1枚まで選び、退場させる。\n・自分の手札の必要エナジーが3以下の［特徴：KMF］を1枚場外に置く。そうした場合、BP4000以下の相手のフロントLのキャラを1枚まで選び、退場させる。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ものべ　いさお"
+  },
+  {
+    "id": "UA34BT_CGD_1_010",
+    "name": "琉高 ハルカ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-010",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-010.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-010",
+    "raw_effect_text": "-",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "るたか　はるか"
+  },
+  {
+    "id": "UA34BT_CGD_1_011",
+    "name": "琉高 ハルカ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-011",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {
+      "YELLOW": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の場に必要エナジーが3以下の［特徴：KMF］がある場合、このキャラはBP+500。",
+        "effect_box": "OUTER",
+        "source_label": "自分のターン中"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-011.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-011",
+    "raw_effect_text": "自分の場に必要エナジーが3以下の［特徴：KMF］がある場合、このキャラはBP+500。",
+    "raw_trigger_text": "-",
+    "ruby": "るたか　はるか"
+  },
+  {
+    "id": "UA34BT_CGD_1_012",
+    "name": "琉高 ハルカ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-012",
+    "traits": [
+      "七煌星団"
+    ],
+    "cost_energy": {
+      "YELLOW": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から3枚見る。その中から［特徴：七煌星団］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "カラー",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-012.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-012",
+    "raw_effect_text": "自分の山札の上から3枚見る。その中から［特徴：七煌星団］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+    "ruby": "るたか　はるか"
+  },
+  {
+    "id": "UA34BT_CGD_1_013",
+    "name": "ヴァレン・スターク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-013",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-013.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-013",
+    "raw_effect_text": "自分の場の他のキャラを1枚まで選び、このターン中、BP+1000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "ゔぁれん　すたーく"
+  },
+  {
+    "id": "UA34BT_CGD_1_014",
+    "name": "江間 メイ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-014",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-014.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-014",
+    "raw_effect_text": "-",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "えま　めい"
+  },
+  {
+    "id": "UA34BT_CGD_1_015",
+    "name": "江間 メイ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-015",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {
+      "YELLOW": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-015.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-015",
+    "raw_effect_text": "相手のフロントLのキャラを1枚選び、レストにする。",
+    "raw_trigger_text": "-",
+    "ruby": "えま　めい"
+  },
+  {
+    "id": "UA34BT_CGD_1_016",
+    "name": "江間 メイ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-016",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {
+      "YELLOW": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈江間 メイ〉アクティブにし、フロントLに移動できる"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "自分の手札から必要エナジーが3以下の黄の［特徴：喫茶シュマリ］を1枚まで自分のフロントLにレストで登場させるか、自分のエナジーLにアクティブで登場させる。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "自分の場の〈アッシュ〉か他の［特徴：喫茶シュマリ］を1枚選び、このターン中、を与える。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-016.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-016",
+    "raw_effect_text": "〈江間 メイ〉アクティブにし、フロントLに移動できる\n自分の手札から必要エナジーが3以下の黄の［特徴：喫茶シュマリ］を1枚まで自分のフロントLにレストで登場させるか、自分のエナジーLにアクティブで登場させる。\n自分の場の〈アッシュ〉か他の［特徴：喫茶シュマリ］を1枚選び、このターン中、を与える。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "えま　めい",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "江間 メイ",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_017",
+    "name": "皇 サクヤ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-017",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このカードは〈ロゼ〉としても扱う。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-017.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-017",
+    "raw_effect_text": "このカードは〈ロゼ〉としても扱う。\nカードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "すめらぎ　さくや"
+  },
+  {
+    "id": "UA34BT_CGD_1_018",
+    "name": "皇 サクヤ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-018",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {
+      "YELLOW": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このカードは〈ロゼ〉としても扱う。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から4枚見る。その中から1枚まで自分の山札の上に置き、残りを望む順で下に置く。その後、自分のフロントLの［特徴：喫茶シュマリ］を1枚レストにしてもよい。そうした場合、カードを1枚引く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "カラー",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-018.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-018",
+    "raw_effect_text": "このカードは〈ロゼ〉としても扱う。\n自分の山札の上から4枚見る。その中から1枚まで自分の山札の上に置き、残りを望む順で下に置く。その後、自分のフロントLの［特徴：喫茶シュマリ］を1枚レストにしてもよい。そうした場合、カードを1枚引く。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+    "ruby": "すめらぎ　さくや"
+  },
+  {
+    "id": "UA34BT_CGD_1_019",
+    "name": "ナタリア・ルクセンブルグ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-019",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {
+      "YELLOW": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-019.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-019",
+    "raw_effect_text": "自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "なたりあ　るくせんぶるぐ"
+  },
+  {
+    "id": "UA34BT_CGD_1_020",
+    "name": "ナタリア・ルクセンブルグ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-020",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から1枚見て、見たカードが［特徴：喫茶シュマリ］の場合、公開し手札に加えてもよい。手札に加えない場合、そのカードを自分の山札の上か下に置く。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-020.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-020",
+    "raw_effect_text": "自分の山札の上から1枚見て、見たカードが［特徴：喫茶シュマリ］の場合、公開し手札に加えてもよい。手札に加えない場合、そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "-",
+    "ruby": "なたりあ　るくせんぶるぐ"
+  },
+  {
+    "id": "UA34BT_CGD_1_021",
+    "name": "ラズベリー",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-021",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {
+      "YELLOW": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "text": "このカードは〈皇 サクヤ〉としても扱う。",
+        "effect_box": "OUTER"
+      },
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈皇 サクヤ〉アクティブにし、フロントLに移動できる"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "自分の場の〈アッシュ〉か他の［特徴：喫茶シュマリ］を1枚まで選び、アクティブにする。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "自分の場の〈アッシュ〉か他の［特徴：喫茶シュマリ］を1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-021.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-021",
+    "raw_effect_text": "このカードは〈皇 サクヤ〉としても扱う。\n〈皇 サクヤ〉アクティブにし、フロントLに移動できる\n自分の場の〈アッシュ〉か他の［特徴：喫茶シュマリ］を1枚まで選び、アクティブにする。\n自分の場の〈アッシュ〉か他の［特徴：喫茶シュマリ］を1枚選び、このターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を与える。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "らずべりー",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "皇 サクヤ",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_022",
+    "name": "アッシュ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-022",
+    "traits": [
+      "ナナシの傭兵"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-022.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-022",
+    "raw_effect_text": "-",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "あっしゅ"
+  },
+  {
+    "id": "UA34BT_CGD_1_023",
+    "name": "アッシュ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-023",
+    "traits": [
+      "ナナシの傭兵"
+    ],
+    "cost_energy": {
+      "YELLOW": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "effect_box": "OUTER",
+        "source_label": "黄"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-023.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-023",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "-",
+    "ruby": "あっしゅ"
+  },
+  {
+    "id": "UA34BT_CGD_1_024",
+    "name": "アッシュ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-024",
+    "traits": [
+      "ナナシの傭兵"
+    ],
+    "cost_energy": {
+      "YELLOW": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "effect_box": "OUTER",
+        "source_label": "インパクト無効"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ATTACK",
+        "source_label": "アタック時",
+        "effect_box": "OUTER",
+        "text": "自分の場に〈ラズベリー〉がある場合、このキャラは「カードを1枚まで引く。」を得る。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-024.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-024",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場に〈ラズベリー〉がある場合、このキャラは「カードを1枚まで引く。」を得る。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "あっしゅ"
+  },
+  {
+    "id": "UA34BT_CGD_1_025",
+    "name": "アッシュ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-025",
+    "traits": [
+      "ナナシの傭兵"
+    ],
+    "cost_energy": {
+      "YELLOW": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "effect_box": "OUTER",
+        "source_label": "インパクト無効"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラの下に裏向きのカードがない場合、自分の場外から必要エナジーが3以下の〈皇 サクヤ〉を1枚まで裏向きでこのキャラの下に置く。"
+      },
+      {
+        "trigger": "ON_LEAVE",
+        "source_label": "退場時",
+        "effect_box": "OUTER",
+        "text": "このキャラの下の裏向きのカードを1枚まで公開し、手札に加える。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "カラー",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-025.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-025",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場のキャラの下に裏向きのカードがない場合、自分の場外から必要エナジーが3以下の〈皇 サクヤ〉を1枚まで裏向きでこのキャラの下に置く。\nこのキャラの下の裏向きのカードを1枚まで公開し、手札に加える。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、レストにする。それは次の1回アクティブにならない。",
+    "ruby": "あっしゅ"
+  },
+  {
+    "id": "UA34BT_CGD_1_026",
+    "name": "ロゼ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-026",
+    "traits": [
+      "ナナシの傭兵"
+    ],
+    "cost_energy": {
+      "YELLOW": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このカードは〈皇 サクヤ〉としても扱う。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から4枚見る。その中から〈アッシュ〉か［特徴：KMF］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-026.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-026",
+    "raw_effect_text": "このカードは〈皇 サクヤ〉としても扱う。\n自分の山札の上から4枚見る。その中から〈アッシュ〉か［特徴：KMF］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "-",
+    "ruby": "ろぜ"
+  },
+  {
+    "id": "UA34BT_CGD_1_027",
+    "name": "ロゼ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-027",
+    "traits": [
+      "ナナシの傭兵"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このカードは〈皇 サクヤ〉としても扱う。",
+        "effect_box": "OUTER"
+      },
+      {
+        "text": "・自分の山札の上から2枚見る。その中から1枚を手札に加え、残りを場外に置く。",
+        "effect_box": "OUTER"
+      },
+      {
+        "text": "・この効果で場外に置いたカードの必要エナジーが3以上の場合、自分の場外から〈Zi-アポロ〉か〈Zi-アルテミス〉を1枚まで手札に加える。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、以下から1つ選ぶ。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-027.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-027",
+    "raw_effect_text": "このカードは〈皇 サクヤ〉としても扱う。\n自分の手札を1枚場外に置いてもよい。そうした場合、以下から1つ選ぶ。\n・自分の山札の上から2枚見る。その中から1枚を手札に加え、残りを場外に置く。\n・この効果で場外に置いたカードの必要エナジーが3以上の場合、自分の場外から〈Zi-アポロ〉か〈Zi-アルテミス〉を1枚まで手札に加える。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "ろぜ"
+  },
+  {
+    "id": "UA34BT_CGD_1_028",
+    "name": "暁改",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-028",
+    "traits": [
+      "七煌星団",
+      "KMF"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "［特徴：七煌星団］アクティブにし、フロントLに移動できる"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "このキャラはこのターン中、BP+1000。"
+      },
+      {
+        "trigger": "ON_LEAVE",
+        "source_label": "退場時",
+        "effect_box": "RAID_INNER",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが0の［特徴：七煌星団］を1枚まで自分の場にレストで登場させる。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-028.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-028",
+    "raw_effect_text": "［特徴：七煌星団］アクティブにし、フロントLに移動できる\nこのキャラはこのターン中、BP+1000。\n自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが0の［特徴：七煌星団］を1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "あかつきかい"
+  },
+  {
+    "id": "UA34BT_CGD_1_029",
+    "name": "蛍雪",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-029",
+    "traits": [
+      "七煌星団",
+      "KMF"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 3500,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈琉高 ハルカ〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "このキャラはBP4000以上のキャラにブロックされない。",
+        "effect_box": "RAID_INNER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ATTACK",
+        "source_label": "アタック時",
+        "effect_box": "RAID_INNER",
+        "text": "必要エナジーが3以下の自分の場のアクティブの他の［特徴：KMF］を1枚手札に戻してもよい。そうした場合、このキャラをアクティブにする。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-029.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-029",
+    "raw_effect_text": "〈琉高 ハルカ〉アクティブにし、フロントLに移動できる\nこのキャラはBP4000以上のキャラにブロックされない。\n必要エナジーが3以下の自分の場のアクティブの他の［特徴：KMF］を1枚手札に戻してもよい。そうした場合、このキャラをアクティブにする。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "けいせつ",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "琉高 ハルカ",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_030",
+    "name": "雪花",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-030",
+    "traits": [
+      "七煌星団",
+      "KMF"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "［特徴：七煌星団］アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "このキャラはBP+500。",
+        "effect_box": "RAID_INNER",
+        "source_label": "自分のターン中"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "自分の場に必要エナジーが3以下の他の［特徴：KMF］がある場合、カードを1枚引く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-030.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-030",
+    "raw_effect_text": "［特徴：七煌星団］アクティブにし、フロントLに移動できる\nこのキャラはBP+500。\n自分の場に必要エナジーが3以下の他の［特徴：KMF］がある場合、カードを1枚引く。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "せっか"
+  },
+  {
+    "id": "UA34BT_CGD_1_031",
+    "name": "Zi-アポロ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-031",
+    "traits": [
+      "ナナシの傭兵",
+      "KMF"
+    ],
+    "cost_energy": {
+      "YELLOW": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈アッシュ〉アクティブにし、フロントLに移動できる"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "このキャラはこのターン中、BP+1000と「相手はこのキャラのアタックを可能ならブロックしなければならない。」を得る。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "自分の手札の〈Zi-アルテミス〉を1枚公開し、このキャラの下に裏向きで置く。そうした場合、レイド状態のこのキャラの一番上のカードを場外に置き、自分の手札から〈Zi-オルテギア〉を1枚までこのキャラのレイド元のカードにレイドさせる。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "このキャラはこのターン中、を得る。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-031.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-031",
+    "raw_effect_text": "〈アッシュ〉アクティブにし、フロントLに移動できる\nこのキャラはこのターン中、BP+1000と「相手はこのキャラのアタックを可能ならブロックしなければならない。」を得る。\n自分の手札の〈Zi-アルテミス〉を1枚公開し、このキャラの下に裏向きで置く。そうした場合、レイド状態のこのキャラの一番上のカードを場外に置き、自分の手札から〈Zi-オルテギア〉を1枚までこのキャラのレイド元のカードにレイドさせる。\nこのキャラはこのターン中、を得る。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ずぃーあぽろ",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "アッシュ",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_032",
+    "name": "Zi-アルテミス",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-032",
+    "traits": [
+      "ナナシの傭兵",
+      "KMF"
+    ],
+    "cost_energy": {
+      "YELLOW": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈ロゼ〉アクティブにし、フロントLに移動できる"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "カードを2枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "自分の手札の〈Zi-アポロ〉を1枚公開し、このキャラの下に裏向きで置く。そうした場合、レイド状態のこのキャラの一番上のカードを場外に置き、自分の手札から〈Zi-オルテギア〉を1枚までこのキャラのレイド元のカードにレイドさせる。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-032.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-032",
+    "raw_effect_text": "〈ロゼ〉アクティブにし、フロントLに移動できる\nカードを2枚引き、自分の手札を1枚場外に置く。\n自分の手札の〈Zi-アポロ〉を1枚公開し、このキャラの下に裏向きで置く。そうした場合、レイド状態のこのキャラの一番上のカードを場外に置き、自分の手札から〈Zi-オルテギア〉を1枚までこのキャラのレイド元のカードにレイドさせる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ずぃーあるてみす",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "ロゼ",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_033",
+    "name": "Zi-オルテギア",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-033",
+    "traits": [
+      "ナナシの傭兵",
+      "KMF"
+    ],
+    "cost_energy": {
+      "YELLOW": 5
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 1
+    },
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈アッシュ〉/〈ロゼ〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "・相手のフロントLのキャラを1枚まで選び、レストにする。",
+        "effect_box": "RAID_INNER"
+      },
+      {
+        "text": "・自分のターン中の場合、このキャラの下の裏向きのカードを全て手札に加える。この効果で手札に加えた場合、相手のフロントLのキャラを1枚まで選び、退場させ、このキャラはこのターン中、BP+1000とを得る。",
+        "effect_box": "RAID_INNER",
+        "source_label": "インパクト（1）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "以下から1つ選ぶ。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-033.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-033",
+    "raw_effect_text": "〈アッシュ〉/〈ロゼ〉アクティブにし、フロントLに移動できる\n以下から1つ選ぶ。\n・相手のフロントLのキャラを1枚まで選び、レストにする。\n・自分のターン中の場合、このキャラの下の裏向きのカードを全て手札に加える。この効果で手札に加えた場合、相手のフロントLのキャラを1枚まで選び、退場させ、このキャラはこのターン中、BP+1000とを得る。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ずぃーおるてぎあ",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "アッシュ",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_034",
+    "name": "喫茶シュマリ",
+    "card_type": "FIELD",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-034",
+    "traits": [
+      "喫茶シュマリ"
+    ],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "YELLOW": 2
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このフィールドはアクティブで場に登場させる。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の場のアクティブの他の［特徴：喫茶シュマリ］を3枚レストにする。そうした場合、自分の場のキャラを1枚まで選び、アクティブにする。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-034.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-034",
+    "raw_effect_text": "このフィールドはアクティブで場に登場させる。\n自分の場のキャラを1枚まで選び、このターン中、BP+1000。\n自分の場のアクティブの他の［特徴：喫茶シュマリ］を3枚レストにする。そうした場合、自分の場のキャラを1枚まで選び、アクティブにする。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "きっさしゅまり"
+  },
+  {
+    "id": "UA34BT_CGD_1_035",
+    "name": "おかわりはいかがです？",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-035",
+    "traits": [],
+    "cost_energy": {
+      "YELLOW": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の場の［特徴：喫茶シュマリ］を全てアクティブにする。自分の場のキャラを1枚選び、このターン中、BP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。",
+        "effect_box": "OUTER",
+        "source_label": "インパクト（1）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "スペシャル",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-035.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-035",
+    "raw_effect_text": "自分の場の［特徴：喫茶シュマリ］を全てアクティブにする。自分の場のキャラを1枚選び、このターン中、BP+1000と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を与える。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "おかわりはいかがです"
+  },
+  {
+    "id": "UA34BT_CGD_1_036",
+    "name": "俺達は”ナナシの傭兵”だ！",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-036",
+    "traits": [],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の山札の上から6枚見る。その中から黄の［特徴：ナナシの傭兵］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。カードを1枚引く。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-036.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-036",
+    "raw_effect_text": "自分の山札の上から6枚見る。その中から黄の［特徴：ナナシの傭兵］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。カードを1枚引く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "おれたちは　ななしのようへい　だ"
+  },
+  {
+    "id": "UA34BT_CGD_1_037",
+    "name": "機体提供",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-037",
+    "traits": [],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 2,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の場外から必要エナジーが3以下の黄の［特徴：KMF］を2枚まで自分の場にレストで登場させるかレイドさせる。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-037.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-037",
+    "raw_effect_text": "自分の場外から必要エナジーが3以下の黄の［特徴：KMF］を2枚まで自分の場にレストで登場させるかレイドさせる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "きたいていきょう"
+  },
+  {
+    "id": "UA34BT_CGD_1_038",
+    "name": "コーヒーブレイク",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-038",
+    "traits": [],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ファイナル",
+        "effect_box": "OUTER",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-038.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-038",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "こーひーぶれいく"
+  },
+  {
+    "id": "UA34BT_CGD_1_039",
+    "name": "七煌星団のエース",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-039",
+    "traits": [],
+    "cost_energy": {
+      "YELLOW": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "『BP2000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈琉高 ハルカ〉か〈蛍雪〉がある場合、『BP4000以下』に代わり、さらに自分の場に必要エナジーが3以下の［特徴：KMF］があるなら、『BP5000以下』に代わる。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "スペシャル",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-039.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-039",
+    "raw_effect_text": "『BP2000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈琉高 ハルカ〉か〈蛍雪〉がある場合、『BP4000以下』に代わり、さらに自分の場に必要エナジーが3以下の［特徴：KMF］があるなら、『BP5000以下』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "しちこうせいだんのえーす"
+  },
+  {
+    "id": "UA34BT_CGD_1_040",
+    "name": "絶対遵守のギアス",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-040",
+    "traits": [],
+    "cost_energy": {
+      "YELLOW": 4
+    },
+    "cost_ap": 2,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の場に〈皇 サクヤ〉がある場合、手札にあるこのカードの消費APを-1する。",
+        "effect_box": "OUTER"
+      },
+      {
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "スペシャル",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-040.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-040",
+    "raw_effect_text": "自分の場に〈皇 サクヤ〉がある場合、手札にあるこのカードの消費APを-1する。\nBP5000以下の相手のフロントLのキャラを1枚選び、退場させる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "ぜったいじゅんしゅのぎあす"
+  },
+  {
+    "id": "UA34BT_CGD_1_041",
+    "name": "ロキ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-041",
+    "traits": [],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "※このカードはデッキに12枚まで入れられる。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-041.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-041",
+    "raw_effect_text": "※このカードはデッキに12枚まで入れられる。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "ろき"
+  },
+  {
+    "id": "UA34BT_CGD_1_042",
+    "name": "カリス・アル・ブリタニア",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-042",
+    "traits": [
+      "ネオ・ブリタニア帝国"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-042.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-042",
+    "raw_effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+    "raw_trigger_text": "-",
+    "ruby": "かりす　ある　ぶりたにあ"
+  },
+  {
+    "id": "UA34BT_CGD_1_043",
+    "name": "春柳宮 サクラ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-043",
+    "traits": [
+      "ネオ・ブリタニア帝国"
+    ],
+    "cost_energy": {
+      "BLUE": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-043.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-043",
+    "raw_effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+    "raw_trigger_text": "-",
+    "ruby": "はるやなぎのみや　さくら"
+  },
+  {
+    "id": "UA34BT_CGD_1_044",
+    "name": "春柳宮 サクラ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-044",
+    "traits": [
+      "ネオ・ブリタニア帝国"
+    ],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "必要エナジーが4以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラがアタックしてブロックされなかった時、カードを1枚まで引く。」を与える。〈春柳宮 サクラ〉のこの効果は1ターンに1回のみ発動できる。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "カラー",
+        "effect_box": "OUTER",
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-044.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-044",
+    "raw_effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。\n必要エナジーが4以下の自分の場の他のキャラを1枚まで選び、このターン中、「このキャラがアタックしてブロックされなかった時、カードを1枚まで引く。」を与える。〈春柳宮 サクラ〉のこの効果は1ターンに1回のみ発動できる。",
+    "raw_trigger_text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+    "ruby": "はるやなぎのみや　さくら"
+  },
+  {
+    "id": "UA34BT_CGD_1_045",
+    "name": "アーノルド・レンク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-045",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-045.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-045",
+    "raw_effect_text": "-",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "あーのるど　れんく"
+  },
+  {
+    "id": "UA34BT_CGD_1_046",
+    "name": "アーノルド・レンク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-046",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-046.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-046",
+    "raw_effect_text": "-",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "あーのるど　れんく"
+  },
+  {
+    "id": "UA34BT_CGD_1_047",
+    "name": "アーノルド・レンク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-047",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "effect_box": "OUTER",
+        "source_label": "インパクト無効"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-047.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-047",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "あーのるど　れんく"
+  },
+  {
+    "id": "UA34BT_CGD_1_048",
+    "name": "ヴァルター・リントシュテット",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-048",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の場に〈春柳宮 サクラ〉がある場合のみ発動できる。自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-048.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-048",
+    "raw_effect_text": "自分の場に〈春柳宮 サクラ〉がある場合のみ発動できる。自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "ゔぁるたー　りんとしゅてっと"
+  },
+  {
+    "id": "UA34BT_CGD_1_049",
+    "name": "キャサリン・サバスラ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-049",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-049.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-049",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "きゃさりん　さばすら"
+  },
+  {
+    "id": "UA34BT_CGD_1_050",
+    "name": "キャサリン・サバスラ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-050",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の手札を1枚自分の山札の上に置く。そうした場合、このキャラはこのターン中、BP+1000。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-050.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-050",
+    "raw_effect_text": "自分の手札を1枚自分の山札の上に置く。そうした場合、このキャラはこのターン中、BP+1000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "きゃさりん　さばすら"
+  },
+  {
+    "id": "UA34BT_CGD_1_051",
+    "name": "キャサリン・サバスラ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-051",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から1枚を公開し、そのカードを自分の山札の上か下に置く。公開したカードの必要エナジーが4の場合、このキャラはこのターン中、「このキャラはBP3000以下のキャラにブロックされない。」を得る。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-051.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-051",
+    "raw_effect_text": "自分の山札の上から1枚を公開し、そのカードを自分の山札の上か下に置く。公開したカードの必要エナジーが4の場合、このキャラはこのターン中、「このキャラはBP3000以下のキャラにブロックされない。」を得る。",
+    "raw_trigger_text": "-",
+    "ruby": "きゃさりん　さばすら"
+  },
+  {
+    "id": "UA34BT_CGD_1_052",
+    "name": "グラン・カークウェイン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-052",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "effect_box": "OUTER",
+        "source_label": "インパクト無効"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-052.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-052",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+    "raw_trigger_text": "-",
+    "ruby": "ぐらん　かーくうぇいん"
+  },
+  {
+    "id": "UA34BT_CGD_1_053",
+    "name": "グリード・カークウェイン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-053",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LEAVE",
+        "source_label": "退場時",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-053.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-053",
+    "raw_effect_text": "カードを1枚引く。",
+    "raw_trigger_text": "-",
+    "ruby": "ぐりーど　かーくうぇいん"
+  },
+  {
+    "id": "UA34BT_CGD_1_054",
+    "name": "クリストフ・シザーマン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-054",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の場の他のキャラを1枚退場させる。そうした場合、このキャラはこのターン中、BP+2500。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-054.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-054",
+    "raw_effect_text": "自分の場の他のキャラを1枚退場させる。そうした場合、このキャラはこのターン中、BP+2500。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "くりすとふ　しざーまん"
+  },
+  {
+    "id": "UA34BT_CGD_1_055",
+    "name": "クリストフ・シザーマン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-055",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このターン中に自分の場のキャラが退場している場合、このキャラはBP+1000。",
+        "effect_box": "OUTER",
+        "source_label": "自分のターン中"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-055.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-055",
+    "raw_effect_text": "このターン中に自分の場のキャラが退場している場合、このキャラはBP+1000。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "くりすとふ　しざーまん"
+  },
+  {
+    "id": "UA34BT_CGD_1_056",
+    "name": "スタンリー・フォンブラウン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-056",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の手札から〈ロキ〉を1枚まで自分の場にレストで登場させる。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-056.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-056",
+    "raw_effect_text": "自分の手札から〈ロキ〉を1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "-",
+    "ruby": "すたんりー　ふぉんぶらうん"
+  },
+  {
+    "id": "UA34BT_CGD_1_057",
+    "name": "ディボック・メルテ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-057",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [
+      "DOUBLE_BLOCK"
+    ],
+    "effects": [
+      {
+        "text": "（このキャラがこのターン初めてブロックした時、アクティブにする）",
+        "effect_box": "OUTER",
+        "source_label": "2回ブロック"
+      },
+      {
+        "text": "自分の場に〈天空要塞ダモクレス〉がある場合、このキャラはBP+500。",
+        "effect_box": "OUTER",
+        "source_label": "相手のターン中"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-057.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-057",
+    "raw_effect_text": "（このキャラがこのターン初めてブロックした時、アクティブにする）\n自分の場に〈天空要塞ダモクレス〉がある場合、このキャラはBP+500。",
+    "raw_trigger_text": "-",
+    "ruby": "でぃぼっく　めるて"
+  },
+  {
+    "id": "UA34BT_CGD_1_058",
+    "name": "ナタリア・ルクセンブルグ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-058",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分のフロントLの他の［特徴：ネオ・ブリタニア帝国］を1枚選び、エナジーLに移動させる。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-058.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-058",
+    "raw_effect_text": "自分のフロントLの他の［特徴：ネオ・ブリタニア帝国］を1枚選び、エナジーLに移動させる。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "なたりあ　るくせんぶるぐ"
+  },
+  {
+    "id": "UA34BT_CGD_1_059",
+    "name": "ナラ・ヴォーン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-059",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {},
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-059.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-059",
+    "raw_effect_text": "-",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "なら　ゔぉーん"
+  },
+  {
+    "id": "UA34BT_CGD_1_060",
+    "name": "ナラ・ヴォーン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-060",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2500,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+        "effect_box": "OUTER",
+        "source_label": "青"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-060.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-060",
+    "raw_effect_text": "このキャラがアクティブの場合、このキャラの発生エナジー+。",
+    "raw_trigger_text": "-",
+    "ruby": "なら　ゔぉーん"
+  },
+  {
+    "id": "UA34BT_CGD_1_061",
+    "name": "ナラ・ヴォーン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-061",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 2000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から5枚見る。その中から必要エナジーが4のキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-061.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-061",
+    "raw_effect_text": "自分の山札の上から5枚見る。その中から必要エナジーが4のキャラカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "なら　ゔぉーん"
+  },
+  {
+    "id": "UA34BT_CGD_1_062",
+    "name": "ノーランド・フォン・リューネベルク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-062",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 1
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 1500,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の山札の上から5枚見る。その中から〈ロキ〉かカード名に「ファウルバウト」を含むカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-062.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-062",
+    "raw_effect_text": "自分の山札の上から5枚見る。その中から〈ロキ〉かカード名に「ファウルバウト」を含むカードを1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "のーらんど　ふぉん　りゅーねべるく"
+  },
+  {
+    "id": "UA34BT_CGD_1_063",
+    "name": "ノーランド・フォン・リューネベルク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-063",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "・このキャラはこのターン中、BP+1000。",
+        "effect_box": "OUTER"
+      },
+      {
+        "text": "・このターン中、自分の手札にあるカード名に「ファウルバウト」を含む全てのカードの必要エナジーを減らす。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の場の他のキャラを1枚退場させる。そうした場合、以下から1つ選ぶ。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-063.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-063",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。\n自分の場の他のキャラを1枚退場させる。そうした場合、以下から1つ選ぶ。\n・このキャラはこのターン中、BP+1000。\n・このターン中、自分の手札にあるカード名に「ファウルバウト」を含む全てのカードの必要エナジーを減らす。",
+    "raw_trigger_text": "-",
+    "ruby": "のーらんど　ふぉん　りゅーねべるく"
+  },
+  {
+    "id": "UA34BT_CGD_1_064",
+    "name": "ノーランド・フォン・リューネベルク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-064",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 2,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "NEGATE_IMPACT",
+      "IMPACT"
+    ],
+    "effects": [
+      {
+        "text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）",
+        "effect_box": "OUTER",
+        "source_label": "インパクト無効"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の場外から〈ロキ〉を2枚まで自分の場にレストで登場させる。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-064.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-064",
+    "raw_effect_text": "（このキャラとバトルをしたキャラはこのバトル中、を失う）\n自分の場外から〈ロキ〉を2枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "のーらんど　ふぉん　りゅーねべるく"
+  },
+  {
+    "id": "UA34BT_CGD_1_065",
+    "name": "ノーランド・フォン・リューネベルク",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-065",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク"
+    ],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 2
+    },
+    "bp": 3000,
+    "keywords": [],
+    "effects": [],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場と場外に〈ロキ〉が合計3枚以上ある場合、さらにカードを1枚引く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "カラー",
+        "effect_box": "OUTER",
+        "text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-065.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-065",
+    "raw_effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。その後、自分の場と場外に〈ロキ〉が合計3枚以上ある場合、さらにカードを1枚引く。",
+    "raw_trigger_text": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
+    "ruby": "のーらんど　ふぉん　りゅーねべるく"
+  },
+  {
+    "id": "UA34BT_CGD_1_066",
+    "name": "ヴァルプニル",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-066",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク",
+      "KMF"
+    ],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID",
+      "DOUBLE_BLOCK"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈アーノルド・レンク〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "（このキャラがこのターン初めてブロックした時、アクティブにする）",
+        "effect_box": "RAID_INNER",
+        "source_label": "2回ブロック"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LEAVE",
+        "source_label": "退場時",
+        "effect_box": "RAID_INNER",
+        "text": "自分の山札の上から5枚見る。その中から〈アーノルド・レンク〉か［特徴：KMF］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-066.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-066",
+    "raw_effect_text": "〈アーノルド・レンク〉アクティブにし、フロントLに移動できる\n（このキャラがこのターン初めてブロックした時、アクティブにする）\n自分の山札の上から5枚見る。その中から〈アーノルド・レンク〉か［特徴：KMF］を1枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ゔぁるぷにる",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "アーノルド・レンク",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_067",
+    "name": "エルグリプス",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-067",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク",
+      "KMF"
+    ],
+    "cost_energy": {
+      "BLUE": 5
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈クリストフ・シザーマン〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "このキャラはBP4000以上のキャラにブロックされない。",
+        "effect_box": "RAID_INNER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "カードを1枚引く。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "このターン中に自分の場のキャラが退場している場合のみ発動できる。カードを1枚引く。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-067.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-067",
+    "raw_effect_text": "〈クリストフ・シザーマン〉アクティブにし、フロントLに移動できる\nこのキャラはBP4000以上のキャラにブロックされない。\nカードを1枚引く。\nこのターン中に自分の場のキャラが退場している場合のみ発動できる。カードを1枚引く。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "えるぐりぷす",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "クリストフ・シザーマン",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_068",
+    "name": "クインアスラ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-068",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク",
+      "KMF"
+    ],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈ナラ・ヴォーン〉アクティブにし、フロントLに移動できる"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "カードを3枚引き、自分の手札を2枚望む順で自分の山札の上に置く。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "自分の山札の上から1枚を公開し、自分の山札の下に置く。公開したカードの必要エナジーが4の場合、このキャラはこのターン中、BP+1000とを得る。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-068.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-068",
+    "raw_effect_text": "〈ナラ・ヴォーン〉アクティブにし、フロントLに移動できる\nカードを3枚引き、自分の手札を2枚望む順で自分の山札の上に置く。\n自分の山札の上から1枚を公開し、自分の山札の下に置く。公開したカードの必要エナジーが4の場合、このキャラはこのターン中、BP+1000とを得る。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "くいんあすら",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "ナラ・ヴォーン",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_069",
+    "name": "クインクラカ",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-069",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク",
+      "KMF"
+    ],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈キャサリン・サバスラ〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "このキャラがアタックしてバトルに勝利した時、『自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする』。このキャラが登場したターン中の場合、『このキャラをアクティブにする』に代わる。",
+        "effect_box": "RAID_INNER",
+        "source_label": "ターン1"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "自分の山札の上から1枚を公開し、自分の山札の下に置く。公開したカードの必要エナジーの数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラは、相手の〈クインクラカ〉のアタックを可能ならブロックしなければならない。」を与える。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-069.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-069",
+    "raw_effect_text": "〈キャサリン・サバスラ〉アクティブにし、フロントLに移動できる\nこのキャラがアタックしてバトルに勝利した時、『自分の手札を1枚場外に置いてもよい。そうした場合、このキャラをアクティブにする』。このキャラが登場したターン中の場合、『このキャラをアクティブにする』に代わる。\n自分の山札の上から1枚を公開し、自分の山札の下に置く。公開したカードの必要エナジーの数×1000以下のBPの相手のフロントLのキャラを1枚まで選び、このターン中、「このキャラは、相手の〈クインクラカ〉のアタックを可能ならブロックしなければならない。」を与える。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "くいんくらか",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "キャサリン・サバスラ",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_070",
+    "name": "ファウルバウト",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-070",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク",
+      "KMF"
+    ],
+    "cost_energy": {
+      "BLUE": 5
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈ノーランド・フォン・リューネベルク〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）",
+        "effect_box": "RAID_INNER",
+        "source_label": "ダメージ（2）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "自分の場外から〈ロキ〉を1枚まで自分の場にレストで登場させる。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-070.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-070",
+    "raw_effect_text": "〈ノーランド・フォン・リューネベルク〉アクティブにし、フロントLに移動できる\n（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）\n自分の場外から〈ロキ〉を1枚まで自分の場にレストで登場させる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ふぁうるばうと",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "ノーランド・フォン・リューネベルク",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_071",
+    "name": "ファウルバウト・タイタンモード",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-071",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク",
+      "KMF"
+    ],
+    "cost_energy": {
+      "BLUE": 6
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈ノーランド・フォン・リューネベルク〉アクティブにし、フロントLに移動できる"
+      },
+      {
+        "text": "（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）",
+        "effect_box": "RAID_INNER",
+        "source_label": "ダメージ（2）"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックもブロックもできない。」を与える。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "RAID_INNER",
+        "text": "自分の場の他のキャラを1枚退場させる。そうした場合、このキャラはこのターン中、BP+500と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。"
+      },
+      {
+        "trigger": "RAID_RULE",
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。"
+      }
+    ],
+    "rarity": "SR",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-071.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-071",
+    "raw_effect_text": "〈ノーランド・フォン・リューネベルク〉アクティブにし、フロントLに移動できる\n（このキャラがアタックで直接ダメージを与える時、代わりに2ダメージ）\n相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、「このキャラはアタックもブロックもできない。」を与える。\n自分の場の他のキャラを1枚退場させる。そうした場合、このキャラはこのターン中、BP+500と（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。",
+    "raw_trigger_text": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
+    "ruby": "ふぁうるばうと　たいたんもーど",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "ノーランド・フォン・リューネベルク",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_072",
+    "name": "ローエングリン",
+    "card_type": "CHARACTER",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-072",
+    "traits": [
+      "ネオ・ブリタニア帝国",
+      "アインベルク",
+      "KMF"
+    ],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 4000,
+    "keywords": [
+      "RAID"
+    ],
+    "effects": [
+      {
+        "source_label": "レイド",
+        "effect_box": "RAID_INNER",
+        "text": "〈アーノルド・レンク〉アクティブにし、フロントLに移動できる"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "RAID_INNER",
+        "text": "カードを1枚引く。このキャラはこのターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。このキャラのレイド元がBP3000以上のカードの場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、元々の効果を全て失わせる。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "R",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-072.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-072",
+    "raw_effect_text": "〈アーノルド・レンク〉アクティブにし、フロントLに移動できる\nカードを1枚引く。このキャラはこのターン中、（アタックしてバトルに勝利した時、相手プレイヤーに1ダメージ）を得る。このキャラのレイド元がBP3000以上のカードの場合、相手のフロントLのキャラを1枚まで選び、次の自分のターン開始時まで、元々の効果を全て失わせる。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "ろーえんぐりん",
+    "special_play_rule": {
+      "type": "RAID",
+      "raid_target_name": "アーノルド・レンク",
+      "allow_from_hand": true,
+      "require_full_energy": true
+    }
+  },
+  {
+    "id": "UA34BT_CGD_1_073",
+    "name": "天空要塞ダモクレス",
+    "card_type": "FIELD",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-073",
+    "traits": [
+      "ネオ・ブリタニア帝国"
+    ],
+    "cost_energy": {
+      "BLUE": 2
+    },
+    "cost_ap": 1,
+    "energy_provided": {
+      "BLUE": 1
+    },
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このフィールドは、相手の効果で選ばれない。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_ENTER",
+        "source_label": "登場時",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚まで選び、このターン中、「このキャラは相手の効果で選ばれない。」を与える。"
+      },
+      {
+        "trigger": "MAIN_ACTIVATE",
+        "source_label": "起動メイン",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、このターン中、BP+500。"
+      },
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ゲット",
+        "effect_box": "OUTER",
+        "text": "このカードを手札に加える。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-073.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-073",
+    "raw_effect_text": "このフィールドは、相手の効果で選ばれない。\n自分の場のキャラを1枚まで選び、このターン中、「このキャラは相手の効果で選ばれない。」を与える。\n自分の場のキャラを1枚選び、このターン中、BP+500。",
+    "raw_trigger_text": "このカードを手札に加える。",
+    "ruby": "てんくうようさいだもくれす"
+  },
+  {
+    "id": "UA34BT_CGD_1_074",
+    "name": "アインベルク",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-074",
+    "traits": [],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の山札の上から5枚見る。その中から［特徴：アインベルク］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-074.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-074",
+    "raw_effect_text": "自分の山札の上から5枚見る。その中から［特徴：アインベルク］を2枚まで公開し手札に加える。残りを望む順で自分の山札の下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "あいんべるく"
+  },
+  {
+    "id": "UA34BT_CGD_1_075",
+    "name": "いいだろう。好きにやってみろ",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-075",
+    "traits": [],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分のAPカードを2枚まで選び、アクティブにする。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ファイナル",
+        "effect_box": "OUTER",
+        "text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-075.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-075",
+    "raw_effect_text": "自分のAPカードを2枚まで選び、アクティブにする。",
+    "raw_trigger_text": "自分のライフが無い場合、自分の山札の上から1枚を自分のライフエリアに置く。",
+    "ruby": "いいだろう　すきにやってみろ"
+  },
+  {
+    "id": "UA34BT_CGD_1_076",
+    "name": "ここから消えるが良い",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-076",
+    "traits": [],
+    "cost_energy": {
+      "BLUE": 5
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "このカードは自分の場に〈ノーランド・フォン・リューネベルク〉かカード名に「ファウルバウト」を含むカードがある場合のみ使用できる。",
+        "effect_box": "OUTER"
+      },
+      {
+        "text": "BP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場のキャラを1枚退場させてもよい。そうした場合、相手のエナジーLのキャラを1枚まで選び、次の相手のターン中、「このキャラは移動できない。」を与える。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "スペシャル",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-076.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-076",
+    "raw_effect_text": "このカードは自分の場に〈ノーランド・フォン・リューネベルク〉かカード名に「ファウルバウト」を含むカードがある場合のみ使用できる。\nBP5000以下の相手のフロントLのキャラを1枚選び、退場させる。自分の場のキャラを1枚退場させてもよい。そうした場合、相手のエナジーLのキャラを1枚まで選び、次の相手のターン中、「このキャラは移動できない。」を与える。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "ここからきえるがよい"
+  },
+  {
+    "id": "UA34BT_CGD_1_077",
+    "name": "ザコはゆっくりおやすみなさい♪",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-077",
+    "traits": [],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈キャサリン・サバスラ〉か〈クインクラカ〉がある場合、『BP5000以下』に代わる。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "スペシャル",
+        "effect_box": "OUTER",
+        "text": "相手のフロントLのキャラを1枚選び、退場させる。"
+      }
+    ],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-077.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-077",
+    "raw_effect_text": "『BP3000以下』の相手のフロントLのキャラを1枚選び、退場させる。自分の場に〈キャサリン・サバスラ〉か〈クインクラカ〉がある場合、『BP5000以下』に代わる。",
+    "raw_trigger_text": "相手のフロントLのキャラを1枚選び、退場させる。",
+    "ruby": "ざこはゆっくりおやすみなさい"
+  },
+  {
+    "id": "UA34BT_CGD_1_078",
+    "name": "シトゥンぺの壁",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-078",
+    "traits": [],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の場のキャラ全てに、次の自分のターン開始時まで、「このキャラは相手のキャラの効果で選ばれない。」を与える。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "アクティブ",
+        "effect_box": "OUTER",
+        "text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-078.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-078",
+    "raw_effect_text": "自分の場のキャラ全てに、次の自分のターン開始時まで、「このキャラは相手のキャラの効果で選ばれない。」を与える。",
+    "raw_trigger_text": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
+    "ruby": "しとぅんぺのかべ"
+  },
+  {
+    "id": "UA34BT_CGD_1_079",
+    "name": "ナラの交渉術",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-079",
+    "traits": [],
+    "cost_energy": {
+      "BLUE": 4
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の山札の上から4枚見る。その中から必要エナジーが4以下で消費APが1の青の［特徴：ネオ・ブリタニア帝国］を1枚まで自分の場にレストで登場させるかレイドさせる。残りを望む順で自分の山札の下に置く。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [
+      {
+        "trigger": "ON_LIFE_TRIGGER",
+        "source_label": "ドロー",
+        "effect_box": "OUTER",
+        "text": "カードを1枚引く。"
+      }
+    ],
+    "rarity": "C",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-079.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-079",
+    "raw_effect_text": "自分の山札の上から4枚見る。その中から必要エナジーが4以下で消費APが1の青の［特徴：ネオ・ブリタニア帝国］を1枚まで自分の場にレストで登場させるかレイドさせる。残りを望む順で自分の山札の下に置く。",
+    "raw_trigger_text": "カードを1枚引く。",
+    "ruby": "ならのこうしょうじゅつ"
+  },
+  {
+    "id": "UA34BT_CGD_1_080",
+    "name": "ノーランドの思惑",
+    "card_type": "EVENT",
+    "title_code": "CGD",
+    "number": "UA34BT/CGD-1-080",
+    "traits": [],
+    "cost_energy": {
+      "BLUE": 3
+    },
+    "cost_ap": 1,
+    "energy_provided": {},
+    "bp": 0,
+    "keywords": [],
+    "effects": [
+      {
+        "text": "自分の山札の上から3枚見る。その中からキャラカードを1枚公開し手札に加える。残りを望む順で自分の山札の下に置く。このターン中、次に手札から使用する〈ノーランド・フォン・リューネベルク〉かカード名に「ファウルバウト」を含むカードの消費APを-1する。",
+        "effect_box": "OUTER"
+      }
+    ],
+    "trigger_effects": [],
+    "rarity": "U",
+    "series_title": "コードギアス 奪還のロゼ",
+    "source_image": "UA34BT-CGD-1-080.png",
+    "source_url": "https://www.unionarena-tcg.com/jp/cardlist/detail.php?card_no=UA34BT/CGD-1-080",
+    "raw_effect_text": "自分の山札の上から3枚見る。その中からキャラカードを1枚公開し手札に加える。残りを望む順で自分の山札の下に置く。このターン中、次に手札から使用する〈ノーランド・フォン・リューネベルク〉かカード名に「ファウルバウト」を含むカードの消費APを-1する。",
+    "raw_trigger_text": "-",
+    "ruby": "のーらんどのおもわく"
+  }
+]
