@@ -358,3 +358,82 @@ C:\Users\ACH\AppData\Local\Programs\Python\Python311\python.exe tools\compile_ca
 - 变更摘要
 - 影响文件或模块
 - 验证方式与结果
+
+## 12. 新系列解析与编译闭环流程（支持矩阵 + 开发计划）
+
+> **硬性要求（必须遵循）**：每次导入新系列后，必须严格按本节流程执行；不得跳步、并步或只做部分产物。  
+> 未按本节完整执行的导入批次，视为**未完成交付**，不得作为后续规则实现、能力收敛或里程碑统计基线。
+
+目标：每次导入新系列后，统一产出“支持率统计 + 原子复用矩阵 + 未支持文本族聚类 + 回归门禁结果 + 分阶段开发计划”，避免回到“按单卡修补”模式。
+
+### 12.1 执行顺序（固定流水线，必须全量执行）
+
+1. 导入系列 `cards_raw`
+2. 编译下游 `cards_effects` / `cards_semantic`
+3. 统计支持率
+4. 生成原子复用矩阵
+5. 聚类未支持文本族
+6. 执行快照对比与 unsupported budget 门禁
+7. 生成当轮开发计划并记录日志
+
+### 12.2 参考命令
+
+```powershell
+# 1) 导入原始卡数据（按需选择是否刷新）
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_from_pic.ps1
+# powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\import_cards_raw_from_pic.ps1 -RefreshExisting
+
+# 2) 编译 cards_effects/cards_semantic
+python tools/compile_cards_effects.py
+
+# 3) 支持率统计（按系列 + 总计）
+python tools/report_support_stats.py --cards-root data/cards --out docs/plan/support_stats.md
+
+# 4) 原子复用矩阵（requirement/step）
+python tools/report_atom_usage_matrix.py --cards-root data/cards --out docs/plan/atom_usage_matrix.md
+
+# 5) 未支持文本族聚类（Top N）
+python tools/cluster_unsupported_families.py --cards-root data/cards --top-n 20 --out docs/plan/unsupported_families.md
+
+# 6) 编译快照比对 + unsupported 门禁
+python tools/snapshot_compiler_metrics.py --cards-root data/cards
+python tools/check_unsupported_budget.py --cards-root data/cards --max-total 0
+```
+
+### 12.3 产出物与用途
+
+- `docs/plan/support_stats.md`
+  - 观察新系列导入后的 `SUPPORTED / UNSUPPORTED` 变化趋势
+- `docs/plan/atom_usage_matrix.md`
+  - 识别高频原子与低复用原子，指导模板族优先级
+- `docs/plan/unsupported_families.md`
+  - 将“单卡缺口”归并为“文本族缺口”，用于统一收敛
+- `docs/plan/compiler_metrics_snapshot.json`
+  - 作为回归基线，配合门禁阻断能力退化
+
+### 12.4 开发计划模板（每轮导入后补齐）
+
+建议新建：`docs/plan/<series>_onboarding_plan.md`，至少包含：
+
+- Baseline：该系列卡牌数、能力数、支持率、未支持总数
+- Top Unsupported Families：前 N 个高频文本族与样例卡号
+- 缺口分类：
+  - 仅需补编译模板映射
+  - 需新增 requirement 原子
+  - 需新增 step 原子
+  - 需 semantic override
+- 迭代拆分：
+  - `P0`：高频文本族模板化（优先降低 unsupported）
+  - `P1`：新增原子能力并补运行时接入
+  - `P2`：专项回归 + 快照固化 + 门禁更新
+- DoD：
+  - 至少 1 条编译样例、1 条运行时样例、1 条失败边界
+  - 禁止按卡硬编码
+  - 同步更新 `docs/logs/log_yyyy-MM-dd.md`
+
+### 12.5 验收口径（缺一不可）
+
+- 支持率报表、原子矩阵、未支持聚类三份报告已更新
+- `check_unsupported_budget` 未回升（或有明确豁免与记录）
+- 本轮计划与日志已同步，且中文文档通过 UTF-8 校验
+- 任一步骤缺失或未产出对应文件时，本轮导入不允许标记为完成
