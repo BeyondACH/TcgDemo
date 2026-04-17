@@ -45,6 +45,6 @@ Updated: 2026-04-02
 ## Verification
 
 - `python tools/compile_cards_effects.py`: runtime-total `183 / 0`, formal raw `180 / 0`.
-- `docs/milestone_smoke_test.gd`: `33 / 0`.
-- `docs/runtime_residue_smoke_test.gd`: `9 / 0`.
-- `docs/cards_raw_minimal_duel_smoke_test.gd`: `80 / 0`.
+- `test/milestone_smoke_test.gd`: `33 / 0`.
+- `test/runtime_residue_smoke_test.gd`: `9 / 0`.
+- `test/cards_raw_minimal_duel_smoke_test.gd`: `80 / 0`.

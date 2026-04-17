@@ -311,7 +311,7 @@ core/controllers/ai_controller.gd
 core/ai/simple_ai.gd
 vs/design.md
 vs/develop.md
-docs/vs_ai_smoke_test.gd
+test/vs_ai_smoke_test.gd
 ```
 
 ### 10.2 高风险改动文件

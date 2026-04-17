@@ -85,15 +85,15 @@
 
 当前关键验证入口与结果：
 
-- `docs/milestone_smoke_test.gd`
+- `test/milestone_smoke_test.gd`
   - 33 项通过，0 项失败
-- `docs/cards_raw_minimal_duel_smoke_test.gd`
+- `test/cards_raw_minimal_duel_smoke_test.gd`
   - 75 项通过，0 项失败
-- `docs/runtime_residue_smoke_test.gd`
+- `test/runtime_residue_smoke_test.gd`
   - 7 项通过，0 项失败
-- `docs/draw_phase_smoke_test.gd`
+- `test/draw_phase_smoke_test.gd`
   - 当前环境稳定通过，可作为 DRAW 阶段专项回归入口
-- `docs/life_reveal_modal_smoke_test.gd`
+- `test/life_reveal_modal_smoke_test.gd`
   - 可作为生命翻开快照与弹窗交互专项回归入口
 
 Godot 退出时仍存在既有 `ObjectDB` / resource 泄漏告警，但目前未影响断言结果。
@@ -168,25 +168,25 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\generate_micro_card_
 ### 运行规则主冒烟
 
 ```powershell
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/milestone_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/milestone_smoke_test.gd
 ```
 
 ### 运行正式 raw 样例冒烟
 
 ```powershell
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/cards_raw_minimal_duel_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/cards_raw_minimal_duel_smoke_test.gd
 ```
 
 ### 运行 DRAW 阶段专项
 
 ```powershell
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/draw_phase_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/draw_phase_smoke_test.gd
 ```
 
 ### 运行 AI 对局专项
 
 ```powershell
-D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://docs/vs_ai_smoke_test.gd
+D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --headless --path D:\CodexWork\TcgDemo --script res://test/vs_ai_smoke_test.gd
 ```
 
 ### 执行布局验收
@@ -216,7 +216,7 @@ D:\CodexWork\TcgDemo\Godot\Godot_v4.6.1-stable_win64_console.exe --path D:\Codex
 
 按当前里程碑，下一阶段最值得继续推进的是：
 
-- 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd` 与 `docs/runtime_residue_smoke_test.gd` 三个入口稳定通过
+- 保持 `test/milestone_smoke_test.gd`、`test/cards_raw_minimal_duel_smoke_test.gd` 与 `test/runtime_residue_smoke_test.gd` 三个入口稳定通过
 - 优先继续收口 `docs/plan/card_design.md` 中剩余 `6` 条正式 raw 未支持能力，继续遵守“先扩可复用 DSL/IR，再接入数据”的原则
 - 继续补比当前最小样例更长链的自动验证，优先覆盖连续回合生命周期、延迟效果过期、离场触发链与完整流程推进
 - 暂不进行 UI 相关调整，`docs/plan/ui_art_style_guide.md` 保留为后续阶段的冻结基线

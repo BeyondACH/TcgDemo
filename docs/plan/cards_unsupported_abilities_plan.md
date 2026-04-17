@@ -153,8 +153,8 @@
   - `core/effects/step_executor.gd`
 - 回归：
   - `tests/test_compile_cards_effects.py`
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`
-  - （必要时）`docs/milestone_smoke_test.gd`
+  - `test/cards_raw_minimal_duel_smoke_test.gd`
+  - （必要时）`test/milestone_smoke_test.gd`
 - 文档：
   - `docs/logs/log_yyyy-MM-dd.md`
   - 若改变主线策略，同步 `docs/plan/development_plan.md`
@@ -267,7 +267,7 @@
 ### 8.3 每个子块最低验收（DoD）
 
 - 至少 1 条编译回归（`tests/test_compile_cards_effects.py`）。
-- 至少 1 条最小对局/流程回归（`docs/cards_raw_minimal_duel_smoke_test.gd` 或等价脚本）。
+- 至少 1 条最小对局/流程回归（`test/cards_raw_minimal_duel_smoke_test.gd` 或等价脚本）。
 - 执行并记录：
   - `python tools/compile_cards_effects.py`
   - `python tools/report_support_stats.py`

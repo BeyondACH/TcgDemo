@@ -19,7 +19,7 @@
 - 权威规则：`docs/rules/rule.md`
 - 正式计划：`docs/plan/development_plan.md`
 - 核心实现：`core/`、`data/`、`ui/`
-- 验证脚本：`docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/draw_phase_smoke_test.gd`、`docs/deck_import_smoke_test.gd`、`docs/simple_ai_v2_smoke_test.gd`、`docs/vs_ai_smoke_test.gd`
+- 验证脚本：`test/milestone_smoke_test.gd`、`test/cards_raw_minimal_duel_smoke_test.gd`、`test/draw_phase_smoke_test.gd`、`test/deck_import_smoke_test.gd`、`test/simple_ai_v2_smoke_test.gd`、`test/vs_ai_smoke_test.gd`
 - UI 布局验收入口：`res://scenes/battle_scene.tscn` 在命令行参数 `--layout-probe` 下执行自检
 
 本文件用于描述“仓库目前已经实现到了哪里”。若与规则语义冲突，仍以 `docs/rules/rule.md` 为准。
@@ -29,23 +29,23 @@
 ## 2.1 2026-04-02 长链验证补充
 
 - 当前验证资产已从“规则主冒烟 + 正式 raw 样例 + residue 专项 + AI 短链 smoke”收口为四层职责分工：
-  - `docs/milestone_smoke_test.gd`：规则主语义与高风险规则断言
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：只承担官方 raw 模板链路验证
-  - `docs/runtime_residue_smoke_test.gd`：所有链路收尾无残留校验
-  - `docs/long_run_stability_smoke_test.gd`：连续回合、延迟效果、离场链、生命触发二选一与 AI 长局稳定性
-- 2026-04-02 已新增 `docs/long_run_stability_smoke_test.gd`，当前结果为 `5 / 0`；既有 `docs/runtime_residue_smoke_test.gd = 9 / 0`、`docs/vs_ai_smoke_test.gd = 4 / 0` 仍保持通过。
+  - `test/milestone_smoke_test.gd`：规则主语义与高风险规则断言
+  - `test/cards_raw_minimal_duel_smoke_test.gd`：只承担官方 raw 模板链路验证
+  - `test/runtime_residue_smoke_test.gd`：所有链路收尾无残留校验
+  - `test/long_run_stability_smoke_test.gd`：连续回合、延迟效果、离场链、生命触发二选一与 AI 长局稳定性
+- 2026-04-02 已新增 `test/long_run_stability_smoke_test.gd`，当前结果为 `5 / 0`；既有 `test/runtime_residue_smoke_test.gd = 9 / 0`、`test/vs_ai_smoke_test.gd = 4 / 0` 仍保持通过。
 - 从本轮开始，“更长链路而不是更多零散样例”成为验证资产的第一优先级，前文中仍偏“继续扩样例”的旧口径均以本段为准。
 
 ## 2.2 2026-04-08 Phase E 基线修复补充
 
-- 已修复 Phase E 启动前暴露的基线编译回归：`core/effects/requirement_matcher.gd` 补回 `PlayerState` 预加载后，`docs/milestone_smoke_test.gd` 恢复为 `33 / 0`。
+- 已修复 Phase E 启动前暴露的基线编译回归：`core/effects/requirement_matcher.gd` 补回 `PlayerState` 预加载后，`test/milestone_smoke_test.gd` 恢复为 `33 / 0`。
 - AI 自动推进链本轮补齐两项关键稳定性：
   - AI 在生命翻牌 reveal 窗口会自动确认，不再残留 `pending_life_reveal`
   - 多目标 `ABILITY_TARGET_SELECTION` 已按统一 `choices` 口径提交，不再把待决策队列卡死
 - 长链冻结基线已更新为：
-  - `docs/runtime_residue_smoke_test.gd`：10 项通过、0 项失败
-  - `docs/long_run_stability_smoke_test.gd`：6 项通过、0 项失败
-  - `docs/vs_ai_smoke_test.gd`：5 项通过、0 项失败
+  - `test/runtime_residue_smoke_test.gd`：10 项通过、0 项失败
+  - `test/long_run_stability_smoke_test.gd`：6 项通过、0 项失败
+  - `test/vs_ai_smoke_test.gd`：5 项通过、0 项失败
 
 当前仓库已经完成从”可开局原型”到”可持续迭代的规则原型”的第一轮收口，项目状态可以概括为：
 
@@ -111,8 +111,8 @@
 
 对应验证：
 
-- `docs/milestone_smoke_test.gd`
-- `docs/draw_phase_smoke_test.gd`
+- `test/milestone_smoke_test.gd`
+- `test/draw_phase_smoke_test.gd`
 
 ## 里程碑 M3：关键词、叠放与特殊登场
 
@@ -149,8 +149,8 @@
 
 当前剩余重点：
 
-- 继续围绕 `docs/milestone_smoke_test.gd` 观察共性生命周期语义，重点确认 `UNTIL_NEXT_SELF_TURN_START` 只在来源方下个回合开始失效、多个 `ON_END_MAIN_PHASE` / `END_OF_TURN` 延迟效果不会残留 `pending_decisions`、`effect_queue` 或 `battle_context` 脏状态。
-- 继续围绕 `docs/cards_raw_minimal_duel_smoke_test.gd` 观察正式 raw 组合链路，重点确认跨完整回合的临时特殊登场许可过期、`ON_LEAVE` 回手链与战斗/阶段推进衔接稳定，以及叠放离场后的区域与标记一致性。
+- 继续围绕 `test/milestone_smoke_test.gd` 观察共性生命周期语义，重点确认 `UNTIL_NEXT_SELF_TURN_START` 只在来源方下个回合开始失效、多个 `ON_END_MAIN_PHASE` / `END_OF_TURN` 延迟效果不会残留 `pending_decisions`、`effect_queue` 或 `battle_context` 脏状态。
+- 继续围绕 `test/cards_raw_minimal_duel_smoke_test.gd` 观察正式 raw 组合链路，重点确认跨完整回合的临时特殊登场许可过期、`ON_LEAVE` 回手链与战斗/阶段推进衔接稳定，以及叠放离场后的区域与标记一致性。
 - 保持统一 IR 口径稳定，后续新增正式卡文或模板时继续坚持“先扩可复用 requirement / step，再接入数据与回归”的原则，避免回退到按卡硬编码。
 - 若重构编译识别层，还需继续坚持“同类文本优先参数化模板化，而不是新增逐句模板”。
 
@@ -167,24 +167,24 @@
 - `tools/import_cards_raw_from_pic.ps1` 已补齐抓取失败分类；当前确认 `UA31BT/MMM-1-001` 在沙箱外可正常访问并通过现有 `cardNumData` 解析，之前批量 `official_page_not_found` 的主因是沙箱内网络失败误归类；本轮已在沙箱外成功补录 `UA31BT/MMM-1-001` 到 `034`。
 - `tools/generate_micro_card_images.ps1` 已作为补录后的配套缩略图脚本纳入正式流程；导入成功后应顺带补齐 `pic/micro/` 中缺失的 micro 缩略图。
 - 当前验证入口已形成分工：
-  - `docs/milestone_smoke_test.gd`：规则主冒烟
-  - `docs/cards_raw_minimal_duel_smoke_test.gd`：正式 raw 样例回归
-  - `docs/draw_phase_smoke_test.gd`：DRAW 阶段专项
-  - `docs/deck_import_smoke_test.gd`：导入链路专项
-  - `docs/runtime_residue_smoke_test.gd`：运行时 residue / cleanup 专项
-  - `docs/long_run_stability_smoke_test.gd`：连续回合与 AI 长链稳定性专项
-  - `docs/simple_ai_v2_smoke_test.gd`：AI 评分行为专项
-  - `docs/vs_ai_smoke_test.gd`：AI 控制器整体流程 smoke
+  - `test/milestone_smoke_test.gd`：规则主冒烟
+  - `test/cards_raw_minimal_duel_smoke_test.gd`：正式 raw 样例回归
+  - `test/draw_phase_smoke_test.gd`：DRAW 阶段专项
+  - `test/deck_import_smoke_test.gd`：导入链路专项
+  - `test/runtime_residue_smoke_test.gd`：运行时 residue / cleanup 专项
+  - `test/long_run_stability_smoke_test.gd`：连续回合与 AI 长链稳定性专项
+  - `test/simple_ai_v2_smoke_test.gd`：AI 评分行为专项
+  - `test/vs_ai_smoke_test.gd`：AI 控制器整体流程 smoke
 
 当前验证基线：
 
-- `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
-- `docs/cards_raw_minimal_duel_smoke_test.gd`：80 项通过、0 项失败
-- `docs/runtime_residue_smoke_test.gd`：10 项通过、0 项失败
-- `docs/long_run_stability_smoke_test.gd`：6 项通过、0 项失败
-- `docs/life_reveal_modal_smoke_test.gd`：7 项通过、0 项失败
-- `docs/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
-- `docs/vs_ai_smoke_test.gd`：5 项通过、0 项失败
+- `test/milestone_smoke_test.gd`：33 项通过、0 项失败
+- `test/cards_raw_minimal_duel_smoke_test.gd`：80 项通过、0 项失败
+- `test/runtime_residue_smoke_test.gd`：10 项通过、0 项失败
+- `test/long_run_stability_smoke_test.gd`：6 项通过、0 项失败
+- `test/life_reveal_modal_smoke_test.gd`：7 项通过、0 项失败
+- `test/simple_ai_v2_smoke_test.gd`：6 项通过、0 项失败
+- `test/vs_ai_smoke_test.gd`：5 项通过、0 项失败
 
 ## 里程碑 M5.5：AI 对局启发式与自动推进基线
 
@@ -279,7 +279,7 @@
 
 验证结果：
 
-- `docs/milestone_smoke_test.gd`：33 项通过、0 项失败
+- `test/milestone_smoke_test.gd`：33 项通过、0 项失败
 - 所有规则语义保持不变
 - API 兼容性验证通过
 
@@ -298,9 +298,9 @@
 
 当前主线：
 
-- 保持 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd` 与 `docs/long_run_stability_smoke_test.gd` 四条规则长链入口稳定通过。
+- 保持 `test/milestone_smoke_test.gd`、`test/cards_raw_minimal_duel_smoke_test.gd`、`test/runtime_residue_smoke_test.gd` 与 `test/long_run_stability_smoke_test.gd` 四条规则长链入口稳定通过。
 - 暂不推进 UI 视觉落地，当前主线改为继续压实连续回合生命周期、离场触发链、更长链路自动验证，以及 AI 对局可观察性。
-- 保持 `docs/simple_ai_v2_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 的 AI 验证分层，逐步压实 AI 节奏判断而不污染规则主冒烟。
+- 保持 `test/simple_ai_v2_smoke_test.gd` 与 `test/vs_ai_smoke_test.gd` 的 AI 验证分层，逐步压实 AI 节奏判断而不污染规则主冒烟。
 - 保持规则、计划与日志描述一致，避免再次出现文档口径滞后。
 
 当前主要风险：
@@ -314,7 +314,7 @@
 
 1. 下一阶段继续聚焦规则稳定性与验证资产，在已修复基线编译回归和 AI 长链待决策回归后，继续观察连续回合生命周期、延迟效果过期、离场触发链与完整流程推进是否保持稳定。
 2. 既有正式 raw 未支持能力已经收口到 `180 / 0`，后续重点改为维持 `registry -> legacy fallback` 编译链稳定，并只接受参数化模板族扩展，不回退到按卡或逐句匹配硬编码。
-3. 把 `docs/milestone_smoke_test.gd`、`docs/cards_raw_minimal_duel_smoke_test.gd`、`docs/runtime_residue_smoke_test.gd`、`docs/long_run_stability_smoke_test.gd`、`docs/life_reveal_modal_smoke_test.gd` 与 `docs/vs_ai_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
+3. 把 `test/milestone_smoke_test.gd`、`test/cards_raw_minimal_duel_smoke_test.gd`、`test/runtime_residue_smoke_test.gd`、`test/long_run_stability_smoke_test.gd`、`test/life_reveal_modal_smoke_test.gd` 与 `test/vs_ai_smoke_test.gd` 作为当前冻结基线；若新增验证暴露回退，优先修正规则实现与断言基线。
 4. 暂不进行 UI 视觉重构；`docs/plan/ui_art_style_guide.md` 保留为后续阶段的视觉冻结文档，当前仅保留 AI 动作提示与生命翻牌可见性相关的最小 UI 补强。
 5. 若继续提升 AI 质量，优先补动作上下文参数、长链 AI 对局 smoke 与日志可观察性，而不是直接扩大 UI 或搜索式策略改造。
 6. 待规则稳定性与长链路验证进一步压实后，再单独评估 UI 视觉落地的启动时机。
