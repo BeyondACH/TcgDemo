@@ -286,6 +286,33 @@ class CompileCardsEffectsTests(unittest.TestCase):
         )
         self.assertIsNone(ability)
 
+    def test_compile_passive_main_activate_promoted_label_ap_frontline_and_discard_are_preserved(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {
+                "labels": ["起動メイン", "フロントLにある場合", "レストにする", "手札を2枚場外に置く", "APを1支払う", "ターン1"],
+                "text": "相手のフロントLのキャラを1枚選び、退場させる。",
+            },
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertEqual(ability["timing"]["event"], "MAIN_ACTIVATE")
+        self.assertEqual(ability["limits"]["once_per_turn"], True)
+        self.assertIn({"type": "REST_SOURCE"}, ability.get("costs", []))
+        self.assertIn({"type": "PAY_AP", "value": 1}, ability.get("costs", []))
+        self.assertIn({"type": "SELF_IN_ZONE", "zone": "FRONT_LINE"}, ability["requirements"])
+        self.assertIn({"type": "PLAYER_ZONE_CARD_COUNT_GTE", "player": "SOURCE", "zone": "HAND", "value": 2}, ability["requirements"])
+        self.assertEqual(ability["steps"][0]["type"], "SELECT_TARGETS")
+        self.assertEqual(ability["steps"][0]["var"], "label_cost_discard_from_hand")
+        self.assertEqual(ability["steps"][1], {"type": "MOVE_SELECTED_CARDS", "from_var": "label_cost_discard_from_hand", "to": "OUTSIDE"})
+
+    def test_compile_passive_main_activate_promoted_label_frontline_gate_is_preserved(self):
+        ability = _compile_passive_effect(
+            {"id": "card-001"},
+            {"labels": ["起動メイン", "フロントLにある場合", "レストにする"], "text": "カードを1枚引く。"},
+        )
+        self.assertEqual(ability["status"], "SUPPORTED")
+        self.assertIn({"type": "SELF_IN_ZONE", "zone": "FRONT_LINE"}, ability["requirements"])
+
     def test_validate_template_registry_consistency_accepts_valid_rules(self):
         rules = (
             _TemplateRule(

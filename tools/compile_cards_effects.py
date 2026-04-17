@@ -5999,6 +5999,63 @@ def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
     if not isinstance(labels, list):
         labels = []
     normalized_labels = {str(label).strip() for label in labels if str(label).strip()}
+    normalized_label_list = [str(label).strip() for label in labels if str(label).strip()]
+
+    def _label_source() -> str:
+        source_label = str(effect_entry.get("source_label", "")).strip()
+        if source_label:
+            return source_label
+        return "／".join(normalized_label_list)
+
+    def _main_activate_label_costs_and_requirements() -> tuple[list[dict], list[dict], list[dict], list[dict]]:
+        inferred_costs: list[dict] = []
+        inferred_requirements: list[dict] = []
+        inferred_target_specs: list[dict] = []
+        inferred_steps: list[dict] = []
+
+        if "レストにする" in normalized_labels:
+            inferred_costs.append({"type": "REST_SOURCE"})
+        if "フロントLにある場合" in normalized_labels:
+            inferred_requirements.append({"type": "SELF_IN_ZONE", "zone": "FRONT_LINE"})
+
+        for label in normalized_label_list:
+            ap_cost_match = re.fullmatch(r"APを(\d+)支払う", label)
+            if ap_cost_match:
+                inferred_costs.append({"type": "PAY_AP", "value": int(ap_cost_match.group(1))})
+                continue
+
+            discard_match = re.fullmatch(r"手札を(\d+)枚場外に置く", label)
+            if discard_match:
+                discard_count = int(discard_match.group(1))
+                if discard_count <= 0:
+                    continue
+                discard_specs, discard_steps = _manual_card_set(
+                    "SELF",
+                    ["HAND"],
+                    min_count=discard_count,
+                    max_count=discard_count,
+                    store_as="label_cost_discard_from_hand",
+                )
+                inferred_target_specs.extend(discard_specs)
+                inferred_steps.extend(discard_steps)
+                inferred_steps.append(
+                    {
+                        "type": "MOVE_SELECTED_CARDS",
+                        "from_var": "label_cost_discard_from_hand",
+                        "to": "OUTSIDE",
+                    }
+                )
+                inferred_requirements.append(
+                    {
+                        "type": "PLAYER_ZONE_CARD_COUNT_GTE",
+                        "player": "SOURCE",
+                        "zone": "HAND",
+                        "value": discard_count,
+                    }
+                )
+
+        return inferred_costs, inferred_requirements, inferred_target_specs, inferred_steps
+
     inferred_trigger = "PASSIVE"
     if "登場時" in normalized_labels:
         inferred_trigger = "ON_ENTER"
@@ -6007,15 +6064,25 @@ def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
 
     pseudo_trigger = {
         "trigger": inferred_trigger,
-        "source_label": effect_entry.get("source_label", ""),
+        "source_label": _label_source(),
         "effect_box": effect_entry.get("effect_box", "OUTER"),
         "text": str(effect_entry.get("text", "")).strip(),
     }
+    inferred_costs: list[dict] = []
+    inferred_requirements: list[dict] = []
+    inferred_target_specs: list[dict] = []
+    inferred_steps: list[dict] = []
     if inferred_trigger == "MAIN_ACTIVATE":
         if "ターン1" in normalized_labels:
             pseudo_trigger["once_per_turn"] = True
-        if "レストにする" in normalized_labels:
-            pseudo_trigger["costs"] = [{"type": "REST_SOURCE"}]
+        (
+            inferred_costs,
+            inferred_requirements,
+            inferred_target_specs,
+            inferred_steps,
+        ) = _main_activate_label_costs_and_requirements()
+        if inferred_costs:
+            pseudo_trigger["costs"] = deepcopy(inferred_costs)
 
     if inferred_trigger != "PASSIVE":
         promoted = _dispatch_template_rules(
@@ -6028,10 +6095,24 @@ def _compile_passive_effect(card: dict, effect_entry: dict) -> dict | None:
         if (
             isinstance(promoted, dict)
             and promoted.get("status") == "SUPPORTED"
-            and "costs" not in promoted
             and "costs" in pseudo_trigger
         ):
-            promoted["costs"] = deepcopy(pseudo_trigger["costs"])
+            merged_costs = deepcopy(promoted.get("costs", []))
+            for cost in pseudo_trigger["costs"]:
+                if cost not in merged_costs:
+                    merged_costs.append(deepcopy(cost))
+            if merged_costs:
+                promoted["costs"] = merged_costs
+        if isinstance(promoted, dict) and promoted.get("status") == "SUPPORTED":
+            merged_requirements = deepcopy(promoted.get("requirements", []))
+            for requirement in inferred_requirements:
+                if requirement not in merged_requirements:
+                    merged_requirements.append(deepcopy(requirement))
+            promoted["requirements"] = merged_requirements
+            if inferred_target_specs:
+                promoted["target_specs"] = deepcopy(inferred_target_specs) + deepcopy(promoted.get("target_specs", []))
+            if inferred_steps:
+                promoted["steps"] = deepcopy(inferred_steps) + deepcopy(promoted.get("steps", []))
         return promoted
 
     return _dispatch_template_rules(
