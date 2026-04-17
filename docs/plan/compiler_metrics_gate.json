@@ -1,6 +1,15 @@
 {
   "max_fallback_ratio": 0.9,
   "max_conflict_count": 2,
+  "max_conflict_delta": 0,
+  "forbid_new_conflict_keys": true,
+  "block_on_rule_order_diff": true,
+  "allowed_rule_order_diff_registries": [],
+  "protected_families_no_new_conflicts": [
+    "LIFE_TRIGGER_RAID_CHOICE",
+    "DRAW_SEQUENCE",
+    "AP_ACTIVATE"
+  ],
   "required_family_hits": {
     "LIFE_TRIGGER_RAID_CHOICE": 1,
     "DRAW_SEQUENCE": 1,

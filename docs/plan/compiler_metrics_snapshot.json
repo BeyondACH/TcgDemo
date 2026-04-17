@@ -1,5 +1,5 @@
 {
-  "snapshot_date": "2026-04-16",
+  "snapshot_date": "2026-04-17",
   "cards_metrics": {
     "totals": {
       "cards": 442,
@@ -194,6 +194,9 @@
         "candidate_rules": [
           "event.bp_remove.dynamic_madoka",
           "event.bp_remove.dynamic_name_gate"
+        ],
+        "candidate_families": [
+          "BP_THRESHOLD_REMOVE"
         ],
         "hit_count": 4,
         "sample_card_ids": [

@@ -3225,6 +3225,7 @@ def _template_observer(event: dict) -> None:
             "text": event.get("text", ""),
             "selected_rule": selected_rule.get("name", ""),
             "candidate_rules": [],
+            "candidate_families": [],
             "hit_count": 0,
             "sample_card_ids": [],
         },
@@ -3234,6 +3235,17 @@ def _template_observer(event: dict) -> None:
     for rule_name in candidate_rules:
         if rule_name not in conflict_entry["candidate_rules"]:
             conflict_entry["candidate_rules"].append(rule_name)
+    candidate_families = []
+    for rule in matched_rules:
+        if not isinstance(rule, dict):
+            continue
+        metadata = rule.get("template_metadata") or {}
+        family = str(metadata.get("family", ""))
+        if family:
+            candidate_families.append(family)
+    for family in candidate_families:
+        if family not in conflict_entry["candidate_families"]:
+            conflict_entry["candidate_families"].append(family)
     card_id = str(event.get("card_id", ""))
     if card_id and card_id not in conflict_entry["sample_card_ids"] and len(conflict_entry["sample_card_ids"]) < 5:
         conflict_entry["sample_card_ids"].append(card_id)
