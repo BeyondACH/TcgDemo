@@ -1,9 +1,9 @@
 {
-  "total": 82,
+  "total": 25,
   "by_series": {
     "CGD": 2,
-    "KGD": 45,
-    "MCR": 28,
+    "KGD": 11,
+    "MCR": 5,
     "MMM": 3,
     "TLR": 4
   },
@@ -26,22 +26,6 @@
     },
     {
       "series": "KGD",
-      "card_id": "UA48BT_KGD_1_005",
-      "effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_007",
-      "effect_text": "自分の山札の上から3枚見て、［特徴：楚］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "COMPOSITE"
-      ]
-    },
-    {
-      "series": "KGD",
       "card_id": "UA48BT_KGD_1_008",
       "effect_text": "このキャラのBPが4000以上の場合、カードを1枚引く。",
       "ability_count": 0,
@@ -58,72 +42,8 @@
     },
     {
       "series": "KGD",
-      "card_id": "UA48BT_KGD_1_018",
-      "effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
       "card_id": "UA48BT_KGD_1_019",
       "effect_text": "自分の場に〈李牧〉がある場合、自分の手札から〈カイネ〉以外の必要エナジーが2以下で消費APが1の黄のキャラカードを1枚まで自分の場にレストで登場させる。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_021",
-      "effect_text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_023",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_024",
-      "effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_025",
-      "effect_text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_036",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_037",
-      "effect_text": "このターンのアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。このキャラはこのターン中、「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_038",
-      "effect_text": "自分の山札の上から3枚見て、〈信〉か〈王賁〉か〈蒙恬〉を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
       "ability_count": 1,
       "template_types": [
         "DRAW_1",
@@ -148,55 +68,8 @@
     },
     {
       "series": "KGD",
-      "card_id": "UA48BT_KGD_1_045",
-      "effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_047",
-      "effect_text": "自分の山札の上から2枚見て、青の［特徴：飛信隊］を1枚まで場外に置き、残りを望む順で山札の上に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_048",
-      "effect_text": "このキャラが自分の効果で登場していた場合、カードを1枚引く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_051",
-      "effect_text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
       "card_id": "UA48BT_KGD_1_053",
       "effect_text": "このキャラはBP+1000。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_056",
-      "effect_text": "『カードを1枚引き、自分の手札を1枚場外に置く』。自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、『カードを1枚引く』に代えてもよい。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_057",
-      "effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
       "ability_count": 0,
       "template_types": []
     },
@@ -209,56 +82,10 @@
     },
     {
       "series": "KGD",
-      "card_id": "UA48BT_KGD_1_059",
-      "effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_068",
-      "effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_069",
-      "effect_text": "自分の山札の上から3枚見て、1枚まで場外に置き、残りを望む順で山札の上に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
       "card_id": "UA48BT_KGD_1_071",
       "effect_text": "自分の場に〈嬴政〉がある場合、カードを1枚引く。",
       "ability_count": 0,
       "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_072",
-      "effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_079",
-      "effect_text": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを『1枚』引く。場外に置いたカードが〈嬴政〉の場合、『2枚』に代わる。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
     },
     {
       "series": "KGD",
@@ -279,137 +106,8 @@
     },
     {
       "series": "KGD",
-      "card_id": "UA48BT_KGD_1_084",
-      "effect_text": "自分の山札の上から3枚見て、［特徴：桓騎軍］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "SELECT_AND_MOVE",
-        "BP_THRESHOLD_REMOVE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_087",
-      "effect_text": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、カードを2枚引く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_089",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_090",
-      "effect_text": "〈摩論〉以外の自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、「このカードを手札に加える。」を与える。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_092",
-      "effect_text": "自分の山札の上から2枚見て、［特徴：桓騎軍］を1枚まで場外に置く。残りを望む順で山札の上に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48BT_KGD_1_094",
-      "effect_text": "自分の場の［特徴：秦］を1枚まで選び、次の自分のターン開始時まで、BP+2000。",
-      "ability_count": 1,
-      "template_types": [
-        "MOVE_SELF"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48ST_KGD_1_036",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48ST_KGD_1_045",
-      "effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48ST_KGD_1_051",
-      "effect_text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48ST_KGD_1_059",
-      "effect_text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48ST_KGD_1_101",
-      "effect_text": "自分の場の他のキャラを1枚選び、このターン中、「カードを1枚まで引く。」を与える。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48ST_KGD_1_104",
-      "effect_text": "自分の場外から〈河了貂〉以外の必要エナジーが2以下の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "KGD",
-      "card_id": "UA48ST_KGD_1_105",
-      "effect_text": "このキャラを別のラインに移動させる。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "KGD",
       "card_id": "UA48ST_KGD_1_106",
       "effect_text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このキャラはBP+1000。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_001",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_005",
-      "effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
       "ability_count": 1,
       "template_types": [
         "DRAW_1",
@@ -428,97 +126,8 @@
     },
     {
       "series": "MCR",
-      "card_id": "UA36BT_MCR_1_015",
-      "effect_text": "自分の山札の上から2枚見る。その中からイベントカードを1枚まで場外に置く。残りを望む順で自分の山札の上に置く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_016",
-      "effect_text": "カードを1枚引く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_018",
-      "effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_035",
-      "effect_text": "自分の場にカード名に「イサム」を含むキャラがある場合、自分の山札の上から2枚見る。その中から望む枚数を望む順で自分の山札の上に置き、残りを望む順で下に置く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
       "card_id": "UA36BT_MCR_1_036",
       "effect_text": "自分のフロントLにカード名に「イサム」を含むキャラがある場合、このキャラの発生エナジー+。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_038",
-      "effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_040",
-      "effect_text": "自分の場にカード名に「ガルド」を含むキャラがある場合、BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_053",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_055",
-      "effect_text": "カードを1枚引く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_059",
-      "effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_061",
-      "effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_070",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_075",
-      "effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
       "ability_count": 0,
       "template_types": []
     },
@@ -539,84 +148,6 @@
       "template_types": [
         "DRAW_1",
         "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_084",
-      "effect_text": "カードを1枚引き、自分の手札を1枚場外に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_086",
-      "effect_text": "このターン中に相手がカードを引いている場合、自分はカードを1枚まで引く。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36BT_MCR_1_087",
-      "effect_text": "自分の手札が5枚以上の場合のみ発動できる。自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36ST_MCR_1_053",
-      "effect_text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36ST_MCR_1_055",
-      "effect_text": "カードを1枚引く。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36ST_MCR_1_059",
-      "effect_text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
-      "ability_count": 0,
-      "template_types": []
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36ST_MCR_1_061",
-      "effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36ST_MCR_1_106",
-      "effect_text": "自分の山札の上から1枚見る。そのカードを自分の山札の上か下に置く。",
-      "ability_count": 1,
-      "template_types": [
-        "DRAW_1",
-        "DRAW_SEQUENCE"
-      ]
-    },
-    {
-      "series": "MCR",
-      "card_id": "UA36ST_MCR_1_110",
-      "effect_text": "自分のフロントLのアクティブのキャラを1枚レストにする。そうした場合、このキャラはこのターン中、発生エナジー+。",
-      "ability_count": 1,
-      "template_types": [
-        "READY_AND_TEMP_BP"
       ]
     },
     {

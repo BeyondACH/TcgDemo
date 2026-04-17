@@ -60,10 +60,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_003_on_enter_4e14c10aa6",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分のターン中で、自分の場の黄のカードの特徴が3種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3000以下の相手のフロントLのキャラを1枚まで選び、レストにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_003_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -73,8 +82,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分のターン中で、自分の場の黄のカードの特徴が3種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、BP3000以下の相手のフロントLのキャラを1枚まで選び、レストにする。",
       "trigger": "カードを1枚引く。",
@@ -110,12 +121,21 @@
     "card_id": "UA48BT_KGD_1_005",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_005_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "カードを1枚引き、自分の手札を1枚場外に置く。",
       "trigger": "",
@@ -154,9 +174,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "COMPOSITE"
+      "SELECT_AND_MOVE",
+      "COMPOSITE",
+      "PREVIEW_ADD_TO_HAND"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_007_on_enter_dc20de49e1",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の山札の上から3枚見て、［特徴：楚］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "PREVIEW_ADD_TO_HAND"
+      },
       {
         "id": "UA48BT_KGD_1_007_on_life_trigger_8723e8b5cb",
         "timing": "ON_LIFE_TRIGGER",
@@ -198,9 +228,34 @@
       "IMPACT"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_009_main_activate_3684c14ce6",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このカードはフロントLに登場できず、このカードの以外でフロントLに移動できない。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_009_main_activate_09db886ebe",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このキャラのBPが5000以上の場合のみ発動できる。このキャラを別のラインに移動させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_009_main_activate_116fcf674a",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このキャラのレイド元のカードを自分のフロントLにアクティブで登場させる。そのキャラはこのターン中、BP+1000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_009_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -210,8 +265,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "このカードはフロントLに登場できず、このカードの以外でフロントLに移動できない。\n（アタックしてバトルに勝利した時、相手に1ダメージ）\nこのキャラのBPが5000以上の場合のみ発動できる。このキャラを別のラインに移動させる。\n〈媧燐〉アクティブにし、フロントLに移動できる\nこのキャラのレイド元のカードを自分のフロントLにアクティブで登場させる。そのキャラはこのターン中、BP+1000。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -275,9 +332,18 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_012_main_activate_1e48ee76fe",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "カードを1枚引く。自分のフロントLに他のキャラがない場合、このターン中、次に手札から使用する〈誰が至強か!?〉か〈ドドンド ドンドン 汗明!!〉の消費APを-1する。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_012_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -287,8 +353,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈汗明〉アクティブにし、フロントLに移動できる\n（このキャラがアタックで与える直接ダメージは2ダメージ）\n自分の場の［特徴：楚］全ては、BP+2000。\nカードを1枚引く。自分のフロントLに他のキャラがない場合、このターン中、次に手札から使用する〈誰が至強か!?〉か〈ドドンド ドンドン 汗明!!〉の消費APを-1する。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -327,9 +395,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_014_main_activate_68d674fd7d",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLの黄のキャラを望む枚数選び、エナジーLに移動させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_014_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -339,8 +416,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "このカードはフロントLに登場できず、フロントLに移動できない。\n自分のフロントLの黄のキャラを望む枚数選び、エナジーLに移動させる。",
       "trigger": "このカードを手札に加える。",
@@ -352,10 +431,20 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "COMPOSITE",
       "DRAW_1",
+      "MULTI_BRANCH_CHOICE",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_015_main_activate_536516f54f",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "以下から1つ選ぶ。",
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
+      },
       {
         "id": "UA48BT_KGD_1_015_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -408,10 +497,28 @@
       "IMPACT"
     ],
     "template_types": [
+      "UNSUPPORTED",
+      "COMPOSITE",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_017_on_enter_acc20cae4e",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の黄の［特徴：楚］を1枚まで自分の場にアクティブで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_017_main_activate_ddbfbcd32c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "このキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      },
       {
         "id": "UA48BT_KGD_1_017_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -421,8 +528,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の黄の［特徴：楚］を1枚まで自分の場にアクティブで登場させる。\nこのキャラのBPが5000以上の場合のみ発動できる。このキャラをアクティブにする。",
       "trigger": "カードを1枚引く。",
@@ -433,12 +542,21 @@
     "card_id": "UA48BT_KGD_1_018",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_018_on_enter_43348ae670",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
       "trigger": "",
@@ -478,9 +596,18 @@
       "SNIPER"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_020_on_enter_2a6f483f37",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "カードを2枚引き、自分の手札を1枚場外に置く。自分の場の黄のカードの特徴が3種類以上ある場合、このキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_020_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -490,8 +617,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "相手は効果でこのキャラを選ぶ際とでこのキャラを指定する際に、追加で自身の手札を1枚場外に置かないとそれらを行えない。\nカードを2枚引き、自分の手札を1枚場外に置く。自分の場の黄のカードの特徴が3種類以上ある場合、このキャラをアクティブにする。",
       "trigger": "このカードを手札に加える。",
@@ -502,12 +631,21 @@
     "card_id": "UA48BT_KGD_1_021",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "TEMP_BP"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_021_on_enter_55de0988ed",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
+        "reason": "",
+        "template_type": "TEMP_BP"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場のキャラを1枚まで選び、このターン中、BP+1000。",
       "trigger": "",
@@ -546,12 +684,21 @@
     "card_id": "UA48BT_KGD_1_023",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_023_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
       "trigger": "",
@@ -563,10 +710,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_024_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      },
       {
         "id": "UA48BT_KGD_1_024_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -588,12 +744,22 @@
     "card_id": "UA48BT_KGD_1_025",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "SELECT_AND_MOVE",
+      "PREVIEW_TOP_POSITION"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_025_on_enter_9e7dd06bd7",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
+        "reason": "",
+        "template_type": "PREVIEW_TOP_POSITION"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の山札の上から2枚見て、山札の上と下に望む枚数ずつ望む順で置く。",
       "trigger": "",
@@ -607,9 +773,26 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_026_on_enter_5051822808",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から4枚見て、必要エナジーが『0』以下で消費APが1の黄のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で山札の下に置く。自分の場の黄のカードの特徴1種類につき、この効果で登場させるキャラの必要エナジーの範囲+1。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_026_main_activate_becd3d94c2",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分のフロントLの他のキャラと自分のエナジーLのキャラを1枚ずつ選び、それらの位置を入れ替える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_026_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -619,8 +802,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈李牧〉アクティブにし、フロントLに移動できる\n自分の山札の上から4枚見て、必要エナジーが『0』以下で消費APが1の黄のキャラカードを1枚まで自分の場にレストで登場させる。残りを望む順で山札の下に置く。自分の場の黄のカードの特徴1種類につき、この効果で登場させるキャラの必要エナジーの範囲+1。\n自分のフロントLの他のキャラと自分のエナジーLのキャラを1枚ずつ選び、それらの位置を入れ替える。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -632,9 +817,26 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_027_on_enter_68d6244e10",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に〈呉鳳明〉がある場合、自分の場のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_027_main_activate_8c98a3e11a",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場のキャラを1枚まで選び、別のラインに移動させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_027_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -644,8 +846,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場に〈呉鳳明〉がある場合、自分の場のキャラを1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。\n自分の場のキャラを1枚まで選び、別のラインに移動させる。",
       "trigger": "このカードを手札に加える。",
@@ -889,9 +1093,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_035_on_enter_156456406e",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の他のキャラを1枚まで選び、アクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_035_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -901,8 +1114,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "このキャラはアクティブで登場させる。\n自分のターン開始時、このキャラを退場させる。\n自分の手札を1枚場外に置いてもよい。そうした場合、自分の場の他のキャラを1枚まで選び、アクティブにする。",
       "trigger": "このカードを手札に加える。",
@@ -913,12 +1128,21 @@
     "card_id": "UA48BT_KGD_1_036",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_036_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
       "trigger": "",
@@ -930,9 +1154,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_037_main_activate_92551b23a9",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このターンのアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。このキャラはこのターン中、「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_037_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -942,8 +1175,10 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "このターンのアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。このキャラはこのターン中、「メインフェイズ終了時、このキャラを退場させる。」を得る。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -955,10 +1190,20 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "SELECT_AND_MOVE",
       "DRAW_1",
+      "PREVIEW_ADD_TO_HAND",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_038_on_enter_56200c8cb9",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の山札の上から3枚見て、〈信〉か〈王賁〉か〈蒙恬〉を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "PREVIEW_ADD_TO_HAND"
+      },
       {
         "id": "UA48BT_KGD_1_038_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -981,10 +1226,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_039_on_enter_6acc09df52",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の〔〈信〉か〈王賁〉か〈蒙恬〉〕を1枚まで選び、別のラインに移動させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_039_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -994,8 +1248,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場の〔〈信〉か〈王賁〉か〈蒙恬〉〕を1枚まで選び、別のラインに移動させる。\n自分のキャラがアタックした時、APを1支払ってもよい。そうした場合、自分のフロントLのキャラを1枚まで選び、このターン中、「このキャラは、相手の効果で選ばれない。」を与える。",
       "trigger": "カードを1枚引く。",
@@ -1009,9 +1265,18 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_040_on_enter_a285af51d4",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "カードを『2枚』引き、自分の手札を1枚場外に置く。自分のフロントLに〈信〉と〈王賁〉がある場合、『3枚』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_040_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1021,8 +1286,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈蒙恬〉アクティブにし、フロントLに移動できる\n自分のアタックフェイズ開始時、自分のAPカードを1枚までアクティブにする。\nカードを『2枚』引き、自分の手札を1枚場外に置く。自分のフロントLに〈信〉と〈王賁〉がある場合、『3枚』に代わる。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -1106,9 +1373,18 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_044_on_enter_ce13ae1817",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "BP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_044_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1118,8 +1394,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈王賁〉アクティブにし、フロントLに移動できる\nこのキャラのアタックがブロックされなかった時、カードを『1枚』引く。自分のフロントLに〈信〉と〈蒙恬〉がある場合、『2枚』に代わる。\nBP1500以上の相手のフロントLのキャラを1枚まで選び、このターン中、BP-1000。\n「APを1支払い、相手のフロントLのキャラを1枚選ぶ。」をしてもよい。そうした場合、相手は選ばれたキャラ以外のキャラでこのアタックをブロックできない。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -1130,11 +1408,22 @@
     "card_id": "UA48BT_KGD_1_045",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_045_on_enter_b60ed7725f",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
     "can_be_expressed_by_dsl": false,
     "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
     ],
     "source_text_jp": {
       "effect": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
@@ -1147,10 +1436,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "SELECT_AND_MOVE",
       "BP_FILTER_BOUNCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_046_on_enter_a50b0b57f2",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場外から必要エナジーが2以下の〔［特徴：飛信隊］かイベントカード〕を1枚まで手札に加える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_046_on_life_trigger_01fec7cba9",
         "timing": "ON_LIFE_TRIGGER",
@@ -1160,8 +1458,10 @@
         "template_type": "BP_FILTER_BOUNCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場外から必要エナジーが2以下の〔［特徴：飛信隊］かイベントカード〕を1枚まで手札に加える。",
       "trigger": "BP3500以下の相手のフロントLのキャラを1枚選び、手札に戻す。",
@@ -1173,9 +1473,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_047_on_enter_2ebd01851e",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から2枚見て、青の［特徴：飛信隊］を1枚まで場外に置き、残りを望む順で山札の上に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_047_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -1185,8 +1494,10 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の山札の上から2枚見て、青の［特徴：飛信隊］を1枚まで場外に置き、残りを望む順で山札の上に置く。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -1198,10 +1509,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_048_on_enter_d327cfca41",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "このキャラが自分の効果で登場していた場合、カードを1枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_048_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1211,8 +1531,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "このキャラが自分の効果で登場していた場合、カードを1枚引く。",
       "trigger": "カードを1枚引く。",
@@ -1224,9 +1546,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_049_on_enter_980ea7226a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_049_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -1236,8 +1567,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "このキャラはアクティブで登場させる。\n自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。\n自分の手札から必要エナジーが2以下の青のイベントカードをAPを支払わずに1枚使用できる。",
       "trigger": "このカードを手札に加える。",
@@ -1251,9 +1584,18 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_050_on_enter_9b7ea3ac6a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "以下から『1つ』選ぶ。自分のターン中で、このキャラが自分の効果で登場していた場合、『2つ』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_050_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1263,8 +1605,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈羌瘣〉アクティブにし、フロントLに移動できる\n以下から『1つ』選ぶ。自分のターン中で、このキャラが自分の効果で登場していた場合、『2つ』に代わる。\n・相手のフロントLのレイド状態のカードを1枚まで選び、レイド状態の上のカードを1枚場外に置く。\n・必要エナジーが3以下の相手のフロントLのキャラを1枚まで選び、手札に戻す。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -1275,11 +1619,22 @@
     "card_id": "UA48BT_KGD_1_051",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_051_on_enter_ec33138b25",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
     "can_be_expressed_by_dsl": false,
     "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
     ],
     "source_text_jp": {
       "effect": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
@@ -1333,9 +1688,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_054_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      },
       {
         "id": "UA48BT_KGD_1_054_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -1386,11 +1750,22 @@
     "card_id": "UA48BT_KGD_1_056",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_056_on_enter_bbab3b07d3",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "『カードを1枚引き、自分の手札を1枚場外に置く』。自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、『カードを1枚引く』に代えてもよい。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
     "can_be_expressed_by_dsl": false,
     "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
     ],
     "source_text_jp": {
       "effect": "『カードを1枚引き、自分の手札を1枚場外に置く』。自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、『カードを1枚引く』に代えてもよい。",
@@ -1402,12 +1777,21 @@
     "card_id": "UA48BT_KGD_1_057",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_057_on_enter_43348ae670",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
       "trigger": "",
@@ -1435,9 +1819,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "READY_AND_TEMP_BP"
+      "TEMP_BP",
+      "READY_AND_TEMP_BP",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_059_on_enter_930f429545",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。",
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
+      },
       {
         "id": "UA48BT_KGD_1_059_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -1722,10 +2116,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_068_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      },
       {
         "id": "UA48BT_KGD_1_068_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1748,10 +2151,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_069_on_enter_f07146267a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から3枚見て、1枚まで場外に置き、残りを望む順で山札の上に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_069_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1761,8 +2173,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の山札の上から3枚見て、1枚まで場外に置き、残りを望む順で山札の上に置く。",
       "trigger": "カードを1枚引く。",
@@ -1776,9 +2190,26 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_070_on_enter_220c3f645b",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場外から必要エナジーが4以下で消費APが1のを持たない赤のキャラカードを1枚まで自分の場にレストで登場させる。登場させた場合、アクティブのこのキャラをレストにしてもよい。そうした場合、そのキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_070_main_activate_208006f7e9",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他のキャラを1枚選び、アクティブにする。選んだキャラの必要エナジーが0の場合、そのキャラはこのターン中、BP+2000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_070_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1788,8 +2219,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈嬴政〉アクティブにし、フロントLに移動できる\n自分の場外から必要エナジーが4以下で消費APが1のを持たない赤のキャラカードを1枚まで自分の場にレストで登場させる。登場させた場合、アクティブのこのキャラをレストにしてもよい。そうした場合、そのキャラをアクティブにする。\n自分の場の他のキャラを1枚選び、アクティブにする。選んだキャラの必要エナジーが0の場合、そのキャラはこのターン中、BP+2000。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -1816,12 +2249,21 @@
     "card_id": "UA48BT_KGD_1_072",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_072_on_enter_43348ae670",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "必要エナジーが1以下の自分の場の他のキャラを1枚手札に戻す。戻せない場合、このキャラを手札に戻す。",
       "trigger": "",
@@ -1833,10 +2275,20 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "COMPOSITE",
       "DRAW_1",
+      "MULTI_BRANCH_CHOICE",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_073_on_enter_536516f54f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "以下から1つ選ぶ。",
+        "reason": "",
+        "template_type": "MULTI_BRANCH_CHOICE"
+      },
       {
         "id": "UA48BT_KGD_1_073_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1950,9 +2402,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_078_on_enter_49dd2998e3",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分のターン中の場合、APを1支払ってもよい。そうした場合、以下から1つ選ぶ。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_078_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -1962,8 +2423,10 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分のターン中の場合、APを1支払ってもよい。そうした場合、以下から1つ選ぶ。\n・BP4500以上の相手のフロントLのキャラを1枚まで選び、退場させる。\n・自分のフロントLに異なるカード名のキャラが4種類以上ある場合、BP3500以上の相手のフロントLのキャラを1枚まで選び、退場させる。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -1975,10 +2438,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_079_on_enter_aa0a3ec5c3",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを『1枚』引く。場外に置いたカードが〈嬴政〉の場合、『2枚』に代わる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_079_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -1988,8 +2460,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の手札を1枚場外に置いてもよい。そうした場合、カードを『1枚』引く。場外に置いたカードが〈嬴政〉の場合、『2枚』に代わる。",
       "trigger": "カードを1枚引く。",
@@ -2030,10 +2504,19 @@
       "IMPACT"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_081_on_enter_fa29509719",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に〈嬴政〉がある場合、APを1支払ってもよい。そうした場合、このキャラをアクティブにし、このキャラはこのターン中、「自分のキャラのアタック終了時、自分のフロントLのキャラを1枚選び、このキャラと位置を入れ替えてもよい。」を得て、自分の場のキャラを1枚まで選び、このターン中、BP+2000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_081_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2043,8 +2526,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場に〈嬴政〉がある場合、APを1支払ってもよい。そうした場合、このキャラをアクティブにし、このキャラはこのターン中、「自分のキャラのアタック終了時、自分のフロントLのキャラを1枚選び、このキャラと位置を入れ替えてもよい。」を得て、自分の場のキャラを1枚まで選び、このターン中、BP+2000。",
       "trigger": "カードを1枚引く。",
@@ -2098,9 +2583,18 @@
     "inferred_keywords": [],
     "template_types": [
       "SELECT_AND_MOVE",
+      "PREVIEW_ADD_TO_HAND",
       "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_084_on_enter_b9e0b28480",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の山札の上から3枚見て、［特徴：桓騎軍］を1枚まで公開し手札に加える。残りを望む順で山札の下に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "PREVIEW_ADD_TO_HAND"
+      },
       {
         "id": "UA48BT_KGD_1_084_on_life_trigger_a41bad1555",
         "timing": "ON_LIFE_TRIGGER",
@@ -2123,10 +2617,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_085_main_activate_93e2cec333",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+2000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_085_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2136,8 +2639,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場にカードが1枚もない場合、手札にあるこのカードの必要エナジーを減らす。\n自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+2000。",
       "trigger": "カードを1枚引く。",
@@ -2151,9 +2656,26 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_086_on_enter_536490df81",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚まで選び、アクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_086_main_activate_022d85c46e",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このターン中にキャラの効果でキャラが退場していた場合のみ発動できる。以下から1つ選ぶ。このターン中に〈桓騎〉が既に選んだ効果は選べない。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_086_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2163,8 +2685,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈桓騎〉アクティブにし、フロントLに移動できる\n自分の場の他の［特徴：桓騎軍］を1枚まで選び、アクティブにする。\nこのターン中にキャラの効果でキャラが退場していた場合のみ発動できる。以下から1つ選ぶ。このターン中に〈桓騎〉が既に選んだ効果は選べない。\n・このターン中、次に手札から使用する［特徴：桓騎軍］の消費APを-1する。\n・カードを1枚引く。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -2176,10 +2700,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_087_on_enter_3bdb901c02",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、カードを2枚引く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_087_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2189,8 +2722,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、カードを2枚引く。",
       "trigger": "カードを1枚引く。",
@@ -2205,9 +2740,26 @@
       "IMPACT"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_088_on_enter_780d06b628",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に〈桓騎〉がある場合、相手は自身のフロントLのキャラを1枚退場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48BT_KGD_1_088_main_activate_5f10c86684",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札の［特徴：桓騎軍］を1枚場外に置く。そうした場合、このキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_088_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -2217,8 +2769,10 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "（このキャラとバトルをしたキャラはこのバトル中、インパクトを失う）\n自分の場に〈桓騎〉がある場合、相手は自身のフロントLのキャラを1枚退場させる。\n自分の手札の［特徴：桓騎軍］を1枚場外に置く。そうした場合、このキャラをアクティブにする。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -2229,12 +2783,21 @@
     "card_id": "UA48BT_KGD_1_089",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE"
     ],
+    "abilities": [
+      {
+        "id": "UA48BT_KGD_1_089_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
       "trigger": "",
@@ -2246,10 +2809,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_090_on_enter_2c504f8360",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "〈摩論〉以外の自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、「このカードを手札に加える。」を与える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_090_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2259,8 +2831,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈摩論〉以外の自分の場の［特徴：桓騎軍］を1枚まで選び、このターン中、「このカードを手札に加える。」を与える。",
       "trigger": "カードを1枚引く。",
@@ -2290,9 +2864,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "READY_AND_TEMP_BP"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_092_on_enter_0912541612",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から2枚見て、［特徴：桓騎軍］を1枚まで場外に置く。残りを望む順で山札の上に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_092_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -2302,8 +2885,10 @@
         "template_type": "READY_AND_TEMP_BP"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の山札の上から2枚見て、［特徴：桓騎軍］を1枚まで場外に置く。残りを望む順で山札の上に置く。",
       "trigger": "自分の場のキャラを1枚選び、アクティブにし、このターン中、BP+3000。",
@@ -2317,10 +2902,19 @@
       "IMPACT"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "SELECT_AND_MOVE",
       "BP_THRESHOLD_REMOVE"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_093_main_activate_e35105a697",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このキャラはこのターン中、を得る。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_093_on_life_trigger_a41bad1555",
         "timing": "ON_LIFE_TRIGGER",
@@ -2330,8 +2924,10 @@
         "template_type": "BP_THRESHOLD_REMOVE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場に〈嬴政〉がある場合、このキャラはBP+2000。\n自分のキャラのアタック終了時、このターン中にアタックしていない自分のフロントLのキャラを1枚選び、このキャラと位置を入れ替えてもよい。\nこのキャラはこのターン中、を得る。",
       "trigger": "BP2500以下の相手のフロントLのキャラを1枚選び、退場させる。",
@@ -2343,9 +2939,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48BT_KGD_1_094_main_activate_df76e6c12e",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の［特徴：秦］を1枚まで選び、次の自分のターン開始時まで、BP+2000。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48BT_KGD_1_094_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -2355,8 +2960,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場の［特徴：秦］を1枚まで選び、次の自分のターン開始時まで、BP+2000。",
       "trigger": "このカードを手札に加える。",
@@ -2617,12 +3224,21 @@
     "card_id": "UA48ST_KGD_1_036",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+    "template_types": [
+      "COMPOSITE"
     ],
+    "abilities": [
+      {
+        "id": "UA48ST_KGD_1_036_main_activate_4a5887f15c",
+        "timing": "MAIN_ACTIVATE",
+        "status": "SUPPORTED",
+        "text": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
+        "reason": "",
+        "template_type": "COMPOSITE"
+      }
+    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "このキャラはこのターン中、発生エナジー+と「メインフェイズ終了時、このキャラを退場させる。」を得る。",
       "trigger": "",
@@ -2633,11 +3249,22 @@
     "card_id": "UA48ST_KGD_1_045",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA48ST_KGD_1_045_on_enter_b60ed7725f",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
     "can_be_expressed_by_dsl": false,
     "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
     ],
     "source_text_jp": {
       "effect": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、「このキャラはBP4000以上のキャラにブロックされない。」を与える。",
@@ -2650,9 +3277,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_049_on_enter_980ea7226a",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_049_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -2662,8 +3298,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "このキャラはアクティブで登場させる。\n自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、自分の手札を1枚場外に置いてもよい。そうした場合、自分の場外から必要エナジーが2以下の青のイベントカードを1枚まで手札に加える。\n自分の手札から必要エナジーが2以下の青のイベントカードを1枚までAPを支払わずに使用する。",
       "trigger": "このカードを手札に加える。",
@@ -2674,11 +3312,22 @@
     "card_id": "UA48ST_KGD_1_051",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA48ST_KGD_1_051_on_enter_ec33138b25",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
     "can_be_expressed_by_dsl": false,
     "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
     ],
     "source_text_jp": {
       "effect": "自分の山札の上から2枚見て、［特徴：飛信隊］を1枚まで公開し手札に加える。残りを場外に置く。手札に加えた場合、自分の手札を1枚場外に置く。",
@@ -2716,9 +3365,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "READY_AND_TEMP_BP"
+      "TEMP_BP",
+      "READY_AND_TEMP_BP",
+      "TEMP_BP_MODIFIER"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_059_on_enter_930f429545",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "自分の場の他の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。",
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
+      },
       {
         "id": "UA48ST_KGD_1_059_on_life_trigger_bab7196d2b",
         "timing": "ON_LIFE_TRIGGER",
@@ -2810,10 +3469,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_101_main_activate_073dc876d3",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他のキャラを1枚選び、このターン中、「カードを1枚まで引く。」を与える。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_101_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2823,8 +3491,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場の他のキャラを1枚選び、このターン中、「カードを1枚まで引く。」を与える。",
       "trigger": "カードを1枚引く。",
@@ -2889,10 +3559,19 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_104_main_activate_64ddf561b1",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場外から〈河了貂〉以外の必要エナジーが2以下の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_104_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2902,8 +3581,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場外から〈河了貂〉以外の必要エナジーが2以下の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。",
       "trigger": "カードを1枚引く。",
@@ -2914,11 +3595,22 @@
     "card_id": "UA48ST_KGD_1_105",
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
-    "template_types": [],
-    "abilities": [],
+    "template_types": [
+      "UNSUPPORTED"
+    ],
+    "abilities": [
+      {
+        "id": "UA48ST_KGD_1_105_main_activate_441442ecca",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "このキャラを別のラインに移動させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      }
+    ],
     "can_be_expressed_by_dsl": false,
     "unresolved_capabilities": [
-      "当前卡牌文本尚未映射为能力对象。"
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
     ],
     "source_text_jp": {
       "effect": "このキャラを別のラインに移動させる。",
@@ -2960,9 +3652,18 @@
       "IMPACT"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "LIFE_TRIGGER_RAID_CHOICE"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_107_on_enter_bf3550cf58",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の手札から必要エナジーが2以下で消費APが1の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_107_on_life_trigger_a342b2ffe2",
         "timing": "ON_LIFE_TRIGGER",
@@ -2972,8 +3673,10 @@
         "template_type": "LIFE_TRIGGER_RAID_CHOICE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "〈信〉アクティブにし、フロントLに移動できる\nこのキャラのBPは自分の場の［特徴：飛信隊］のカード名の種類数×500プラスされる。このキャラのBPにより、このキャラは以下の効果を全て得る。\n・BP6000以上：自分の場の［特徴：飛信隊］を1枚まで選び、このターン中、BP+1000。\n・BP7000以上：（アタックしてバトルに勝利した時、相手に1ダメージ）\n自分の手札から必要エナジーが2以下で消費APが1の青の［特徴：飛信隊］を1枚まで自分の場にレストで登場させる。",
       "trigger": "このカードを手札に加えるか、必要エナジーを満たしている場合、レイドさせる。",
@@ -2985,9 +3688,18 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_108_on_enter_b04803b1cb",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の山札の上から1枚見て、山札の上か場外に置く。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_108_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -2997,8 +3709,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場に［特徴：飛信隊］のカード名が4種類以上ある場合、このフィールドの発生エナジー+。\n自分の山札の上から1枚見て、山札の上か場外に置く。",
       "trigger": "このカードを手札に加える。",
@@ -3071,10 +3785,28 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "DRAW_THEN_SELECT_AND_MOVE",
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_111_on_enter_e8dcb9641f",
+        "timing": "ON_ENTER",
+        "status": "SUPPORTED",
+        "text": "カードを1枚引き、自分の手札を1枚場外に置く。",
+        "reason": "",
+        "template_type": "DRAW_THEN_SELECT_AND_MOVE"
+      },
+      {
+        "id": "UA48ST_KGD_1_111_main_activate_3f890a5875",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分のエナジーLのカードを1枚選び、アクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_111_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -3084,8 +3816,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "カードを1枚引き、自分の手札を1枚場外に置く。\n自分のエナジーLのカードを1枚選び、アクティブにする。",
       "trigger": "カードを1枚引く。",
@@ -3099,10 +3833,19 @@
       "RAID"
     ],
     "template_types": [
+      "UNSUPPORTED",
       "DRAW_1",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_112_on_enter_969d175e7f",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の必要エナジーが2以下のキャラを1枚手札に戻してもよい。そうした場合、このキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_112_on_life_trigger_91b04beda2",
         "timing": "ON_LIFE_TRIGGER",
@@ -3112,8 +3855,10 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場の必要エナジーが2以下のキャラを1枚手札に戻してもよい。そうした場合、このキャラをアクティブにする。\n自分のフロントLにを持つキャラがない場合、自分の手札を1枚場外に置いてもよい。そうした場合、このカードを手札に加える。",
       "trigger": "カードを1枚引く。",
@@ -3125,9 +3870,26 @@
     "origin": "KGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
+      "UNSUPPORTED",
       "MOVE_SELF"
     ],
     "abilities": [
+      {
+        "id": "UA48ST_KGD_1_113_on_enter_ff0a516896",
+        "timing": "ON_ENTER",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、このキャラをアクティブにする。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
+      {
+        "id": "UA48ST_KGD_1_113_main_activate_a1decf6cb8",
+        "timing": "MAIN_ACTIVATE",
+        "status": "UNSUPPORTED",
+        "text": "自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。〈桓騎〉のこの効果は1ターンに1回のみ発動できる。",
+        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
+        "template_type": "UNSUPPORTED"
+      },
       {
         "id": "UA48ST_KGD_1_113_on_life_trigger_0a3e81b9d0",
         "timing": "ON_LIFE_TRIGGER",
@@ -3137,8 +3899,10 @@
         "template_type": "MOVE_SELF"
       }
     ],
-    "can_be_expressed_by_dsl": true,
-    "unresolved_capabilities": [],
+    "can_be_expressed_by_dsl": false,
+    "unresolved_capabilities": [
+      "当前原子要求/步骤模板尚未覆盖该文本模式。"
+    ],
     "source_text_jp": {
       "effect": "自分の場の他の［特徴：桓騎軍］を1枚退場させてもよい。そうした場合、このキャラをアクティブにする。\n自分の場の他の［特徴：桓騎軍］を1枚退場させる。そうした場合、このキャラはこのターン中、BP+1000と（このキャラがこのターン初めてアタックした時、アクティブにする）を得る。〈桓騎〉のこの効果は1ターンに1回のみ発動できる。",
       "trigger": "このカードを手札に加える。",

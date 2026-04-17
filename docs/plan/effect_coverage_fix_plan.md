@@ -42,3 +42,24 @@
 - 至少完成 1 个高频文本族的模板化闭环（编译 + 运行时 + 边界）；
 - `docs/plan/high_confidence_effect_drop_list.md` 与日志已同步更新；
 - 禁止按卡硬编码修补。
+
+## 5. P0 完成记录（2026-04-17）
+
+- 已完成三个高频文本族的 P0 闭环：
+  - `other + trait + BP+1000`
+  - `发生产能+ + 回合末退场`
+  - `N 看牌 + 选牌 + 余牌回顶/回底`
+- 实现方式：
+  - 在 `tools/compile_cards_effects.py` 中新增“effect 段标签提升”逻辑：`登場時 -> ON_ENTER`、`起動メイン -> MAIN_ACTIVATE`；
+  - 起动主效果支持从标签恢复 `ターン1`（`once_per_turn=true`）与 `レストにする`（`REST_SOURCE` 成本）；
+  - 新增两组模板：
+    - `self_other_trait_bp_plus`（覆盖 `other + trait + BP+1000`）
+    - `preview_add_to_hand_variable_clause_discard_on_add`（覆盖“看牌 + 选牌 + 余牌回底 + 加手后弃牌”可变子句）
+- P0 结果（对比 2026-04-17 初始基线）：
+  - 高置信漏项由 **82** 降至 **25**；
+  - 分系列由 `CGD=2, KGD=45, MCR=28, MMM=3, TLR=4` 降至 `CGD=2, KGD=11, MCR=5, MMM=3, TLR=4`。
+- 验证闭环：
+  - 编译验证：`python tools/compile_cards_effects.py`
+  - 覆盖度快照：`python tools/check_effect_text_coverage.py --cards-root data/cards --out-md docs/plan/high_confidence_effect_drop_list.md --write-json docs/plan/effect_coverage_baseline.json`
+  - 门禁验证：`python tools/check_effect_text_coverage.py --cards-root data/cards --max-total 82 --max-series CGD=2 --max-series KGD=45 --max-series MCR=28 --max-series MMM=3 --max-series TLR=4`
+  - 单测验证：`python -m pytest tests/test_compile_cards_effects.py tests/test_check_effect_text_coverage.py`

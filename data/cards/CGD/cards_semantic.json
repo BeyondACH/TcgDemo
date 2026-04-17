@@ -183,18 +183,19 @@
     "origin": "CGD/cards_raw.json",
     "inferred_keywords": [],
     "template_types": [
-      "UNSUPPORTED",
+      "TEMP_BP",
       "DRAW_1",
+      "TEMP_BP_MODIFIER",
       "DRAW_SEQUENCE"
     ],
     "abilities": [
       {
         "id": "UA34BT_CGD_1_008_on_enter_3020bbfad9",
         "timing": "ON_ENTER",
-        "status": "UNSUPPORTED",
+        "status": "SUPPORTED",
         "text": "自分の場の他の［特徴：七煌星団］を1枚まで選び、このターン中、BP+1000。",
-        "reason": "当前原子要求/步骤模板尚未覆盖该文本模式。",
-        "template_type": "UNSUPPORTED"
+        "reason": "",
+        "template_type": "TEMP_BP_MODIFIER"
       },
       {
         "id": "UA34BT_CGD_1_008_on_life_trigger_91b04beda2",
@@ -205,10 +206,8 @@
         "template_type": "DRAW_SEQUENCE"
       }
     ],
-    "can_be_expressed_by_dsl": false,
-    "unresolved_capabilities": [
-      "当前原子要求/步骤模板尚未覆盖该文本模式。"
-    ],
+    "can_be_expressed_by_dsl": true,
+    "unresolved_capabilities": [],
     "source_text_jp": {
       "effect": "自分の場の他の［特徴：七煌星団］を1枚まで選び、このターン中、BP+1000。",
       "trigger": "カードを1枚引く。",
