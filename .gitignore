@@ -17,6 +17,7 @@
 *.zip
 *.tar
 *.tar.gz
+*.import
 
 # 编辑器与系统本地文件
 .DS_Store
