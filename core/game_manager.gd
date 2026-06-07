@@ -21,6 +21,7 @@ const AIController = preload("res://core/controllers/ai_controller.gd")
 const ControllerManager = preload("res://core/controllers/controller_manager.gd")
 const SnapshotSerializer = preload("res://core/ui/snapshot_serializer.gd")
 const LifeTriggerManager = preload("res://core/life_trigger_manager.gd")
+const DeckLoader = preload("res://core/deck_loader.gd")
 const MulliganManager = preload("res://core/mulligan_manager.gd")
 
 signal state_changed(snapshot: Dictionary)
@@ -30,7 +31,6 @@ signal ai_action_executed(action_info: Dictionary)
 
 const STARTER_A_PATH := "res://data/decks/starter_a.txt"
 const STARTER_B_PATH := "res://data/decks/starter_b.txt"
-const DECKS_DIR_PATH := "res://data/decks"
 
 @export_enum("HUMAN", "AI_SIMPLE") var player_one_controller_type := PlayerController.CONTROLLER_HUMAN
 @export_enum("HUMAN", "AI_SIMPLE") var player_two_controller_type := PlayerController.CONTROLLER_AI_SIMPLE
@@ -48,8 +48,7 @@ var controller_manager := ControllerManager.new()
 var snapshot_serializer: SnapshotSerializer
 var life_trigger_manager: LifeTriggerManager
 var mulligan_manager: MulliganManager
-var _deck_card_lookup: Dictionary = {}
-var _card_catalog := CardCatalog.new()
+var _deck_loader := DeckLoader.new()
 
 func _ready() -> void:
 	randomize()
@@ -132,21 +131,7 @@ func setup_game(setup_config: Dictionary = {}) -> void:
 	emit_state_changed()
 
 func get_available_decks() -> Array[Dictionary]:
-	var deck_files: Array[String] = []
-	for file_name_variant in DirAccess.get_files_at(DECKS_DIR_PATH):
-		var file_name := str(file_name_variant)
-		if file_name.get_extension().to_lower() != "txt":
-			continue
-		deck_files.append(file_name)
-	deck_files.sort()
-	var decks: Array[Dictionary] = []
-	for file_name in deck_files:
-		decks.append({
-			"name": file_name.get_basename(),
-			"file_name": file_name,
-			"path": "%s/%s" % [DECKS_DIR_PATH, file_name],
-		})
-	return decks
+	return _deck_loader.get_available_decks()
 
 func set_controller_config(controller_config: Dictionary) -> void:
 	controller_manager.reset_state(controller_config)
@@ -543,13 +528,7 @@ func append_ui_log(text: String) -> void:
 	_apply_logs([text])
 	emit_state_changed()
 func _load_card_defs() -> void:
-	_deck_card_lookup.clear()
-	var json: Array = _card_catalog.load_runtime_cards()
-	for item in json:
-		var item_dict: Dictionary = item
-		var card_def: CardDef = CardDef.new().from_dict(item_dict)
-		game_state.card_defs[card_def.id] = card_def
-		_register_deck_lookup(card_def)
+	game_state.card_defs = _deck_loader.load_card_defs()
 
 func _create_player(player_id: String, deck_list: Array) -> void:
 	var player := PlayerState.new()
@@ -638,64 +617,7 @@ func _apply_logs(logs: Array[String]) -> void:
 		log_added.emit(line)
 
 func _load_deck_list(path: String) -> Array:
-	if path.get_extension().to_lower() == "txt":
-		return _read_text_deck(path)
-	return _card_catalog.read_json_array(path)
-
-func _read_text_deck(path: String) -> Array:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		push_error("Failed to open %s" % path)
-		return []
-	var result: Array = []
-	while not file.eof_reached():
-		var line := file.get_line().strip_edges()
-		if line == "" or line.begins_with("#"):
-			continue
-		var expanded := _expand_deck_line(line)
-		if expanded.is_empty():
-			push_error("Failed to parse deck line: %s" % line)
-			continue
-		result.append_array(expanded)
-	return result
-
-func _expand_deck_line(line: String) -> Array:
-	var split_index := line.find("x")
-	if split_index <= 0:
-		return []
-	var count := int(line.substr(0, split_index))
-	var raw_code := line.substr(split_index + 1).strip_edges()
-	if count <= 0 or raw_code == "":
-		return []
-	var def_id := _resolve_deck_card_id(raw_code)
-	if def_id == "":
-		push_error("Missing card definition for deck code: %s" % raw_code)
-		return []
-	var expanded: Array = []
-	for i in range(count):
-		expanded.append(def_id)
-	return expanded
-
-func _resolve_deck_card_id(raw_code: String) -> String:
-	var normalized_candidates := [
-		raw_code,
-		raw_code.replace("/", "_").replace("-", "_"),
-		raw_code.replace("_", "/"),
-	]
-	for candidate_variant in normalized_candidates:
-		var candidate := str(candidate_variant)
-		if _deck_card_lookup.has(candidate):
-			return str(_deck_card_lookup[candidate])
-	return ""
-
-func _register_deck_lookup(card_def: CardDef) -> void:
-	if card_def.id != "":
-		_deck_card_lookup[card_def.id] = card_def.id
-		_deck_card_lookup[card_def.id.replace("/", "_").replace("-", "_")] = card_def.id
-	if card_def.number != "":
-		_deck_card_lookup[card_def.number] = card_def.id
-		_deck_card_lookup[card_def.number.replace("/", "_")] = card_def.id
-		_deck_card_lookup[card_def.number.replace("/", "_").replace("-", "_")] = card_def.id
+	return _deck_loader.load_deck_list(path)
 
 func _has_winner() -> bool:
 	return game_state.winner_player_id != ""
