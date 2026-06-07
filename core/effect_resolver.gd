@@ -2,8 +2,10 @@ extends RefCounted
 class_name EffectResolver
 
 const UATypes = preload("res://core/ua_types.gd")
+const EffectUtils = preload("res://core/effects/effect_utils.gd")
 const ZoneManager = preload("res://core/zone_manager.gd")
 const VictoryChecker = preload("res://core/victory_checker.gd")
+const RulesEngine = preload("res://core/rules_engine.gd")
 const PlayerUtils = preload("res://core/player_utils.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
@@ -12,22 +14,23 @@ const StepExecutor = preload("res://core/effects/step_executor.gd")
 const LifeDamageHandler = preload("res://core/effects/life_damage_handler.gd")
 const TargetSelector = preload("res://core/effects/target_selector.gd")
 
-var zone_manager
-var victory_checker
-var rules_engine
+var zone_manager: ZoneManager
+var victory_checker: VictoryChecker
+var rules_engine: RulesEngine
 var _requirement_matcher: RequirementMatcher
 var _step_executor: StepExecutor
 var _life_damage_handler: LifeDamageHandler
 var _target_selector: TargetSelector
 
-func _init(p_zone_manager, p_victory_checker, p_rules_engine = null) -> void:
+func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker, p_rules_engine: RulesEngine = null) -> void:
 	zone_manager = p_zone_manager
 	victory_checker = p_victory_checker
 	rules_engine = p_rules_engine
 	_requirement_matcher = RequirementMatcher.new(zone_manager, rules_engine, self)
 	_target_selector = TargetSelector.new(zone_manager, _requirement_matcher, self)
-	_step_executor = StepExecutor.new(zone_manager, victory_checker, rules_engine, self)
+	_step_executor = StepExecutor.new(zone_manager, victory_checker, rules_engine, self, _requirement_matcher)
 	_life_damage_handler = LifeDamageHandler.new(victory_checker, self)
+	_init_operation_handlers()
 
 func resolve_operations(state: GameState, source_card_uid: String, effect_list: Array, context: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
@@ -42,7 +45,7 @@ func resolve_effect(state: GameState, source_card_uid: String, effect: Dictionar
 func consume_effect_queue(state: GameState) -> Array[String]:
 	var logs: Array[String] = []
 	while not state.effect_queue.is_empty():
-		if not state.pending_decisions.is_empty() or not state.pending_life_triggers.is_empty():
+		if not state.pending.decisions.is_empty() or not state.pending.life_triggers.is_empty():
 			break
 		var entry: Dictionary = state.effect_queue[0]
 		if str(entry.get("kind", "")) == "TARGET_SELECTION":
@@ -164,7 +167,7 @@ func activate_main_effect(state: GameState, player_id: String, card_uid: String,
 	logs.append_array(consume_effect_queue(state))
 	return logs
 
-func resolve_target_selection_decision(state: GameState, resolution_id: String, selected_values) -> Array[String]:
+func resolve_target_selection_decision(state: GameState, resolution_id: String, selected_values: Variant) -> Array[String]:
 	var logs: Array[String] = []
 	if resolution_id == "":
 		return ["Target selection failed: missing resolution id."]
@@ -234,7 +237,7 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 	for modifier_variant in card_def.play_rule.get("cost_modifiers", []):
 		var modifier: Dictionary = modifier_variant
 		var modifier_type := str(modifier.get("type", ""))
-		var from_zone := _parse_zone(modifier.get("from_zone", -1))
+		var from_zone := UATypes.key_to_zone(modifier.get("from_zone", -1))
 		if from_zone != -1 and card.zone != from_zone:
 			continue
 		if modifier_type == "SELF_HAND_AP_DELTA":
@@ -257,7 +260,7 @@ func preview_play_modifiers(state: GameState, player_id: String, card_uid: Strin
 			continue
 		if modifier_type != "HAND_PLAY_COST_ENERGY_DELTA":
 			continue
-		var from_zone := _parse_zone(modifier.get("from_zone", -1))
+		var from_zone := UATypes.key_to_zone(modifier.get("from_zone", -1))
 		if from_zone != -1 and card.zone != from_zone:
 			continue
 		if not _matches_filter_list(state, modifier.get("filters", []), play_context, card_uid, _get_source_card_uid(modifier)):
@@ -330,8 +333,7 @@ func consume_timed_delayed_effects(state: GameState, event_name: String, context
 			_get_source_card_uid(delayed_effect),
 			_get_source_card_uid(delayed_effect)
 		):
-			if str(delayed_effect.get("expires", "")) != "END_OF_TURN" and str(delayed_effect.get("expires", "")) != "UNTIL_NEXT_SELF_TURN_START":
-				remaining.append(delayed_effect)
+			remaining.append(delayed_effect)
 			continue
 		logs.append_array(_resolve_effect_now(
 			state,
@@ -369,11 +371,11 @@ func move_pending_life_card_to_hand(state: GameState, card_uid: String, owner_pl
 	var resolved_owner_player_id := owner_player_id
 	if resolved_owner_player_id == "":
 		resolved_owner_player_id = card.owner_player_id
-	for i in range(state.pending_life_damage_cards.size()):
-		var entry: Dictionary = state.pending_life_damage_cards[i]
+	for i in range(state.pending.life_damage_cards.size()):
+		var entry: Dictionary = state.pending.life_damage_cards[i]
 		if str(entry.get("card_uid", "")) != card_uid:
 			continue
-		state.pending_life_damage_cards.remove_at(i)
+		state.pending.life_damage_cards.remove_at(i)
 		break
 	zone_manager.move_card(state, card_uid, UATypes.Zone.HAND, resolved_owner_player_id)
 	return true
@@ -431,81 +433,110 @@ func _execute_steps(state: GameState, source_card_uid: String, steps: Array, con
 func _execute_step(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary, remaining_steps: Array = [], effect: Dictionary = {}) -> Dictionary:
 	return _step_executor.execute(state, source_card_uid, step, context, remaining_steps, effect)
 
+var _operation_handlers: Dictionary = {}
+
+func _init_operation_handlers() -> void:
+	_operation_handlers["DRAW"] = _op_draw
+	_operation_handlers["MOVE_ZONE"] = _op_move_zone
+	_operation_handlers["MOVE_CARD"] = _op_move_card
+	_operation_handlers["REST"] = _op_rest
+	_operation_handlers["ACTIVATE"] = _op_activate
+	_operation_handlers["ACTIVATE_CARD"] = _op_activate
+	_operation_handlers["DEAL_DAMAGE_TO_PLAYER"] = _op_deal_damage
+	_operation_handlers["MODIFY_PLAY_COST_AP"] = _op_noop
+	_operation_handlers["MODIFY_BP"] = _op_modify_bp
+	_operation_handlers["QUEUE_EFFECT"] = _op_queue_effect
+
 func _execute_operation(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary = {}) -> Array[String]:
+	var effect_type := str(effect.get("type", ""))
+	var handler: Callable = _operation_handlers.get(effect_type, _op_unsupported)
+	return handler.call(state, source_card_uid, effect, context)
+
+func _op_draw(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var target_player_id := str(context.get("draw_player_id", context.get("source_player_id", context.get("target_player_id", state.active_player_id))))
+	var amount := int(effect.get("value", 1))
+	for i in range(amount):
+		var draw_uid: String = zone_manager.draw_card(state, target_player_id)
+		if draw_uid == "":
+			var defeat: Dictionary = victory_checker.check_deck_out_loss(state, target_player_id)
+			if not defeat.is_empty():
+				_apply_victory(state, defeat)
+			logs.append("%s attempted to draw from an empty deck." % target_player_id)
+			break
+		logs.append("%s draws 1 card." % target_player_id)
+	return logs
+
+func _op_move_zone(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var target_uid := EffectUtils.resolve_step_target_uid(effect, context, source_card_uid)
+	var to_zone := UATypes.key_to_zone(effect.get("to_zone", effect.get("to", UATypes.Zone.OUTSIDE)))
+	if target_uid != "":
+		zone_manager.move_card(state, target_uid, to_zone, str(context.get("target_player_id", "")), str(effect.get("to_position", "")))
+		logs.append("Moved card %s to %s." % [target_uid, UATypes.zone_to_key(to_zone)])
+	return logs
+
+func _op_move_card(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var move_uid := EffectUtils.resolve_step_target_uid(effect, context, source_card_uid)
+	var move_to_zone := UATypes.key_to_zone(effect.get("to_zone", effect.get("to", UATypes.Zone.OUTSIDE)))
+	if move_uid != "":
+		zone_manager.move_card(state, move_uid, move_to_zone, str(context.get("target_player_id", "")), str(effect.get("to_position", "")))
+		logs.append("Moved card %s to %s." % [move_uid, UATypes.zone_to_key(move_to_zone)])
+	return logs
+
+func _op_rest(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var rest_uid := EffectUtils.resolve_step_target_uid(effect, context, source_card_uid)
+	var rest_card = state.get_card(rest_uid)
+	if rest_card != null:
+		rest_card.state = UATypes.CardState.RESTED
+		logs.append("%s becomes rested." % rest_card.uid)
+	return logs
+
+func _op_activate(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var activate_uid := EffectUtils.resolve_step_target_uid(effect, context, source_card_uid)
+	var activate_card = state.get_card(activate_uid)
+	if activate_card != null:
+		activate_card.state = UATypes.CardState.ACTIVE
+		logs.append("%s becomes active." % activate_card.uid)
+	return logs
+
+func _op_deal_damage(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var target_id := str(context.get("target_player_id", ""))
+	var damage := int(effect.get("value", 1))
+	logs.append_array(deal_damage_to_player(state, target_id, damage))
+	return logs
+
+func _op_noop(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	return []
+
+func _op_modify_bp(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var bp_uid := EffectUtils.resolve_step_target_uid(effect, context, source_card_uid)
+	var bp_card = state.get_card(bp_uid)
+	if bp_card != null:
+		bp_card.current_bp += int(effect.get("value", 0))
+		logs.append("%s BP changes by %d." % [bp_uid, int(effect.get("value", 0))])
+	return logs
+
+func _op_queue_effect(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
+	var logs: Array[String] = []
+	var queued_effect: Dictionary = effect.get("queued_effect", effect.get("effect", {}))
+	if queued_effect.is_empty():
+		return logs
+	var queued_context := context.duplicate(true)
+	var context_patch = effect.get("context", {})
+	if context_patch is Dictionary:
+		queued_context.merge(context_patch, true)
+	state.effect_queue.append(_build_effect_queue_entry(source_card_uid, queued_effect, queued_context))
+	return logs
+
+func _op_unsupported(state: GameState, source_card_uid: String, effect: Dictionary, context: Dictionary) -> Array[String]:
 	var logs: Array[String] = []
 	var effect_type := str(effect.get("type", ""))
-	if effect_type == "DRAW":
-		var target_player_id := str(context.get("draw_player_id", context.get("source_player_id", context.get("target_player_id", state.active_player_id))))
-		var amount := int(effect.get("value", 1))
-		for i in range(amount):
-			var draw_uid: String = zone_manager.draw_card(state, target_player_id)
-			if draw_uid == "":
-				var defeat: Dictionary = victory_checker.check_deck_out_loss(state, target_player_id)
-				if not defeat.is_empty():
-					_apply_victory(state, defeat)
-				logs.append("%s attempted to draw from an empty deck." % target_player_id)
-				break
-			logs.append("%s draws 1 card." % target_player_id)
-		return logs
-	if effect_type == "MOVE_ZONE":
-		var target_uid := _resolve_step_target_uid(effect, context, source_card_uid)
-		var to_zone := _parse_zone(effect.get("to_zone", effect.get("to", UATypes.Zone.OUTSIDE)))
-		if target_uid != "":
-			zone_manager.move_card(state, target_uid, to_zone, str(context.get("target_player_id", "")), str(effect.get("to_position", "")))
-			logs.append("Moved card %s to %s." % [target_uid, UATypes.zone_to_key(to_zone)])
-		return logs
-	if effect_type == "MOVE_CARD":
-		var move_uid := _resolve_step_target_uid(effect, context, source_card_uid)
-		var move_to_zone := _parse_zone(effect.get("to_zone", effect.get("to", UATypes.Zone.OUTSIDE)))
-		if move_uid != "":
-			zone_manager.move_card(state, move_uid, move_to_zone, str(context.get("target_player_id", "")), str(effect.get("to_position", "")))
-			logs.append("Moved card %s to %s." % [move_uid, UATypes.zone_to_key(move_to_zone)])
-		return logs
-	if effect_type == "REST":
-		var rest_uid := _resolve_step_target_uid(effect, context, source_card_uid)
-		var rest_card = state.get_card(rest_uid)
-		if rest_card != null:
-			rest_card.state = UATypes.CardState.RESTED
-			logs.append("%s becomes rested." % rest_card.uid)
-		return logs
-	if effect_type == "ACTIVATE":
-		var active_uid := _resolve_step_target_uid(effect, context, source_card_uid)
-		var active_card = state.get_card(active_uid)
-		if active_card != null:
-			active_card.state = UATypes.CardState.ACTIVE
-			logs.append("%s becomes active." % active_card.uid)
-		return logs
-	if effect_type == "ACTIVATE_CARD":
-		var activate_uid := _resolve_step_target_uid(effect, context, source_card_uid)
-		var activate_card = state.get_card(activate_uid)
-		if activate_card != null:
-			activate_card.state = UATypes.CardState.ACTIVE
-			logs.append("%s becomes active." % activate_card.uid)
-		return logs
-	if effect_type == "DEAL_DAMAGE_TO_PLAYER":
-		var target_id := str(context.get("target_player_id", ""))
-		var damage := int(effect.get("value", 1))
-		logs.append_array(deal_damage_to_player(state, target_id, damage))
-		return logs
-	if effect_type == "MODIFY_PLAY_COST_AP":
-		return logs
-	if effect_type == "MODIFY_BP":
-		var bp_uid := _resolve_step_target_uid(effect, context, source_card_uid)
-		var bp_card = state.get_card(bp_uid)
-		if bp_card != null:
-			bp_card.current_bp += int(effect.get("value", 0))
-			logs.append("%s BP changes by %d." % [bp_uid, int(effect.get("value", 0))])
-		return logs
-	if effect_type == "QUEUE_EFFECT":
-		var queued_effect: Dictionary = effect.get("queued_effect", effect.get("effect", {}))
-		if queued_effect.is_empty():
-			return logs
-		var queued_context := context.duplicate(true)
-		var context_patch = effect.get("context", {})
-		if context_patch is Dictionary:
-			queued_context.merge(context_patch, true)
-		state.effect_queue.append(_build_effect_queue_entry(source_card_uid, queued_effect, queued_context))
-		return logs
 	logs.append("Reserved unsupported effect type: %s" % effect_type)
 	return logs
 
@@ -553,13 +584,13 @@ func _register_static_modifier(state: GameState, source_card_uid: String, step: 
 
 func _apply_temporary_bp_modifier(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
 	var logs: Array[String] = []
-	var target_uid := _resolve_step_target_uid(step, context, source_card_uid)
+	var target_uid := EffectUtils.resolve_step_target_uid(step, context, source_card_uid)
 	var target_card = state.get_card(target_uid)
 	if target_card == null:
 		return logs
 	var delta := int(step.get("value", 0))
 	if step.has("value_provider"):
-		delta = _resolve_numeric_value(state, step.get("value_provider", 0), context, source_card_uid, target_uid)
+		delta = EffectUtils.resolve_numeric_value(state, step.get("value_provider", 0), context, source_card_uid, target_uid, _requirement_matcher)
 	target_card.current_bp += delta
 	var source_card = state.get_card(source_card_uid)
 	state.static_modifiers.append({
@@ -577,7 +608,7 @@ func _apply_temporary_bp_modifier(state: GameState, source_card_uid: String, ste
 func _swap_source_with_selected_card(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
 	var logs: Array[String] = []
 	var source_card = state.get_card(source_card_uid)
-	var target_uid := _resolve_step_target_uid(step, context, source_card_uid)
+	var target_uid := EffectUtils.resolve_step_target_uid(step, context, source_card_uid)
 	var target_card = state.get_card(target_uid)
 	if source_card == null or target_card == null or source_card.uid == target_card.uid:
 		return logs
@@ -595,7 +626,7 @@ func _move_source_stacked_under_to_zone(state: GameState, source_card_uid: Strin
 	var source_card = state.get_card(source_card_uid)
 	if source_card == null:
 		return logs
-	var to_zone := _parse_zone(step.get("to_zone", step.get("to", UATypes.Zone.HAND)))
+	var to_zone := UATypes.key_to_zone(step.get("to_zone", step.get("to", UATypes.Zone.HAND)))
 	var count := maxi(0, int(step.get("count", 1)))
 	var moved := 0
 	while moved < count and not source_card.stacked_under.is_empty():
@@ -610,14 +641,14 @@ func _move_source_stacked_under_to_zone(state: GameState, source_card_uid: Strin
 
 func _apply_temporary_keyword_modifier(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
 	var logs: Array[String] = []
-	var target_uid := _resolve_step_target_uid(step, context, source_card_uid)
+	var target_uid := EffectUtils.resolve_step_target_uid(step, context, source_card_uid)
 	var target_card = state.get_card(target_uid)
 	if target_card == null:
 		return logs
 	var keyword := str(step.get("keyword", step.get("value", "")))
 	if keyword == "":
 		return logs
-	_add_runtime_keyword(target_card, keyword)
+	target_card.add_temp_keyword(keyword)
 	var source_card = state.get_card(source_card_uid)
 	var expires := str(step.get("expires", "END_OF_TURN"))
 	state.static_modifiers.append({
@@ -629,7 +660,7 @@ func _apply_temporary_keyword_modifier(state: GameState, source_card_uid: String
 		"keyword": keyword,
 		"expires": expires,
 	})
-	logs.append("%s gains %s %s." % [target_uid, keyword, _format_modifier_expiry_text(expires)])
+	logs.append("%s gains %s %s." % [target_uid, keyword, EffectUtils.format_modifier_expiry_text(expires)])
 	return logs
 
 func _resolve_trigger_owner_groups(state: GameState, owner_groups: Array) -> Array[String]:
@@ -674,7 +705,7 @@ func _enqueue_trigger_order_decision(state: GameState, owner_player_id: String, 
 			"enabled": true,
 			"reason": "",
 		})
-	state.pending_decisions.append({
+	state.pending.decisions.append({
 		"type": "TRIGGER_ORDER",
 		"owner_player_id": owner_player_id,
 		"source_card_uid": "",
@@ -802,13 +833,13 @@ func _pay_effect_costs(state: GameState, source_card_uid: String, costs: Array, 
 				source_card.state = UATypes.CardState.RESTED
 				logs.append("%s is rested to pay a cost." % source_card_uid)
 		elif cost_type == "MOVE_SOURCE_TO_ZONE":
-			var source_zone := _parse_zone(cost.get("to_zone", cost.get("to", UATypes.Zone.OUTSIDE)))
+			var source_zone := UATypes.key_to_zone(cost.get("to_zone", cost.get("to", UATypes.Zone.OUTSIDE)))
 			if source_zone != -1:
 				zone_manager.move_card(state, source_card_uid, source_zone, _cost_player_id(state, source_card_uid, context, cost))
 				logs.append("Moved card %s to %s as a cost." % [source_card_uid, UATypes.zone_to_key(source_zone)])
 		elif cost_type == "MOVE_SELECTED_CARDS":
-			var selected_cards: Array = _ensure_array(context.get(str(cost.get("from_var", "")), []))
-			var target_zone := _parse_zone(cost.get("to_zone", cost.get("to", UATypes.Zone.OUTSIDE)))
+			var selected_cards: Array = EffectUtils.ensure_array(context.get(str(cost.get("from_var", "")), []))
+			var target_zone := UATypes.key_to_zone(cost.get("to_zone", cost.get("to", UATypes.Zone.OUTSIDE)))
 			var target_player_id := _cost_player_id(state, source_card_uid, context, cost)
 			for card_uid_variant in selected_cards:
 				var card_uid := str(card_uid_variant)
@@ -837,7 +868,7 @@ func _matches_play_permission_modifier(state: GameState, modifier: Dictionary, c
 	var source_card_uid := _get_source_card_uid(modifier)
 	if not _matches_filter_list(state, modifier.get("while", []), context, str(context.get("played_card_uid", "")), source_card_uid):
 		return false
-	var from_zone := _parse_zone(modifier.get("from_zone", -1))
+	var from_zone := UATypes.key_to_zone(modifier.get("from_zone", -1))
 	if from_zone != -1 and int(context.get("played_from_zone", -2)) != from_zone:
 		return false
 	return _matches_filter_list(state, modifier.get("filters", []), context, str(context.get("played_card_uid", "")), source_card_uid)
@@ -845,133 +876,14 @@ func _matches_play_permission_modifier(state: GameState, modifier: Dictionary, c
 func _matches_filter_list(state: GameState, filters: Array, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	return _requirement_matcher.matches_filter_list(state, filters, context, candidate_card_uid, source_card_uid)
 
-func _matches_filter(state: GameState, filter_variant, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+func _matches_filter(state: GameState, filter_variant: Variant, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	return _requirement_matcher.matches_filter(state, filter_variant, context, candidate_card_uid, source_card_uid)
 
 func _requirements_met(state: GameState, source_card_uid: String, requirements: Array, context: Dictionary, candidate_card_uid := "") -> bool:
 	return _requirement_matcher.all_met(state, source_card_uid, requirements, context, candidate_card_uid)
 
-func _matches_requirement(state: GameState, requirement_variant, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
+func _matches_requirement(state: GameState, requirement_variant: Variant, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	return _requirement_matcher.matches(state, requirement_variant, context, candidate_card_uid, source_card_uid)
-
-func _resolve_numeric_value(state: GameState, provider_variant, context: Dictionary, source_card_uid: String, candidate_card_uid := "") -> int:
-	if provider_variant is int or provider_variant is float:
-		return int(provider_variant)
-	if provider_variant is String:
-		return int(provider_variant)
-	if not (provider_variant is Dictionary):
-		return 0
-	var provider: Dictionary = provider_variant
-	var provider_type := str(provider.get("type", "FIXED"))
-	if provider_type == "FIXED":
-		return int(provider.get("value", 0))
-	if provider_type == "CONDITIONAL":
-		var when_requirements: Array = provider.get("when", [])
-		if _requirements_met(state, source_card_uid, when_requirements, context, candidate_card_uid):
-			return _resolve_numeric_value(state, provider.get("then", provider.get("value", 0)), context, source_card_uid, candidate_card_uid)
-		return _resolve_numeric_value(state, provider.get("default", 0), context, source_card_uid, candidate_card_uid)
-	if provider_type == "CONTROLLER_OTHER_FIELD_UNIQUE_NAME_COUNT_MULTIPLIED":
-		var source_card = state.get_card(source_card_uid)
-		if source_card == null:
-			return 0
-		var player = state.get_player(source_card.controller_player_id)
-		if player == null:
-			return 0
-		var trait_value := str(provider.get("trait", ""))
-		var unique_names: Dictionary = {}
-		for zone_cards in [player.front_line, player.energy_line]:
-			for card_uid_variant in zone_cards:
-				var card_uid := str(card_uid_variant)
-				if card_uid == "" or card_uid == source_card_uid:
-					continue
-				var field_card = state.get_card(card_uid)
-				if field_card == null:
-					continue
-				var field_def = state.get_card_def(field_card.def_id)
-				if field_def == null:
-					continue
-				if trait_value != "" and not field_def.traits.has(trait_value):
-					continue
-				unique_names[field_def.name] = true
-		return unique_names.size() * int(provider.get("multiplier", 1))
-	if provider_type == "FIXED_PLUS_CONTROLLER_FIELD_CARD_COUNT_MULTIPLIED":
-		var source_card_fixed = state.get_card(source_card_uid)
-		if source_card_fixed == null:
-			return int(provider.get("value", 0))
-		var fixed_player = state.get_player(source_card_fixed.controller_player_id)
-		if fixed_player == null:
-			return int(provider.get("value", 0))
-		var trait_fixed := str(provider.get("trait", ""))
-		var count := 0
-		for zone_cards in [fixed_player.front_line, fixed_player.energy_line]:
-			for fixed_uid_variant in zone_cards:
-				var fixed_uid := str(fixed_uid_variant)
-				if fixed_uid == "":
-					continue
-				var fixed_card = state.get_card(fixed_uid)
-				var fixed_def = state.get_card_def(fixed_card.def_id) if fixed_card != null else null
-				if fixed_def == null:
-					continue
-				if trait_fixed != "" and not fixed_def.traits.has(trait_fixed):
-					continue
-				count += 1
-		return int(provider.get("value", 0)) + count * int(provider.get("multiplier", 1))
-	if provider_type == "PLAYER_ZONE_CARD_COUNT_MULTIPLIED":
-		var source_card_counted = state.get_card(source_card_uid)
-		var player_mode := str(provider.get("player", "SELF"))
-		var player_id := ""
-		if player_mode == "SELF":
-			player_id = source_card_counted.controller_player_id if source_card_counted != null else str(context.get("source_player_id", ""))
-		elif player_mode == "OPPONENT":
-			player_id = PlayerUtils.opponent_of(source_card_counted.controller_player_id) if source_card_counted != null else ""
-		else:
-			player_id = str(context.get("target_player_id", context.get("source_player_id", "")))
-		var count_player = state.get_player(player_id)
-		if count_player == null:
-			return 0
-		var total := 0
-		for zone_variant in provider.get("zones", []):
-			var zone_cards = _zone_cards_for_player(count_player, str(zone_variant))
-			var required_card_type := str(provider.get("card_type", ""))
-			for zone_card_uid_variant in zone_cards:
-				var zone_card_uid := str(zone_card_uid_variant)
-				if zone_card_uid == "":
-					continue
-				var zone_card = state.get_card(zone_card_uid)
-				var zone_def = state.get_card_def(zone_card.def_id) if zone_card != null else null
-				if zone_def == null:
-					continue
-				var required_card_type := str(provider.get("card_type", ""))
-				if required_card_type != "" and UATypes.card_type_to_text(zone_def.card_type) != required_card_type:
-					continue
-				total += 1
-		return total * int(provider.get("multiplier", 1))
-	if provider_type == "FIXED_PLUS_CONTROLLER_FRONT_LINE_ENERGY_LTE_COUNT_MULTIPLIED":
-		var source_card_front = state.get_card(source_card_uid)
-		if source_card_front == null:
-			return int(provider.get("value", 0))
-		var front_player = state.get_player(source_card_front.controller_player_id)
-		if front_player == null:
-			return int(provider.get("value", 0))
-		var count_front := 0
-		for front_uid_variant in front_player.front_line:
-			var front_uid := str(front_uid_variant)
-			if front_uid == "":
-				continue
-			var front_card = state.get_card(front_uid)
-			var front_def = state.get_card_def(front_card.def_id) if front_card != null else null
-			if front_def == null:
-				continue
-			if int(front_def.cost_energy) > int(provider.get("cost_energy_lte", 0)):
-				continue
-			count_front += 1
-		return int(provider.get("value", 0)) + count_front * int(provider.get("multiplier", 1))
-	if provider_type == "SOURCE_BP_MINUS":
-		var source_bp_card = state.get_card(source_card_uid)
-		if source_bp_card == null:
-			return 0
-		return int(source_bp_card.current_bp) - int(provider.get("value", 0))
-	return int(provider.get("value", 0))
 
 func _apply_energy_delta_map(cost_map: Dictionary, delta_map: Dictionary) -> Dictionary:
 	var result: Dictionary = cost_map.duplicate(true)
@@ -994,11 +906,11 @@ func _enqueue_target_selection(state: GameState, source_card_uid: String, effect
 func _enqueue_value_selection(state: GameState, source_card_uid: String, effect: Dictionary, selected_var: String, choices: Array[Dictionary], candidate_values: Array[String], min_count: int, max_count: int, context: Dictionary, remaining_steps: Array, resume_as_effect := false) -> bool:
 	return _target_selector.enqueue_value_selection(state, source_card_uid, effect, selected_var, choices, candidate_values, min_count, max_count, context, remaining_steps, resume_as_effect)
 
-func _format_target_choice_label(card_def) -> String:
-	return _target_selector._format_target_choice_label(card_def)
+func _format_target_choice_label(card_def: CardDef) -> String:
+	return EffectUtils.format_target_choice_label(card_def)
 
 func _format_energy_cost_text(energy_map: Dictionary) -> String:
-	return _target_selector._format_energy_cost_text(energy_map)
+	return EffectUtils.format_energy_cost_text(energy_map)
 
 func _register_preview_ui_meta(context: Dictionary, preview_var: String, meta: Dictionary) -> void:
 	_target_selector.register_preview_ui_meta(context, preview_var, meta)
@@ -1012,50 +924,11 @@ func _build_preview_pick_ui_meta(target: Dictionary, context: Dictionary) -> Dic
 func _build_preview_reorder_ui_meta(source_var: String, candidates: Array, context: Dictionary) -> Dictionary:
 	return _target_selector.build_preview_reorder_ui_meta(source_var, candidates, context)
 
-func _normalize_selection_payload(selected_values, max_count: int) -> Array:
+func _normalize_selection_payload(selected_values: Variant, max_count: int) -> Array:
 	return _target_selector.normalize_selection_payload(selected_values, max_count)
 
 func _validate_selection_payload(state: GameState, normalized: Array, queued_effect: Dictionary) -> String:
 	return _target_selector.validate_selection_payload(state, normalized, queued_effect)
-
-func _array_without_values(source: Array, values_to_remove: Array) -> Array:
-	var result: Array = []
-	var remaining: Array = []
-	for value_variant in values_to_remove:
-		remaining.append(str(value_variant))
-	for source_variant in source:
-		var source_value := str(source_variant)
-		var remove_index := remaining.find(source_value)
-		if remove_index != -1:
-			remaining.remove_at(remove_index)
-			continue
-		result.append(source_variant)
-	return result
-
-func _ensure_array(value) -> Array:
-	if value is Array:
-		return value
-	if value == null or str(value) == "":
-		return []
-	return [value]
-
-func _zone_cards_for_player(player, zone_key: String) -> Array:
-	match zone_key:
-		"FRONT_LINE":
-			return player.front_line
-		"ENERGY_LINE":
-			return player.energy_line
-		"HAND":
-			return player.hand
-		"LIFE":
-			return player.life
-		"OUTSIDE":
-			return player.outside
-		"REMOVED":
-			return player.removed
-		"DECK":
-			return player.deck
-	return []
 
 func _is_modifier_active(state: GameState, modifier: Dictionary) -> bool:
 	var source_card_uid := _get_source_card_uid(modifier)
@@ -1088,56 +961,16 @@ func _revert_expired_temporary_modifiers(state: GameState, player_id: String, ex
 			"TEMP_BP":
 				target_card.current_bp -= int(modifier.get("value", 0))
 			"TEMP_KEYWORD":
-				_remove_runtime_keyword(target_card, str(modifier.get("keyword", "")))
-
-func _add_runtime_keyword(card: CardInstance, keyword: String) -> void:
-	if keyword == "":
-		return
-	var temp_keywords: Array = card.flags.get("temp_keywords", [])
-	var temp_keyword_counts: Dictionary = card.flags.get("temp_keyword_counts", {})
-	var current_count := int(temp_keyword_counts.get(keyword, 0))
-	temp_keyword_counts[keyword] = current_count + 1
-	if current_count <= 0 and not temp_keywords.has(keyword):
-		temp_keywords.append(keyword)
-	card.flags["temp_keywords"] = temp_keywords
-	card.flags["temp_keyword_counts"] = temp_keyword_counts
-
-func _context_value_is_non_empty(value) -> bool:
-	if value == null:
-		return false
-	if value is Array:
-		return not value.is_empty()
-	return str(value) != ""
-
-func _format_modifier_expiry_text(expires: String) -> String:
-	match expires:
-		"UNTIL_NEXT_SELF_TURN_START":
-			return "until the next turn start of its source controller"
-		_:
-			return "until end of turn"
-
-func _card_energy_cost_total(card_def) -> int:
-	if card_def == null:
-		return 0
-	var total := 0
-	for amount_variant in card_def.cost_energy.values():
-		total += int(amount_variant)
-	return total
-
-func _card_matches_color(card_def, color: String) -> bool:
-	if card_def == null or color == "":
-		return false
-	var normalized := color.to_upper()
-	return int(card_def.cost_energy.get(normalized, 0)) > 0 or int(card_def.energy_provided.get(normalized, 0)) > 0
+				target_card.remove_temp_keyword(str(modifier.get("keyword", "")))
 
 func _play_selected_cards(state: GameState, source_card_uid: String, step: Dictionary, context: Dictionary) -> Array[String]:
 	var logs: Array[String] = []
 	if rules_engine == null:
 		logs.append("Play selected cards failed: missing rules engine.")
 		return logs
-	var selected_cards: Array = _ensure_array(context.get(str(step.get("from_var", "")), []))
-	var target_zone := _parse_zone(step.get("to_zone", step.get("to", UATypes.Zone.FRONT_LINE)))
-	var target_state := _parse_card_state(step.get("state", UATypes.CardState.RESTED))
+	var selected_cards: Array = EffectUtils.ensure_array(context.get(str(step.get("from_var", "")), []))
+	var target_zone := UATypes.key_to_zone(step.get("to_zone", step.get("to", UATypes.Zone.FRONT_LINE)))
+	var target_state := EffectUtils.parse_card_state(step.get("state", UATypes.CardState.RESTED))
 	var ignore_play_timing := bool(step.get("ignore_play_timing", true))
 	for card_uid_variant in selected_cards:
 		var card_uid := str(card_uid_variant)
@@ -1184,73 +1017,11 @@ func _play_selected_cards(state: GameState, source_card_uid: String, step: Dicti
 		commit_play_modifiers(state, play_modifiers)
 	return logs
 
-func _remove_runtime_keyword(card: CardInstance, keyword: String) -> void:
-	if keyword == "":
-		return
-	var temp_keywords: Array = card.flags.get("temp_keywords", [])
-	var temp_keyword_counts: Dictionary = card.flags.get("temp_keyword_counts", {})
-	var current_count := int(temp_keyword_counts.get(keyword, 0))
-	if current_count <= 1:
-		temp_keyword_counts.erase(keyword)
-		temp_keywords.erase(keyword)
-	else:
-		temp_keyword_counts[keyword] = current_count - 1
-	card.flags["temp_keywords"] = temp_keywords
-	card.flags["temp_keyword_counts"] = temp_keyword_counts
-
-func _resolve_step_target_uid(effect: Dictionary, context: Dictionary, source_card_uid: String) -> String:
-	if effect.has("target_uid"):
-		var explicit_target_uid := str(effect.get("target_uid", source_card_uid))
-		if explicit_target_uid == "SOURCE_CARD":
-			return source_card_uid
-		return explicit_target_uid
-	if effect.has("target_var"):
-		return str(context.get(str(effect.get("target_var", "")), source_card_uid))
-	if effect.has("target"):
-		var target_value = effect.get("target")
-		if target_value is Dictionary:
-			var target_dict: Dictionary = target_value
-			if str(target_dict.get("type", "")) == "CURRENT_ITEM":
-				return str(context.get("current_item", source_card_uid))
-	return str(context.get("current_item", source_card_uid))
-
-func _parse_zone(value) -> int:
-	if value is int:
-		return int(value)
-	var zone_name := str(value)
-	if zone_name == "DECK" or zone_name == "deck":
-		return UATypes.Zone.DECK
-	if zone_name == "HAND" or zone_name == "hand":
-		return UATypes.Zone.HAND
-	if zone_name == "LIFE" or zone_name == "life":
-		return UATypes.Zone.LIFE
-	if zone_name == "FRONT_LINE" or zone_name == "front_line":
-		return UATypes.Zone.FRONT_LINE
-	if zone_name == "ENERGY_LINE" or zone_name == "energy_line":
-		return UATypes.Zone.ENERGY_LINE
-	if zone_name == "AP_AREA" or zone_name == "ap_area":
-		return UATypes.Zone.AP_AREA
-	if zone_name == "OUTSIDE" or zone_name == "outside":
-		return UATypes.Zone.OUTSIDE
-	if zone_name == "REMOVED" or zone_name == "removed":
-		return UATypes.Zone.REMOVED
-	return -1
-
-func _parse_card_state(value) -> int:
-	if value is int:
-		return int(value)
-	var state_name := str(value)
-	if state_name == "ACTIVE" or state_name == "active":
-		return UATypes.CardState.ACTIVE
-	if state_name == "RESTED" or state_name == "rested":
-		return UATypes.CardState.RESTED
-	return UATypes.CardState.RESTED
-
 func _apply_victory(state: GameState, result: Dictionary) -> void:
 	state.winner_player_id = str(result.get("winner", ""))
 	state.loser_player_id = str(result.get("loser", ""))
 
-func _is_effect_enabled_for_card(source_card, effect: Dictionary) -> bool:
+func _is_effect_enabled_for_card(source_card: CardInstance, effect: Dictionary) -> bool:
 	var effect_box := str(effect.get("effect_box", ""))
 	if effect_box == "RAID_INNER":
 		return bool(source_card.flags.get("entered_via_raid", false))

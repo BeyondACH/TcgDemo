@@ -39,4 +39,4 @@ func _can_drop_data(_at_position: Vector2, data) -> bool:
 func _drop_data(_at_position: Vector2, data) -> void:
 	if not _can_drop_data(_at_position, data):
 		return
-	emit_signal("card_dropped", player_id, zone_name, str(data.get("card_uid", "")))
+	card_dropped.emit(player_id, zone_name, str(data.get("card_uid", "")))

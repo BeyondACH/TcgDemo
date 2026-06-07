@@ -244,18 +244,4 @@ func _revert_static_modifier(state: GameState, modifier: Dictionary) -> void:
 		"TEMP_BP":
 			target_card.current_bp -= int(modifier.get("value", 0))
 		"TEMP_KEYWORD":
-			_remove_runtime_keyword(target_card, str(modifier.get("keyword", "")))
-
-func _remove_runtime_keyword(card: CardInstance, keyword: String) -> void:
-	if keyword == "":
-		return
-	var temp_keywords: Array = card.flags.get("temp_keywords", [])
-	var temp_keyword_counts: Dictionary = card.flags.get("temp_keyword_counts", {})
-	var current_count := int(temp_keyword_counts.get(keyword, 0))
-	if current_count <= 1:
-		temp_keyword_counts.erase(keyword)
-		temp_keywords.erase(keyword)
-	else:
-		temp_keyword_counts[keyword] = current_count - 1
-	card.flags["temp_keywords"] = temp_keywords
-	card.flags["temp_keyword_counts"] = temp_keyword_counts
+			target_card.remove_temp_keyword(str(modifier.get("keyword", "")))

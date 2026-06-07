@@ -190,9 +190,9 @@ func _test_opening_mulligan_flow() -> Dictionary:
 	var opening_manager := _new_opening_manager()
 	if opening_manager.game_state.opening_complete:
 		return _fail("开局换牌决策前不应标记 opening_complete")
-	if opening_manager.game_state.pending_decisions.size() != 1:
+	if opening_manager.game_state.pending.decisions.size() != 1:
 		return _fail("初始化后应先出现 1 个起手换牌待决策")
-	var first_decision: Dictionary = opening_manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = opening_manager.game_state.pending.decisions[0]
 	if str(first_decision.get("type", "")) != "MULLIGAN_CHOICE":
 		return _fail("第一个待决策应为起手换牌")
 	if str(first_decision.get("owner_player_id", "")) != UATypes.PLAYER_ONE:
@@ -206,9 +206,9 @@ func _test_opening_mulligan_flow() -> Dictionary:
 	for i in range(UATypes.STARTING_LIFE):
 		p1_life_top_expected.append(str(p1.deck[i]))
 	opening_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
-	if opening_manager.game_state.pending_decisions.size() != 1:
+	if opening_manager.game_state.pending.decisions.size() != 1:
 		return _fail("P1 处理后应继续等待 P2 的起手换牌决策")
-	var second_decision: Dictionary = opening_manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = opening_manager.game_state.pending.decisions[0]
 	if str(second_decision.get("owner_player_id", "")) != UATypes.PLAYER_TWO:
 		return _fail("第二个起手换牌决策应轮到 P2")
 	opening_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
@@ -229,7 +229,7 @@ func _test_opening_mulligan_flow() -> Dictionary:
 	for old_uid_variant in opening_hand_before:
 		if mulligan_p1.hand.has(old_uid_variant):
 			return _fail("换牌后的新手牌不应包含原有那 7 张牌")
-	if mulligan_manager.game_state.pending_decisions.size() != 1:
+	if mulligan_manager.game_state.pending.decisions.size() != 1:
 		return _fail("P1 换牌后仍应继续等待 P2 决策")
 	mulligan_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 	if mulligan_p1.life.size() != 7:
@@ -338,9 +338,9 @@ func _test_end_phase_hand_limit_discard() -> Dictionary:
 		return _fail("超手牌待决策出现时应仍停留在 END")
 	if manager.game_state.active_player_id != UATypes.PLAYER_ONE:
 		return _fail("超手牌未处理前不应切换行动方")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("超手牌时应进入 1 个弃牌待决策")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(first_decision.get("type", "")) != "HAND_LIMIT_DISCARD":
 		return _fail("超手牌待决策类型应为 HAND_LIMIT_DISCARD")
 	manager.resolve_pending_decision("HAND_LIMIT_DISCARD", {"choice": extra_uids[0]})
@@ -350,7 +350,7 @@ func _test_end_phase_hand_limit_discard() -> Dictionary:
 		return _fail("超手牌显式弃牌不应进入移除区")
 	if manager.game_state.active_player_id != UATypes.PLAYER_ONE or manager.game_state.phase != UATypes.Phase.END:
 		return _fail("仍超手牌时不应提前结束回合")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("仍超手牌时应继续保留下一次弃牌待决策")
 	manager.resolve_pending_decision("HAND_LIMIT_DISCARD", {"choice": extra_uids[1]})
 	if p1.outside.size() != outside_before + 2:
@@ -361,7 +361,7 @@ func _test_end_phase_hand_limit_discard() -> Dictionary:
 		return _fail("弃到合法手牌数并换手后应进入 P2 的 DRAW")
 	if p1.hand.size() != UATypes.HAND_LIMIT:
 		return _fail("完成超手牌弃牌后，P1 手牌应回到上限")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("弃到合法手牌数后不应残留超手牌待决策")
 	return _ok()
 
@@ -565,7 +565,7 @@ func _test_life_trigger_requires_decision() -> Dictionary:
 		return _fail("生命受伤后不应自动发动抽牌效果")
 	if p2.outside.size() != outside_before:
 		return _fail("生命触发待决策时，生命卡不应提前进入场外")
-	if manager.game_state.pending_life_triggers.size() != 1:
+	if manager.game_state.pending.life_triggers.size() != 1:
 		return _fail("应存在 1 个待决策生命触发")
 	manager.resolve_life_trigger_decision(trigger_uid, true)
 	manager.acknowledge_life_reveal(basic_uid)
@@ -575,7 +575,7 @@ func _test_life_trigger_requires_decision() -> Dictionary:
 		return _fail("生命触发抽牌后牌库应减少 1")
 	if p2.outside.size() != outside_before + 2:
 		return _fail("生命触发结算完成后，两张受伤生命卡都应进入场外")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("生命触发结算完成后不应残留待决策项")
 	if manager.game_state.winner_player_id != UATypes.PLAYER_ONE:
 		return _fail("生命触发结算完成且生命归零后，应判定 P1 获胜")
@@ -605,25 +605,25 @@ func _test_life_trigger_skip_keeps_damage_flow() -> Dictionary:
 		return _fail("生命受伤后在显式决策前不应提前消耗牌库")
 	if p2.outside.size() != outside_before:
 		return _fail("生命触发待决策时，生命卡不应提前进入场外")
-	if manager.game_state.pending_life_triggers.size() != 1:
+	if manager.game_state.pending.life_triggers.size() != 1:
 		return _fail("应存在 1 个待决策生命触发")
-	if str(manager.game_state.pending_life_reveal.get("current_card_uid", "")) != trigger_uid:
+	if str(manager.game_state.pending.life_reveal.get("current_card_uid", "")) != trigger_uid:
 		return _fail("生命伤害 reveal 应先定位到触发牌")
 	manager.resolve_life_trigger_decision(trigger_uid, false)
 	if p2.hand.size() != hand_before:
 		return _fail("跳过生命触发后不应获得抽牌收益")
 	if p2.deck.size() != deck_before:
 		return _fail("跳过生命触发后不应消耗牌库")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("跳过后应移除对应的生命触发待决策")
-	if str(manager.game_state.pending_life_reveal.get("current_card_uid", "")) != basic_uid:
+	if str(manager.game_state.pending.life_reveal.get("current_card_uid", "")) != basic_uid:
 		return _fail("跳过触发牌后，reveal 指针应推进到下一张被翻开的牌")
 	manager.acknowledge_life_reveal(basic_uid)
 	if p2.outside.size() != outside_before + 2:
 		return _fail("生命伤害流程完成后，两张受伤生命卡都应进入场外")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("生命伤害流程完成后不应残留 pending_life_triggers")
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("生命伤害流程完成后不应残留 pending_life_reveal")
 	if manager.game_state.winner_player_id != UATypes.PLAYER_ONE:
 		return _fail("跳过生命触发不应阻塞生命归零后的胜负结算")
@@ -780,9 +780,9 @@ func _run_effect_queue_and_ir_extension_checks() -> Dictionary:
 	var ir_player := _player(ir_manager, UATypes.PLAYER_ONE)
 	var ir_ap_before := ir_player.ap_active_count()
 	ir_manager.request_main_activate(ir_uid)
-	if ir_manager.game_state.pending_decisions.size() != 1:
+	if ir_manager.game_state.pending.decisions.size() != 1:
 		return _fail("target_specs should trigger an explicit target selection.")
-	var ir_decision: Dictionary = ir_manager.game_state.pending_decisions[0]
+	var ir_decision: Dictionary = ir_manager.game_state.pending.decisions[0]
 	if str(ir_decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("target_specs should generate an ABILITY_TARGET_SELECTION decision.")
 	ir_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -911,7 +911,7 @@ func _test_step_move_and_swap() -> Dictionary:
 	if swap_uid == "" or swap_target_uid == "":
 		return _fail("STEP 满位交换测试卡创建失败")
 	swap_manager.request_step_move(swap_uid)
-	if swap_manager.game_state.pending_decisions.size() != 1:
+	if swap_manager.game_state.pending.decisions.size() != 1:
 		return _fail("满位 STEP 应进入待选择状态")
 	swap_manager.resolve_pending_decision("STEP_SWAP_CHOICE", {"source_card_uid": swap_uid, "choice": swap_target_uid})
 	var swap_card = swap_manager.game_state.get_card(swap_uid)
@@ -1449,7 +1449,7 @@ func _test_raid_zone_choice() -> Dictionary:
 	if front_target_uid == "" or front_raid_uid == "":
 		return _fail("RAID 显式选择测试卡创建失败")
 	front_manager.play_card(front_raid_uid, UATypes.Zone.ENERGY_LINE, {"raid_target_uid": front_target_uid})
-	if front_manager.game_state.pending_decisions.size() != 1:
+	if front_manager.game_state.pending.decisions.size() != 1:
 		return _fail("RAID 目标在能量线时应进入待决策")
 	front_manager.resolve_pending_decision("RAID_ZONE_CHOICE", {
 		"source_card_uid": front_raid_uid,
@@ -1500,7 +1500,7 @@ func _test_raid_zone_choice() -> Dictionary:
 		}
 	}, UATypes.Zone.HAND, true)
 	energy_manager.play_card(energy_raid_uid, UATypes.Zone.ENERGY_LINE, {"raid_target_uid": energy_target_uid})
-	if energy_manager.game_state.pending_decisions.size() != 1:
+	if energy_manager.game_state.pending.decisions.size() != 1:
 		return _fail("RAID 能量线目标应进入待决策")
 	energy_manager.resolve_pending_decision("RAID_ZONE_CHOICE", {
 		"source_card_uid": energy_raid_uid,
@@ -1562,9 +1562,9 @@ func _test_life_trigger_raid_choice() -> Dictionary:
 	hand_player.life = [hand_raid_uid]
 	hand_manager.effect_resolver.deal_damage_to_player(hand_manager.game_state, UATypes.PLAYER_TWO, 1)
 	hand_manager.resolve_life_trigger_decision(hand_raid_uid, true)
-	if hand_manager.game_state.pending_decisions.is_empty():
+	if hand_manager.game_state.pending.decisions.is_empty():
 		return _fail("生命触发RAID应进入二选一待决策")
-	var hand_decision: Dictionary = hand_manager.game_state.pending_decisions[0]
+	var hand_decision: Dictionary = hand_manager.game_state.pending.decisions[0]
 	if str(hand_decision.get("type", "")) != "LIFE_TRIGGER_RAID_CHOICE":
 		return _fail("生命触发RAID待决策类型错误")
 	hand_manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"source_card_uid": hand_raid_uid, "choice": "ADD_TO_HAND"})
@@ -1630,7 +1630,7 @@ func _test_life_trigger_raid_choice() -> Dictionary:
 	raid_manager.effect_resolver.deal_damage_to_player(raid_manager.game_state, UATypes.PLAYER_TWO, 1)
 	raid_manager.resolve_life_trigger_decision(raid_life_uid, true)
 	raid_manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"source_card_uid": raid_life_uid, "choice": "RAID_NOW"})
-	if raid_manager.game_state.pending_decisions.is_empty():
+	if raid_manager.game_state.pending.decisions.is_empty():
 		return _fail("选择立即RAID后，应进入RAID目标选择")
 	raid_manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"source_card_uid": raid_life_uid, "choice": raid_target_uid})
 	var raid_card = raid_manager.game_state.get_card(raid_life_uid)
@@ -1702,13 +1702,13 @@ func _test_life_trigger_raid_choice_falls_back_to_hand_when_raid_is_illegal() ->
 		return _fail("生命触发RAID在不满足条件时应自动加入手牌")
 	if not player.hand.has(raid_life_uid):
 		return _fail("生命触发RAID在不满足条件时，玩家手牌中应包含该牌")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("生命触发RAID失败回手后不应残留 pending_life_triggers")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("生命触发RAID失败回手后不应残留 pending_decisions")
-	if not manager.game_state.pending_life_damage_cards.is_empty():
+	if not manager.game_state.pending.life_damage_cards.is_empty():
 		return _fail("生命触发RAID失败回手后不应残留 pending_life_damage_cards")
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("生命触发RAID失败回手后不应残留 pending_life_reveal")
 	return _ok()
 
@@ -1735,8 +1735,8 @@ func _test_life_zero_victory() -> Dictionary:
 		if life_uid == "":
 			return _fail("生命归零测试卡创建失败")
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 7)
-	while not manager.game_state.pending_life_reveal.is_empty():
-		var current_card_uid := str(manager.game_state.pending_life_reveal.get("current_card_uid", ""))
+	while not manager.game_state.pending.life_reveal.is_empty():
+		var current_card_uid := str(manager.game_state.pending.life_reveal.get("current_card_uid", ""))
 		if current_card_uid == "":
 			break
 		manager.acknowledge_life_reveal(current_card_uid)
@@ -1863,7 +1863,7 @@ func _test_end_of_turn_temp_keyword_cleanup_leaves_no_runtime_residue() -> Dicti
 		return _fail("ADD_TEMP_KEYWORD 应立即把 IMPACT 加到来源卡的运行时关键词中")
 	if manager.game_state.static_modifiers.is_empty():
 		return _fail("ADD_TEMP_KEYWORD 应注册一个 END_OF_TURN 的 TEMP_KEYWORD 修饰")
-	if not manager.game_state.pending_decisions.is_empty() or not manager.game_state.effect_queue.is_empty() or not manager.game_state.battle_context.is_empty():
+	if not manager.game_state.pending.decisions.is_empty() or not manager.game_state.effect_queue.is_empty() or not manager.game_state.battle_context.is_empty():
 		return _fail("临时关键词即时结算后不应残留 pending_decisions、effect_queue 或 battle_context")
 	manager.effect_resolver.cleanup_turn_expirations(manager.game_state, UATypes.PLAYER_ONE)
 	source_card = manager.game_state.get_card(source_uid)
@@ -1873,7 +1873,7 @@ func _test_end_of_turn_temp_keyword_cleanup_leaves_no_runtime_residue() -> Dicti
 		return _fail("END_OF_TURN 清理后应移除临时 IMPACT 关键词")
 	if not manager.game_state.static_modifiers.is_empty():
 		return _fail("END_OF_TURN 清理后不应残留 TEMP_KEYWORD 修饰")
-	if not manager.game_state.pending_decisions.is_empty() or not manager.game_state.effect_queue.is_empty() or not manager.game_state.battle_context.is_empty():
+	if not manager.game_state.pending.decisions.is_empty() or not manager.game_state.effect_queue.is_empty() or not manager.game_state.battle_context.is_empty():
 		return _fail("END_OF_TURN 临时关键词清理后不应残留运行时脏状态")
 	return _ok()
 
@@ -1972,7 +1972,7 @@ func _test_multiple_end_main_delayed_effects_leave_no_runtime_residue() -> Dicti
 		return _fail("多个结束主阶段延迟效果结算后仍应推进到 ATTACK")
 	if not manager.game_state.delayed_effects.is_empty():
 		return _fail("多个结束主阶段延迟效果结算后不应残留 delayed_effects")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("多个结束主阶段延迟效果结算后不应残留 pending_decisions")
 	if not manager.game_state.effect_queue.is_empty():
 		return _fail("多个结束主阶段延迟效果结算后不应残留 effect_queue")
@@ -2000,7 +2000,7 @@ func _test_raid_stack_play() -> Dictionary:
 	if base_uid == "" or raid_uid == "":
 		return _fail("RAID 测试卡牌创建失败")
 	manager.play_card(raid_uid, UATypes.Zone.ENERGY_LINE, {"raid_target_uid": base_uid})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("RAID 突进叠放测试应进入显式落点待决策")
 	manager.resolve_pending_decision("RAID_ZONE_CHOICE", {
 		"source_card_uid": raid_uid,
@@ -2052,7 +2052,7 @@ func _test_raid_stack_play() -> Dictionary:
 	var base_uid_front := _spawn_card(manager_front, UATypes.PLAYER_ONE, "UA_MMM_BASE_MADOKA", UATypes.Zone.ENERGY_LINE, false)
 	var raid_uid_front := _spawn_card(manager_front, UATypes.PLAYER_ONE, "UA31BT_MMM_1_002", UATypes.Zone.HAND, true)
 	manager_front.play_card(raid_uid_front, UATypes.Zone.FRONT_LINE, {"raid_target_uid": base_uid_front})
-	if manager_front.game_state.pending_decisions.size() != 1:
+	if manager_front.game_state.pending.decisions.size() != 1:
 		return _fail("选择转前线时，RAID 应进入显式落点待决策")
 	manager_front.resolve_pending_decision("RAID_ZONE_CHOICE", {
 		"source_card_uid": raid_uid_front,
@@ -2117,8 +2117,8 @@ func _test_raid_inner_effect_gate() -> Dictionary:
 		return _fail("突进后未找到 RAID 卡")
 	if not bool(raid_card.flags.get("entered_via_raid", false)):
 		return _fail("通过突进登场后应标记 entered_via_raid")
-	if manager_raid.game_state.pending_decisions.size() == 1:
-		var raid_decision: Dictionary = manager_raid.game_state.pending_decisions[0]
+	if manager_raid.game_state.pending.decisions.size() == 1:
+		var raid_decision: Dictionary = manager_raid.game_state.pending.decisions[0]
 		manager_raid.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 			"resolution_id": str(raid_decision.get("resolution_id", "")),
 			"choice": outside_uid_raid,
@@ -2188,9 +2188,9 @@ func _test_simultaneous_trigger_order() -> Dictionary:
 	])
 	if same_side_player.hand.size() != same_side_hand_before:
 		return _fail("同方多个同时触发存在时，不应在顺序决策前直接结算")
-	if same_side_manager.game_state.pending_decisions.size() != 1:
+	if same_side_manager.game_state.pending.decisions.size() != 1:
 		return _fail("同方多个同时触发应进入显式顺序决策")
-	var first_order_decision: Dictionary = same_side_manager.game_state.pending_decisions[0]
+	var first_order_decision: Dictionary = same_side_manager.game_state.pending.decisions[0]
 	if str(first_order_decision.get("type", "")) != "TRIGGER_ORDER":
 		return _fail("同方同时触发的待决策类型应为 TRIGGER_ORDER")
 	var first_choices: Array = first_order_decision.get("choices", [])
@@ -2204,9 +2204,9 @@ func _test_simultaneous_trigger_order() -> Dictionary:
 	same_side_manager.resolve_pending_decision("TRIGGER_ORDER", {"choice": second_trigger_uid})
 	if same_side_player.hand.size() != same_side_hand_before + 1:
 		return _fail("选择其中一个触发后，应只先结算该触发")
-	if same_side_manager.game_state.pending_decisions.size() != 1:
+	if same_side_manager.game_state.pending.decisions.size() != 1:
 		return _fail("同方同时触发结算一项后，剩余项应继续保留待决策")
-	var second_order_decision: Dictionary = same_side_manager.game_state.pending_decisions[0]
+	var second_order_decision: Dictionary = same_side_manager.game_state.pending.decisions[0]
 	if str(second_order_decision.get("type", "")) != "TRIGGER_ORDER":
 		return _fail("剩余同方触发应继续使用 TRIGGER_ORDER 待决策")
 	var remaining_choices: Array = second_order_decision.get("choices", [])
@@ -2217,7 +2217,7 @@ func _test_simultaneous_trigger_order() -> Dictionary:
 	same_side_manager.resolve_pending_decision("TRIGGER_ORDER", {"choice": first_trigger_uid})
 	if same_side_player.hand.size() != same_side_hand_before + 2:
 		return _fail("同方同时触发全部处理完成后，应结算两次触发效果")
-	if not same_side_manager.game_state.pending_decisions.is_empty():
+	if not same_side_manager.game_state.pending.decisions.is_empty():
 		return _fail("同方同时触发处理完成后不应残留顺序待决策")
 
 	var turn_player_manager := _new_manager()

@@ -2,6 +2,8 @@ extends Control
 class_name BattleScene
 
 const BoardTargetSelectionHelper = preload("res://ui/board_target_selection_helper.gd")
+const AIActionHint = preload("res://ui/ai_action_hint.gd")
+const DeckSelector = preload("res://ui/deck_selector.gd")
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
@@ -30,8 +32,6 @@ const LOG_PANEL_BOTTOM_CLEARANCE := 16.0
 const MIN_BOARD_VISIBLE_HEIGHT_DEFAULT := 520.0
 const MIN_BOARD_VISIBLE_HEIGHT_COMPACT := 500.0
 const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
-const AI_ACTION_HINT_HOLD_SECONDS := 0.8
-const AI_ACTION_HINT_FADE_SECONDS := 0.35
 
 @onready var game_manager: GameManager = $GameManager
 @onready var background_texture_rect: TextureRect = $BackgroundLayer/Background
@@ -107,12 +107,13 @@ var _raid_target_selection_mode := false
 var _preview_card_uid := ""
 var _preview_player_id := ""
 var _preview_zone_name := ""
-var _available_decks: Array[Dictionary] = []
-var _opening_setup_pending := true
-var _ai_action_hint_tween: Tween
+var _deck_selector: DeckSelector
+var _ai_action_hint: AIActionHint
 
 func _ready() -> void:
 	_setup_optional_art()
+	_ai_action_hint = AIActionHint.new(self, ai_action_label)
+	_deck_selector = DeckSelector.new(game_manager, player_one_deck_picker, player_two_deck_picker, deck_selection_modal, start_game_button)
 	game_manager.state_changed.connect(_on_state_changed)
 	game_manager.blockers_requested.connect(_on_blockers_requested)
 	game_manager.ai_action_executed.connect(_on_ai_action_executed)
@@ -172,7 +173,6 @@ func _ready() -> void:
 	_load_deck_selection_options()
 	get_viewport().size_changed.connect(_update_responsive_layout)
 	_update_responsive_layout()
-	_clear_ai_action_hint()
 	_on_state_changed(game_manager.get_snapshot())
 	_show_deck_selection_modal()
 	call_deferred("_run_layout_probe_if_requested")
@@ -275,107 +275,7 @@ func _update_log_panel_layout(compact: bool, very_small: bool, viewport_height: 
 	log_panel.size = Vector2(panel_width, minf(panel_height, viewport_height - panel_top - LOG_PANEL_BOTTOM_CLEARANCE))
 
 func _on_ai_action_executed(action_info: Dictionary) -> void:
-	var action_text := _format_ai_action_text(action_info)
-	if action_text == "":
-		return
-	if _ai_action_hint_tween != null and is_instance_valid(_ai_action_hint_tween):
-		_ai_action_hint_tween.kill()
-	ai_action_label.text = action_text
-	ai_action_label.visible = true
-	ai_action_label.modulate = Color(1, 1, 1, 1)
-	_ai_action_hint_tween = create_tween()
-	_ai_action_hint_tween.tween_interval(AI_ACTION_HINT_HOLD_SECONDS)
-	_ai_action_hint_tween.tween_property(ai_action_label, "modulate:a", 0.0, AI_ACTION_HINT_FADE_SECONDS)
-	_ai_action_hint_tween.finished.connect(_clear_ai_action_hint, CONNECT_ONE_SHOT)
-
-
-func _clear_ai_action_hint() -> void:
-	if ai_action_label == null:
-		return
-	ai_action_label.text = ""
-	ai_action_label.visible = false
-	ai_action_label.modulate = Color(1, 1, 1, 1)
-	_ai_action_hint_tween = null
-
-
-func _format_ai_action_text(action_info: Dictionary) -> String:
-	var player_text := _format_ai_player_text(str(action_info.get("player_id", "")))
-	var action_type := str(action_info.get("action_type", ""))
-	var source_name := str(action_info.get("source_card_name", ""))
-	var target_name := str(action_info.get("target_name", ""))
-	var phase := str(action_info.get("phase", ""))
-	match action_type:
-		ActionTypes.ADVANCE_PHASE:
-			return "%s进入 %s 阶段" % [player_text, phase]
-		ActionTypes.BONUS_DRAW:
-			return "%s支付 1 AP 额外抽牌" % player_text
-		ActionTypes.PLAY_CARD:
-			var zone_text := _format_target_zone_text(int(action_info.get("target_zone", -1)))
-			if source_name != "" and zone_text != "":
-				return "%s打出 %s 到%s" % [player_text, source_name, zone_text]
-			if source_name != "":
-				return "%s打出 %s" % [player_text, source_name]
-			return "%s打出卡牌" % player_text
-		ActionTypes.MOVE_CARD:
-			var move_mode := str(action_info.get("move_mode", ""))
-			if move_mode == ActionTypes.MOVE_ENERGY_TO_FRONT:
-				return "%s让 %s 从能量线前移" % [player_text, source_name if source_name != "" else "角色"]
-			if move_mode == ActionTypes.MOVE_STEP_TO_ENERGY:
-				return "%s让 %s 撤步回能量线" % [player_text, source_name if source_name != "" else "角色"]
-			return "%s移动卡牌" % player_text
-		ActionTypes.ATTACK:
-			if str(action_info.get("target_kind", "PLAYER")) == "CHARACTER":
-				return "%s用 %s 攻击 %s" % [player_text, source_name if source_name != "" else "角色", target_name if target_name != "" else "角色"]
-			return "%s用 %s 攻击玩家" % [player_text, source_name if source_name != "" else "角色"]
-		ActionTypes.BLOCK:
-			return "%s用 %s 进行阻挡" % [player_text, str(action_info.get("blocker_name", "")) if str(action_info.get("blocker_name", "")) != "" else "角色"]
-		ActionTypes.NO_BLOCK:
-			return "%s选择不阻挡" % player_text
-		ActionTypes.RESOLVE_PENDING_DECISION:
-			return "%s处理%s" % [player_text, _format_pending_decision_text(str(action_info.get("decision_type", "")))]
-		ActionTypes.RESOLVE_LIFE_TRIGGER:
-			var life_name := target_name if target_name != "" else source_name
-			if bool(action_info.get("activate", false)):
-				return "%s发动生命触发%s" % [player_text, "：%s" % life_name if life_name != "" else ""]
-			return "%s跳过生命触发%s" % [player_text, "：%s" % life_name if life_name != "" else ""]
-		ActionTypes.END_TURN:
-			return "%s结束当前回合" % player_text
-	return ""
-
-
-func _format_ai_player_text(player_id: String) -> String:
-	if player_id == UATypes.PLAYER_ONE:
-		return "玩家 1（AI）"
-	if player_id == UATypes.PLAYER_TWO:
-		return "玩家 2（AI）"
-	return "%s（AI）" % player_id
-
-
-func _format_target_zone_text(target_zone: int) -> String:
-	if target_zone == UATypes.Zone.FRONT_LINE:
-		return "前线"
-	if target_zone == UATypes.Zone.ENERGY_LINE:
-		return "能量线"
-	return ""
-
-
-func _format_pending_decision_text(decision_type: String) -> String:
-	match decision_type:
-		"MULLIGAN_CHOICE":
-			return "起手换牌决策"
-		"RAID_ZONE_CHOICE":
-			return "RAID 落点选择"
-		"LIFE_TRIGGER_RAID_CHOICE":
-			return "生命触发 RAID 选择"
-		"LIFE_TRIGGER_RAID_TARGET":
-			return "生命触发 RAID 目标选择"
-		"STEP_SWAP_CHOICE":
-			return "STEP 交换选择"
-		"HAND_LIMIT_DISCARD":
-			return "手牌上限弃牌"
-		"ABILITY_TARGET_SELECTION":
-			return "效果目标选择"
-	return "待决策"
+	_ai_action_hint.show_action(action_info)
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
@@ -442,69 +342,22 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	_refresh_deck_selection_modal_state()
 
 func _load_deck_selection_options() -> void:
-	_available_decks = game_manager.get_available_decks()
-	player_one_deck_picker.clear()
-	player_two_deck_picker.clear()
-	for deck in _available_decks:
-		var deck_name := str(deck.get("name", ""))
-		player_one_deck_picker.add_item(deck_name)
-		player_two_deck_picker.add_item(deck_name)
-	if _available_decks.is_empty():
-		deck_selection_status_label.text = "未在 data/decks 中找到可用的 txt 卡组。"
-		start_game_button.disabled = true
-		return
-	player_one_deck_picker.select(_preferred_deck_index("starter_a", 0))
-	player_two_deck_picker.select(_preferred_deck_index("starter_b", min(1, _available_decks.size() - 1)))
-	start_game_button.disabled = false
-	deck_selection_status_label.text = "请选择双方卡组后开始对局。"
-
-func _preferred_deck_index(preferred_name: String, fallback_index: int) -> int:
-	for i in range(_available_decks.size()):
-		if str(_available_decks[i].get("file_name", "")).get_basename() == preferred_name:
-			return i
-	return clampi(fallback_index, 0, max(0, _available_decks.size() - 1))
+	_deck_selector.load_options()
 
 func _show_deck_selection_modal() -> void:
-	_opening_setup_pending = true
-	_refresh_deck_selection_modal_state()
-	deck_selection_modal.visible = true
+	_deck_selector.show_modal()
 
 func _hide_deck_selection_modal() -> void:
-	deck_selection_modal.visible = false
+	_deck_selector.hide_modal()
 
 func _refresh_deck_selection_modal_state() -> void:
-	if deck_selection_modal == null:
-		return
-	var can_start := _opening_setup_pending and not _available_decks.is_empty() and player_one_deck_picker.selected >= 0 and player_two_deck_picker.selected >= 0
-	player_one_deck_picker.disabled = not _opening_setup_pending or _available_decks.is_empty()
-	player_two_deck_picker.disabled = not _opening_setup_pending or _available_decks.is_empty()
-	start_game_button.disabled = not can_start
-	if not _opening_setup_pending:
-		_hide_deck_selection_modal()
-	elif _available_decks.is_empty():
-		deck_selection_status_label.text = "未在 data/decks 中找到可用的 txt 卡组。"
+	_deck_selector.refresh_state()
 
 func _selected_deck_path(picker: OptionButton) -> String:
-	var index := picker.selected
-	if index < 0 or index >= _available_decks.size():
-		return ""
-	return str(_available_decks[index].get("path", ""))
+	return _deck_selector._deck_path(picker)
 
 func _start_game_with_selected_decks() -> void:
-	var player_one_deck_path := _selected_deck_path(player_one_deck_picker)
-	var player_two_deck_path := _selected_deck_path(player_two_deck_picker)
-	if player_one_deck_path == "" or player_two_deck_path == "":
-		deck_selection_status_label.text = "请先为双方选择卡组。"
-		return
-	_opening_setup_pending = false
-	_hide_deck_selection_modal()
-	_clear_selection()
-	game_manager.setup_game({
-		"player_decks": {
-			UATypes.PLAYER_ONE: player_one_deck_path,
-			UATypes.PLAYER_TWO: player_two_deck_path,
-		}
-	})
+	_deck_selector.start_game()
 
 func _on_start_game_pressed() -> void:
 	_start_game_with_selected_decks()
@@ -1172,7 +1025,7 @@ func _update_hand_playable_states(_player_id: String, hand_cards: Array) -> void
 	hand_view.set_playable_cards(playable_map)
 
 func _human_input_enabled() -> bool:
-	return not _opening_setup_pending and bool(_snapshot.get("human_input_enabled", true))
+	return not _deck_selector.opening_setup_pending and bool(_snapshot.get("human_input_enabled", true))
 
 func _display_hand_player_id() -> String:
 	return str(_snapshot.get("display_hand_player_id", _snapshot.get("priority_player_id", UATypes.PLAYER_ONE)))
@@ -1268,7 +1121,7 @@ func _resolve_board_target_selection_from_card(player_id: String, card_uid: Stri
 	return BoardTargetSelectionHelper.resolve_pending_click(
 		game_manager,
 		_snapshot,
-		_opening_setup_pending,
+		_deck_selector.opening_setup_pending,
 		player_id,
 		card_uid,
 		zone_name,
@@ -1281,7 +1134,7 @@ func _should_allow_board_selection_passthrough() -> bool:
 func _run_layout_probe_if_requested() -> void:
 	if not OS.get_cmdline_user_args().has("--layout-probe"):
 		return
-	if _opening_setup_pending:
+	if _deck_selector.opening_setup_pending:
 		_start_game_with_selected_decks()
 	if game_state_has_opening_probe_pending():
 		game_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})

@@ -29,7 +29,7 @@ func get_snapshot(state: GameState, action_player_id: String, display_hand_playe
 		"last_battle_result": state.last_battle_result.duplicate(true),
 		"effect_queue_count": state.effect_queue.size(),
 		"pending_decisions": serialize_pending_decisions(state, action_player_id),
-		"pending_life_triggers": state.pending_life_triggers.duplicate(true),
+		"pending_life_triggers": state.pending.life_triggers.duplicate(true),
 		"life_reveal_modal": serialize_life_reveal_modal(state, action_player_id),
 		"controller_types": {
 			UATypes.PLAYER_ONE: _game_manager.get_controller_type(UATypes.PLAYER_ONE),
@@ -102,7 +102,7 @@ func serialize_card(state: GameState, card_uid: String, action_player_id: String
 
 func serialize_pending_decisions(state: GameState, action_player_id: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	for pending_variant in state.pending_decisions:
+	for pending_variant in state.pending.decisions:
 		var pending: Dictionary = (pending_variant as Dictionary).duplicate(true)
 		var preview_card_uids: Array = pending.get("preview_card_uids", [])
 		if not preview_card_uids.is_empty():
@@ -152,7 +152,7 @@ func serialize_life_cards(card_uids: Array[String]) -> Array[Dictionary]:
 	return result
 
 func serialize_life_reveal_modal(state: GameState, action_player_id: String) -> Dictionary:
-	if state.pending_life_reveal.is_empty():
+	if state.pending.life_reveal.is_empty():
 		return {
 			"visible": false,
 			"player_id": "",
@@ -165,7 +165,7 @@ func serialize_life_reveal_modal(state: GameState, action_player_id: String) -> 
 			"ai_resolves_after_confirmation": false,
 			"waiting_for_ai_resolution": false,
 		}
-	var reveal: Dictionary = state.pending_life_reveal
+	var reveal: Dictionary = state.pending.life_reveal
 	var current_card_uid := str(reveal.get("current_card_uid", ""))
 	var result_cards: Array[Dictionary] = []
 	var current_view_confirmed := false

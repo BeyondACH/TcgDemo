@@ -417,11 +417,11 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_ENTER:
 		if zone_name == "hand" and not _is_hovered:
 			_is_hovered = true
-			emit_signal("card_hovered", card_uid, true)
+			card_hovered.emit(card_uid, true)
 	elif what == NOTIFICATION_MOUSE_EXIT:
 		if _is_hovered:
 			_is_hovered = false
-			emit_signal("card_hovered", card_uid, false)
+			card_hovered.emit(card_uid, false)
 
 func set_playable(playable: bool) -> void:
 	_is_playable = playable
@@ -437,4 +437,4 @@ func _draw() -> void:
 		draw_rect(rect, PLAYABLE_BORDER_COLOR, false, PLAYABLE_BORDER_WIDTH)
 
 func _on_pressed() -> void:
-	emit_signal("card_pressed", owner_player_id, card_uid, zone_name)
+	card_pressed.emit(owner_player_id, card_uid, zone_name)

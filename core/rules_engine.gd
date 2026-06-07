@@ -218,9 +218,9 @@ func get_legal_actions(state: GameState, player_id: String) -> Array[Dictionary]
 		return actions
 	if not _player_has_priority(state, player_id):
 		return actions
-	if not state.pending_decisions.is_empty():
+	if not state.pending.decisions.is_empty():
 		return _build_pending_decision_actions(state, player_id)
-	if not state.pending_life_triggers.is_empty():
+	if not state.pending.life_triggers.is_empty():
 		return _build_life_trigger_actions(state, player_id)
 	if not state.battle_context.is_empty():
 		return _build_battle_response_actions(state, player_id)
@@ -505,7 +505,7 @@ func _build_battle_response_actions(state: GameState, player_id: String) -> Arra
 
 func _build_pending_decision_actions(state: GameState, player_id: String) -> Array[Dictionary]:
 	var actions: Array[Dictionary] = []
-	for decision_variant in state.pending_decisions:
+	for decision_variant in state.pending.decisions:
 		var decision: Dictionary = decision_variant
 		if str(decision.get("owner_player_id", "")) != player_id:
 			continue
@@ -539,7 +539,7 @@ func _build_pending_decision_actions(state: GameState, player_id: String) -> Arr
 
 func _build_life_trigger_actions(state: GameState, player_id: String) -> Array[Dictionary]:
 	var actions: Array[Dictionary] = []
-	for entry_variant in state.pending_life_triggers:
+	for entry_variant in state.pending.life_triggers:
 		var entry: Dictionary = entry_variant
 		if str(entry.get("player_id", "")) != player_id:
 			continue
@@ -671,10 +671,10 @@ func _build_raid_actions(state: GameState, player_id: String, card: CardInstance
 	return actions
 
 func _player_has_priority(state: GameState, player_id: String) -> bool:
-	if not state.pending_decisions.is_empty():
-		return str((state.pending_decisions[0] as Dictionary).get("owner_player_id", "")) == player_id
-	if not state.pending_life_triggers.is_empty():
-		return str((state.pending_life_triggers[0] as Dictionary).get("player_id", "")) == player_id
+	if not state.pending.decisions.is_empty():
+		return str((state.pending.decisions[0] as Dictionary).get("owner_player_id", "")) == player_id
+	if not state.pending.life_triggers.is_empty():
+		return str((state.pending.life_triggers[0] as Dictionary).get("player_id", "")) == player_id
 	if not state.battle_context.is_empty():
 		var battle_context: Dictionary = state.battle_context
 		if str(battle_context.get("target_kind", "PLAYER")) == "PLAYER" and not bool(battle_context.get("is_sniper_attack", false)):
@@ -853,10 +853,7 @@ func _has_special_play_permission(state: GameState, player_id: String, card_uid:
 	return false
 
 func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
-	if card_def.keywords.has(keyword):
-		return true
-	var temp_keywords: Array = card.flags.get("temp_keywords", [])
-	return temp_keywords.has(keyword)
+	return card_def.keywords.has(keyword) or card.has_temp_keyword(keyword)
 
 func _cannot_block_due_to_name_contains_keyword(state: GameState, blocker: CardInstance) -> bool:
 	var attacker_uid := str(state.battle_context.get("attacker_uid", ""))

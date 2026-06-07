@@ -49,7 +49,7 @@ func _test_preview_pick_submission() -> Dictionary:
 	var card_view := _first_card_view(modal)
 	if card_view == null:
 		return _fail("Expected preview modal to create at least one CardView.")
-	card_view.emit_signal("card_pressed", "", "CARD_A", "preview")
+	card_view.card_pressed.emit("", "CARD_A", "preview")
 	if modal._confirm_button.disabled:
 		return _fail("Confirm button should become enabled after selecting a legal preview card.")
 	modal._on_confirm_pressed()

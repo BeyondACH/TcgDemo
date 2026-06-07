@@ -364,19 +364,19 @@ func _load_optional_texture(resource_path: String) -> Texture2D:
 
 func _on_card_pressed(owner_player_id: String, card_uid: String, zone_name: String, card_data: Dictionary) -> void:
 	if zone_name == "front_line":
-		emit_signal("front_card_pressed", owner_player_id, card_uid, card_data)
+		front_card_pressed.emit(owner_player_id, card_uid, card_data)
 	elif zone_name == "energy_line":
-		emit_signal("energy_card_pressed", owner_player_id, card_uid, card_data)
+		energy_card_pressed.emit(owner_player_id, card_uid, card_data)
 
 
 func _on_zone_dropped(player_id: String, zone_name: String, card_uid: String) -> void:
-	emit_signal("zone_drop_requested", player_id, zone_name, card_uid)
+	zone_drop_requested.emit(player_id, zone_name, card_uid)
 
 func _on_removed_stack_pressed() -> void:
-	emit_signal("zone_stack_requested", _player_id, "removed")
+	zone_stack_requested.emit(_player_id, "removed")
 
 func _on_outside_stack_pressed() -> void:
-	emit_signal("zone_stack_requested", _player_id, "outside")
+	zone_stack_requested.emit(_player_id, "outside")
 
 
 ## Calculate a single card size for stack zones (deck, outside, removed).

@@ -5,16 +5,19 @@ class_name TargetSelector
 ## 从 effect_resolver.gd 提取
 
 const UATypes = preload("res://core/ua_types.gd")
+const EffectUtils = preload("res://core/effects/effect_utils.gd")
+const EffectResolver = preload("res://core/effect_resolver.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const ZoneManager = preload("res://core/zone_manager.gd")
+const RequirementMatcher = preload("res://core/effects/requirement_matcher.gd")
 const PlayerUtils = preload("res://core/player_utils.gd")
 
 var _zone_manager: ZoneManager
 var _requirement_matcher  # RequirementMatcher 引用
-var _effect_resolver  # 回调引用
+var _effect_resolver: EffectResolver  # 回调引用
 
-func _init(zone_manager: ZoneManager, requirement_matcher, effect_resolver) -> void:
+func _init(zone_manager: ZoneManager, requirement_matcher: RequirementMatcher, effect_resolver: EffectResolver) -> void:
 	_zone_manager = zone_manager
 	_requirement_matcher = requirement_matcher
 	_effect_resolver = effect_resolver
@@ -54,7 +57,7 @@ func enqueue_target_selection(state: GameState, source_card_uid: String, effect:
 		if candidate_card != null:
 			var candidate_def = state.get_card_def(candidate_card.def_id)
 			if candidate_def != null:
-				label = _format_target_choice_label(candidate_def)
+				label = EffectUtils.format_target_choice_label(candidate_def)
 		choices.append({"label": label, "value": candidate_uid})
 		candidate_values.append(candidate_uid)
 	state.effect_queue.append({
@@ -71,7 +74,7 @@ func enqueue_target_selection(state: GameState, source_card_uid: String, effect:
 		"candidate_values": candidate_values,
 		"selection_constraints": target.get("selection_constraints", {}).duplicate(true),
 	})
-	state.pending_decisions.append({
+	state.pending.decisions.append({
 		"type": "ABILITY_TARGET_SELECTION",
 		"owner_player_id": owner_player_id,
 		"source_card_uid": source_card_uid,
@@ -82,7 +85,7 @@ func enqueue_target_selection(state: GameState, source_card_uid: String, effect:
 		"max": max_count,
 		"selection_constraints": target.get("selection_constraints", {}).duplicate(true),
 		"ui_mode": str(ui_meta.get("ui_mode", "")),
-		"preview_card_uids": _ensure_array(ui_meta.get("preview_card_uids", [])).duplicate(),
+		"preview_card_uids": EffectUtils.ensure_array(ui_meta.get("preview_card_uids", [])).duplicate(),
 		"title": str(ui_meta.get("title", "")),
 	})
 	return true
@@ -105,7 +108,7 @@ func enqueue_value_selection(state: GameState, source_card_uid: String, effect: 
 		"candidate_values": candidate_values.duplicate(),
 		"selection_constraints": {},
 	})
-	state.pending_decisions.append({
+	state.pending.decisions.append({
 		"type": "ABILITY_TARGET_SELECTION",
 		"owner_player_id": owner_player_id,
 		"source_card_uid": source_card_uid,
@@ -124,7 +127,7 @@ func enqueue_value_selection(state: GameState, source_card_uid: String, effect: 
 func _resolve_context_card_set(state: GameState, source_card_uid: String, target: Dictionary, context: Dictionary) -> Array:
 	var result: Array = []
 	var source_var := str(target.get("source_var", ""))
-	var context_candidates: Array = _ensure_array(context.get(source_var, []))
+	var context_candidates: Array = EffectUtils.ensure_array(context.get(source_var, []))
 	var filters: Array = target.get("filters", [])
 	var requirements: Array = target.get("requirements", [])
 	for candidate_uid_variant in context_candidates:
@@ -163,9 +166,15 @@ func _resolve_card_set(state: GameState, source_card_uid: String, target: Dictio
 	var zones: Array = []
 	if target.has("zones"):
 		for zone_variant in target.get("zones", []):
-			zones.append(_parse_zone(zone_variant))
+			var z := UATypes.key_to_zone(zone_variant)
+			if z != -1:
+				zones.append(z)
+			else:
+				push_warning("Unrecognized zone value in target zones: %s" % str(zone_variant))
 	else:
-		zones.append(_parse_zone(target.get("from_zone", UATypes.Zone.OUTSIDE)))
+		var z := UATypes.key_to_zone(target.get("from_zone", UATypes.Zone.OUTSIDE))
+		if z != -1:
+			zones.append(z)
 	var owner_mode := str(target.get("owner", "SELF"))
 	var owner_player_ids := resolve_owner_player_ids(state, owner_mode, source_card.controller_player_id)
 	var filters: Array = target.get("filters", [])
@@ -234,7 +243,7 @@ func build_preview_pick_ui_meta(target: Dictionary, context: Dictionary) -> Dict
 		return {}
 	return {
 		"ui_mode": "PREVIEW_PICK",
-		"preview_card_uids": _ensure_array(context.get(source_var, [])).duplicate(),
+		"preview_card_uids": EffectUtils.ensure_array(context.get(source_var, [])).duplicate(),
 		"title": str(preview_meta.get("title", "查看牌堆顶")),
 	}
 
@@ -322,7 +331,7 @@ func validate_selection_payload(state: GameState, normalized: Array, queued_effe
 	var disjoint_var := str(constraints.get("disjoint_with_var", constraints.get("other_var", "")))
 	if disjoint_var != "":
 		var context: Dictionary = queued_effect.get("context", {})
-		var other_selected: Array = _ensure_array(context.get(disjoint_var, []))
+		var other_selected: Array = EffectUtils.ensure_array(context.get(disjoint_var, []))
 		var other_lookup: Dictionary = {}
 		for other_variant in other_selected:
 			var other_uid := str(other_variant)
@@ -341,7 +350,7 @@ func _resolve_dynamic_sum_threshold(state: GameState, queued_effect: Dictionary,
 	if _effect_resolver != null:
 		var context: Dictionary = queued_effect.get("context", {})
 		var source_card_uid := str(queued_effect.get("source_card_uid", ""))
-		return _effect_resolver._resolve_numeric_value(state, provider_variant, context, source_card_uid)
+		return EffectUtils.resolve_numeric_value(state, provider_variant, context, source_card_uid, "", _requirement_matcher)
 	if provider_variant is int or provider_variant is float:
 		return int(provider_variant)
 	if provider_variant is Dictionary:
@@ -361,58 +370,3 @@ func _requirements_met(state: GameState, source_card_uid: String, requirements: 
 	if _requirement_matcher != null:
 		return _requirement_matcher.all_met(state, source_card_uid, requirements, context, candidate_card_uid)
 	return true
-
-func _format_target_choice_label(card_def) -> String:
-	if card_def == null:
-		return ""
-	var parts: Array[String] = [str(card_def.name)]
-	var number := str(card_def.number)
-	if number != "":
-		parts.append("编号:%s" % number)
-	parts.append("所需能量:%s" % _format_energy_cost_text(card_def.cost_energy))
-	return " | ".join(parts)
-
-func _format_energy_cost_text(energy_map: Dictionary) -> String:
-	if energy_map.is_empty():
-		return "0"
-	var parts: Array[String] = []
-	var ordered_colors := ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "BLACK", "WHITE", "COLORLESS"]
-	for color in ordered_colors:
-		var amount := int(energy_map.get(color, 0))
-		if amount > 0:
-			parts.append("%s:%d" % [color, amount])
-	for color_variant in energy_map.keys():
-		var color := str(color_variant)
-		if ordered_colors.has(color):
-			continue
-		var amount := int(energy_map.get(color_variant, 0))
-		if amount > 0:
-			parts.append("%s:%d" % [color, amount])
-	return ", ".join(parts) if not parts.is_empty() else "0"
-
-func _parse_zone(value) -> int:
-	if value is int:
-		return int(value)
-	var zone_name := str(value)
-	if zone_name == "DECK" or zone_name == "deck":
-		return UATypes.Zone.DECK
-	if zone_name == "HAND" or zone_name == "hand":
-		return UATypes.Zone.HAND
-	if zone_name == "FRONT_LINE" or zone_name == "front_line":
-		return UATypes.Zone.FRONT_LINE
-	if zone_name == "ENERGY_LINE" or zone_name == "energy_line":
-		return UATypes.Zone.ENERGY_LINE
-	if zone_name == "LIFE" or zone_name == "life":
-		return UATypes.Zone.LIFE
-	if zone_name == "OUTSIDE" or zone_name == "outside":
-		return UATypes.Zone.OUTSIDE
-	if zone_name == "AP_AREA" or zone_name == "ap_area":
-		return UATypes.Zone.AP_AREA
-	if zone_name == "REMOVED" or zone_name == "removed":
-		return UATypes.Zone.REMOVED
-	return UATypes.Zone.OUTSIDE
-
-func _ensure_array(value) -> Array:
-	if value is Array:
-		return value
-	return []

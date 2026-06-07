@@ -212,7 +212,7 @@ func _test_life_trigger_prefers_activation() -> Dictionary:
 	}, UATypes.Zone.LIFE, true)
 	if life_uid == "":
 		return _fail("expected life trigger test card to be created")
-	manager.game_state.pending_life_triggers = [{
+	manager.game_state.pending.life_triggers = [{
 		"player_id": UATypes.PLAYER_ONE,
 		"card_uid": life_uid,
 		"card_name": "Life Trigger",
@@ -243,7 +243,7 @@ func _test_hand_limit_discard_prefers_low_value_card() -> Dictionary:
 		],
 		"context": {},
 	}
-	manager.game_state.pending_decisions = [pending]
+	manager.game_state.pending.decisions = [pending]
 	var snapshot := _snapshot(manager)
 	var chosen := _ai.choose_pending_decision(manager.game_state, snapshot, pending, _legal_actions(manager, UATypes.PLAYER_ONE))
 	if str(chosen.get("params", {}).get("choice", "")) != low_uid:
@@ -266,7 +266,7 @@ func _test_step_swap_prefers_low_value_card() -> Dictionary:
 		],
 		"context": {},
 	}
-	manager.game_state.pending_decisions = [pending]
+	manager.game_state.pending.decisions = [pending]
 	var snapshot := _snapshot(manager)
 	var chosen := _ai.choose_pending_decision(manager.game_state, snapshot, pending, _legal_actions(manager, UATypes.PLAYER_ONE))
 	if str(chosen.get("params", {}).get("choice", "")) != low_uid:

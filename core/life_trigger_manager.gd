@@ -15,18 +15,16 @@ const RulesEngine = preload("res://core/rules_engine.gd")
 var _effect_resolver
 var _zone_manager
 var _rules_engine
-var _game_manager  # 回调引用，用于 play_card, _enqueue_pending_decision 等
 
 # 回调函数，由 GameManager 设置
 var _enqueue_decision_callback: Callable
 var _play_card_callback: Callable
 
 
-func _init(p_effect_resolver, p_zone_manager, p_rules_engine, p_game_manager) -> void:
+func _init(p_effect_resolver: EffectResolver, p_zone_manager: ZoneManager, p_rules_engine: RulesEngine) -> void:
 	_effect_resolver = p_effect_resolver
 	_zone_manager = p_zone_manager
 	_rules_engine = p_rules_engine
-	_game_manager = p_game_manager
 
 
 func set_callbacks(
@@ -42,17 +40,17 @@ func set_callbacks(
 # ============================================================
 
 func has_pending_life_triggers(state: GameState) -> bool:
-	return not state.pending_life_triggers.is_empty()
+	return not state.pending.life_triggers.is_empty()
 
 
 func has_pending_life_reveal(state: GameState) -> bool:
-	return not state.pending_life_reveal.is_empty()
+	return not state.pending.life_reveal.is_empty()
 
 
 func life_reveal_fully_resolved(state: GameState) -> bool:
-	if state.pending_life_reveal.is_empty():
+	if state.pending.life_reveal.is_empty():
 		return true
-	for entry_variant in state.pending_life_reveal.get("revealed_cards", []):
+	for entry_variant in state.pending.life_reveal.get("revealed_cards", []):
 		var entry: Dictionary = entry_variant
 		if not bool(entry.get("resolved", false)):
 			return false
@@ -60,15 +58,15 @@ func life_reveal_fully_resolved(state: GameState) -> bool:
 
 
 func is_life_reveal_waiting_for_player(state: GameState) -> bool:
-	return state.pending_life_reveal_waiting_for_player
+	return state.pending.life_reveal_waiting_for_player
 
 
 func life_reveal_requires_view_confirmation(state: GameState, card_uid: String, is_human: Callable) -> bool:
-	if state.pending_life_reveal.is_empty() or card_uid == "":
+	if state.pending.life_reveal.is_empty() or card_uid == "":
 		return false
-	var reveal_player_id := str(state.pending_life_reveal.get("player_id", ""))
+	var reveal_player_id := str(state.pending.life_reveal.get("player_id", ""))
 	var reveal_controller_is_human: bool = is_human.call(reveal_player_id)
-	for entry_variant in state.pending_life_reveal.get("revealed_cards", []):
+	for entry_variant in state.pending.life_reveal.get("revealed_cards", []):
 		var entry: Dictionary = entry_variant
 		if str(entry.get("card_uid", "")) != card_uid:
 			continue
@@ -82,11 +80,11 @@ func life_reveal_requires_view_confirmation(state: GameState, card_uid: String, 
 
 
 func refresh_life_reveal_waiting_for_player(state: GameState, is_human: Callable) -> void:
-	if state.pending_life_reveal.is_empty():
-		state.pending_life_reveal_waiting_for_player = false
+	if state.pending.life_reveal.is_empty():
+		state.pending.life_reveal_waiting_for_player = false
 		return
-	var current_card_uid := str(state.pending_life_reveal.get("current_card_uid", ""))
-	state.pending_life_reveal_waiting_for_player = life_reveal_requires_view_confirmation(state, current_card_uid, is_human)
+	var current_card_uid := str(state.pending.life_reveal.get("current_card_uid", ""))
+	state.pending.life_reveal_waiting_for_player = life_reveal_requires_view_confirmation(state, current_card_uid, is_human)
 
 
 # ============================================================
@@ -101,7 +99,7 @@ func acknowledge_life_reveal(state: GameState, card_uid: String, is_human: Calla
 	var logs: Array[String] = []
 	if _life_reveal_requires_continue_then_ai(state, card_uid, is_human):
 		_mark_life_reveal_view_confirmed(state, card_uid)
-		state.pending_life_reveal_waiting_for_player = false
+		state.pending.life_reveal_waiting_for_player = false
 		return logs
 	logs.append_array(_effect_resolver.acknowledge_life_reveal(state, card_uid))
 	return logs
@@ -191,10 +189,10 @@ func resolve_life_trigger_raid_target(state: GameState, decision: Dictionary, ra
 	if not bool(play_result.get("ok", false)):
 		_zone_manager.move_card(state, card_uid, UATypes.Zone.HAND, owner_player_id)
 		logs.append("%s cannot complete raid now because requirements are not met, so the card is added to hand instead." % owner_player_id)
-		if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty() and life_reveal_fully_resolved(state):
+		if state.pending.life_triggers.is_empty() and state.pending.decisions.is_empty() and life_reveal_fully_resolved(state):
 			logs.append_array(_effect_resolver.finalize_pending_life_damage(state))
 		return logs
-	if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty() and life_reveal_fully_resolved(state):
+	if state.pending.life_triggers.is_empty() and state.pending.decisions.is_empty() and life_reveal_fully_resolved(state):
 		logs.append_array(_effect_resolver.finalize_pending_life_damage(state))
 	return logs
 
@@ -245,7 +243,7 @@ func fallback_life_trigger_raid_to_hand(state: GameState, card_uid: String, owne
 	var card = state.get_card(card_uid)
 	var card_def = state.get_card_def(card.def_id) if card != null else null
 	logs.append("%s adds %s to hand." % [owner_player_id, card_def.name if card_def != null else card_uid])
-	if state.pending_life_triggers.is_empty() and state.pending_decisions.is_empty() and life_reveal_fully_resolved(state):
+	if state.pending.life_triggers.is_empty() and state.pending.decisions.is_empty() and life_reveal_fully_resolved(state):
 		logs.append_array(_effect_resolver.finalize_pending_life_damage(state))
 	return logs
 
@@ -255,23 +253,23 @@ func fallback_life_trigger_raid_to_hand(state: GameState, card_uid: String, owne
 # ============================================================
 
 func _mark_life_reveal_view_confirmed(state: GameState, card_uid: String) -> void:
-	if state.pending_life_reveal.is_empty() or card_uid == "":
+	if state.pending.life_reveal.is_empty() or card_uid == "":
 		return
-	var entries: Array = state.pending_life_reveal.get("revealed_cards", [])
+	var entries: Array = state.pending.life_reveal.get("revealed_cards", [])
 	for i in range(entries.size()):
 		var entry: Dictionary = entries[i]
 		if str(entry.get("card_uid", "")) != card_uid:
 			continue
 		entry["view_confirmed"] = true
 		entries[i] = entry
-		state.pending_life_reveal["revealed_cards"] = entries
+		state.pending.life_reveal["revealed_cards"] = entries
 		return
 
 
 func _life_reveal_requires_continue_then_ai(state: GameState, card_uid: String, is_human: Callable) -> bool:
 	if not life_reveal_requires_view_confirmation(state, card_uid, is_human):
 		return false
-	for entry_variant in state.pending_life_reveal.get("revealed_cards", []):
+	for entry_variant in state.pending.life_reveal.get("revealed_cards", []):
 		var entry: Dictionary = entry_variant
 		if str(entry.get("card_uid", "")) != card_uid:
 			continue

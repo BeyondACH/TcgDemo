@@ -247,9 +247,9 @@ func _test_raw_on_play_life_to_hand_draw_two() -> Dictionary:
 	var life_before := player.life.size()
 	var deck_before := player.deck.size()
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw ON_PLAY sample should request explicit life target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("Raw ON_PLAY sample should use ability target selection.")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -282,9 +282,9 @@ func _test_raw_hand_ap_discount() -> Dictionary:
 	var player := _player(manager, player_id)
 	var ap_before := player.ap_active_count()
 	manager.play_card(discount_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw AP discount event should request explicit target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("Raw AP discount event should use ability target selection.")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -329,16 +329,16 @@ func _test_raw_complex_cost_combo() -> Dictionary:
 	var hand_before := player.hand.size()
 	var deck_before := player.deck.size()
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw complex cost event should first request the cost card selection.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choice": kyoko_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw complex cost event should then request the enemy target selection.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(second_decision.get("resolution_id", "")),
 		"choice": target_uid,
@@ -432,23 +432,23 @@ func _test_raw_preview_add_then_discard() -> Dictionary:
 	var hand_before := player.hand.size()
 	var outside_before := player.outside.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview-discard sample should first request a preview selection.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choice": preview_magic_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview-discard sample should then request preview reorder.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(second_decision.get("resolution_id", "")),
 		"choices": [preview_fourth_uid, preview_other_uid, preview_madoka_uid],
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview-discard sample should request a hand discard after adding the previewed card.")
-	var third_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var third_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var discard_uid := str(third_decision.get("choices", [])[0].get("value", "")) if not third_decision.get("choices", []).is_empty() else ""
 	if discard_uid == "":
 		return _fail("Raw preview-discard sample should expose a discard choice.")
@@ -556,16 +556,16 @@ func _test_raw_preview_distinct_names() -> Dictionary:
 	var player := _player(manager, player_id)
 	var hand_before := player.hand.size()
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw distinct preview sample should first request a preview selection.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choices": [preview_a1_uid, preview_b_uid, preview_c_uid],
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw distinct preview sample should then request preview reorder.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(second_decision.get("resolution_id", "")),
 		"choices": [preview_non_magic_uid, preview_a2_uid],
@@ -622,9 +622,9 @@ func _test_raw_life_trigger_outside_summon_035_and_055() -> Dictionary:
 		var outside_before := _player(manager, player_id).outside.size()
 		manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
 		manager.resolve_life_trigger_decision(source_uid, true)
-		if manager.game_state.pending_decisions.size() != 1:
+		if manager.game_state.pending.decisions.size() != 1:
 			return _fail("Raw %s life-trigger sample should request a target selection after activation." % str(sample.get("sample_label", "")))
-		var decision: Dictionary = manager.game_state.pending_decisions[0]
+		var decision: Dictionary = manager.game_state.pending.decisions[0]
 		var choice_values := _extract_choice_values(decision.get("choices", []))
 		if not choice_values.has(target_uid):
 			return _fail("Raw %s life-trigger sample should expose the matching outside target." % str(sample.get("sample_label", "")))
@@ -661,7 +661,7 @@ func _test_raw_life_trigger_outside_summon_safe_skip() -> Dictionary:
 	var outside_before := _player(manager, player_id).outside.size()
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
 	manager.resolve_life_trigger_decision(source_uid, true)
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw life-trigger skip sample should not request a target selection when no valid outside card exists.")
 	var player := _player(manager, player_id)
 	if not player.outside.has(source_uid):
@@ -760,9 +760,9 @@ func _test_raw_preview_add_then_discard_040() -> Dictionary:
 	var hand_before := player.hand.size()
 	var outside_before := player.outside.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 040 sample should first request a preview selection.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var first_choices := _extract_choice_values(first_decision.get("choices", []))
 	if not first_choices.has(preview_madoka_uid):
 		return _fail("Raw preview 040 sample should expose the matching Madoka preview card.")
@@ -770,16 +770,16 @@ func _test_raw_preview_add_then_discard_040() -> Dictionary:
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choice": preview_madoka_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 040 sample should then request preview reorder.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(second_decision.get("resolution_id", "")),
 		"choices": [preview_other_4, preview_other_2, preview_other_1, preview_other_3],
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 040 sample should request a discard after adding the previewed card.")
-	var third_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var third_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var discard_choice_values := _extract_choice_values(third_decision.get("choices", []))
 	if discard_choice_values.is_empty():
 		return _fail("Raw preview 040 sample should expose at least one discard choice.")
@@ -858,9 +858,9 @@ func _test_raw_preview_add_then_discard_043() -> Dictionary:
 	var hand_before := player.hand.size()
 	var outside_before := player.outside.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 043 sample should first request a preview selection.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var first_choices := _extract_choice_values(first_decision.get("choices", []))
 	if not first_choices.has(preview_trait_uid):
 		return _fail("Raw preview 043 sample should expose the trait-matched preview card.")
@@ -868,16 +868,16 @@ func _test_raw_preview_add_then_discard_043() -> Dictionary:
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choice": preview_trait_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 043 sample should then request preview reorder.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(second_decision.get("resolution_id", "")),
 		"choices": [preview_nagisa_uid, preview_filler_uid],
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 043 sample should request a discard after adding the previewed card.")
-	var third_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var third_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var discard_choice_values := _extract_choice_values(third_decision.get("choices", []))
 	if discard_choice_values.is_empty():
 		return _fail("Raw preview 043 sample should expose at least one discard choice.")
@@ -938,9 +938,9 @@ func _test_raw_preview_reorder_048() -> Dictionary:
 	}, UATypes.Zone.DECK, true)
 	_set_deck_top_order(manager, player_id, [top_keep_uid, top_outside_uid])
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 048 sample should request a reorder decision.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choice_values := _extract_choice_values(decision.get("choices", []))
 	if not choice_values.has(top_keep_uid) or not choice_values.has(top_outside_uid):
 		return _fail("Raw preview 048 sample should expose both preview cards for reordering.")
@@ -998,9 +998,9 @@ func _test_raw_hand_summon_042() -> Dictionary:
 	var player := _player(manager, player_id)
 	var hand_before := player.hand.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw hand summon 042 sample should request a summon target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choice_values := _extract_choice_values(decision.get("choices", []))
 	if not choice_values.has(summon_uid):
 		return _fail("Raw hand summon 042 sample should expose the matching hand card as a summon target.")
@@ -1115,9 +1115,9 @@ func _test_raw_preview_add_up_to_two_distinct_names_065() -> Dictionary:
 	var invalid_player := _player(invalid_manager, player_id)
 	var invalid_hand_before := invalid_player.hand.size()
 	invalid_manager.play_card(invalid_source_uid, UATypes.Zone.OUTSIDE)
-	if invalid_manager.game_state.pending_decisions.size() != 1:
+	if invalid_manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 065 sample should first request a preview selection.")
-	var invalid_first_decision: Dictionary = invalid_manager.game_state.pending_decisions[0]
+	var invalid_first_decision: Dictionary = invalid_manager.game_state.pending.decisions[0]
 	invalid_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(invalid_first_decision.get("resolution_id", "")),
 		"choices": [invalid_preview_dup_1, invalid_preview_dup_2],
@@ -1126,7 +1126,7 @@ func _test_raw_preview_add_up_to_two_distinct_names_065() -> Dictionary:
 		return _fail("Raw preview 065 sample should not move cards to hand after a rejected duplicate-name selection.")
 	if invalid_player.hand.has(invalid_preview_dup_1) or invalid_player.hand.has(invalid_preview_dup_2):
 		return _fail("Raw preview 065 sample should reject duplicate-name preview cards instead of adding them to hand.")
-	if invalid_manager.game_state.pending_decisions.size() != 1:
+	if invalid_manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 065 sample should reinsert the target-selection decision after rejecting duplicate names.")
 	if invalid_manager.game_state.effect_queue.size() != 1:
 		return _fail("Raw preview 065 sample should requeue the unresolved effect after rejecting duplicate names.")
@@ -1218,16 +1218,16 @@ func _test_raw_preview_add_up_to_two_distinct_names_065() -> Dictionary:
 	var player := _player(manager, player_id)
 	var hand_before := player.hand.size()
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 065 sample should first request a preview selection for the valid path.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choices": [preview_dup_1, preview_unique_1],
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview 065 sample should then request preview reorder.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(second_decision.get("resolution_id", "")),
 		"choices": [preview_unique_3, preview_dup_2, preview_unique_2],
@@ -1254,9 +1254,9 @@ func _test_raw_main_activate_life_to_hand() -> Dictionary:
 	var hand_before := player.hand.size()
 	var life_before := player.life.size()
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw MAIN_ACTIVATE should request explicit life target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("Raw MAIN_ACTIVATE should use ability target selection.")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -1287,7 +1287,7 @@ func _test_raw_event_ready_ap() -> Dictionary:
 	if event_uid == "":
 		return _fail("Raw event sample card should be available.")
 	manager.play_card(event_uid, UATypes.Zone.OUTSIDE)
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw event should not request explicit AP slot selection.")
 	if player.ap_active_count() != 2:
 		return _fail("Raw event should automatically ready up to 2 AP after paying 1 AP.")
@@ -1308,9 +1308,9 @@ func _test_raw_life_trigger_target_selection() -> Dictionary:
 	var defender_outside_before := defender.outside.size()
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, defender_id, 1)
 	manager.resolve_life_trigger_decision(life_uid, true)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw life trigger should request explicit target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("Raw life trigger should use ability target selection.")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -1372,9 +1372,9 @@ func _test_raw_on_enter_hand_summon() -> Dictionary:
 	var hand_before := player.hand.size()
 	var ap_before := player.ap_active_count()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw hand-summon sample should request an explicit hand target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choice_values: Array[String] = []
 	for choice_variant in decision.get("choices", []):
 		choice_values.append(str((choice_variant as Dictionary).get("value", "")))
@@ -1473,16 +1473,16 @@ func _test_raw_on_enter_cannot_attack_until_next_self_turn() -> Dictionary:
 		return _fail("Raw cannot-attack source card instance should exist.")
 	source_card.flags["entered_via_raid"] = true
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw cannot-attack sample should first request the hand summon selection.")
-	var summon_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var summon_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(summon_decision.get("resolution_id", "")),
 		"choice": summon_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw cannot-attack sample should then request the opponent front-line target selection.")
-	var lock_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var lock_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var lock_choices: Array[String] = []
 	for choice_variant in lock_decision.get("choices", []):
 		lock_choices.append(str((choice_variant as Dictionary).get("value", "")))
@@ -1541,7 +1541,7 @@ func _test_raw_hand_summon_respects_play_validation() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.HAND, true)
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {"allow_raid_play": false})
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw hand-summon validation sample should not offer targets when no AP remains for the follow-up play.")
 	var summon_card := manager.game_state.get_card(summon_uid)
 	if summon_card == null or summon_card.zone != UATypes.Zone.HAND:
@@ -1592,14 +1592,14 @@ func _test_raw_optional_return_then_summon_skip() -> Dictionary:
 	var hand_before := player.hand.size()
 	var deck_before := player.deck.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw optional-chain skip sample should first request the optional Madoka selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": "",
 	})
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw optional-chain skip sample should stop resolving after skipping the optional action.")
 	if player.hand.size() != hand_before - 1:
 		return _fail("Raw optional-chain skip sample should only lose the source card from hand.")
@@ -1657,16 +1657,16 @@ func _test_raw_optional_return_then_summon_success() -> Dictionary:
 	var hand_before := player.hand.size()
 	var deck_before := player.deck.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw optional-chain success sample should first request the optional Madoka selection.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choice": madoka_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw optional-chain success sample should then request the follow-up summon selection.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(second_decision.get("resolution_id", "")),
 		"choice": summon_uid,
@@ -1724,14 +1724,14 @@ func _test_raw_outside_search_optional_branches() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.OUTSIDE, true)
 	manager_skip.play_card(source_skip_uid, UATypes.Zone.ENERGY_LINE)
-	if manager_skip.game_state.pending_decisions.size() != 1:
+	if manager_skip.game_state.pending.decisions.size() != 1:
 		return _fail("Raw outside-search skip sample should first request the optional hand discard.")
-	var skip_decision: Dictionary = manager_skip.game_state.pending_decisions[0]
+	var skip_decision: Dictionary = manager_skip.game_state.pending.decisions[0]
 	manager_skip.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(skip_decision.get("resolution_id", "")),
 		"choice": "",
 	})
-	if not manager_skip.game_state.pending_decisions.is_empty():
+	if not manager_skip.game_state.pending.decisions.is_empty():
 		return _fail("Raw outside-search skip sample should stop after skipping the discard.")
 	var discard_skip_card := manager_skip.game_state.get_card(discard_skip_uid)
 	var outside_skip_card := manager_skip.game_state.get_card(outside_skip_uid)
@@ -1793,16 +1793,16 @@ func _test_raw_outside_search_optional_branches() -> Dictionary:
 	}, UATypes.Zone.OUTSIDE, true)
 	var player_success := _player(manager_success, player_id)
 	manager_success.play_card(source_success_uid, UATypes.Zone.ENERGY_LINE)
-	if manager_success.game_state.pending_decisions.size() != 1:
+	if manager_success.game_state.pending.decisions.size() != 1:
 		return _fail("Raw outside-search success sample should first request the optional hand discard.")
-	var first_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager_success.game_state.pending.decisions[0]
 	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choice": discard_success_uid,
 	})
-	if manager_success.game_state.pending_decisions.size() != 1:
+	if manager_success.game_state.pending.decisions.size() != 1:
 		return _fail("Raw outside-search success sample should then request the outside retrieval selection.")
-	var second_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager_success.game_state.pending.decisions[0]
 	var second_values: Array[String] = []
 	for choice_variant in second_decision.get("choices", []):
 		second_values.append(str((choice_variant as Dictionary).get("value", "")))
@@ -1911,9 +1911,9 @@ func _test_raw_raid_dynamic_bp_limit() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.FRONT_LINE, true)
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": opponent_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw RAID dynamic-BP sample should request explicit enemy target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choice_values: Array[String] = []
 	for choice_variant in decision.get("choices", []):
 		choice_values.append(str((choice_variant as Dictionary).get("value", "")))
@@ -1952,9 +1952,9 @@ func _test_raw_return_other_or_self_fallback() -> Dictionary:
 			"trigger_effects": []
 		}, UATypes.Zone.FRONT_LINE, true)
 		manager_success.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager_success.game_state, {"target_player_id": player_id})
-		if manager_success.game_state.pending_decisions.size() != 1:
+		if manager_success.game_state.pending.decisions.size() != 1:
 			return _fail("Raw fallback sample should request primary target selection when another legal character exists for %s." % card_id)
-		var success_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+		var success_decision: Dictionary = manager_success.game_state.pending.decisions[0]
 		var success_choices: Array[String] = []
 		for choice_variant in success_decision.get("choices", []):
 			success_choices.append(str((choice_variant as Dictionary).get("value", "")))
@@ -1976,7 +1976,7 @@ func _test_raw_return_other_or_self_fallback() -> Dictionary:
 		var manager_fallback := _new_manager()
 		var fallback_source_uid := _move_or_spawn_card_to_zone(manager_fallback, player_id, card_id, UATypes.Zone.FRONT_LINE)
 		manager_fallback.effect_resolver.resolve_trigger(fallback_source_uid, UATypes.TriggerType.ON_ENTER, manager_fallback.game_state, {"target_player_id": player_id})
-		if not manager_fallback.game_state.pending_decisions.is_empty():
+		if not manager_fallback.game_state.pending.decisions.is_empty():
 			return _fail("Raw fallback sample should not pause for selection when no legal 'other' target exists for %s." % card_id)
 		var source_card_fallback := manager_fallback.game_state.get_card(fallback_source_uid)
 		if source_card_fallback == null or source_card_fallback.zone != UATypes.Zone.HAND:
@@ -2027,9 +2027,9 @@ func _test_raw_conditional_bp_event_upgrade_sayaka() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.FRONT_LINE, true)
 	manager_default.play_card(source_default_uid, UATypes.Zone.OUTSIDE)
-	if manager_default.game_state.pending_decisions.size() != 1:
+	if manager_default.game_state.pending.decisions.size() != 1:
 		return _fail("Raw conditional 093 default sample should request explicit target selection.")
-	var default_decision: Dictionary = manager_default.game_state.pending_decisions[0]
+	var default_decision: Dictionary = manager_default.game_state.pending.decisions[0]
 	var default_choices: Array[String] = []
 	for choice_variant in default_decision.get("choices", []):
 		default_choices.append(str((choice_variant as Dictionary).get("value", "")))
@@ -2076,9 +2076,9 @@ func _test_raw_conditional_bp_event_upgrade_sayaka() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.FRONT_LINE, true)
 	manager_upgraded.play_card(source_upgraded_uid, UATypes.Zone.OUTSIDE)
-	if manager_upgraded.game_state.pending_decisions.size() != 1:
+	if manager_upgraded.game_state.pending.decisions.size() != 1:
 		return _fail("Raw conditional 093 upgraded sample should request explicit target selection.")
-	var upgraded_decision: Dictionary = manager_upgraded.game_state.pending_decisions[0]
+	var upgraded_decision: Dictionary = manager_upgraded.game_state.pending.decisions[0]
 	var upgraded_choices: Array[String] = []
 	for choice_variant in upgraded_decision.get("choices", []):
 		upgraded_choices.append(str((choice_variant as Dictionary).get("value", "")))
@@ -2122,8 +2122,8 @@ func _test_raw_conditional_bp_event_upgrade_madoka() -> Dictionary:
 			"trigger_effects": []
 		}, UATypes.Zone.FRONT_LINE, true)
 		manager_default.play_card(source_default_uid, UATypes.Zone.OUTSIDE)
-		if manager_default.game_state.pending_decisions.size() != 0:
-			var default_decision: Dictionary = manager_default.game_state.pending_decisions[0]
+		if manager_default.game_state.pending.decisions.size() != 0:
+			var default_decision: Dictionary = manager_default.game_state.pending.decisions[0]
 			var default_choices: Array[String] = []
 			for choice_variant in default_decision.get("choices", []):
 				default_choices.append(str((choice_variant as Dictionary).get("value", "")))
@@ -2170,9 +2170,9 @@ func _test_raw_conditional_bp_event_upgrade_madoka() -> Dictionary:
 			"trigger_effects": []
 		}, UATypes.Zone.FRONT_LINE, true)
 		manager_upgraded.play_card(source_upgraded_uid, UATypes.Zone.OUTSIDE)
-		if manager_upgraded.game_state.pending_decisions.size() != 1:
+		if manager_upgraded.game_state.pending.decisions.size() != 1:
 			return _fail("Raw conditional 094 upgraded sample should request explicit target selection (%s)." % card_id)
-		var upgraded_decision: Dictionary = manager_upgraded.game_state.pending_decisions[0]
+		var upgraded_decision: Dictionary = manager_upgraded.game_state.pending.decisions[0]
 		var upgraded_choices: Array[String] = []
 		for choice_variant in upgraded_decision.get("choices", []):
 			upgraded_choices.append(str((choice_variant as Dictionary).get("value", "")))
@@ -2275,16 +2275,16 @@ func _test_raw_preview_reward_magic_girl_branches() -> Dictionary:
 	_set_deck_top_order(manager_success, player_id, [reward_magic_uid, reward_filler_1, reward_filler_2, reward_filler_3, reward_filler_4])
 	var success_player := _player(manager_success, player_id)
 	manager_success.play_card(source_success_uid, UATypes.Zone.OUTSIDE)
-	if manager_success.game_state.pending_decisions.size() != 1:
+	if manager_success.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview reward success sample should first request the revealed card selection.")
-	var select_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	var select_decision: Dictionary = manager_success.game_state.pending.decisions[0]
 	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(select_decision.get("resolution_id", "")),
 		"choice": reward_magic_uid,
 	})
-	if manager_success.game_state.pending_decisions.size() != 1:
+	if manager_success.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview reward success sample should then request preview reorder.")
-	var reorder_decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	var reorder_decision: Dictionary = manager_success.game_state.pending.decisions[0]
 	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(reorder_decision.get("resolution_id", "")),
 		"choices": [reward_filler_1, reward_filler_2, reward_filler_3, reward_filler_4],
@@ -2385,16 +2385,16 @@ func _test_raw_preview_reward_magic_girl_branches() -> Dictionary:
 	_set_deck_top_order(manager_skip, player_id, [skip_character_uid, skip_filler_1, skip_filler_2, skip_filler_3, skip_filler_4])
 	var skip_player := _player(manager_skip, player_id)
 	manager_skip.play_card(source_skip_uid, UATypes.Zone.OUTSIDE)
-	if manager_skip.game_state.pending_decisions.size() != 1:
+	if manager_skip.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview reward skip sample should first request the revealed card selection.")
-	var skip_select_decision: Dictionary = manager_skip.game_state.pending_decisions[0]
+	var skip_select_decision: Dictionary = manager_skip.game_state.pending.decisions[0]
 	manager_skip.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(skip_select_decision.get("resolution_id", "")),
 		"choice": skip_character_uid,
 	})
-	if manager_skip.game_state.pending_decisions.size() != 1:
+	if manager_skip.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview reward skip sample should then request preview reorder.")
-	var skip_reorder_decision: Dictionary = manager_skip.game_state.pending_decisions[0]
+	var skip_reorder_decision: Dictionary = manager_skip.game_state.pending.decisions[0]
 	manager_skip.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(skip_reorder_decision.get("resolution_id", "")),
 		"choices": [skip_filler_1, skip_filler_2, skip_filler_3, skip_filler_4],
@@ -2443,21 +2443,21 @@ func _test_raw_preview_summon_056_without_bonus() -> Dictionary:
 	manager.resolve_life_trigger_decision(source_uid, true)
 	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
 	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": raid_base_uid})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 056 no-bonus sample should request preview selection after raiding.")
-	var pick_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var pick_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(pick_decision.get("resolution_id", "")),
 		"choice": preview_target_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 056 no-bonus sample should request preview reorder after selecting a summon target.")
-	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var reorder_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(reorder_decision.get("resolution_id", "")),
 		"choices": [filler_1, filler_2, filler_3],
 	})
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw 056 no-bonus sample should clear pending decisions after preview resolution.")
 	manager.effect_resolver.finalize_pending_life_damage(manager.game_state)
 	var source_card = manager.game_state.get_card(source_uid)
@@ -2521,21 +2521,21 @@ func _test_raw_preview_summon_056_with_bonus() -> Dictionary:
 	manager.resolve_life_trigger_decision(source_uid, true)
 	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
 	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": raid_base_uid})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 056 bonus sample should request preview selection after raiding.")
-	var pick_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var pick_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(pick_decision.get("resolution_id", "")),
 		"choice": preview_target_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 056 bonus sample should request preview reorder after selecting a summon target.")
-	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var reorder_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(reorder_decision.get("resolution_id", "")),
 		"choices": [filler_1, filler_2, filler_3],
 	})
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw 056 bonus sample should clear pending decisions after preview resolution.")
 	manager.effect_resolver.finalize_pending_life_damage(manager.game_state)
 	var source_card = manager.game_state.get_card(source_uid)
@@ -2566,7 +2566,7 @@ func _test_raw_attack_bp_down_requires_named_energy() -> Dictionary:
 	var fail_target_uid := _spawn_named_character(manager_fail, opponent_id, "035减攻失败目标", [], 3000, UATypes.Zone.FRONT_LINE)
 	manager_fail.game_state.phase = UATypes.Phase.ATTACK
 	manager_fail.effect_resolver.resolve_trigger(source_fail_uid, UATypes.TriggerType.ON_ATTACK, manager_fail.game_state, {"target_player_id": opponent_id})
-	if not manager_fail.game_state.pending_decisions.is_empty():
+	if not manager_fail.game_state.pending.decisions.is_empty():
 		return _fail("Raw 035 fail sample should not request target selection without Madoka in energy.")
 	var fail_target = manager_fail.game_state.get_card(fail_target_uid)
 	if fail_target == null or int(fail_target.current_bp) != 3000:
@@ -2578,9 +2578,9 @@ func _test_raw_attack_bp_down_requires_named_energy() -> Dictionary:
 	_spawn_named_character(manager_success, player_id, "鹿目 まどか", ["魔法少女"], 1500, UATypes.Zone.ENERGY_LINE)
 	manager_success.game_state.phase = UATypes.Phase.ATTACK
 	manager_success.effect_resolver.resolve_trigger(source_success_uid, UATypes.TriggerType.ON_ATTACK, manager_success.game_state, {"target_player_id": opponent_id})
-	if manager_success.game_state.pending_decisions.size() != 1:
+	if manager_success.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 035 success sample should request explicit enemy target selection when Madoka is in energy.")
-	var decision: Dictionary = manager_success.game_state.pending_decisions[0]
+	var decision: Dictionary = manager_success.game_state.pending.decisions[0]
 	manager_success.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": success_target_uid,
@@ -2597,9 +2597,9 @@ func _test_raw_main_activate_swap_035() -> Dictionary:
 	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_ATTACK_BP_DOWN_035, UATypes.Zone.ENERGY_LINE)
 	var madoka_uid := _spawn_named_character(manager, player_id, "鹿目 まどか", ["魔法少女"], 2000, UATypes.Zone.FRONT_LINE)
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 035 swap sample should request explicit Madoka target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": madoka_uid,
@@ -2624,16 +2624,16 @@ func _test_raw_optional_return_debuff_036() -> Dictionary:
 		return _fail("Raw 036 sample source card should exist.")
 	source_card.flags["entered_via_raid"] = true
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 036 sample should first request the optional Madoka return choice.")
-	var return_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var return_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(return_decision.get("resolution_id", "")),
 		"choice": madoka_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 036 sample should then request explicit enemy target selection after returning Madoka.")
-	var enemy_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var enemy_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(enemy_decision.get("resolution_id", "")),
 		"choice": enemy_uid,
@@ -2661,9 +2661,9 @@ func _test_raw_draw_two_then_discard_041() -> Dictionary:
 	var hand_before := player.hand.size()
 	var outside_before := player.outside.size()
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 041 sample should request an explicit discard choice after drawing 2.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choice_values := _extract_choice_values(decision.get("choices", []))
 	if not choice_values.has(discard_uid):
 		return _fail("Raw 041 sample should expose the hand card chosen to discard.")
@@ -2777,9 +2777,9 @@ func _test_raw_raid_preview_reward_044() -> Dictionary:
 		return _fail("Raw 044 no-match preview sample source card should exist.")
 	source_nomatch.flags["entered_via_raid"] = true
 	manager_nomatch.effect_resolver.resolve_trigger(source_nomatch_uid, UATypes.TriggerType.ON_ATTACK, manager_nomatch.game_state, {"target_player_id": UATypes.PLAYER_TWO})
-	if manager_nomatch.game_state.pending_decisions.size() != 1:
+	if manager_nomatch.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 044 no-match preview sample should request a top-or-bottom choice.")
-	var decision: Dictionary = manager_nomatch.game_state.pending_decisions[0]
+	var decision: Dictionary = manager_nomatch.game_state.pending.decisions[0]
 	var choice_values := _extract_choice_values(decision.get("choices", []))
 	if not choice_values.has("TOP") or not choice_values.has("BOTTOM"):
 		return _fail("Raw 044 no-match preview sample should expose both TOP and BOTTOM choices.")
@@ -2803,9 +2803,9 @@ func _test_raw_entered_this_turn_grants_impact_only_same_turn() -> Dictionary:
 	var target_uid := _spawn_named_character(manager, player_id, "049授冲击目标", [], 2000, UATypes.Zone.FRONT_LINE)
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 049 same-turn sample should request explicit allied target selection.")
-	var same_turn_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var same_turn_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(same_turn_decision.get("resolution_id", "")),
 		"choice": target_uid,
@@ -2850,13 +2850,13 @@ func _test_raw_active_source_target_buff_055() -> Dictionary:
 		return _fail("Raw 055 sample source card should exist.")
 	source_card.state = UATypes.CardState.RESTED
 	manager.request_main_activate(source_uid)
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw 055 fail sample should not open target selection while the source is rested.")
 	source_card.state = UATypes.CardState.ACTIVE
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 055 success sample should request explicit ally target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choices := _extract_choice_values(decision.get("choices", []))
 	if not choices.has(nagisa_uid) or not choices.has(quintet_uid):
 		return _fail("Raw 055 success sample should expose Nagisa and another quintet ally as legal targets.")
@@ -2907,9 +2907,9 @@ func _test_raw_outside_search_060() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.OUTSIDE, true)
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 060 sample should request explicit outside-card selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choices := _extract_choice_values(decision.get("choices", []))
 	if not choices.has(legal_uid) or choices.has(illegal_uid):
 		return _fail("Raw 060 sample should expose only purple magic-girl cards in outside.")
@@ -2933,9 +2933,9 @@ func _test_raw_event_impact_plus_draw_062() -> Dictionary:
 	_spawn_named_character(manager, player_id, "暁美 ほむら", ["魔法少女"], 1500, UATypes.Zone.ENERGY_LINE)
 	var hand_before := _player(manager, player_id).hand.size()
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 062 sample should request explicit front-line target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": target_uid,
@@ -2962,9 +2962,9 @@ func _test_raw_event_dynamic_quintet_threshold_064() -> Dictionary:
 	_spawn_named_character(manager, player_id, "064五色支援2", ["ピュエラ・マギ・ホーリー・クインテット"], 1000, UATypes.Zone.ENERGY_LINE)
 	var target_uid := _spawn_named_character(manager, opponent_id, "064四千目标", [], 4000, UATypes.Zone.FRONT_LINE)
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 064 sample should request explicit enemy target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choices := _extract_choice_values(decision.get("choices", []))
 	if not choices.has(target_uid):
 		return _fail("Raw 064 sample should expose a 4000-BP target after two quintet supports raise the threshold to 4000.")
@@ -2988,7 +2988,7 @@ func _test_raw_event_dynamic_homura_threshold_066() -> Dictionary:
 	var source_default_uid := _move_or_spawn_card_to_zone(manager_default, player_id, RAW_EVENT_DYNAMIC_HOMURA_066, UATypes.Zone.HAND)
 	var illegal_default_uid := _spawn_named_character(manager_default, opponent_id, "066默认4000目标", [], 4000, UATypes.Zone.FRONT_LINE)
 	manager_default.play_card(source_default_uid, UATypes.Zone.OUTSIDE)
-	if not manager_default.game_state.pending_decisions.is_empty():
+	if not manager_default.game_state.pending.decisions.is_empty():
 		return _fail("Raw 066 default sample should not open target selection when every enemy target is above the default 3000 threshold.")
 	var illegal_default = manager_default.game_state.get_card(illegal_default_uid)
 	if illegal_default == null or illegal_default.zone != UATypes.Zone.FRONT_LINE:
@@ -3003,9 +3003,9 @@ func _test_raw_event_dynamic_homura_threshold_066() -> Dictionary:
 	_spawn_named_character(manager_upgraded, player_id, "暁美ほむら", ["魔法少女"], 1500, UATypes.Zone.FRONT_LINE)
 	var legal_target_uid := _spawn_named_character(manager_upgraded, opponent_id, "066升级5000目标", [], 5000, UATypes.Zone.FRONT_LINE)
 	manager_upgraded.play_card(source_upgraded_uid, UATypes.Zone.OUTSIDE)
-	if manager_upgraded.game_state.pending_decisions.size() != 1:
+	if manager_upgraded.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 066 upgraded sample should request explicit enemy target selection.")
-	var upgraded_decision: Dictionary = manager_upgraded.game_state.pending_decisions[0]
+	var upgraded_decision: Dictionary = manager_upgraded.game_state.pending.decisions[0]
 	var upgraded_choices := _extract_choice_values(upgraded_decision.get("choices", []))
 	if not upgraded_choices.has(legal_target_uid):
 		return _fail("Raw 066 upgraded sample should expose a 5000-BP target once Homura is on the field.")
@@ -3028,9 +3028,9 @@ func _test_raw_event_double_attack_buff_067() -> Dictionary:
 	var source_uid := _move_or_spawn_card_to_zone(manager, player_id, RAW_EVENT_DOUBLE_ATTACK_067, UATypes.Zone.HAND)
 	var target_uid := _spawn_named_character(manager, player_id, "067双击目标", [], 2000, UATypes.Zone.FRONT_LINE)
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 067 sample should request explicit front-line target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": target_uid,
@@ -3075,9 +3075,9 @@ func _test_raw_event_targeted_cost_discount_067() -> Dictionary:
 	if not bool(allowed_validation.get("ok", false)):
 		return _fail("Raw 067 discount sample should become playable with only 1 AP after declaring the Homura target.")
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE, {"target_uid": homura_uid})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 067 discount sample should still request the event's explicit buff target selection after the discounted play.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": buff_target_uid,
@@ -3127,9 +3127,9 @@ func _test_raw_removed_batch_and_dual_summon_001() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.OUTSIDE, true)
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 001 on-enter should request explicit OUTSIDE to REMOVED selection.")
-	var enter_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var enter_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(enter_decision.get("resolution_id", "")),
 		"choices": [outside_a, outside_b],
@@ -3184,9 +3184,9 @@ func _test_raw_removed_batch_and_dual_summon_001() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.REMOVED, true)
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_LEAVE, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 001 on-leave should request explicit removed summon selection.")
-	var leave_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var leave_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var leave_choices := _extract_choice_values(leave_decision.get("choices", []))
 	if not leave_choices.has(summon_a) or not leave_choices.has(summon_b):
 		return _fail("Raw 001 on-leave should expose both valid yellow magic-girl summon targets.")
@@ -3235,9 +3235,9 @@ func _test_raw_removed_ap_discount_consumes_once_002() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.OUTSIDE, true)
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 002 on-enter should request explicit OUTSIDE to REMOVED selection.")
-	var enter_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var enter_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(enter_decision.get("resolution_id", "")),
 		"choice": outside_uid,
@@ -3309,9 +3309,9 @@ func _test_raw_skip_next_ready_once_008_and_020() -> Dictionary:
 			"trigger_effects": []
 		}, UATypes.Zone.FRONT_LINE, true)
 		manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_LIFE_TRIGGER, manager.game_state, {"target_player_id": player_id})
-		if manager.game_state.pending_decisions.size() != 1:
+		if manager.game_state.pending.decisions.size() != 1:
 			return _fail("Raw %s life-trigger should request explicit opponent target selection." % source_id)
-		var decision: Dictionary = manager.game_state.pending_decisions[0]
+		var decision: Dictionary = manager.game_state.pending.decisions[0]
 		manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 			"resolution_id": str(decision.get("resolution_id", "")),
 			"choice": target_uid,
@@ -3416,9 +3416,9 @@ func _test_raw_removed_event_destination_028() -> Dictionary:
 	var hand_play := hand_manager.play_card(hand_source_uid, UATypes.Zone.OUTSIDE)
 	if not bool(hand_play.get("ok", false)):
 		return _fail("Raw 028 should be playable from hand when the named field requirement is met.")
-	if hand_manager.game_state.pending_decisions.size() != 1:
+	if hand_manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 028 hand-use branch should request explicit enemy target selection.")
-	var hand_decision: Dictionary = hand_manager.game_state.pending_decisions[0]
+	var hand_decision: Dictionary = hand_manager.game_state.pending.decisions[0]
 	hand_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(hand_decision.get("resolution_id", "")),
 		"choice": hand_target_uid,
@@ -3471,9 +3471,9 @@ func _test_raw_removed_event_destination_028() -> Dictionary:
 	var removed_play := removed_manager.play_card(removed_source_uid, UATypes.Zone.OUTSIDE, {"force_allow_current_zone": true})
 	if not bool(removed_play.get("ok", false)):
 		return _fail("Raw 028 should be playable from REMOVED in the smoke setup.")
-	if removed_manager.game_state.pending_decisions.size() != 1:
+	if removed_manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 028 removed-use branch should request explicit enemy target selection.")
-	var removed_decision: Dictionary = removed_manager.game_state.pending_decisions[0]
+	var removed_decision: Dictionary = removed_manager.game_state.pending.decisions[0]
 	removed_manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(removed_decision.get("resolution_id", "")),
 		"choice": removed_target_uid,
@@ -3526,9 +3526,9 @@ func _test_raw_conditional_event_branches_032_and_033() -> Dictionary:
 	var play_032_default := manager_032_default.play_card(source_032_default, UATypes.Zone.OUTSIDE)
 	if not bool(play_032_default.get("ok", false)):
 		return _fail("Raw 032 default branch should be playable in the smoke setup.")
-	if manager_032_default.game_state.pending_decisions.size() != 1:
+	if manager_032_default.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 032 default branch should request explicit enemy target selection.")
-	var decision_032_default: Dictionary = manager_032_default.game_state.pending_decisions[0]
+	var decision_032_default: Dictionary = manager_032_default.game_state.pending.decisions[0]
 	manager_032_default.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision_032_default.get("resolution_id", "")),
 		"choice": target_032_default,
@@ -3577,9 +3577,9 @@ func _test_raw_conditional_event_branches_032_and_033() -> Dictionary:
 	var play_032_upgrade := manager_032_upgrade.play_card(source_032_upgrade, UATypes.Zone.OUTSIDE)
 	if not bool(play_032_upgrade.get("ok", false)):
 		return _fail("Raw 032 upgraded branch should be playable in the smoke setup.")
-	if manager_032_upgrade.game_state.pending_decisions.size() != 1:
+	if manager_032_upgrade.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 032 upgraded branch should request explicit enemy target selection.")
-	var decision_032_upgrade: Dictionary = manager_032_upgrade.game_state.pending_decisions[0]
+	var decision_032_upgrade: Dictionary = manager_032_upgrade.game_state.pending.decisions[0]
 	manager_032_upgrade.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision_032_upgrade.get("resolution_id", "")),
 		"choice": target_032_upgrade,
@@ -3611,9 +3611,9 @@ func _test_raw_conditional_event_branches_032_and_033() -> Dictionary:
 	var play_033_default := manager_033_default.play_card(source_033_default, UATypes.Zone.OUTSIDE)
 	if not bool(play_033_default.get("ok", false)):
 		return _fail("Raw 033 default branch should be playable in the smoke setup.")
-	if manager_033_default.game_state.pending_decisions.size() != 1:
+	if manager_033_default.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 033 default branch should request explicit enemy target selection.")
-	var decision_033_default: Dictionary = manager_033_default.game_state.pending_decisions[0]
+	var decision_033_default: Dictionary = manager_033_default.game_state.pending.decisions[0]
 	manager_033_default.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision_033_default.get("resolution_id", "")),
 		"choice": target_033_default,
@@ -3668,9 +3668,9 @@ func _test_raw_conditional_event_branches_032_and_033() -> Dictionary:
 	var play_033_upgrade := manager_033_upgrade.play_card(source_033_upgrade, UATypes.Zone.OUTSIDE)
 	if not bool(play_033_upgrade.get("ok", false)):
 		return _fail("Raw 033 upgraded branch should be playable in the smoke setup.")
-	if manager_033_upgrade.game_state.pending_decisions.size() != 1:
+	if manager_033_upgrade.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 033 upgraded branch should request explicit enemy target selection.")
-	var decision_033_upgrade: Dictionary = manager_033_upgrade.game_state.pending_decisions[0]
+	var decision_033_upgrade: Dictionary = manager_033_upgrade.game_state.pending.decisions[0]
 	manager_033_upgrade.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision_033_upgrade.get("resolution_id", "")),
 		"choice": target_033_upgrade,
@@ -3811,16 +3811,16 @@ func _test_raw_raid_draw_discard_dynamic_bounce_019() -> Dictionary:
 	var play_result := manager.play_card(source_uid, UATypes.Zone.FRONT_LINE, {"raid_target_uid": raid_base_uid})
 	if not bool(play_result.get("ok", false)):
 		return _fail("Raw 019 should be playable as RAID in the smoke setup.")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 019 should request an explicit discard choice after drawing.")
-	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(discard_decision.get("resolution_id", "")),
 		"choice": discard_event_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 019 should request an explicit opponent target after the discard resolves.")
-	var target_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var target_decision: Dictionary = manager.game_state.pending.decisions[0]
 	if not _extract_choice_values(target_decision.get("choices", [])).has(opponent_target_uid):
 		return _fail("Raw 019 should expose legal opponent targets within its dynamic BP threshold.")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -3862,9 +3862,9 @@ func _test_raw_main_activate_mami_discount_027() -> Dictionary:
 	if int((before_preview.get("cost_energy", {}) as Dictionary).get("YELLOW", 0)) != 4:
 		return _fail("Raw 027 should keep the base required energy before activation.")
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 027 should request an explicit event discard choice.")
-	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_decision: Dictionary = manager.game_state.pending.decisions[0]
 	if not _extract_choice_values(discard_decision.get("choices", [])).has(event_uid):
 		return _fail("Raw 027 should expose the hand event card as a legal discard choice.")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -3895,9 +3895,9 @@ func _test_raw_event_rest_then_draw_029() -> Dictionary:
 	var play_result := manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
 	if not bool(play_result.get("ok", false)):
 		return _fail("Raw 029 should be playable in the smoke setup.")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 029 should request an explicit active front-line target.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": active_target_uid,
@@ -3942,9 +3942,9 @@ func _test_raw_event_once_draw_ready_034() -> Dictionary:
 	var play_result := manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
 	if not bool(play_result.get("ok", false)):
 		return _fail("Raw 034 should be playable in the smoke setup.")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw 034 should request an explicit discard choice after drawing 2.")
-	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(discard_decision.get("resolution_id", "")),
 		"choice": discard_event_uid,
@@ -3971,9 +3971,9 @@ func _test_raw_tlr_bp_sum_limit_remove_030() -> Dictionary:
 		return _fail("Raw TLR 030 sample source runtime card should be available.")
 	source_card.flags["entered_via_raid"] = true
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": opponent_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw TLR 030 sample should request explicit combination selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var choice_values := _extract_choice_values(decision.get("choices", []))
 	if not choice_values.has(legal_a) or not choice_values.has(legal_b):
 		return _fail("Raw TLR 030 sample should expose legal front-line targets.")
@@ -3985,9 +3985,9 @@ func _test_raw_tlr_bp_sum_limit_remove_030() -> Dictionary:
 	})
 	if bool(invalid_result.get("ok", true)):
 		return _fail("Raw TLR 030 sample should reject combinations whose total BP exceeds the 6000 limit.")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw TLR 030 sample should keep the combination decision pending after an over-sum selection.")
-	decision = manager.game_state.pending_decisions[0]
+	decision = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choices": [legal_a, legal_b],
@@ -4062,9 +4062,9 @@ func _test_raw_tlr_preview_name_contains_066() -> Dictionary:
 	var player := _player(manager, player_id)
 	var hand_before := player.hand.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw TLR 066 sample should first request preview selection.")
-	var pick_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var pick_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var pick_values := _extract_choice_values(pick_decision.get("choices", []))
 	if not pick_values.has(match_uid):
 		return _fail("Raw TLR 066 sample should expose name-contains matching character.")
@@ -4074,17 +4074,17 @@ func _test_raw_tlr_preview_name_contains_066() -> Dictionary:
 		"resolution_id": str(pick_decision.get("resolution_id", "")),
 		"choice": match_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw TLR 066 sample should next request preview reorder after adding to hand.")
-	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var reorder_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var reorder_choices := _extract_choice_values(reorder_decision.get("choices", []))
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(reorder_decision.get("resolution_id", "")),
 		"choices": reorder_choices,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw TLR 066 sample should then request the discard decision after preview reorder.")
-	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(discard_decision.get("resolution_id", "")),
 		"choice": match_uid,
@@ -4269,7 +4269,7 @@ func _test_raw_delayed_self_leave_does_not_break_followup_trigger_chain() -> Dic
 		return _fail("Raw delayed self-leave chain sample should move the second source to outside at end of main phase.")
 	if manager.game_state.phase != UATypes.Phase.ATTACK:
 		return _fail("Raw delayed self-leave chain sample should still advance to ATTACK after resolving multiple delayed self-leave effects.")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw delayed self-leave chain sample should not leave stray pending decisions after both delayed effects resolve.")
 	return _ok()
 
@@ -4309,9 +4309,9 @@ func _test_raw_self_special_play_permission_after_leave() -> Dictionary:
 	if chosen_life_uid == "":
 		return _fail("Raw self special play permission sample should have a selectable life card.")
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.is_empty():
+	if manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw self special play permission sample should request explicit life target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": chosen_life_uid,
@@ -4383,9 +4383,9 @@ func _test_raw_self_special_play_permission_expires_after_full_turn_cycle() -> D
 	if chosen_life_uid == "":
 		return _fail("Raw full-turn special play permission sample should have a selectable life card.")
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.is_empty():
+	if manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw full-turn special play permission sample should request explicit life target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": chosen_life_uid,
@@ -4420,7 +4420,7 @@ func _test_raw_self_special_play_permission_expires_after_full_turn_cycle() -> D
 	var expired_actions := manager.rules_engine.get_card_available_actions(manager.game_state, player_id, source_uid)
 	if not expired_actions.has("RAID"):
 		return _fail("Raw full-turn special play permission sample should keep the normal hand RAID action after the temporary permission expires.")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw full-turn special play permission sample should not leave stray pending decisions after the full turn cycle.")
 	if not manager.game_state.effect_queue.is_empty():
 		return _fail("Raw full-turn special play permission sample should not leave stray queued effects after the full turn cycle.")
@@ -4463,7 +4463,7 @@ func _test_raw_special_play_permission_does_not_grant_other_same_name_card() -> 
 		return _fail("Raw self special play copy-bound sample should prepare a second copy in hand.")
 	var chosen_life_uid := _ensure_life_card(manager, player_id)
 	manager.request_main_activate(source_uid)
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": chosen_life_uid,
@@ -4498,7 +4498,7 @@ func _test_raw_special_play_permission_still_respects_raid_target_validation() -
 	source_card.flags["entered_via_raid"] = true
 	var chosen_life_uid := _ensure_life_card(manager, player_id)
 	manager.request_main_activate(source_uid)
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": chosen_life_uid,
@@ -4547,7 +4547,7 @@ func _test_raw_on_leave_return_to_hand_keeps_battle_cleanup_stable() -> Dictiona
 		return _fail("Raw ON_LEAVE defender should add exactly 1 card back to hand after battle leave resolution.")
 	if not manager.game_state.battle_context.is_empty():
 		return _fail("Raw ON_LEAVE battle cleanup sample should clear battle_context after leave resolution.")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw ON_LEAVE battle cleanup sample should not leave pending decisions after battle leave resolution.")
 	if not manager.game_state.effect_queue.is_empty():
 		return _fail("Raw ON_LEAVE battle cleanup sample should not leave queued effects after battle leave resolution.")
@@ -4629,16 +4629,16 @@ func _test_raw_preview_selected_card_context_drives_followup_target_filter() -> 
 	}, UATypes.Zone.DECK, true)
 	_set_deck_top_order(manager, player_id, [preview_pick_uid, preview_rest_1, preview_rest_2, preview_rest_3])
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview followup filter sample should first request a preview selection.")
-	var first_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var first_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(first_decision.get("resolution_id", "")),
 		"choice": preview_pick_uid,
 	})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw preview followup filter sample should then request preview reorder.")
-	var second_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var second_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var second_choices := _extract_choice_values(second_decision.get("choices", []))
 	if second_choices.has(preview_pick_uid):
 		return _fail("Raw preview followup filter sample should not re-expose the already selected preview card in the followup decision.")
@@ -4736,12 +4736,12 @@ func _test_raw_preview_skip_branch_keeps_deck_order_contract() -> Dictionary:
 	_set_deck_top_order(manager, player_id, [skip_character_uid, skip_filler_1, skip_filler_2, skip_filler_3, skip_filler_4])
 	var player := _player(manager, player_id)
 	manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
-	var select_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var select_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(select_decision.get("resolution_id", "")),
 		"choice": skip_character_uid,
 	})
-	var reorder_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var reorder_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(reorder_decision.get("resolution_id", "")),
 		"choices": [skip_filler_4, skip_filler_2, skip_filler_1, skip_filler_3],
@@ -4818,11 +4818,11 @@ func _test_raw_on_enter_draw_then_discard_uses_explicit_choice() -> Dictionary:
 	var deck_before := player.deck.size()
 	var outside_before := player.outside.size()
 	manager.play_card(source_uid, UATypes.Zone.FRONT_LINE)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw draw-then-discard sample should request an explicit discard choice after drawing.")
 	if player.deck.size() != deck_before - 1:
 		return _fail("Raw draw-then-discard sample should draw exactly 1 card before the discard choice resolves.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("Raw draw-then-discard sample should use ability target selection for the discard.")
 	var choice_values := _extract_choice_values(decision.get("choices", []))
@@ -4877,9 +4877,9 @@ func _test_raw_field_main_activate_buff_uses_magic_girl_targeting() -> Dictionar
 		return _fail("Raw field buff sample legal target should exist.")
 	var bp_before: int = magic_card.current_bp
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw field buff sample should request explicit target selection.")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("Raw field buff sample should use ability target selection.")
 	var choice_values := _extract_choice_values(decision.get("choices", []))
@@ -4909,7 +4909,7 @@ func _test_raw_soul_gem_ready_ap_supports_explicit_zero_to_two_choice() -> Dicti
 	if skip_uid == "":
 		return _fail("Raw soul gem AP sample should prepare the event card for the skip branch.")
 	manager_skip.play_card(skip_uid, UATypes.Zone.OUTSIDE)
-	if not manager_skip.game_state.pending_decisions.is_empty():
+	if not manager_skip.game_state.pending.decisions.is_empty():
 		return _fail("Raw soul gem AP sample should not request explicit AP slot selection.")
 	if skip_player.ap_active_count() != 2:
 		return _fail("Raw soul gem AP sample should automatically ready up to 2 AP slots after paying its cost.")
@@ -4926,7 +4926,7 @@ func _test_raw_soul_gem_ready_ap_supports_explicit_zero_to_two_choice() -> Dicti
 	if ready_uid == "":
 		return _fail("Raw soul gem AP sample should prepare the event card for the 2-target branch.")
 	manager_ready.play_card(ready_uid, UATypes.Zone.OUTSIDE)
-	if not manager_ready.game_state.pending_decisions.is_empty():
+	if not manager_ready.game_state.pending.decisions.is_empty():
 		return _fail("Raw soul gem AP sample should still resolve without explicit AP slot selection in the 2-target branch.")
 	if ready_player.ap_active_count() != 2:
 		return _fail("Raw soul gem AP sample should automatically ready up to 2 AP slots.")
@@ -4989,13 +4989,13 @@ func _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn() -> Dictio
 	var target_bp_before: int = buff_target.current_bp
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, player_id, 1)
 	manager.resolve_life_trigger_decision(source_uid, true)
-	if manager.game_state.pending_decisions.is_empty():
+	if manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw life-to-hand RAID sample should prompt for add-to-hand or raid-now.")
-	var choice_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var choice_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "RAID_NOW"})
-	if manager.game_state.pending_decisions.is_empty():
+	if manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw life-to-hand RAID sample should prompt for an explicit RAID target after choosing RAID_NOW.")
-	var target_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var target_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("LIFE_TRIGGER_RAID_TARGET", {"choice": raid_base_uid})
 	if source_card.zone != UATypes.Zone.FRONT_LINE or not bool(source_card.flags.get("entered_via_raid", false)):
 		return _fail("Raw life-to-hand RAID sample should place the source card onto the front line as a RAID card.")
@@ -5008,9 +5008,9 @@ func _test_raw_raid_gains_double_attack_after_life_to_hand_this_turn() -> Dictio
 	_drain_pending_life_windows(manager, false)
 	if source_card.state != UATypes.CardState.ACTIVE:
 		return _fail("Raw life-to-hand RAID sample should gain DOUBLE_ATTACK and become ACTIVE again after its first attack.")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Raw life-to-hand RAID sample should still request the explicit ally buff target selection.")
-	var buff_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var buff_decision: Dictionary = manager.game_state.pending.decisions[0]
 	var buff_choices := _extract_choice_values(buff_decision.get("choices", []))
 	if not buff_choices.has(buff_target_uid):
 		return _fail("Raw life-to-hand RAID sample should expose the friendly buff target in its ON_ATTACK selection.")
@@ -5043,13 +5043,13 @@ func _test_raw_life_trigger_raid_falls_back_to_hand_when_illegal() -> Dictionary
 		return _fail("Raw illegal life-trigger RAID sample should move the card to hand immediately after Activate when RAID is currently illegal.")
 	if not player.hand.has(source_uid):
 		return _fail("Raw illegal life-trigger RAID sample should leave the source card in hand after fallback.")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Raw illegal life-trigger RAID sample should not leave pending_decisions after fallback.")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("Raw illegal life-trigger RAID sample should not leave pending_life_triggers after fallback.")
-	if not manager.game_state.pending_life_damage_cards.is_empty():
+	if not manager.game_state.pending.life_damage_cards.is_empty():
 		return _fail("Raw illegal life-trigger RAID sample should not leave pending_life_damage_cards after fallback.")
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("Raw illegal life-trigger RAID sample should not leave pending_life_reveal after fallback.")
 	return _ok()
 
@@ -5132,7 +5132,7 @@ func _test_raw_battle_scene_resolves_p1_life_trigger_board_target_click() -> Dic
 		return _fail("Battle scene life-trigger click sample should prepare life card plus both board-side targets.")
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, defender_id, 1)
 	manager.resolve_life_trigger_decision(life_uid, true)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("Battle scene life-trigger click sample should create a pending target selection.")
 	var snapshot := manager.get_snapshot()
 	var pending: Array = snapshot.get("pending_decisions", [])
@@ -5145,7 +5145,7 @@ func _test_raw_battle_scene_resolves_p1_life_trigger_board_target_click() -> Dic
 		return _fail("Battle scene helper should reject non-candidate board clicks from the wrong side.")
 	if not BoardTargetSelectionHelper.resolve_pending_click(manager, snapshot, false, attacker_id, enemy_target_uid, "front_line"):
 		return _fail("Battle scene helper should accept the pending opponent board target selection click.")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("Battle scene helper should consume the pending target selection after a legal board click.")
 	var target_card := manager.game_state.get_card(enemy_target_uid)
 	if target_card == null or target_card.zone != UATypes.Zone.OUTSIDE:
@@ -5164,13 +5164,13 @@ func _set_ap_active(player: PlayerState, active_count: int) -> void:
 func _drain_pending_life_windows(manager: GameManager, activate_life_triggers := false) -> void:
 	var safety := 16
 	while safety > 0:
-		if not manager.game_state.pending_life_triggers.is_empty():
-			var trigger_entry: Dictionary = manager.game_state.pending_life_triggers[0]
+		if not manager.game_state.pending.life_triggers.is_empty():
+			var trigger_entry: Dictionary = manager.game_state.pending.life_triggers[0]
 			manager.resolve_life_trigger_decision(str(trigger_entry.get("card_uid", "")), activate_life_triggers)
 			safety -= 1
 			continue
-		if not manager.game_state.pending_life_reveal.is_empty():
-			var current_uid := str(manager.game_state.pending_life_reveal.get("current_card_uid", ""))
+		if not manager.game_state.pending.life_reveal.is_empty():
+			var current_uid := str(manager.game_state.pending.life_reveal.get("current_card_uid", ""))
 			if current_uid == "":
 				break
 			manager.acknowledge_life_reveal(current_uid)

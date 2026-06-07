@@ -164,10 +164,10 @@ func drive_controllers(max_steps: int = 64) -> void:
 
 
 func _try_acknowledge_ai_life_reveal() -> bool:
-	if game_state == null or game_state.pending_life_reveal.is_empty():
+	if game_state == null or game_state.pending.life_reveal.is_empty():
 		return false
-	var player_id := str(game_state.pending_life_reveal.get("player_id", ""))
-	var card_uid := str(game_state.pending_life_reveal.get("current_card_uid", ""))
+	var player_id := str(game_state.pending.life_reveal.get("player_id", ""))
+	var card_uid := str(game_state.pending.life_reveal.get("current_card_uid", ""))
 	if player_id == "" or card_uid == "":
 		return false
 	var controller: PlayerController = _controllers.get(player_id)

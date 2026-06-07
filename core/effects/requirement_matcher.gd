@@ -5,15 +5,18 @@ class_name RequirementMatcher
 ## 从 effect_resolver.gd 提取，按字典分发模式重构
 
 const UATypes = preload("res://core/ua_types.gd")
+const EffectResolver = preload("res://core/effect_resolver.gd")
+const EffectUtils = preload("res://core/effects/effect_utils.gd")
+const ZoneManager = preload("res://core/zone_manager.gd")
 const GameState = preload("res://data/game_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const RulesEngine = preload("res://core/rules_engine.gd")
 const PlayerUtils = preload("res://core/player_utils.gd")
 
-var _zone_manager
+var _zone_manager: ZoneManager
 var _rules_engine: RulesEngine
-var _effect_resolver  # 回调引用，用于需要复杂操作的场景
+var _effect_resolver: EffectResolver  # 回调引用，用于需要复杂操作的场景
 
 # 处理器字典
 var _handlers: Dictionary = {}
@@ -125,7 +128,7 @@ func matches_filter(state: GameState, filter_variant, context: Dictionary, candi
 	if filter_type == "CARD_STATE_IS":
 		if candidate_card == null:
 			return false
-		return candidate_card.state == _parse_card_state(filter.get("value", filter.get("state", -1)))
+		return candidate_card.state == EffectUtils.parse_card_state(filter.get("value", filter.get("state", -1)))
 	if filter_type == "NOT_SOURCE_CARD":
 		return candidate_card_uid != "" and candidate_card_uid != source_card_uid
 	if filter_type == "NOT_HAS_KEYWORD":
@@ -133,15 +136,15 @@ func matches_filter(state: GameState, filter_variant, context: Dictionary, candi
 	if filter_type == "HAS_TRAIT":
 		return candidate_def != null and candidate_def.traits.has(str(filter.get("value", "")))
 	if filter_type == "CARD_COST_ENERGY_LTE":
-		return candidate_def != null and _card_energy_cost_total(candidate_def) <= int(filter.get("value", 0))
+		return candidate_def != null and EffectUtils.card_energy_cost_total(candidate_def) <= int(filter.get("value", 0))
 	if filter_type == "CARD_COST_AP_EQ":
 		return candidate_def != null and int(candidate_def.cost_ap) == int(filter.get("value", 0))
 	if filter_type == "CARD_COLOR_IS":
-		return candidate_def != null and _card_matches_color(candidate_def, str(filter.get("value", "")))
+		return candidate_def != null and EffectUtils.card_matches_color(candidate_def, str(filter.get("value", "")))
 	if filter_type == "TITLE_IS":
 		return candidate_def != null and candidate_def.title_code == str(filter.get("value", ""))
 	if filter_type == "PLAYED_FROM_ZONE_IS":
-		return int(context.get("played_from_zone", -1)) == _parse_zone(filter.get("value", -1))
+		return int(context.get("played_from_zone", -1)) == UATypes.key_to_zone(filter.get("value", -1))
 	if filter_type == "OWNER_IS":
 		if candidate_card == null or source_card == null:
 			return false
@@ -164,7 +167,7 @@ func matches_filter(state: GameState, filter_variant, context: Dictionary, candi
 				return false
 		return true
 	if filter_type == "SELF_IN_ZONE":
-		return source_card != null and source_card.zone == _parse_zone(filter.get("zone", filter.get("value", -1)))
+		return source_card != null and source_card.zone == UATypes.key_to_zone(filter.get("zone", filter.get("value", -1)))
 	return true
 
 # ============================================================
@@ -423,7 +426,7 @@ func _req_player_has_color_in_field(state: GameState, requirement: Dictionary, c
 			if color_def == null:
 				continue
 			for color_name in colors:
-				if _card_matches_color(color_def, color_name):
+				if EffectUtils.card_matches_color(color_def, color_name):
 					return true
 	return false
 
@@ -448,7 +451,7 @@ func _req_card_has_trait(state: GameState, requirement: Dictionary, context: Dic
 func _req_card_cost_energy_lte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var candidate_card = state.get_card(candidate_card_uid)
 	var candidate_def = state.get_card_def(candidate_card.def_id) if candidate_card != null else null
-	return candidate_def != null and _card_energy_cost_total(candidate_def) <= int(requirement.get("value", 0))
+	return candidate_def != null and EffectUtils.card_energy_cost_total(candidate_def) <= int(requirement.get("value", 0))
 
 func _req_card_cost_ap_eq(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var candidate_card = state.get_card(candidate_card_uid)
@@ -458,14 +461,14 @@ func _req_card_cost_ap_eq(state: GameState, requirement: Dictionary, context: Di
 func _req_card_color_is(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var candidate_card = state.get_card(candidate_card_uid)
 	var candidate_def = state.get_card_def(candidate_card.def_id) if candidate_card != null else null
-	return candidate_def != null and _card_matches_color(candidate_def, str(requirement.get("value", "")))
+	return candidate_def != null and EffectUtils.card_matches_color(candidate_def, str(requirement.get("value", "")))
 
 func _req_card_can_play_to_zone(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var candidate_card = state.get_card(candidate_card_uid)
 	if candidate_card == null or _rules_engine == null:
 		return false
 	var controller_player_id: String = candidate_card.controller_player_id
-	var target_zone := _parse_zone(requirement.get("zone", requirement.get("target_zone", UATypes.Zone.FRONT_LINE)))
+	var target_zone := UATypes.key_to_zone(requirement.get("zone", requirement.get("target_zone", UATypes.Zone.FRONT_LINE)))
 	var play_modifiers := {}
 	if _effect_resolver != null:
 		play_modifiers = _effect_resolver.preview_play_modifiers(state, controller_player_id, candidate_card.uid, {
@@ -480,7 +483,7 @@ func _req_card_can_play_to_zone(state: GameState, requirement: Dictionary, conte
 	return bool(validation.get("ok", false))
 
 func _req_context_var_non_empty(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
-	return not _ensure_array(context.get(str(requirement.get("var", "")), [])).is_empty()
+	return not EffectUtils.ensure_array(context.get(str(requirement.get("var", "")), [])).is_empty()
 
 func _req_context_value_is(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	return str(context.get(str(requirement.get("var", "")), "")) == str(requirement.get("value", ""))
@@ -538,7 +541,7 @@ func _req_source_entered_from_zone(state: GameState, requirement: Dictionary, co
 	var source_card = state.get_card(source_card_uid)
 	if source_card == null:
 		return false
-	return int(source_card.flags.get("entered_from_zone_this_turn", -1)) == _parse_zone(requirement.get("value", requirement.get("zone", -1)))
+	return int(source_card.flags.get("entered_from_zone_this_turn", -1)) == UATypes.key_to_zone(requirement.get("value", requirement.get("zone", -1)))
 
 func _req_player_zone_card_count_gte(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var source_card = state.get_card(source_card_uid)
@@ -614,7 +617,7 @@ func _req_controller_field_trait_kind_count_gte(state: GameState, requirement: D
 			var d = state.get_card_def(c.def_id)
 			if d == null:
 				continue
-			if required_color != "" and not _card_matches_color(d, required_color):
+			if required_color != "" and not EffectUtils.card_matches_color(d, required_color):
 				continue
 			for trait_variant in d.traits:
 				var trait_name := str(trait_variant)
@@ -712,7 +715,7 @@ func _req_target_set_unique(state: GameState, requirement: Dictionary, context: 
 
 func _req_target_set_disjoint(state: GameState, requirement: Dictionary, context: Dictionary, candidate_card_uid: String, source_card_uid: String) -> bool:
 	var left := _resolve_requirement_card_uids(requirement, context, candidate_card_uid)
-	var right := _ensure_array(context.get(str(requirement.get("other_var", "")), []))
+	var right := EffectUtils.ensure_array(context.get(str(requirement.get("other_var", "")), []))
 	var right_lookup: Dictionary = {}
 	for uid_variant in right:
 		var uid := str(uid_variant)
@@ -728,58 +731,11 @@ func _req_target_set_disjoint(state: GameState, requirement: Dictionary, context
 # 辅助函数
 # ============================================================
 
-func _parse_zone(value) -> int:
-	if value is int:
-		return value
-	if value is String:
-		match value:
-			"DECK": return UATypes.Zone.DECK
-			"HAND": return UATypes.Zone.HAND
-			"LIFE": return UATypes.Zone.LIFE
-			"FRONT_LINE": return UATypes.Zone.FRONT_LINE
-			"ENERGY_LINE": return UATypes.Zone.ENERGY_LINE
-			"AP_AREA": return UATypes.Zone.AP_AREA
-			"OUTSIDE": return UATypes.Zone.OUTSIDE
-			"REMOVED": return UATypes.Zone.REMOVED
-	return -1
-
-func _parse_card_state(value) -> int:
-	if value is int:
-		return value
-	if value is String:
-		match value:
-			"ACTIVE":
-				return UATypes.CardState.ACTIVE
-			"RESTED":
-				return UATypes.CardState.RESTED
-	return -1
-
-func _card_energy_cost_total(card_def) -> int:
-	if card_def == null:
-		return 0
-	var total := 0
-	for amount_variant in card_def.cost_energy.values():
-		total += int(amount_variant)
-	return total
-
-func _card_matches_color(card_def, color: String) -> bool:
-	if card_def == null or color == "":
-		return false
-	var normalized := color.to_upper()
-	return int(card_def.cost_energy.get(normalized, 0)) > 0 or int(card_def.energy_provided.get(normalized, 0)) > 0
-
-func _ensure_array(value) -> Array:
-	if value is Array:
-		return value
-	if value == null or str(value) == "":
-		return []
-	return [value]
-
 func _resolve_requirement_card_uids(requirement: Dictionary, context: Dictionary, candidate_card_uid: String) -> Array[String]:
 	var result: Array[String] = []
 	var source_var := str(requirement.get("source_var", ""))
 	if source_var != "":
-		for uid_variant in _ensure_array(context.get(source_var, [])):
+		for uid_variant in EffectUtils.ensure_array(context.get(source_var, [])):
 			var uid := str(uid_variant)
 			if uid != "":
 				result.append(uid)
@@ -831,7 +787,7 @@ func _zone_cards_for_player(player: PlayerState, zone_key: String) -> Array:
 func _resolve_numeric_value(state: GameState, provider_variant, context: Dictionary, source_card_uid: String, candidate_card_uid := "") -> int:
 	# 委托给 effect_resolver 处理复杂逻辑
 	if _effect_resolver != null:
-		return _effect_resolver._resolve_numeric_value(state, provider_variant, context, source_card_uid, candidate_card_uid)
+		return EffectUtils.resolve_numeric_value(state, provider_variant, context, source_card_uid, candidate_card_uid, self)
 	# 简单情况直接处理
 	if provider_variant is int or provider_variant is float:
 		return int(provider_variant)

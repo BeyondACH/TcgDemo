@@ -140,10 +140,10 @@ func _animate_card_to(card: CardView, x: float, y: float, z: int) -> void:
 	card.z_index = z
 
 func _on_card_pressed(_owner_player_id: String, card_uid: String, _zone_name: String) -> void:
-	emit_signal("hand_card_selected", card_uid)
+	hand_card_selected.emit(card_uid)
 
 func _on_card_hovered(card_uid: String, is_hovered: bool) -> void:
-	emit_signal("hand_card_hovered", card_uid, is_hovered)
+	hand_card_hovered.emit(card_uid, is_hovered)
 
 func get_card_uid_at(index: int) -> String:
 	if index < 0 or index >= _card_views.size():

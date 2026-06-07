@@ -117,7 +117,7 @@ func hide_popup() -> void:
 	if not visible:
 		return
 	visible = false
-	emit_signal("popup_closed")
+	popup_closed.emit()
 
 func _update_panel_layout() -> void:
 	if _panel == null:

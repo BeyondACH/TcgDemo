@@ -75,6 +75,21 @@ static func zone_to_key(zone: int) -> String:
 			return "removed"
 	return ""
 
+static func key_to_zone(value) -> int:
+	if value is int:
+		return int(value)
+	var name_lower := str(value).to_lower()
+	match name_lower:
+		"deck": return Zone.DECK
+		"hand": return Zone.HAND
+		"life": return Zone.LIFE
+		"front_line": return Zone.FRONT_LINE
+		"energy_line": return Zone.ENERGY_LINE
+		"ap_area": return Zone.AP_AREA
+		"outside": return Zone.OUTSIDE
+		"removed": return Zone.REMOVED
+	return -1
+
 static func phase_to_text(phase: int) -> String:
 	match phase:
 		Phase.START:

@@ -7,12 +7,13 @@ const VictoryChecker = preload("res://core/victory_checker.gd")
 const GameState = preload("res://data/game_state.gd")
 const PlayerState = preload("res://data/player_state.gd")
 const CardInstance = preload("res://data/card_instance.gd")
+const EffectResolver = preload("res://core/effect_resolver.gd")
 
 var zone_manager: ZoneManager
 var victory_checker: VictoryChecker
-var effect_resolver
+var effect_resolver: EffectResolver
 
-func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker, p_effect_resolver = null) -> void:
+func _init(p_zone_manager: ZoneManager, p_victory_checker: VictoryChecker, p_effect_resolver: EffectResolver = null) -> void:
 	zone_manager = p_zone_manager
 	victory_checker = p_victory_checker
 	effect_resolver = p_effect_resolver

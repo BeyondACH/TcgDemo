@@ -144,7 +144,7 @@ func _advance_to_turn_draw(manager: GameManager, player_id: String, min_turn_num
 	return manager.game_state.active_player_id == player_id and manager.game_state.phase == UATypes.Phase.DRAW and manager.game_state.turn_number >= min_turn_number
 
 func _is_runtime_state_clean(manager: GameManager) -> bool:
-	return manager.game_state.pending_decisions.is_empty() and manager.game_state.effect_queue.is_empty() and manager.game_state.battle_context.is_empty()
+	return manager.game_state.pending.decisions.is_empty() and manager.game_state.effect_queue.is_empty() and manager.game_state.battle_context.is_empty()
 
 func _test_target_selection_resume_drains_queue() -> Dictionary:
 	var manager := _new_manager()
@@ -207,11 +207,11 @@ func _test_target_selection_resume_drains_queue() -> Dictionary:
 	if source_uid == "" or target_uid == "":
 		return _fail("目标选择测试卡创建失败")
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("显式目标选择应进入 1 个待决策")
 	if manager.game_state.effect_queue.is_empty():
 		return _fail("显式目标选择阶段应保留 effect_queue")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("待决策类型应为 ABILITY_TARGET_SELECTION")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
@@ -480,23 +480,23 @@ func _test_life_trigger_and_target_selection_chain_clears_runtime_state() -> Dic
 	p2.life.clear()
 	p2.life = [life_trigger_uid]
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
-	if manager.game_state.pending_life_triggers.size() != 1:
+	if manager.game_state.pending.life_triggers.size() != 1:
 		return _fail("受到伤害后应出现 1 个生命触发待决策")
-	if manager.game_state.pending_decisions.size() != 0 and str(manager.game_state.pending_decisions[0].get("type", "")) != "ABILITY_TARGET_SELECTION":
+	if manager.game_state.pending.decisions.size() != 0 and str(manager.game_state.pending.decisions[0].get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("生命触发进入显式决策前不应出现其它决策类型")
 	manager.resolve_life_trigger_decision(life_trigger_uid, true)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("生命触发效果应进入 1 个目标选择待决策")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	if str(decision.get("type", "")) != "ABILITY_TARGET_SELECTION":
 		return _fail("生命触发中的显式决策类型应为 ABILITY_TARGET_SELECTION")
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": target_uid,
 	})
-	if manager.game_state.pending_life_triggers.size() != 0:
+	if manager.game_state.pending.life_triggers.size() != 0:
 		return _fail("生命触发混合链完成后不应残留 pending_life_triggers")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("生命触发混合链完成后不应残留 pending_decisions")
 	if not manager.game_state.effect_queue.is_empty():
 		return _fail("生命触发混合链完成后不应残留 effect_queue")
@@ -505,10 +505,10 @@ func _test_life_trigger_and_target_selection_chain_clears_runtime_state() -> Dic
 	var target_card = manager.game_state.get_card(target_uid)
 	if target_card == null or target_card.zone != UATypes.Zone.OUTSIDE:
 		return _fail("生命触发中的目标选择应把选中的目标移到场外")
-	if not manager.game_state.pending_life_reveal.is_empty():
-		var current_card_uid := str(manager.game_state.pending_life_reveal.get("current_card_uid", life_trigger_uid))
+	if not manager.game_state.pending.life_reveal.is_empty():
+		var current_card_uid := str(manager.game_state.pending.life_reveal.get("current_card_uid", life_trigger_uid))
 		manager.acknowledge_life_reveal(current_card_uid)
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("生命触发混合链完成后不应残留 pending_life_reveal")
 	return _ok()
 
@@ -595,9 +595,9 @@ func _test_hand_mami_discount_expires_on_next_turn() -> Dictionary:
 	if source_uid == "" or mami_uid == "" or event_uid == "":
 		return _fail("027 残留测试应能准备来源、玛米手牌和事件弃牌")
 	manager.request_main_activate(source_uid)
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("027 残留测试应进入显式弃牌决策")
-	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(discard_decision.get("resolution_id", "")),
 		"choice": event_uid,
@@ -722,9 +722,9 @@ func _test_event_once_per_turn_flag_clears_on_next_turn() -> Dictionary:
 	var play_result := manager.play_card(source_uid, UATypes.Zone.OUTSIDE)
 	if not bool(play_result.get("ok", false)):
 		return _fail("034 残留测试首张事件应能成功使用")
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("034 残留测试应进入显式弃牌决策")
-	var discard_decision: Dictionary = manager.game_state.pending_decisions[0]
+	var discard_decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(discard_decision.get("resolution_id", "")),
 		"choice": discard_event_uid,
@@ -769,9 +769,9 @@ func _test_removed_ap_discount_does_not_residue() -> Dictionary:
 		"trigger_effects": []
 	}, UATypes.Zone.OUTSIDE, true)
 	manager.effect_resolver.resolve_trigger(source_uid, UATypes.TriggerType.ON_ENTER, manager.game_state, {"target_player_id": player_id})
-	if manager.game_state.pending_decisions.size() != 1:
+	if manager.game_state.pending.decisions.size() != 1:
 		return _fail("移除区 AP 减免残留测试应先出现一次场外选择决策")
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {
 		"resolution_id": str(decision.get("resolution_id", "")),
 		"choice": outside_uid,
@@ -830,11 +830,11 @@ func _test_ai_drive_finishes_without_pending_gate_residue() -> Dictionary:
 		manager.drive_controllers(64)
 		manager.advance_phase()
 	manager.drive_controllers(64)
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("ai drive left pending decisions behind")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("ai drive left pending life triggers behind")
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("ai drive left pending life reveal behind")
 	if not manager.game_state.effect_queue.is_empty():
 		return _fail("ai drive left effect_queue behind")
@@ -966,7 +966,7 @@ func _test_combination_selection_rejects_invalid_resume_payload() -> Dictionary:
 	if source_uid == "" or target_a == "" or target_b == "" or target_c == "":
 		return _fail("组合约束恢复测试卡创建失败")
 	manager.request_main_activate(source_uid)
-	var decision: Dictionary = manager.game_state.pending_decisions[0]
+	var decision: Dictionary = manager.game_state.pending.decisions[0]
 	var resolution_id := str(decision.get("resolution_id", ""))
 	var too_many_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": resolution_id, "choices": [target_a, target_b, target_c]})
 	if bool(too_many_result.get("ok", true)) or str(too_many_result.get("reason", "")) != "too_many_targets":
@@ -977,7 +977,7 @@ func _test_combination_selection_rejects_invalid_resume_payload() -> Dictionary:
 	var invalid_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": resolution_id, "choice": "not_candidate_uid"})
 	if bool(invalid_result.get("ok", true)) or str(invalid_result.get("reason", "")) != "invalid_choice":
 		return _fail("非候选目标应返回 invalid_choice")
-	if manager.game_state.pending_decisions.is_empty():
+	if manager.game_state.pending.decisions.is_empty():
 		return _fail("非法输入后待决策不应被消费")
 	var ok_result := manager.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": resolution_id, "choice": target_c})
 	if not bool(ok_result.get("ok", false)):
@@ -1006,9 +1006,9 @@ func _test_choice_branch_default_and_manual_resume() -> Dictionary:
 	if source_manual == "" or manual_target == "":
 		return _fail("manual 分支测试卡创建失败")
 	manager_manual.request_main_activate(source_manual)
-	if manager_manual.game_state.pending_decisions.size() != 1:
+	if manager_manual.game_state.pending.decisions.size() != 1:
 		return _fail("branch 内 SELECT_TARGETS 应暂停并创建待决策")
-	var manual_decision: Dictionary = manager_manual.game_state.pending_decisions[0]
+	var manual_decision: Dictionary = manager_manual.game_state.pending.decisions[0]
 	var manual_result := manager_manual.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": str(manual_decision.get("resolution_id", "")), "choice": manual_target})
 	if not bool(manual_result.get("ok", false)):
 		return _fail("branch 内合法目标恢复应成功")
@@ -1036,9 +1036,9 @@ func _test_run_composite_if_resume_path_is_stable() -> Dictionary:
 	if resume_source == "" or resume_target == "":
 		return _fail("composite resume 测试卡创建失败")
 	manager_resume.request_main_activate(resume_source)
-	if manager_resume.game_state.pending_decisions.size() != 1:
+	if manager_resume.game_state.pending.decisions.size() != 1:
 		return _fail("RUN_COMPOSITE_IF 内手动选目标应进入待决策")
-	var resume_decision: Dictionary = manager_resume.game_state.pending_decisions[0]
+	var resume_decision: Dictionary = manager_resume.game_state.pending.decisions[0]
 	var resume_result := manager_resume.resolve_pending_decision("ABILITY_TARGET_SELECTION", {"resolution_id": str(resume_decision.get("resolution_id", "")), "choice": resume_target})
 	if not bool(resume_result.get("ok", false)):
 		return _fail("RUN_COMPOSITE_IF 恢复后应成功继续执行")

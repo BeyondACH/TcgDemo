@@ -55,3 +55,37 @@ func mark_as_stacked_under(parent_uid: String) -> void:
 func clear_stacked_under_marker() -> void:
 	flags["is_stacked_under"] = false
 	flags["stack_parent_uid"] = ""
+
+func add_temp_keyword(keyword: String) -> void:
+	if keyword == "":
+		return
+	var temp_keywords: Array = flags.get("temp_keywords", [])
+	var temp_keyword_counts: Dictionary = flags.get("temp_keyword_counts", {})
+	var current_count := int(temp_keyword_counts.get(keyword, 0))
+	temp_keyword_counts[keyword] = current_count + 1
+	if current_count <= 0 and not temp_keywords.has(keyword):
+		temp_keywords.append(keyword)
+	flags["temp_keywords"] = temp_keywords
+	flags["temp_keyword_counts"] = temp_keyword_counts
+
+func remove_temp_keyword(keyword: String) -> void:
+	if keyword == "":
+		return
+	var temp_keywords: Array = flags.get("temp_keywords", [])
+	var temp_keyword_counts: Dictionary = flags.get("temp_keyword_counts", {})
+	var current_count := int(temp_keyword_counts.get(keyword, 0))
+	if current_count <= 1:
+		temp_keyword_counts.erase(keyword)
+		temp_keywords.erase(keyword)
+	else:
+		temp_keyword_counts[keyword] = current_count - 1
+	flags["temp_keywords"] = temp_keywords
+	flags["temp_keyword_counts"] = temp_keyword_counts
+
+func has_temp_keyword(keyword: String) -> bool:
+	var temp_keywords: Array = flags.get("temp_keywords", [])
+	return temp_keywords.has(keyword)
+
+func has_any_temp_keyword() -> bool:
+	var temp_keywords: Array = flags.get("temp_keywords", [])
+	return not temp_keywords.is_empty()

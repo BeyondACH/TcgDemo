@@ -307,7 +307,7 @@ func _test_battle_window_closes_after_resolution() -> Dictionary:
 func _test_life_trigger_actions() -> Dictionary:
 	var manager := _new_manager()
 	_resolve_opening(manager)
-	manager.game_state.pending_life_triggers.append({
+	manager.game_state.pending.life_triggers.append({
 		"player_id": UATypes.PLAYER_TWO,
 		"card_uid": "LIFE_TEST_CARD",
 		"card_name": "Life Test Card",

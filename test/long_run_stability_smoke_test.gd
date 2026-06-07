@@ -54,9 +54,9 @@ func _fail(message: String) -> Dictionary:
 func _assert_runtime_clean(manager: GameManager, label: String) -> Dictionary:
 	if not manager.game_state.effect_queue.is_empty():
 		return _fail("%s left effect_queue residue" % label)
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("%s left pending_decisions residue" % label)
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("%s left pending_life_triggers residue" % label)
 	if not manager.game_state.delayed_effects.is_empty():
 		return _fail("%s left delayed_effects residue" % label)
@@ -231,13 +231,13 @@ func _advance_to_turn_draw(manager: GameManager, player_id: String, min_turn_num
 func _drain_pending_life_windows(manager: GameManager, activate_life_triggers := false) -> void:
 	var safety := 24
 	while safety > 0:
-		if not manager.game_state.pending_life_triggers.is_empty():
-			var trigger_entry: Dictionary = manager.game_state.pending_life_triggers[0]
+		if not manager.game_state.pending.life_triggers.is_empty():
+			var trigger_entry: Dictionary = manager.game_state.pending.life_triggers[0]
 			manager.resolve_life_trigger_decision(str(trigger_entry.get("card_uid", "")), activate_life_triggers)
 			safety -= 1
 			continue
-		if not manager.game_state.pending_life_reveal.is_empty():
-			var current_uid := str(manager.game_state.pending_life_reveal.get("current_card_uid", ""))
+		if not manager.game_state.pending.life_reveal.is_empty():
+			var current_uid := str(manager.game_state.pending.life_reveal.get("current_card_uid", ""))
 			if current_uid == "":
 				break
 			manager.acknowledge_life_reveal(current_uid)
@@ -246,17 +246,17 @@ func _drain_pending_life_windows(manager: GameManager, activate_life_triggers :=
 		break
 
 func _finalize_pending_life_damage_if_possible(manager: GameManager) -> void:
-	if manager.game_state.pending_life_triggers.is_empty() and manager.game_state.pending_decisions.is_empty() and manager.game_state.pending_life_reveal.is_empty() and not manager.game_state.pending_life_damage_cards.is_empty():
+	if manager.game_state.pending.life_triggers.is_empty() and manager.game_state.pending.decisions.is_empty() and manager.game_state.pending.life_reveal.is_empty() and not manager.game_state.pending.life_damage_cards.is_empty():
 		manager.effect_resolver.finalize_pending_life_damage(manager.game_state)
 
 func _runtime_state_error(manager: GameManager) -> String:
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return "pending_decisions not empty"
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return "pending_life_triggers not empty"
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return "pending_life_reveal not empty"
-	if not manager.game_state.pending_life_damage_cards.is_empty():
+	if not manager.game_state.pending.life_damage_cards.is_empty():
 		return "pending_life_damage_cards not empty"
 	if not manager.game_state.effect_queue.is_empty():
 		return "effect_queue not empty"
@@ -573,7 +573,7 @@ func _test_life_trigger_binary_choice_fully_settles() -> Dictionary:
 	_trim_life_to_count(add_manager, UATypes.PLAYER_ONE, 2)
 	add_manager.effect_resolver.deal_damage_to_player(add_manager.game_state, UATypes.PLAYER_ONE, 1)
 	add_manager.resolve_life_trigger_decision(add_source_uid, true)
-	if add_manager.game_state.pending_decisions.is_empty():
+	if add_manager.game_state.pending.decisions.is_empty():
 		return _fail("expected the add-to-hand branch to expose the raid-or-hand choice")
 	add_manager.resolve_pending_decision("LIFE_TRIGGER_RAID_CHOICE", {"choice": "ADD_TO_HAND"})
 	_drain_pending_life_windows(add_manager, false)
@@ -672,9 +672,9 @@ func _state_signature(manager: GameManager) -> String:
 		manager.game_state.active_player_id,
 		UATypes.Phase.keys()[manager.game_state.phase],
 		manager.game_state.turn_number,
-		manager.game_state.pending_decisions.size(),
-		manager.game_state.pending_life_triggers.size(),
-		manager.game_state.pending_life_reveal.size(),
+		manager.game_state.pending.decisions.size(),
+		manager.game_state.pending.life_triggers.size(),
+		manager.game_state.pending.life_reveal.size(),
 		manager.game_state.effect_queue.size(),
 		manager.game_state.delayed_effects.size(),
 		manager.game_state.winner_player_id,
@@ -689,8 +689,8 @@ func _test_ai_long_run_stability() -> Dictionary:
 	var iterations := 0
 	while iterations < 60 and manager.game_state.winner_player_id == "" and manager.game_state.turn_number < 4:
 		manager.drive_controllers(64)
-		if not manager.game_state.pending_life_reveal.is_empty():
-			var current_uid := str(manager.game_state.pending_life_reveal.get("current_card_uid", ""))
+		if not manager.game_state.pending.life_reveal.is_empty():
+			var current_uid := str(manager.game_state.pending.life_reveal.get("current_card_uid", ""))
 			if current_uid != "":
 				manager.acknowledge_life_reveal(current_uid)
 		if not manager.game_state.opening_complete and manager.game_state.turn_number > 1:
@@ -728,8 +728,8 @@ func _test_cross_turn_delayed_leave_and_ai_pacing_chain() -> Dictionary:
 		if not manager.game_state.effect_queue.is_empty():
 			queue_head = manager.game_state.effect_queue[0]
 		var pending_life := {}
-		if not manager.game_state.pending_life_triggers.is_empty():
-			pending_life = manager.game_state.pending_life_triggers[0]
+		if not manager.game_state.pending.life_triggers.is_empty():
+			pending_life = manager.game_state.pending.life_triggers[0]
 		var legal_actions: Array = []
 		var pending_player_id := str(pending_life.get("player_id", manager.game_state.active_player_id))
 		legal_actions = manager.rules_engine.get_legal_actions(manager.game_state, pending_player_id)

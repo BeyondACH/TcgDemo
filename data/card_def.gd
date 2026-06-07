@@ -48,9 +48,9 @@ func _from_legacy_dict(source: Dictionary) -> void:
 	source_image = str(source.get("source_image", ""))
 	for value in source.get("traits", []):
 		traits.append(str(value))
-	cost_energy = source.get("cost_energy", {}).duplicate(true)
+	cost_energy = _safe_duplicate_dict(source.get("cost_energy", {}))
 	cost_ap = int(source.get("cost_ap", 0))
-	energy_provided = source.get("energy_provided", {}).duplicate(true)
+	energy_provided = _safe_duplicate_dict(source.get("energy_provided", {}))
 	bp = int(source.get("bp", 0))
 	for value in source.get("keywords", []):
 		keywords.append(str(value))
@@ -76,13 +76,13 @@ func _from_ir_dict(source: Dictionary) -> void:
 	source_image = str(meta.get("source_image", source.get("source_image", "")))
 	for value in meta.get("traits", source.get("traits", [])):
 		traits.append(str(value))
-	cost_energy = meta.get("cost_energy", source.get("cost_energy", {})).duplicate(true)
+	cost_energy = _safe_duplicate_dict(meta.get("cost_energy", source.get("cost_energy", {})))
 	cost_ap = int(meta.get("cost_ap", source.get("cost_ap", 0)))
-	energy_provided = meta.get("energy_provided", source.get("energy_provided", {})).duplicate(true)
+	energy_provided = _safe_duplicate_dict(meta.get("energy_provided", source.get("energy_provided", {})))
 	bp = int(meta.get("bp", source.get("bp", 0)))
 	for value in meta.get("keywords", source.get("keywords", [])):
 		keywords.append(str(value))
-	raw_text = meta.get("text", source.get("raw_text", {})).duplicate(true)
+	raw_text = _safe_duplicate_dict(meta.get("text", source.get("raw_text", {})))
 	play_rule = source.get("play_rule", {}).duplicate(true)
 	abilities = source.get("abilities", []).duplicate(true)
 	special_play_rule = _special_play_rule_from_ir(play_rule)
@@ -210,3 +210,8 @@ static func _parse_card_type(value: String) -> int:
 			return UATypes.CardType.EVENT
 		_:
 			return UATypes.CardType.CHARACTER
+
+func _safe_duplicate_dict(value) -> Dictionary:
+	if value is Dictionary:
+		return value.duplicate(true)
+	return {}

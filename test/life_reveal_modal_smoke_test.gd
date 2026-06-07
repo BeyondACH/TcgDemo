@@ -189,7 +189,7 @@ func _test_life_reveal_acknowledge_flow() -> Dictionary:
 	var result := manager.acknowledge_life_reveal(vanilla_uid)
 	if not bool(result.get("ok", false)):
 		return _fail("acknowledging a non-trigger life reveal should succeed.")
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("life reveal batch should clear after acknowledging the last non-trigger card.")
 	if p2.outside.size() != outside_before + 1:
 		return _fail("acknowledging the reveal should finalize the damaged life card into outside.")
@@ -246,11 +246,11 @@ func _test_illegal_life_trigger_raid_activate_falls_back_to_hand() -> Dictionary
 		return _fail("illegal life-trigger RAID should add the card to hand immediately after activate.")
 	if not player.hand.has(raid_uid):
 		return _fail("illegal life-trigger RAID should leave the source card in hand after activate fallback.")
-	if not manager.game_state.pending_decisions.is_empty():
+	if not manager.game_state.pending.decisions.is_empty():
 		return _fail("illegal life-trigger RAID should not leave pending decisions after activate fallback.")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("illegal life-trigger RAID should not leave pending life triggers after activate fallback.")
-	if not manager.game_state.pending_life_damage_cards.is_empty():
+	if not manager.game_state.pending.life_damage_cards.is_empty():
 		return _fail("illegal life-trigger RAID should not leave pending life damage cards after activate fallback.")
 	return _ok()
 
@@ -268,13 +268,13 @@ func _test_ai_vanilla_reveal_waits_for_player_ack() -> Dictionary:
 	p2.life = [vanilla_uid]
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
 	manager.drive_controllers(16)
-	if manager.game_state.pending_life_reveal.is_empty():
+	if manager.game_state.pending.life_reveal.is_empty():
 		return _fail("ai vanilla reveal should remain pending until the player confirms it.")
 	var modal: Dictionary = manager.get_snapshot().get("life_reveal_modal", {})
 	if not bool(modal.get("can_acknowledge", false)):
 		return _fail("ai vanilla reveal should show continue.")
 	manager.acknowledge_life_reveal(vanilla_uid)
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("ai vanilla reveal should clear after player acknowledgement.")
 	return _ok()
 
@@ -304,7 +304,7 @@ func _test_ai_trigger_reveal_requires_continue_before_ai() -> Dictionary:
 	manager.drive_controllers(32)
 	if p2.hand.size() != hand_before + 1:
 		return _fail("after continue, AI should resolve its trigger and draw a card.")
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("ai trigger reveal should clear after player continue and AI resolution.")
 	return _ok()
 

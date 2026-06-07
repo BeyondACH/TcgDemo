@@ -280,10 +280,7 @@ func _after_block_state_change(blocker: CardInstance, blocker_def: CardDef, was_
 		blocker.state = UATypes.CardState.ACTIVE
 
 func _card_has_keyword(card: CardInstance, card_def: CardDef, keyword: String) -> bool:
-	if card_def.keywords.has(keyword):
-		return true
-	var temp_keywords: Array = card.flags.get("temp_keywords", [])
-	return temp_keywords.has(keyword)
+	return card_def.keywords.has(keyword) or card.has_temp_keyword(keyword)
 
 func _format_attack_log(attacker: CardInstance, attacker_def: CardDef) -> String:
 	if attacker == null or attacker_def == null:

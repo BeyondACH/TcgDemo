@@ -149,9 +149,9 @@ func _test_ai_life_reveal_auto_confirms_then_resumes() -> Dictionary:
 	var hand_before := p2.hand.size()
 	manager.effect_resolver.deal_damage_to_player(manager.game_state, UATypes.PLAYER_TWO, 1)
 	manager.drive_controllers(32)
-	if not manager.game_state.pending_life_reveal.is_empty():
+	if not manager.game_state.pending.life_reveal.is_empty():
 		return _fail("ai life reveal should auto-confirm and finish without a remaining reveal window")
-	if not manager.game_state.pending_life_triggers.is_empty():
+	if not manager.game_state.pending.life_triggers.is_empty():
 		return _fail("ai life reveal should not leave pending life triggers behind")
 	if p2.hand.size() != hand_before + 1:
 		return _fail("after confirmation the ai should resume and resolve its trigger")
