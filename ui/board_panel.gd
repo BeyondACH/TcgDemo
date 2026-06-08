@@ -30,6 +30,8 @@ enum PanelType { FRONT_LINE, ENERGY_LINE }
 
 const MAX_SLOTS := 4
 const ENTER_EXIT_DURATION := 0.18
+const ICON_SWORD := preload("res://assets/ui/icons/slot_sword.svg")
+const ICON_DIAMOND := preload("res://assets/ui/icons/slot_diamond.svg")
 const DropZone = preload("res://ui/drop_zone.gd")
 const CardView = preload("res://ui/card_view.gd")
 
@@ -42,11 +44,17 @@ var _slot_container: HBoxContainer
 var _drop_zone: DropZone
 var _cards: Array[Dictionary] = []
 var _zone_name := ""
+# P3: 预建的阻挡高亮 StyleBox（避免每次 set_block_highlight 重复构造）
+var _block_highlight_style: StyleBoxFlat
+# P4: 预建的空槽 StyleBox（避免每次 _make_empty_slot 重复构造）
+var _empty_slot_style: StyleBoxFlat
 
 
 func _ready() -> void:
 	_build_ui()
 	_update_style()
+	_build_block_highlight_style()
+	_build_empty_slot_style()
 
 
 func _build_ui() -> void:
@@ -123,26 +131,46 @@ func _build_ui() -> void:
 
 	# 创建 4 个空槽位占位
 	for i in range(MAX_SLOTS):
-		var slot_placeholder := Control.new()
+		var slot_placeholder := _make_empty_slot(Vector2(108, 152))
 		slot_placeholder.name = "Slot" + str(i)
-		slot_placeholder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		slot_placeholder.add_theme_stylebox_override("panel", _make_empty_slot_style())
 		_slot_container.add_child(slot_placeholder)
 
 
 func _make_empty_slot_style() -> StyleBoxFlat:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(1, 1, 1, 0.02)
-	sb.set_corner_radius_all(10)
-	sb.border_width_left = 2
-	sb.border_width_right = 2
-	sb.border_width_top = 2
-	sb.border_width_bottom = 2
-	sb.border_color = Color(0.824, 0.863, 0.922, 0.14)
-	sb.shadow_color = Color(0, 0, 0, 0.12)
-	sb.shadow_size = 10
-	sb.shadow_offset = Vector2(0, 4)
-	return sb
+	return _empty_slot_style
+
+
+func _build_empty_slot_style() -> void:
+	_empty_slot_style = StyleBoxFlat.new()
+	_empty_slot_style.bg_color = Color(1, 1, 1, 0.02)
+	_empty_slot_style.set_corner_radius_all(10)
+	_empty_slot_style.border_width_left = 2
+	_empty_slot_style.border_width_right = 2
+	_empty_slot_style.border_width_top = 2
+	_empty_slot_style.border_width_bottom = 2
+	_empty_slot_style.border_color = Color(0.824, 0.863, 0.922, 0.14)
+	_empty_slot_style.shadow_color = Color(0, 0, 0, 0.12)
+	_empty_slot_style.shadow_size = 10
+	_empty_slot_style.shadow_offset = Vector2(0, 4)
+
+
+## P4: 创建带区域图标的空槽位占位
+func _make_empty_slot(card_size: Vector2) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = card_size
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.add_theme_stylebox_override("panel", _make_empty_slot_style())
+
+	var icon_tex := ICON_SWORD if panel_type == PanelType.FRONT_LINE else ICON_DIAMOND
+	var icon := TextureRect.new()
+	icon.texture = icon_tex
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.modulate.a = 0.14
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	c.add_child(icon)
+	return c
 
 
 func _update_style() -> void:
@@ -214,18 +242,7 @@ func show_inline_hint(text: String) -> void:
 ## P3: 阻挡高亮 — 面板边框变金色，可阻挡角色脉冲描边
 func set_block_highlight(enabled: bool, blockable_uids: Array[String] = []) -> void:
 	if enabled:
-		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color(0.078, 0.102, 0.141, 0.88)
-		sb.set_corner_radius_all(14)
-		sb.border_width_left = 2
-		sb.border_width_right = 2
-		sb.border_width_top = 2
-		sb.border_width_bottom = 2
-		sb.border_color = Color("#D4A843")
-		sb.shadow_color = Color(0, 0, 0, 0.32)
-		sb.shadow_size = 28
-		sb.shadow_offset = Vector2(0, 10)
-		add_theme_stylebox_override("panel", sb)
+		add_theme_stylebox_override("panel", _block_highlight_style)
 		_start_block_glow()
 	else:
 		_update_style()
@@ -234,6 +251,20 @@ func set_block_highlight(enabled: bool, blockable_uids: Array[String] = []) -> v
 	for child in _slot_container.get_children():
 		if child is CardView:
 			child.set_blockable(enabled and (blockable_uids.is_empty() or child.card_uid in blockable_uids))
+
+
+func _build_block_highlight_style() -> void:
+	_block_highlight_style = StyleBoxFlat.new()
+	_block_highlight_style.bg_color = Color(0.078, 0.102, 0.141, 0.88)
+	_block_highlight_style.set_corner_radius_all(14)
+	_block_highlight_style.border_width_left = 2
+	_block_highlight_style.border_width_right = 2
+	_block_highlight_style.border_width_top = 2
+	_block_highlight_style.border_width_bottom = 2
+	_block_highlight_style.border_color = Color("#D4A843")
+	_block_highlight_style.shadow_color = Color(0, 0, 0, 0.32)
+	_block_highlight_style.shadow_size = 28
+	_block_highlight_style.shadow_offset = Vector2(0, 10)
 
 
 func _start_block_glow() -> void:
@@ -329,13 +360,10 @@ func set_cards(cards_data: Array, zone_name: String) -> void:
 				card_view.modulate.a = 0.0
 				_slot_container.add_child(card_view)
 				# call_deferred 确保 add_child 后 scale 归零生效，再启 tween
-				card_view.call_deferred("_start_enter_tween")
+				card_view.call_deferred(&"_start_enter_tween")
 		else:
-			# 空槽位占位
-			var placeholder := Control.new()
-			placeholder.custom_minimum_size = card_size
-			placeholder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			placeholder.add_theme_stylebox_override("panel", _make_empty_slot_style())
+			# 空槽位占位（带区域图标）
+			var placeholder := _make_empty_slot(card_size)
 			_slot_container.add_child(placeholder)
 
 	_slot_count_label.text = str(cards_data.size()) + "/" + str(MAX_SLOTS)

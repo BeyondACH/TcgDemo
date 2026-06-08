@@ -16,6 +16,7 @@ const TooltipManager = preload("res://ui/tooltip_manager.gd")
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
+const PANEL_GRID_PATH := "res://assets/ui/backgrounds/panel_grid_tile.png"
 const COMPACT_HEIGHT_THRESHOLD := 1120.0
 const SMALL_HEIGHT_THRESHOLD := 940.0
 const COMPACT_WIDTH_THRESHOLD := 1820.0
@@ -264,6 +265,25 @@ func _setup_optional_art() -> void:
 	_assign_optional_texture(background_texture_rect, BATTLE_BG_PATH)
 	_assign_optional_texture(selection_highlight, SELECTION_HIGHLIGHT_PATH)
 	_assign_optional_texture(slot_highlight, SLOT_HIGHLIGHT_PATH)
+	_setup_grid_overlay()
+
+
+## P4: 可选面板网格纹理叠加（半透明 tileable 图案）
+func _setup_grid_overlay() -> void:
+	if not ResourceLoader.exists(PANEL_GRID_PATH):
+		return
+	var grid_tex := load(PANEL_GRID_PATH) as Texture2D
+	if not grid_tex:
+		return
+	var grid := TextureRect.new()
+	grid.name = "GridOverlay"
+	grid.texture = grid_tex
+	grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	grid.modulate.a = 0.06
+	grid.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	grid.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	grid.stretch_mode = TextureRect.STRETCH_TILE
+	$BackgroundLayer.add_child(grid)
 
 
 ## P2: 在 BoardLayer 的 VBoxContainer 中创建四个主面板
@@ -585,6 +605,13 @@ func _on_hand_card_hovered(card_uid: String, is_hovered: bool, card_data: Dictio
 
 func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
+		return
+	# P3: 满员面板拒绝拖拽 — inline 提示
+	var players: Dictionary = _snapshot.get("players", {})
+	var player_data: Dictionary = players.get(player_id, {})
+	var zone_cards: Array = player_data.get(zone_name, [])
+	if zone_cards.size() >= BoardPanel.MAX_SLOTS:
+		_show_inline_hint(player_id, zone_name, "已满")
 		return
 	_hand_controller.on_zone_drop_requested(player_id, zone_name, card_uid)
 	_clear_selection()

@@ -12,8 +12,6 @@ var _panel: PanelContainer
 var _content: VBoxContainer
 var _timer: Timer
 var _pending_card_data: Dictionary = {}
-var _pending_position: Vector2
-var _visible := false
 
 
 func setup(parent: Control) -> void:
@@ -87,12 +85,10 @@ func _show_tooltip() -> void:
 	_build_content(_pending_card_data)
 	_position_tooltip()
 	_panel.visible = true
-	_visible = true
 
 
 func _hide_tooltip() -> void:
 	_panel.visible = false
-	_visible = false
 
 
 func _clear_content() -> void:
@@ -153,7 +149,7 @@ func _build_content(card_data: Dictionary) -> void:
 		_add_label("能量费: %s" % ", ".join(parts), Color("#6B7588"), 10, 400)
 
 
-func _add_label(text: String, color: Color, font_size: int, weight: int) -> void:
+func _add_label(text: String, color: Color, font_size: int, _weight: int) -> void:
 	var label := Label.new()
 	label.text = text
 	label.add_theme_color_override("font_color", color)
@@ -161,9 +157,6 @@ func _add_label(text: String, color: Color, font_size: int, weight: int) -> void
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.custom_minimum_size.x = TOOLTIP_MAX_WIDTH - 20
 	_content.add_child(label)
-	# 近似字重通过 theme 覆盖（Godot 不直接支持字重，但 bold 字体可模拟）
-	if weight >= 600:
-		label.add_theme_font_override("font", ThemeDB.fallback_font)
 
 
 func _position_tooltip() -> void:

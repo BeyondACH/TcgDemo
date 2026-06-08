@@ -104,7 +104,8 @@ func _on_filter_pressed(category: LogCategory) -> void:
 
 func _update_filter_button_styles() -> void:
 	for btn in _filter_buttons:
-		var is_active := _filter_buttons.find(btn) == _current_filter
+		var idx: int = _filter_buttons.find(btn)
+		var is_active := (idx == int(_current_filter))
 		if is_active:
 			btn.add_theme_color_override("font_color", Color("#EDF0F5"))
 		else:
@@ -114,52 +115,36 @@ func _update_filter_button_styles() -> void:
 func _render_filtered() -> void:
 	_label.clear()
 	for line in _all_logs:
-		if not _line_matches_filter(line):
+		var cat: LogCategory = _classify_log(line)
+		if _current_filter != LogCategory.ALL and cat != _current_filter:
 			continue
-		var color := _line_color(line)
+		var color := _category_color(cat)
 		_label.append_text("[color=%s]%s[/color]\n" % [color, line])
 
 
-func _line_matches_filter(line: String) -> bool:
-	match _current_filter:
-		LogCategory.ALL:
+## ── 颜色分类（单次关键词扫描，避免重复 contains 调用）──
+
+
+func _classify_log(line: String) -> LogCategory:
+	if _contains_any(line, ["damage", "伤害", "破坏", "退场", "败北"]):
+		return LogCategory.DAMAGE
+	if _contains_any(line, ["draw", "抽牌", "抽", "手牌", "牌库"]):
+		return LogCategory.DRAW
+	if _contains_any(line, ["effect", "效果", "触发", "登场", "激活", "RAID", "STEP", "SNIPER", "IMPACT"]):
+		return LogCategory.EFFECT
+	return LogCategory.SYSTEM
+
+
+func _contains_any(line: String, keywords: Array) -> bool:
+	for kw in keywords:
+		if line.contains(kw):
 			return true
-		LogCategory.DAMAGE:
-			return _is_damage(line)
-		LogCategory.DRAW:
-			return _is_draw(line)
-		LogCategory.EFFECT:
-			return _is_effect(line)
-		LogCategory.SYSTEM:
-			return _is_system(line)
-	return true
+	return false
 
 
-## ── 颜色分类（关键词匹配） ──
-
-
-func _is_damage(line: String) -> bool:
-	return line.contains("damage") or line.contains("伤害") or line.contains("破坏") or line.contains("退场") or line.contains("败北")
-
-
-func _is_draw(line: String) -> bool:
-	return line.contains("draw") or line.contains("抽牌") or line.contains("抽") or line.contains("手牌") or line.contains("牌库")
-
-
-func _is_effect(line: String) -> bool:
-	return line.contains("effect") or line.contains("效果") or line.contains("触发") or line.contains("登场") or line.contains("激活") or line.contains("RAID") or line.contains("STEP") or line.contains("SNIPER") or line.contains("IMPACT")
-
-
-func _is_system(line: String) -> bool:
-	return not (_is_damage(line) or _is_draw(line) or _is_effect(line))
-
-
-func _line_color(line: String) -> String:
-	if _is_damage(line):
-		return "#D95A5A"
-	elif _is_draw(line):
-		return "#4A90D9"
-	elif _is_effect(line):
-		return "#D4A843"
-	else:
-		return "#6B7588"
+func _category_color(cat: LogCategory) -> String:
+	match cat:
+		LogCategory.DAMAGE: return "#D95A5A"
+		LogCategory.DRAW:   return "#4A90D9"
+		LogCategory.EFFECT: return "#D4A843"
+		_:                  return "#6B7588"

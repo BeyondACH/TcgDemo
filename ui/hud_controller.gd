@@ -10,6 +10,9 @@ var _active_player_label: Label
 var _phase_indicator: Node
 var _hand_count_label: Label
 var _energy_label: Label
+# P4: 能量彩色圆点容器（程序化创建，替代纯文本能量显示）
+var _energy_dots_container: HFlowContainer
+var _last_energy_map: Dictionary = {}
 var _ap_label: Label
 var _winner_label: Label
 var _next_phase_button: Button
@@ -49,6 +52,7 @@ func setup(gm: Node,
 	_phase_indicator = phase_indicator
 	_hand_count_label = hand_count_label
 	_energy_label = energy_label
+	_create_energy_dots_container()
 	_ap_label = ap_label
 	_winner_label = winner_label
 	_next_phase_button = next_phase_button
@@ -99,7 +103,8 @@ func update_hud(snapshot: Dictionary, active_player_data: Dictionary, display_ha
 	_active_player_label.text = "Action: %s (%s)" % [priority_player_id, action_controller_type]
 	_phase_indicator.set_phase_text(phase)
 	_hand_count_label.text = "Hand: %d" % int(display_hand_player_data.get("hand_count", 0))
-	_energy_label.text = "Energy: %s" % _format_energy_total(active_player_data.get("available_energy", {}))
+	_energy_label.text = ""  # P4: 文本标签改为空，由彩色圆点替代
+	_populate_energy_dots(active_player_data.get("available_energy", {}))
 	_ap_label.text = "AP: %d/%d" % [int(active_player_data.get("ap_active", 0)), int(active_player_data.get("ap_total", 0))]
 	_winner_label.text = "Winner: %s" % str(snapshot.get("winner_player_id", "-"))
 
@@ -180,3 +185,100 @@ func _format_energy_total(energy_map: Dictionary) -> String:
 	for color in energy_map.keys():
 		total += int(energy_map.get(color, 0))
 	return str(total)
+
+
+## P4: 创建能量彩色圆点容器（HFlowContainer，放在 energy_label 旁边）
+func _create_energy_dots_container() -> void:
+	_energy_dots_container = HFlowContainer.new()
+	_energy_dots_container.name = "EnergyDots"
+	_energy_dots_container.add_theme_constant_override("h_separation", 4)
+	_energy_dots_container.add_theme_constant_override("v_separation", 2)
+	var parent := _energy_label.get_parent()
+	if parent:
+		parent.add_child(_energy_dots_container)
+		parent.move_child(_energy_dots_container, _energy_label.get_index() + 1)
+
+
+## P4: 填充能量彩色圆点
+func _populate_energy_dots(energy_map: Dictionary) -> void:
+	if not _energy_dots_container:
+		return
+	# 能量值未变化则跳过重建
+	if _energy_map_equals(_last_energy_map, energy_map):
+		return
+	_last_energy_map = energy_map.duplicate()
+
+	for child in _energy_dots_container.get_children():
+		child.queue_free()
+
+	var order := ["red", "blue", "green", "purple", "yellow", "white"]
+	for color in order:
+		var count := int(energy_map.get(color, 0))
+		if count <= 0:
+			continue
+		var dot := _make_dot(color, count)
+		_energy_dots_container.add_child(dot)
+
+
+func _energy_map_equals(a: Dictionary, b: Dictionary) -> bool:
+	if a.keys().size() != b.keys().size():
+		return false
+	for key in a:
+		if int(a.get(key, -1)) != int(b.get(key, -2)):
+			return false
+	return true
+
+
+func _make_dot(color: String, count: int) -> HBoxContainer:
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 2)
+
+	var tex := _dot_texture(color)
+	if tex:
+		var rect := TextureRect.new()
+		rect.texture = tex
+		rect.custom_minimum_size = Vector2(14, 14)
+		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		hbox.add_child(rect)
+	else:
+		var fallback := ColorRect.new()
+		fallback.custom_minimum_size = Vector2(14, 14)
+		fallback.color = _dot_fallback_color(color)
+		hbox.add_child(fallback)
+
+	var label := Label.new()
+	label.text = str(count)
+	label.add_theme_font_size_override("font_size", 11)
+	label.add_theme_color_override("font_color", Color("#EDF0F5"))
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hbox.add_child(label)
+
+	return hbox
+
+
+func _dot_fallback_color(color: String) -> Color:
+	match color:
+		"red":    return Color("#D95A5A")
+		"blue":   return Color("#4A90D9")
+		"green":  return Color("#5C9A6E")
+		"purple": return Color("#8E6BBF")
+		"yellow": return Color("#D4A843")
+		_:        return Color("#D0D5DE")
+
+
+func _dot_texture(color: String) -> Texture2D:
+	const DOT_RED    := preload("res://assets/ui/dots/energy_red.png")
+	const DOT_BLUE   := preload("res://assets/ui/dots/energy_blue.png")
+	const DOT_GREEN  := preload("res://assets/ui/dots/energy_green.png")
+	const DOT_PURPLE := preload("res://assets/ui/dots/energy_purple.png")
+	const DOT_YELLOW := preload("res://assets/ui/dots/energy_yellow.png")
+	const DOT_WHITE  := preload("res://assets/ui/dots/energy_white.png")
+	match color:
+		"red":    return DOT_RED
+		"blue":   return DOT_BLUE
+		"green":  return DOT_GREEN
+		"purple": return DOT_PURPLE
+		"yellow": return DOT_YELLOW
+		"white":  return DOT_WHITE
+	return null
