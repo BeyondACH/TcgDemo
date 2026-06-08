@@ -329,11 +329,11 @@ func _show(names: Array) -> void:
 
 
 func _can_input(snap: Dictionary) -> bool:
-	if bool(snap.get("winner_player_id", "")):
+	if not str(snap.get("winner_player_id", "")).is_empty():
 		return false
-	if bool(snap.get("pending_game_setup", false)):
+	if snap.get("pending_game_setup", false):
 		return false
-	if not bool(snap.get("human_input_enabled", true)):
+	if not snap.get("human_input_enabled", true):
 		return false
 	return true
 

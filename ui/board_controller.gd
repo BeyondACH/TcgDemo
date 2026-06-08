@@ -7,17 +7,13 @@ class_name BoardController
 const BoardTargetSelectionHelper = preload("res://ui/board_target_selection_helper.gd")
 
 var _snapshot_provider: Callable
-var _opponent_board
-var _player_board
 var _zone_cards_popup
 var _game_manager: Node
 var _selected_pending_decision_index_provider: Callable
 
 
-func setup(gm: Node, opponent_board, player_board, zone_popup) -> void:
+func setup(gm: Node, zone_popup) -> void:
 	_game_manager = gm
-	_opponent_board = opponent_board
-	_player_board = player_board
 	_zone_cards_popup = zone_popup
 
 

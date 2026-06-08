@@ -4,6 +4,7 @@ class_name BattleScene
 const BoardTargetSelectionHelper = preload("res://ui/board_target_selection_helper.gd")
 const AIActionHint = preload("res://ui/ai_action_hint.gd")
 const DeckSelector = preload("res://ui/deck_selector.gd")
+const BoardPanel = preload("res://ui/board_panel.gd")
 const SelectionStateMachine = preload("res://ui/selection_state_machine.gd")
 const BoardController = preload("res://ui/board_controller.gd")
 const HUDController = preload("res://ui/hud_controller.gd")
@@ -43,8 +44,25 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var selection_highlight: TextureRect = $EffectLayer/SelectionHighlight
 @onready var slot_highlight: TextureRect = $EffectLayer/SlotHighlight
 @onready var board_layer: Control = $BoardLayer
-@onready var opponent_board: BoardView = $BoardLayer/OpponentBoard
-@onready var player_board: BoardView = $BoardLayer/PlayerBoard
+@onready var board_vbox: VBoxContainer = $BoardLayer/BoardVBox
+
+# P2: 四个主面板 — 按"敌能量→敌前线→我前线→我能线"排列
+var _opponent_energy_panel: BoardPanel
+var _opponent_front_panel: BoardPanel
+var _player_front_panel: BoardPanel
+var _player_energy_panel: BoardPanel
+
+# P2: 附属堆叠（LifeStackView / ZoneStackSummaryView）
+const LifeStackView = preload("res://ui/life_stack_view.gd")
+const ZoneStackSummaryView = preload("res://ui/zone_stack_summary_view.gd")
+var _opponent_life_stack: LifeStackView
+var _opponent_deck_stack: ZoneStackSummaryView
+var _opponent_outside_stack: ZoneStackSummaryView
+var _opponent_removed_stack: ZoneStackSummaryView
+var _player_life_stack: LifeStackView
+var _player_deck_stack: ZoneStackSummaryView
+var _player_outside_stack: ZoneStackSummaryView
+var _player_removed_stack: ZoneStackSummaryView
 @onready var top_hud: MarginContainer = $UILayer/TopHUD
 @onready var bottom_hud: MarginContainer = $UILayer/BottomHUD
 @onready var bottom_panel: PanelContainer = $UILayer/BottomHUD/BottomPanel
@@ -137,9 +155,9 @@ func _ready() -> void:
 	_state_machine.set_snapshot_provider(func(): return _snapshot)
 	_setup_state_machine_buttons()
 	
-	# P1: BoardController
+	# P2: BoardController (BoardView refs removed — BoardController accesses snapshot directly)
 	_board_controller = BoardController.new()
-	_board_controller.setup(game_manager, opponent_board, player_board, _modal_controller.zone_cards_popup)
+	_board_controller.setup(game_manager, _modal_controller.zone_cards_popup)
 	_board_controller.set_snapshot_provider(func(): return _snapshot)
 	_board_controller.set_pending_decision_index_provider(func(): return _selected_pending_decision_index)
 
@@ -163,6 +181,11 @@ func _ready() -> void:
 	_hand_controller.set_find_board_card_provider(func(pid: String, cuid: String): return _find_board_card(pid, cuid))
 	_hand_controller.set_action_buttons_callback(func(): _update_action_buttons())
 	_hand_controller.set_preview_card_callback(func(card_data: Dictionary, context: Dictionary): _set_preview_card(card_data, context))
+
+	# P2: 创建四个主面板实例，挂入 board_vbox
+	_create_board_panels()
+	# P2: 创建附属堆叠（面板侧边的 Life / Deck / Outside / Removed 堆叠）
+	_create_attached_stacks()
 
 	game_manager.state_changed.connect(_on_state_changed)
 	game_manager.blockers_requested.connect(_hud_controller.on_blockers_requested)
@@ -190,14 +213,8 @@ func _ready() -> void:
 	start_game_button.pressed.connect(_modal_controller.start_game_with_selected_decks)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
 	hand_view.hand_card_hovered.connect(_on_hand_card_hovered)
-	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
-	opponent_board.energy_card_pressed.connect(_on_energy_card_pressed)
-	opponent_board.zone_drop_requested.connect(_on_zone_drop_requested)
-	opponent_board.zone_stack_requested.connect(_on_zone_stack_requested)
-	player_board.front_card_pressed.connect(_on_front_card_pressed)
-	player_board.energy_card_pressed.connect(_on_energy_card_pressed)
-	player_board.zone_drop_requested.connect(_on_zone_drop_requested)
-	player_board.zone_stack_requested.connect(_on_zone_stack_requested)
+	# P2: BoardPanel signals — each panel emits card_was_pressed / panel_drop_was_requested
+	_connect_panel_signals()
 	_clear_selection()
 	no_block_button.visible = false
 	bonus_draw_button.visible = false
@@ -237,6 +254,113 @@ func _setup_optional_art() -> void:
 	_assign_optional_texture(selection_highlight, SELECTION_HIGHLIGHT_PATH)
 	_assign_optional_texture(slot_highlight, SLOT_HIGHLIGHT_PATH)
 
+
+## P2: 在 BoardLayer 的 VBoxContainer 中创建四个主面板
+func _create_board_panels() -> void:
+	_opponent_energy_panel = _make_panel(BoardPanel.PanelType.ENERGY_LINE, "ENERGY LINE", UATypes.PLAYER_TWO)
+	_opponent_front_panel = _make_panel(BoardPanel.PanelType.FRONT_LINE, "FRONT LINE", UATypes.PLAYER_TWO)
+	_player_front_panel = _make_panel(BoardPanel.PanelType.FRONT_LINE, "FRONT LINE", UATypes.PLAYER_ONE)
+	_player_energy_panel = _make_panel(BoardPanel.PanelType.ENERGY_LINE, "ENERGY LINE", UATypes.PLAYER_ONE)
+
+
+func _make_panel(panel_type: BoardPanel.PanelType, title: String, pid: String) -> BoardPanel:
+	var panel := BoardPanel.new()
+	panel.panel_type = panel_type
+	panel.panel_title = title
+	panel.player_id = pid
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	board_vbox.add_child(panel)
+	return panel
+
+
+func _connect_panel_signals() -> void:
+	var panels: Array[BoardPanel] = [_opponent_energy_panel, _opponent_front_panel, _player_front_panel, _player_energy_panel]
+	for panel in panels:
+		panel.card_was_pressed.connect(_on_board_card_pressed.bind(panel))
+		panel.panel_drop_was_requested.connect(_on_zone_drop_requested)
+
+
+## P2: 创建附属堆叠（贴在面板侧边 / 角落）
+func _create_attached_stacks() -> void:
+	_opponent_life_stack = _make_life_stack()
+	_opponent_deck_stack = _make_zone_stack("Deck")
+	_opponent_outside_stack = _make_zone_stack("Outside")
+	_opponent_removed_stack = _make_zone_stack("Removed")
+	_player_life_stack = _make_life_stack()
+	_player_deck_stack = _make_zone_stack("Deck")
+	_player_outside_stack = _make_zone_stack("Outside")
+	_player_removed_stack = _make_zone_stack("Removed")
+
+	# 连接堆叠点击 → zone_stack popup
+	_opponent_removed_stack.summary_pressed.connect(func(): _on_zone_stack_requested(UATypes.PLAYER_TWO, "removed"))
+	_opponent_outside_stack.summary_pressed.connect(func(): _on_zone_stack_requested(UATypes.PLAYER_TWO, "outside"))
+	_player_removed_stack.summary_pressed.connect(func(): _on_zone_stack_requested(UATypes.PLAYER_ONE, "removed"))
+	_player_outside_stack.summary_pressed.connect(func(): _on_zone_stack_requested(UATypes.PLAYER_ONE, "outside"))
+
+
+func _make_life_stack() -> LifeStackView:
+	var s := LifeStackView.new()
+	s.name = "LifeStack"
+	s.set_compact_mode(false)
+	board_layer.add_child(s)
+	return s
+
+
+func _make_zone_stack(title: String) -> ZoneStackSummaryView:
+	var s := ZoneStackSummaryView.new()
+	s.name = title + "Stack"
+	s.set_compact_mode(false)
+	s.set_summary(title, 0)
+	board_layer.add_child(s)
+	return s
+
+
+## P2: 根据面板位置动态放置附属堆叠
+func _position_stacks() -> void:
+	var stack_gap := 8.0
+
+	# 对手前线面板的 Life (左) / Deck (右)
+	_position_stack_beside(_opponent_life_stack, _opponent_front_panel, "left", stack_gap)
+	_position_stack_beside(_opponent_deck_stack, _opponent_front_panel, "right", stack_gap)
+	# 我能线面板的 Removed (左) / Outside (右)
+	_position_stack_beside(_player_removed_stack, _player_energy_panel, "left", stack_gap)
+	_position_stack_beside(_player_outside_stack, _player_energy_panel, "right", stack_gap)
+	# 我前线面板的 Life (左) / Deck (右)
+	_position_stack_beside(_player_life_stack, _player_front_panel, "left", stack_gap)
+	_position_stack_beside(_player_deck_stack, _player_front_panel, "right", stack_gap)
+	# 敌能量面板的 Removed (左) / Outside (右)
+	_position_stack_beside(_opponent_removed_stack, _opponent_energy_panel, "left", stack_gap)
+	_position_stack_beside(_opponent_outside_stack, _opponent_energy_panel, "right", stack_gap)
+
+
+func _position_stack_beside(stack: Control, panel: Control, side: String, gap: float) -> void:
+	var panel_rect := panel.get_global_rect()
+	var board_layer_origin := board_layer.get_global_rect().position
+	var min_size := stack.get_combined_minimum_size() if stack is ZoneStackSummaryView else Vector2(50, 70)
+	stack.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	stack.size = min_size
+
+	var x: float
+	if side == "left":
+		x = (panel_rect.position.x - board_layer_origin.x) - min_size.x - gap
+	else:
+		x = (panel_rect.position.x - board_layer_origin.x) + panel_rect.size.x + gap
+	var y := (panel_rect.position.y - board_layer_origin.y) + (panel_rect.size.y - min_size.y) / 2.0
+	stack.position = Vector2(x, y)
+
+
+## P2: 向附属堆叠填充数据
+func _populate_stacks(p1: Dictionary, p2: Dictionary) -> void:
+	_opponent_life_stack.set_life_cards(p2.get("life", []))
+	_opponent_deck_stack.set_summary("Deck", int(p2.get("deck_count", 0)))
+	_opponent_outside_stack.set_summary("Outside", int(p2.get("outside_count", 0)))
+	_opponent_removed_stack.set_summary("Removed", int(p2.get("removed_count", 0)))
+	_player_life_stack.set_life_cards(p1.get("life", []))
+	_player_deck_stack.set_summary("Deck", int(p1.get("deck_count", 0)))
+	_player_outside_stack.set_summary("Outside", int(p1.get("outside_count", 0)))
+	_player_removed_stack.set_summary("Removed", int(p1.get("removed_count", 0)))
+
 func _assign_optional_texture(target: TextureRect, resource_path: String) -> void:
 	if ResourceLoader.exists(resource_path):
 		target.texture = load(resource_path)
@@ -251,6 +375,7 @@ func _update_responsive_layout() -> void:
 	var compact := viewport_height < COMPACT_HEIGHT_THRESHOLD or viewport_width < COMPACT_WIDTH_THRESHOLD
 	var very_small := viewport_height < SMALL_HEIGHT_THRESHOLD or viewport_width < SMALL_WIDTH_THRESHOLD
 
+	# HUD spacing
 	top_hud.offset_top = 8.0 if very_small else 12.0
 	top_bar.add_theme_constant_override("separation", 8 if compact else 12)
 	status_row.add_theme_constant_override("h_separation", 6 if very_small else (8 if compact else 12))
@@ -265,49 +390,39 @@ func _update_responsive_layout() -> void:
 	action_bar.add_theme_constant_override("v_separation", 4 if very_small else 6)
 	selected_card_label.custom_minimum_size = Vector2(120 if very_small else (180 if compact else 220), 0)
 	action_bar.custom_minimum_size = Vector2(0, 36 if very_small else 40)
-	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var hand_strip_height := HAND_STRIP_HEIGHT_SMALL if very_small else (HAND_STRIP_HEIGHT_COMPACT if compact else HAND_STRIP_HEIGHT_DEFAULT)
+
+	# P2: Container 布局 — 四行面板由 VBoxContainer 自动排列
 	var top_hud_height := maxf(top_hud.get_combined_minimum_size().y, 48.0)
 	top_hud.offset_bottom = top_hud.offset_top + top_hud_height
 
-	var background_top := top_hud.offset_bottom + BOARD_TOP_GAP
-	var available_battle_height := viewport_height - background_top - hand_strip_height - BOARD_BOTTOM_GAP - BOTTOM_HUD_BOTTOM_MARGIN
-	var minimum_board_height := MIN_BOARD_VISIBLE_HEIGHT_SMALL if very_small else (MIN_BOARD_VISIBLE_HEIGHT_COMPACT if compact else MIN_BOARD_VISIBLE_HEIGHT_DEFAULT)
-	var battle_height := minf(maxf(minimum_board_height, available_battle_height), viewport_height - background_top)
-	# ZoneLayoutConfig 内联计算（P2 将由 anchor + container 布局替代）
-	const BG_IMAGE_HEIGHT := 1024.0
-	const BG_IMAGE_WIDTH := 1008.0
-	var bg_scale := battle_height / BG_IMAGE_HEIGHT
-	var bg_scale_factor: float = bg_scale
-	var bg_display_width: float = BG_IMAGE_WIDTH * bg_scale
-	var bg_display_height: float = BG_IMAGE_HEIGHT * bg_scale
-	var letterbox_offset: float = (viewport_width - bg_display_width) / 2.0
-	var bg_top_offset: float = background_top
+	var board_margin := 12.0 if very_small else 16.0
+	board_vbox.offset_left = board_margin
+	board_vbox.offset_top = top_hud.offset_bottom + BOARD_TOP_GAP
+	board_vbox.offset_right = -board_margin
+	board_vbox.offset_bottom = -BOARD_BOTTOM_GAP
 
-	background_texture_rect.position = Vector2(letterbox_offset, bg_top_offset)
-	background_texture_rect.size = Vector2(bg_display_width, bg_display_height)
+	# 背景图全屏拉伸（不再做比例映射）
+	background_texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	background_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 
-	var bottom_strip_top := bg_top_offset + bg_display_height + BOARD_BOTTOM_GAP
+	# 底部手牌条
+	var hand_strip_height := HAND_STRIP_HEIGHT_SMALL if very_small else (HAND_STRIP_HEIGHT_COMPACT if compact else HAND_STRIP_HEIGHT_DEFAULT)
 	bottom_hud.offset_left = BOTTOM_HUD_SIDE_MARGIN
 	bottom_hud.offset_right = -BOTTOM_HUD_SIDE_MARGIN
-	bottom_hud.offset_top = bottom_strip_top
-	bottom_hud.offset_bottom = bottom_strip_top + hand_strip_height
+	bottom_hud.offset_bottom = -BOTTOM_HUD_BOTTOM_MARGIN
+	bottom_hud.offset_top = bottom_hud.offset_bottom - hand_strip_height
 	bottom_panel.custom_minimum_size = Vector2(0, hand_strip_height)
 
-	# Update board views with absolute positioning
-	opponent_board.update_layout(letterbox_offset, bg_scale_factor, bg_top_offset)
-	player_board.update_layout(letterbox_offset, bg_scale_factor, bg_top_offset)
-
-	opponent_board.set_compact_mode(compact, very_small)
-	player_board.set_compact_mode(compact, very_small)
-	hand_view.set_compact_mode(compact, very_small)
-
+	# 手牌宽度
+	hand_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var hand_width := maxf(320.0, viewport_width - BOTTOM_HUD_SIDE_MARGIN * 2.0 - HAND_STRIP_INTERNAL_WIDTH_MARGIN)
 	hand_view.set_hand_bounds(0.0, hand_width, hand_width)
+	hand_view.set_compact_mode(compact, very_small)
 	_update_preview_panel_layout()
 	_update_log_panel_layout(compact, very_small, viewport_height)
+	# P2: 附属堆叠定位
+	_position_stacks()
 
 func _update_preview_panel_layout() -> void:
 	var top_hud_rect := top_hud.get_global_rect()
@@ -335,6 +450,47 @@ func _update_log_panel_layout(compact: bool, very_small: bool, viewport_height: 
 func _on_ai_action_executed(action_info: Dictionary) -> void:
 	_hud_controller.on_ai_action_executed(action_info)
 
+
+## P2: BoardPanel 统一点击路由 — 根据 zone_name 分发到原 handler
+func _on_board_card_pressed(player_id: String, card_uid: String, zone_name: String, panel: BoardPanel) -> void:
+	var card_data := _find_board_card(player_id, card_uid)
+	if not card_data.is_empty():
+		_set_board_preview(player_id, zone_name, card_data)
+	if _resolve_board_target_selection_from_card(player_id, card_uid, zone_name):
+		return
+	if _has_pending_gate() or not _human_input_enabled():
+		return
+	# RAID 目标选择
+	if _hand_controller.raid_target_selection_mode:
+		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
+			_hand_controller.execute_raid_play(card_uid)
+		return
+	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
+	var phase := str(_snapshot.get("phase", ""))
+	var board_actions: Array = card_data.get("available_actions", [])
+	# 狙击攻击目标选择
+	if _sniper_attack_source_uid != "":
+		if player_id != active_player_id:
+			game_manager.request_attack(_sniper_attack_source_uid, {
+				"target_kind": "FRONT_CHARACTER",
+				"target_uid": card_uid,
+			})
+			_sniper_attack_source_uid = ""
+			_update_action_buttons()
+		return
+	# 敌方卡牌点击
+	if player_id != active_player_id:
+		if board_actions.has("SNIPER_ATTACK") and phase == "ATTACK":
+			pass  # 等待玩家先点狙击按钮
+		return
+	# 己方前线/能量线选中
+	_selected_board_card_uid = card_uid
+	_selected_board_zone_name = zone_name
+	# 如果牌有 SNIPER_ATTACK，自动进入狙击模式
+	if board_actions.has("SNIPER_ATTACK"):
+		_sniper_attack_source_uid = card_uid
+	_update_action_buttons()
+
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
 	_modal_controller.hide_zone_popup()
@@ -349,8 +505,13 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	var display_hand_player_data: Dictionary = p1 if display_hand_player_id == UATypes.PLAYER_ONE else p2
 	var action_controller_type := str(controller_types.get(priority_player_id, snapshot.get("action_player_controller", "HUMAN")))
 	_hud_controller.update_hud(snapshot, active_player_data, display_hand_player_data)
-	opponent_board.set_board(UATypes.PLAYER_TWO, "Player 2", p2)
-	player_board.set_board(UATypes.PLAYER_ONE, "Player 1", p1)
+	# P2: 直接填充四个 BoardPanel（替代 BoardView.set_board()）
+	_opponent_energy_panel.populate(p2.get("energy_line", []), "energy_line")
+	_opponent_front_panel.populate(p2.get("front_line", []), "front_line")
+	_player_front_panel.populate(p1.get("front_line", []), "front_line")
+	_player_energy_panel.populate(p1.get("energy_line", []), "energy_line")
+	# P2: 附属堆叠数据填充
+	_populate_stacks(p1, p2)
 	var active_hand: Array = p2.get("hand", [])
 	if display_hand_player_id == UATypes.PLAYER_ONE:
 		active_hand = p1.get("hand", [])
@@ -1043,26 +1204,18 @@ func _run_layout_probe_if_requested() -> void:
 func _finish_layout_probe() -> void:
 	var label := "%dx%d" % [int(get_viewport_rect().size.x), int(get_viewport_rect().size.y)]
 	var hand_rect := hand_view.get_global_rect()
-	var background_rect := background_texture_rect.get_global_rect()
 	var error := ""
-	var player_board_rect := _get_player_board_content_rect()
 
-	# Check board layer has expected zone wrappers
-	if player_board.get_child_count() < 6:
-		error = "玩家战场缺失区域容器 (expected >= 6 zones, got %d)" % player_board.get_child_count()
-	elif player_board_rect.size == Vector2.ZERO:
-		error = "玩家战场内容区域为空"
-	elif player_board_rect.position.x < background_rect.position.x - 1.0 or player_board_rect.position.y < background_rect.position.y - 1.0:
-		error = "Board content exceeds the background top-left bounds."
-	elif player_board_rect.position.x + player_board_rect.size.x > background_rect.position.x + background_rect.size.x + 1.0 or player_board_rect.position.y + player_board_rect.size.y > background_rect.position.y + background_rect.size.y + 1.0:
-		error = "Board content exceeds the background bottom-right bounds."
-	elif not _zone_stack_rect_within_background(player_board, "OutsideStack", background_rect) or not _zone_stack_rect_within_background(player_board, "RemovedStack", background_rect) or not _zone_stack_rect_within_background(opponent_board, "OutsideStack", background_rect) or not _zone_stack_rect_within_background(opponent_board, "RemovedStack", background_rect):
-		error = "Outside/Removed stack content exceeds the battlefield background."
-	elif hand_rect.position.y < background_rect.position.y + background_rect.size.y + BOARD_BOTTOM_GAP - 1.0:
-		error = "Hand strip is not separated from the battlefield background."
-	elif player_board_rect.position.y + player_board_rect.size.y > hand_rect.position.y + 1.0:
-		error = "玩家战场与手牌缩略图区域发生重叠 (board_bottom=%.1f, hand_top=%.1f)" % [
-			player_board_rect.position.y + player_board_rect.size.y,
+	# P2: 检查四个面板是否存在且有内容
+	if board_vbox.get_child_count() < 4:
+		error = "战场面板数量不足 (expected 4, got %d)" % board_vbox.get_child_count()
+	elif _player_energy_panel.get_global_rect().size == Vector2.ZERO:
+		error = "玩家战场面板区域为空"
+	elif hand_rect.position.y < board_vbox.get_global_rect().position.y + board_vbox.get_global_rect().size.y + BOARD_BOTTOM_GAP - 1.0:
+		error = "手牌条未与战场面板分离"
+	elif _player_energy_panel.get_global_rect().position.y + _player_energy_panel.get_global_rect().size.y > hand_rect.position.y + 1.0:
+		error = "玩家战场面板与手牌区域重叠 (panel_bottom=%.1f, hand_top=%.1f)" % [
+			_player_energy_panel.get_global_rect().position.y + _player_energy_panel.get_global_rect().size.y,
 			hand_rect.position.y,
 		]
 	elif hand_view.get_child_count() == 0:
@@ -1080,40 +1233,12 @@ func _finish_layout_probe() -> void:
 	push_error("[FAIL] UI 布局 %s: %s" % [label, error])
 	get_tree().quit(1)
 
+
 func _get_player_board_content_rect() -> Rect2:
-	var wrapper_names := [
-		"LifeWrapper",
-		"RemovedWrapper",
-		"DeckWrapper",
-		"OutsideWrapper",
-		"FrontWrapper",
-		"EnergyWrapper",
-	]
-	var has_rect := false
-	var combined_rect := Rect2()
-
-	for wrapper_name in wrapper_names:
-		var wrapper := player_board.get_node_or_null(wrapper_name) as Control
-		if wrapper == null:
-			continue
-		var rect := wrapper.get_global_rect()
-		if not has_rect:
-			combined_rect = rect
-			has_rect = true
-		else:
-			combined_rect = combined_rect.merge(rect)
-
-	return combined_rect if has_rect else Rect2()
-
-func _zone_stack_rect_within_background(board: BoardView, node_name: String, background_rect: Rect2) -> bool:
-	var node := board.get_node_or_null("%sWrapper/%s" % [node_name.replace("Stack", ""), node_name]) as Control
-	if node == null:
-		return false
-	var rect := node.get_global_rect()
-	return rect.position.x >= background_rect.position.x - 1.0 \
-		and rect.position.y >= background_rect.position.y - 1.0 \
-		and rect.position.x + rect.size.x <= background_rect.position.x + background_rect.size.x + 1.0 \
-		and rect.position.y + rect.size.y <= background_rect.position.y + background_rect.size.y + 1.0
+	# P2: 用四个面板的全局 rect 计算合并区域
+	var rect := _player_energy_panel.get_global_rect()
+	rect = rect.merge(_player_front_panel.get_global_rect())
+	return rect
 
 func game_state_has_opening_probe_pending() -> bool:
 	return game_manager.game_state.pending_decisions.size() >= 1 and str((game_manager.game_state.pending_decisions[0] as Dictionary).get("type", "")) == "MULLIGAN_CHOICE"

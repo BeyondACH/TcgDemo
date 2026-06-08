@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://bt3m6ojf83u1b" path="res://ui/battle_scene.gd" id="1_battle"]
 [ext_resource type="Script" uid="uid://xqf3xg2a7uhx" path="res://core/game_manager.gd" id="2_game"]
-[ext_resource type="Script" uid="uid://bbk4mbyph3ba4" path="res://ui/board_view.gd" id="3_board"]
 [ext_resource type="Script" uid="uid://lfluf8b78q3c" path="res://ui/hand_view.gd" id="4_hand"]
 [ext_resource type="Script" uid="uid://cqp3cjxitoaow" path="res://ui/log_panel.gd" id="5_log"]
 [ext_resource type="Script" uid="uid://cq74umcfweb1y" path="res://ui/phase_indicator.gd" id="6_phase"]
@@ -49,23 +48,14 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="OpponentBoard" type="Control" parent="BoardLayer" unique_id=252620591]
+[node name="BoardVBox" type="VBoxContainer" parent="BoardLayer" unique_id=252620591]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("3_board")
-
-[node name="PlayerBoard" type="Control" parent="BoardLayer" unique_id=311993489]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("3_board")
+theme_override_constants/separation = 8
 
 [node name="CardLayer" type="Control" parent="." unique_id=205348650]
 layout_mode = 1
