@@ -2,7 +2,7 @@ extends Button
 class_name CardView
 
 signal card_pressed(owner_player_id: String, card_uid: String, zone_name: String)
-signal card_hovered(card_uid: String, is_hovered: bool)
+signal card_hovered(card_uid: String, is_hovered: bool, card_data: Dictionary)
 
 const DEFAULT_CARD_SIZE := Vector2(120, 168)
 const DISPLAY_MODE_BOARD := "board"
@@ -26,6 +26,7 @@ var _card_data: Dictionary = {}
 var _is_hovered := false
 var _is_playable := false
 var _is_pending_target_selectable := false
+var _is_blockable := false
 
 var _content_root: Control
 var _fallback_label: Label
@@ -415,19 +416,50 @@ func _gui_input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_ENTER:
-		if zone_name == "hand" and not _is_hovered:
+		if not _is_hovered:
 			_is_hovered = true
-			card_hovered.emit(card_uid, true)
+			card_hovered.emit(card_uid, true, _card_data)
 	elif what == NOTIFICATION_MOUSE_EXIT:
 		if _is_hovered:
 			_is_hovered = false
-			card_hovered.emit(card_uid, false)
+			card_hovered.emit(card_uid, false, {})
 
 func set_playable(playable: bool) -> void:
 	_is_playable = playable
 	queue_redraw()
 
+
+## P3: 阻挡高亮 — 可阻挡角色显示金色脉冲描边
+func set_blockable(blockable: bool) -> void:
+	_is_blockable = blockable
+	queue_redraw()
+	if blockable:
+		_start_blockable_pulse()
+	else:
+		_kill_blockable_pulse()
+
+
+func _start_blockable_pulse() -> void:
+	_kill_blockable_pulse()
+	var tw := create_tween()
+	tw.set_loops(0)
+	tw.tween_property(self, "modulate:a", 0.75, 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(self, "modulate:a", 1.0, 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	set_meta("_blockable_tween", tw)
+
+
+func _kill_blockable_pulse() -> void:
+	if has_meta("_blockable_tween"):
+		var tw: Tween = get_meta("_blockable_tween")
+		if tw and tw.is_valid():
+			tw.kill()
+		remove_meta("_blockable_tween")
+	modulate.a = 1.0
+
 func _draw() -> void:
+	if _is_blockable and zone_name != "hand":
+		var rect := Rect2(Vector2.ZERO, size)
+		draw_rect(rect, Color("#D4A843"), false, 3.0)
 	if _is_pending_target_selectable and zone_name != "hand":
 		var board_rect := Rect2(Vector2.ZERO, size)
 		draw_rect(board_rect, PENDING_TARGET_BORDER_COLOR, false, PENDING_TARGET_BORDER_WIDTH)
@@ -438,3 +470,13 @@ func _draw() -> void:
 
 func _on_pressed() -> void:
 	card_pressed.emit(owner_player_id, card_uid, zone_name)
+
+
+## P3: BoardPanel.set_cards() 通过 call_deferred 调用此方法播放入场动画
+## 前置条件：scale=Vector2.ZERO, modulate.a=0.0 已由调用方设置
+func _start_enter_tween() -> void:
+	var tw := create_tween()
+	tw.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.set_parallel(true)
+	tw.tween_property(self, "scale", Vector2.ONE, 0.18)
+	tw.tween_property(self, "modulate:a", 1.0, 0.18)

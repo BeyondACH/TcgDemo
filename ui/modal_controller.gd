@@ -212,4 +212,7 @@ func start_game_with_selected_decks() -> void:
 ## ── 日志面板 ──
 
 func on_log_toggle_pressed() -> void:
-	_log_panel.visible = not _log_panel.visible
+	if _log_panel.visible:
+		_log_panel.slide_out()
+	else:
+		_log_panel.slide_in()

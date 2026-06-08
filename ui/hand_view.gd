@@ -15,7 +15,7 @@ const HAND_TOP_PADDING := 6.0
 const HAND_BOTTOM_PADDING := 8.0
 
 signal hand_card_selected(card_uid: String)
-signal hand_card_hovered(card_uid: String, is_hovered: bool)
+signal hand_card_hovered(card_uid: String, is_hovered: bool, card_data: Dictionary)
 
 var _card_views: Array[CardView] = []
 var _current_player_id := ""
@@ -142,8 +142,8 @@ func _animate_card_to(card: CardView, x: float, y: float, z: int) -> void:
 func _on_card_pressed(_owner_player_id: String, card_uid: String, _zone_name: String) -> void:
 	hand_card_selected.emit(card_uid)
 
-func _on_card_hovered(card_uid: String, is_hovered: bool) -> void:
-	hand_card_hovered.emit(card_uid, is_hovered)
+func _on_card_hovered(card_uid: String, is_hovered: bool, card_data: Dictionary) -> void:
+	hand_card_hovered.emit(card_uid, is_hovered, card_data)
 
 func get_card_uid_at(index: int) -> String:
 	if index < 0 or index >= _card_views.size():

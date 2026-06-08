@@ -12,6 +12,7 @@ const BoardController = preload("res://ui/board_controller.gd")
 const HUDController = preload("res://ui/hud_controller.gd")
 const HandController = preload("res://ui/hand_controller.gd")
 const ModalController = preload("res://ui/modal_controller.gd")
+const TooltipManager = preload("res://ui/tooltip_manager.gd")
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
@@ -130,6 +131,7 @@ var _board_controller: BoardController
 var _hud_controller: HUDController
 var _hand_controller: HandController
 var _modal_controller: ModalController
+var _tooltip_manager: TooltipManager
 
 func _ready() -> void:
 	# P0: 加载 v2.0 Theme。字体在 Godot 编辑器首次打开项目时自动导入。
@@ -186,6 +188,8 @@ func _ready() -> void:
 	_create_board_panels()
 	# P2: 创建附属堆叠（面板侧边的 Life / Deck / Outside / Removed 堆叠）
 	_create_attached_stacks()
+	# P3: 首次定位 — deferred 确保面板已布局后再计算相对坐标
+	call_deferred("_position_stacks")
 
 	game_manager.state_changed.connect(_on_state_changed)
 	game_manager.blockers_requested.connect(_hud_controller.on_blockers_requested)
@@ -215,6 +219,13 @@ func _ready() -> void:
 	hand_view.hand_card_hovered.connect(_on_hand_card_hovered)
 	# P2: BoardPanel signals — each panel emits card_was_pressed / panel_drop_was_requested
 	_connect_panel_signals()
+	# P3: TooltipManager — 悬停卡牌 400ms 后显示浮动详情
+	_tooltip_manager = TooltipManager.new()
+	_tooltip_manager.setup($UILayer)
+	# BoardPanel card_was_hovered → TooltipManager
+	var panels: Array[BoardPanel] = [_opponent_energy_panel, _opponent_front_panel, _player_front_panel, _player_energy_panel]
+	for panel in panels:
+		panel.card_was_hovered.connect(_tooltip_manager.on_card_hovered)
 	_clear_selection()
 	no_block_button.visible = false
 	bonus_draw_button.visible = false
@@ -281,16 +292,16 @@ func _connect_panel_signals() -> void:
 		panel.panel_drop_was_requested.connect(_on_zone_drop_requested)
 
 
-## P2: 创建附属堆叠（贴在面板侧边 / 角落）
+## P2: 创建附属堆叠（作为面板子节点，anchor 定位）
 func _create_attached_stacks() -> void:
-	_opponent_life_stack = _make_life_stack()
-	_opponent_deck_stack = _make_zone_stack("Deck")
-	_opponent_outside_stack = _make_zone_stack("Outside")
-	_opponent_removed_stack = _make_zone_stack("Removed")
-	_player_life_stack = _make_life_stack()
-	_player_deck_stack = _make_zone_stack("Deck")
-	_player_outside_stack = _make_zone_stack("Outside")
-	_player_removed_stack = _make_zone_stack("Removed")
+	_opponent_life_stack = _make_life_stack(_opponent_front_panel, "left")
+	_opponent_deck_stack = _make_zone_stack("Deck", _opponent_front_panel, "right")
+	_opponent_outside_stack = _make_zone_stack("Outside", _opponent_energy_panel, "right")
+	_opponent_removed_stack = _make_zone_stack("Removed", _opponent_energy_panel, "left")
+	_player_life_stack = _make_life_stack(_player_front_panel, "left")
+	_player_deck_stack = _make_zone_stack("Deck", _player_front_panel, "right")
+	_player_outside_stack = _make_zone_stack("Outside", _player_energy_panel, "right")
+	_player_removed_stack = _make_zone_stack("Removed", _player_energy_panel, "left")
 
 	# 连接堆叠点击 → zone_stack popup
 	_opponent_removed_stack.summary_pressed.connect(func(): _on_zone_stack_requested(UATypes.PLAYER_TWO, "removed"))
@@ -299,54 +310,55 @@ func _create_attached_stacks() -> void:
 	_player_outside_stack.summary_pressed.connect(func(): _on_zone_stack_requested(UATypes.PLAYER_ONE, "outside"))
 
 
-func _make_life_stack() -> LifeStackView:
+func _make_life_stack(parent: Control, side: String) -> LifeStackView:
 	var s := LifeStackView.new()
 	s.name = "LifeStack"
 	s.set_compact_mode(false)
-	board_layer.add_child(s)
+	parent.add_child(s)
+	parent.resized.connect(_on_panel_resized_for_stacks)
 	return s
 
 
-func _make_zone_stack(title: String) -> ZoneStackSummaryView:
+func _make_zone_stack(title: String, parent: Control, side: String) -> ZoneStackSummaryView:
 	var s := ZoneStackSummaryView.new()
 	s.name = title + "Stack"
 	s.set_compact_mode(false)
 	s.set_summary(title, 0)
-	board_layer.add_child(s)
+	parent.add_child(s)
+	parent.resized.connect(_on_panel_resized_for_stacks)
 	return s
 
 
-## P2: 根据面板位置动态放置附属堆叠
+## P3: 面板 resize 时重新定位附属堆叠（相对于面板坐标系）
+func _on_panel_resized_for_stacks() -> void:
+	_position_stacks()
+
+
+## P3: 面板相对坐标定位附属堆叠（不再依赖 board_layer 全局坐标）
 func _position_stacks() -> void:
 	var stack_gap := 8.0
-
-	# 对手前线面板的 Life (左) / Deck (右)
 	_position_stack_beside(_opponent_life_stack, _opponent_front_panel, "left", stack_gap)
 	_position_stack_beside(_opponent_deck_stack, _opponent_front_panel, "right", stack_gap)
-	# 我能线面板的 Removed (左) / Outside (右)
 	_position_stack_beside(_player_removed_stack, _player_energy_panel, "left", stack_gap)
 	_position_stack_beside(_player_outside_stack, _player_energy_panel, "right", stack_gap)
-	# 我前线面板的 Life (左) / Deck (右)
 	_position_stack_beside(_player_life_stack, _player_front_panel, "left", stack_gap)
 	_position_stack_beside(_player_deck_stack, _player_front_panel, "right", stack_gap)
-	# 敌能量面板的 Removed (左) / Outside (右)
 	_position_stack_beside(_opponent_removed_stack, _opponent_energy_panel, "left", stack_gap)
 	_position_stack_beside(_opponent_outside_stack, _opponent_energy_panel, "right", stack_gap)
 
 
 func _position_stack_beside(stack: Control, panel: Control, side: String, gap: float) -> void:
-	var panel_rect := panel.get_global_rect()
-	var board_layer_origin := board_layer.get_global_rect().position
+	var panel_size := panel.size
 	var min_size := stack.get_combined_minimum_size() if stack is ZoneStackSummaryView else Vector2(50, 70)
 	stack.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	stack.size = min_size
 
 	var x: float
 	if side == "left":
-		x = (panel_rect.position.x - board_layer_origin.x) - min_size.x - gap
+		x = -min_size.x - gap
 	else:
-		x = (panel_rect.position.x - board_layer_origin.x) + panel_rect.size.x + gap
-	var y := (panel_rect.position.y - board_layer_origin.y) + (panel_rect.size.y - min_size.y) / 2.0
+		x = panel_size.x + gap
+	var y := (panel_size.y - min_size.y) / 2.0
 	stack.position = Vector2(x, y)
 
 
@@ -421,8 +433,6 @@ func _update_responsive_layout() -> void:
 	hand_view.set_compact_mode(compact, very_small)
 	_update_preview_panel_layout()
 	_update_log_panel_layout(compact, very_small, viewport_height)
-	# P2: 附属堆叠定位
-	_position_stacks()
 
 func _update_preview_panel_layout() -> void:
 	var top_hud_rect := top_hud.get_global_rect()
@@ -566,8 +576,12 @@ func _on_hand_card_selected(card_uid: String) -> void:
 	var display_hand_player_id := _display_hand_player_id()
 	selected_card_label.text = _selected_label_text(display_hand_player_id)
 
-func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
+func _on_hand_card_hovered(card_uid: String, is_hovered: bool, card_data: Dictionary = {}) -> void:
 	_hand_controller.on_hand_card_hovered(card_uid, is_hovered)
+	# P3: 手牌悬停也路由到 TooltipManager
+	if _tooltip_manager:
+		var display_hand_player_id := _display_hand_player_id()
+		_tooltip_manager.on_card_hovered(display_hand_player_id, card_uid, "hand", is_hovered, card_data)
 
 func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
@@ -575,8 +589,32 @@ func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: Str
 	_hand_controller.on_zone_drop_requested(player_id, zone_name, card_uid)
 	_clear_selection()
 
+
+## P3: 向对应面板显示 inline 错误提示
+func _show_inline_hint(player_id: String, zone_name: String, text: String) -> void:
+	var panel: BoardPanel
+	if player_id == UATypes.PLAYER_ONE:
+		panel = _player_front_panel if zone_name == "front_line" else _player_energy_panel
+	else:
+		panel = _opponent_front_panel if zone_name == "front_line" else _opponent_energy_panel
+	panel.show_inline_hint(text)
+
 func _on_blockers_requested(request: Dictionary) -> void:
 	_hud_controller.on_blockers_requested(request)
+	# P3: 阻挡高亮 — 防守方前线面板变金色 + 可阻挡角色脉冲
+	var defender_id := str(request.get("defender_player_id", ""))
+	var blockers: Array = request.get("blockers", [])
+	var blockable_uids: Array[String] = []
+	for b in blockers:
+		blockable_uids.append(str(b.get("uid", "")))
+	var panel := _player_front_panel if defender_id == UATypes.PLAYER_ONE else _opponent_front_panel
+	panel.set_block_highlight(true, blockable_uids)
+
+
+## P3: 清除阻挡高亮
+func _clear_block_highlight() -> void:
+	_player_front_panel.set_block_highlight(false)
+	_opponent_front_panel.set_block_highlight(false)
 
 func _on_next_phase_pressed() -> void:
 	_hud_controller.on_next_phase_pressed()
@@ -703,6 +741,8 @@ func _clear_selection() -> void:
 	_preview_zone_name = ""
 	_clear_preview_card()
 	_update_action_buttons()
+	# P3: 每次清除选择时也清除阻挡高亮
+	_clear_block_highlight()
 	selected_card_label.text = _state_machine.label_text()
 
 func _clear_pending_attack() -> void:
