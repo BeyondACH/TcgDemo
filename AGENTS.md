@@ -15,15 +15,20 @@
 
 ### 1.2 权威来源
 
-- `rule.md` 是本项目规则、状态机、区域限制、结算顺序和数据映射的最高权威来源。
+- `docs/rules/rule.md` 是本项目规则、状态机、区域限制、结算顺序和数据映射的最高权威来源。
 - 任何代码实现、测试、重构、示例数据、注释说明，只要与 `rule.md` 冲突，都必须以 `rule.md` 为准。
 - 如果用户需求与 `rule.md` 冲突，不要直接实现冲突方案；先指出冲突点，再给出遵循 `rule.md` 的实现建议。
+- `docs/plan/ui_art_style_guide.md` v2.0（2026-06-08）是本项目 UI 视觉的最高权威来源。
+  所有 UI 组件（颜色、字体、间距、圆角、动效）必须落入此规范定义的体系内。
+  旧版 v1.0（2026-03-30，桌垫印刷方向）已弃用。
+- `CONTEXT.md` 定义 UI 领域术语词汇表，UI 相关代码注释、变量名、信号名必须与之一致。
 
 ### 1.3 开发计划文件
 
 - 项目正式开发计划保存在 `docs/plan/development_plan.md`。
-- 主 agent 在进入需求拆分、接口冻结、并行分工、阶段验收前，应先对齐 `docs/plan/development_plan.md` 与 `docs/rules/rule.md`。
-- 如果新的需求会改变里程碑优先级、接口冻结项、测试策略、DSL/IR 契约或阶段主线，应先更新 `docs/plan/development_plan.md`，再组织实施。
+- 主 agent 在进入需求拆分、接口冻结、并行分工、阶段验收前，应先对齐 `docs/plan/development_plan.md`、`docs/rules/rule.md`、`docs/plan/ui_art_style_guide.md` 与 `CONTEXT.md`。
+- 如果新的需求会改变里程碑优先级、接口冻结项、测试策略、DSL/IR 契约、UI 视觉规范或阶段主线，应先更新 `docs/plan/development_plan.md`，再组织实施。
+- 设计决策记录在 `docs/adr/` 目录下，重大方向性变更必须先建 ADR。
 
 ### 1.4 当前目录职责
 
