@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://7ce624039fdb"]
+
+[ext_resource type="Script" uid="uid://8765342b727f" path="res://ui/board_panel.gd" id="1_script"]
+
+[node name="BoardPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_script")
+panel_title = "FRONT LINE"
+panel_type = 0
+player_id = "P1"

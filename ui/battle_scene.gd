@@ -4,6 +4,11 @@ class_name BattleScene
 const BoardTargetSelectionHelper = preload("res://ui/board_target_selection_helper.gd")
 const AIActionHint = preload("res://ui/ai_action_hint.gd")
 const DeckSelector = preload("res://ui/deck_selector.gd")
+const SelectionStateMachine = preload("res://ui/selection_state_machine.gd")
+const BoardController = preload("res://ui/board_controller.gd")
+const HUDController = preload("res://ui/hud_controller.gd")
+const HandController = preload("res://ui/hand_controller.gd")
+const ModalController = preload("res://ui/modal_controller.gd")
 const BATTLE_BG_PATH := "res://assets/battle/backgrounds/battle_bg.jpg"
 const SELECTION_HIGHLIGHT_PATH := "res://assets/battle/effects/selection_highlight.png"
 const SLOT_HIGHLIGHT_PATH := "res://assets/battle/effects/slot_highlight.png"
@@ -91,35 +96,80 @@ const MIN_BOARD_VISIBLE_HEIGHT_SMALL := 520.0
 @onready var start_game_button: Button = $UILayer/DeckSelectionModal/CenterContainer/DeckSelectionPanel/DeckSelectionContent/StartGameButton
 
 var _snapshot: Dictionary = {}
-var _life_reveal_modal: LifeRevealModal
-var _zone_cards_popup: ZoneCardsPopup
-var _selected_hand_card_uid := ""
 var _selected_board_card_uid := ""
 var _selected_board_zone_name := ""
-var _pending_attack_uid := ""
-var _pending_defender_player_id := ""
 var _sniper_attack_source_uid := ""
 var _selected_life_trigger_uid := ""
 var _selected_pending_decision_index := -1
 var _selected_pending_decision_choice_index := 0
-var _raid_source_card_uid := ""
-var _raid_target_selection_mode := false
 var _preview_card_uid := ""
 var _preview_player_id := ""
 var _preview_zone_name := ""
 var _deck_selector: DeckSelector
 var _ai_action_hint: AIActionHint
+var _state_machine: SelectionStateMachine
+var _board_controller: BoardController
+var _hud_controller: HUDController
+var _hand_controller: HandController
+var _modal_controller: ModalController
 
 func _ready() -> void:
+	# P0: 加载 v2.0 Theme。字体在 Godot 编辑器首次打开项目时自动导入。
+	if not theme:
+		theme = load("res://assets/ui/battle_theme.theme")
 	_setup_optional_art()
 	_ai_action_hint = AIActionHint.new(self, ai_action_label)
 	_deck_selector = DeckSelector.new(game_manager, player_one_deck_picker, player_two_deck_picker, deck_selection_modal, start_game_button)
+	
+	# P1: ModalController（必须在 BoardController 之前创建，因为 BoardController 需要 zone_cards_popup）
+	_modal_controller = ModalController.new()
+	_modal_controller.setup(game_manager, $UILayer, log_panel, preview_selection_modal, deck_selection_modal, _deck_selector)
+	_modal_controller.set_snapshot_provider(func(): return _snapshot)
+	_modal_controller.set_human_input_provider(func(): return _human_input_enabled())
+	_modal_controller.set_board_target_pending_provider(func(): return _should_allow_board_selection_passthrough())
+	_modal_controller.set_current_pending_decision_provider(func(): return _current_pending_decision())
+	_modal_controller.set_is_preview_pending_decision_provider(func(d: Dictionary): return _is_preview_pending_decision(d))
+	_modal_controller.create_modals()
+	
+	# P1: SelectionStateMachine
+	_state_machine = SelectionStateMachine.new()
+	_state_machine.setup(game_manager, action_bar, selected_card_label, card_preview_panel)
+	_state_machine.set_snapshot_provider(func(): return _snapshot)
+	_setup_state_machine_buttons()
+	
+	# P1: BoardController
+	_board_controller = BoardController.new()
+	_board_controller.setup(game_manager, opponent_board, player_board, _modal_controller.zone_cards_popup)
+	_board_controller.set_snapshot_provider(func(): return _snapshot)
+	_board_controller.set_pending_decision_index_provider(func(): return _selected_pending_decision_index)
+
+	# P1: HUDController
+	_hud_controller = HUDController.new()
+	_hud_controller.setup(game_manager,
+		turn_label, active_player_label, phase_indicator,
+		hand_count_label, energy_label, ap_label, winner_label,
+		next_phase_button, bonus_draw_button, no_block_button,
+		selected_card_label, ai_action_label, _ai_action_hint)
+	_hud_controller.set_snapshot_provider(func(): return _snapshot)
+	_hud_controller.set_human_input_provider(func(): return not _deck_selector.opening_setup_pending)
+
+	# P1: HandController
+	_hand_controller = HandController.new()
+	_hand_controller.setup(game_manager, hand_view, selected_card_label)
+	_hand_controller.set_snapshot_provider(func(): return _snapshot)
+	_hand_controller.set_has_pending_gate_provider(func(): return _has_pending_gate())
+	_hand_controller.set_human_input_provider(func(): return not _deck_selector.opening_setup_pending and bool(_snapshot.get("human_input_enabled", true)))
+	_hand_controller.set_display_hand_player_id_provider(func(): return _display_hand_player_id())
+	_hand_controller.set_find_board_card_provider(func(pid: String, cuid: String): return _find_board_card(pid, cuid))
+	_hand_controller.set_action_buttons_callback(func(): _update_action_buttons())
+	_hand_controller.set_preview_card_callback(func(card_data: Dictionary, context: Dictionary): _set_preview_card(card_data, context))
+
 	game_manager.state_changed.connect(_on_state_changed)
-	game_manager.blockers_requested.connect(_on_blockers_requested)
-	game_manager.ai_action_executed.connect(_on_ai_action_executed)
-	next_phase_button.pressed.connect(_on_next_phase_pressed)
-	bonus_draw_button.pressed.connect(_on_bonus_draw_pressed)
-	no_block_button.pressed.connect(_on_no_block_pressed)
+	game_manager.blockers_requested.connect(_hud_controller.on_blockers_requested)
+	game_manager.ai_action_executed.connect(_hud_controller.on_ai_action_executed)
+	next_phase_button.pressed.connect(_hud_controller.on_next_phase_pressed)
+	bonus_draw_button.pressed.connect(_hud_controller.on_bonus_draw_pressed)
+	no_block_button.pressed.connect(_hud_controller.on_no_block_pressed)
 	play_front_button.pressed.connect(_on_play_front_pressed)
 	play_energy_button.pressed.connect(_on_play_energy_pressed)
 	raid_button.pressed.connect(_on_raid_pressed)
@@ -134,19 +184,10 @@ func _ready() -> void:
 	pending_decision_picker.item_selected.connect(_on_pending_decision_selected)
 	pending_decision_choice_picker.item_selected.connect(_on_pending_decision_choice_selected)
 	resolve_pending_decision_button.pressed.connect(_on_resolve_pending_decision_pressed)
-	preview_selection_modal.submitted.connect(_on_preview_modal_submitted)
-	_life_reveal_modal = LifeRevealModal.new()
-	_life_reveal_modal.name = "LifeRevealModal"
-	$UILayer.add_child(_life_reveal_modal)
-	_life_reveal_modal.activate_requested.connect(_on_life_reveal_activate_requested)
-	_life_reveal_modal.skip_requested.connect(_on_life_reveal_skip_requested)
-	_life_reveal_modal.acknowledge_requested.connect(_on_life_reveal_acknowledge_requested)
-	_zone_cards_popup = ZoneCardsPopup.new()
-	_zone_cards_popup.name = "ZoneCardsPopup"
-	$UILayer.add_child(_zone_cards_popup)
+	preview_selection_modal.submitted.connect(_modal_controller.on_preview_modal_submitted)
 	cancel_selection_button.pressed.connect(_clear_selection)
-	log_toggle_button.pressed.connect(_on_log_toggle_pressed)
-	start_game_button.pressed.connect(_on_start_game_pressed)
+	log_toggle_button.pressed.connect(_modal_controller.on_log_toggle_pressed)
+	start_game_button.pressed.connect(_modal_controller.start_game_with_selected_decks)
 	hand_view.hand_card_selected.connect(_on_hand_card_selected)
 	hand_view.hand_card_hovered.connect(_on_hand_card_hovered)
 	opponent_board.front_card_pressed.connect(_on_front_card_pressed)
@@ -170,12 +211,26 @@ func _ready() -> void:
 	skip_life_button.visible = false
 	pending_decision_panel.visible = false
 	deck_selection_modal.visible = false
-	_load_deck_selection_options()
+	_modal_controller.load_deck_selection_options()
 	get_viewport().size_changed.connect(_update_responsive_layout)
 	_update_responsive_layout()
 	_on_state_changed(game_manager.get_snapshot())
-	_show_deck_selection_modal()
+	_modal_controller.show_deck_selection_modal()
 	call_deferred("_run_layout_probe_if_requested")
+
+func _setup_state_machine_buttons() -> void:
+	_state_machine.register_button("play_front", play_front_button)
+	_state_machine.register_button("play_energy", play_energy_button)
+	_state_machine.register_button("use_event", use_event_button)
+	_state_machine.register_button("raid", raid_button)
+	_state_machine.register_button("main_activate", main_activate_button)
+	_state_machine.register_button("step", step_button)
+	_state_machine.register_button("move_front", move_front_button)
+	_state_machine.register_button("sniper_attack", sniper_attack_button)
+	_state_machine.register_button("activate_life", activate_life_button)
+	_state_machine.register_button("skip_life", skip_life_button)
+	_state_machine.register_button("cancel", cancel_selection_button)
+
 
 func _setup_optional_art() -> void:
 	_assign_optional_texture(background_texture_rect, BATTLE_BG_PATH)
@@ -219,12 +274,15 @@ func _update_responsive_layout() -> void:
 	var available_battle_height := viewport_height - background_top - hand_strip_height - BOARD_BOTTOM_GAP - BOTTOM_HUD_BOTTOM_MARGIN
 	var minimum_board_height := MIN_BOARD_VISIBLE_HEIGHT_SMALL if very_small else (MIN_BOARD_VISIBLE_HEIGHT_COMPACT if compact else MIN_BOARD_VISIBLE_HEIGHT_DEFAULT)
 	var battle_height := minf(maxf(minimum_board_height, available_battle_height), viewport_height - background_top)
-	var bg_transform := ZoneLayoutConfig.calculate_bg_transform(viewport_width, battle_height, background_top)
-	var bg_scale_factor: float = bg_transform.scale_factor
-	var bg_display_width: float = bg_transform.display_width
-	var bg_display_height: float = bg_transform.display_height
-	var letterbox_offset: float = bg_transform.letterbox_offset
-	var bg_top_offset: float = bg_transform.top_offset
+	# ZoneLayoutConfig 内联计算（P2 将由 anchor + container 布局替代）
+	const BG_IMAGE_HEIGHT := 1024.0
+	const BG_IMAGE_WIDTH := 1008.0
+	var bg_scale := battle_height / BG_IMAGE_HEIGHT
+	var bg_scale_factor: float = bg_scale
+	var bg_display_width: float = BG_IMAGE_WIDTH * bg_scale
+	var bg_display_height: float = BG_IMAGE_HEIGHT * bg_scale
+	var letterbox_offset: float = (viewport_width - bg_display_width) / 2.0
+	var bg_top_offset: float = background_top
 
 	background_texture_rect.position = Vector2(letterbox_offset, bg_top_offset)
 	background_texture_rect.size = Vector2(bg_display_width, bg_display_height)
@@ -275,29 +333,22 @@ func _update_log_panel_layout(compact: bool, very_small: bool, viewport_height: 
 	log_panel.size = Vector2(panel_width, minf(panel_height, viewport_height - panel_top - LOG_PANEL_BOTTOM_CLEARANCE))
 
 func _on_ai_action_executed(action_info: Dictionary) -> void:
-	_ai_action_hint.show_action(action_info)
+	_hud_controller.on_ai_action_executed(action_info)
 
 func _on_state_changed(snapshot: Dictionary) -> void:
 	_snapshot = snapshot
-	if _zone_cards_popup != null and _zone_cards_popup.visible:
-		_zone_cards_popup.hide_popup()
+	_modal_controller.hide_zone_popup()
 	var active_player_id := str(snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var display_hand_player_id := _display_hand_player_id()
 	var priority_player_id := str(snapshot.get("priority_player_id", active_player_id))
 	var controller_types: Dictionary = snapshot.get("controller_types", {})
 	var players: Dictionary = snapshot.get("players", {})
-	var p1: Dictionary = _decorate_board_targets(UATypes.PLAYER_ONE, players.get(UATypes.PLAYER_ONE, {}))
-	var p2: Dictionary = _decorate_board_targets(UATypes.PLAYER_TWO, players.get(UATypes.PLAYER_TWO, {}))
+	var p1: Dictionary = _board_controller.decorate_board_targets(UATypes.PLAYER_ONE, players.get(UATypes.PLAYER_ONE, {}))
+	var p2: Dictionary = _board_controller.decorate_board_targets(UATypes.PLAYER_TWO, players.get(UATypes.PLAYER_TWO, {}))
 	var active_player_data: Dictionary = p1 if active_player_id == UATypes.PLAYER_ONE else p2
 	var display_hand_player_data: Dictionary = p1 if display_hand_player_id == UATypes.PLAYER_ONE else p2
 	var action_controller_type := str(controller_types.get(priority_player_id, snapshot.get("action_player_controller", "HUMAN")))
-	turn_label.text = "Turn %d" % int(snapshot.get("turn_number", 1))
-	active_player_label.text = "Action: %s (%s)" % [priority_player_id, action_controller_type]
-	phase_indicator.set_phase_text(str(snapshot.get("phase", "START")))
-	hand_count_label.text = "Hand: %d" % int(display_hand_player_data.get("hand_count", 0))
-	energy_label.text = "Energy: %s" % _format_energy_total(active_player_data.get("available_energy", {}))
-	ap_label.text = "AP: %d/%d" % [int(active_player_data.get("ap_active", 0)), int(active_player_data.get("ap_total", 0))]
-	winner_label.text = "Winner: %s" % str(snapshot.get("winner_player_id", "-"))
+	_hud_controller.update_hud(snapshot, active_player_data, display_hand_player_data)
 	opponent_board.set_board(UATypes.PLAYER_TWO, "Player 2", p2)
 	player_board.set_board(UATypes.PLAYER_ONE, "Player 1", p1)
 	var active_hand: Array = p2.get("hand", [])
@@ -306,8 +357,8 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	hand_view.set_hand(display_hand_player_id, active_hand)
 	_update_hand_playable_states(display_hand_player_id, active_hand)
 	_sync_pending_decision_controls()
-	_sync_preview_selection_modal()
-	_sync_life_reveal_modal()
+	_modal_controller.sync_preview_selection_modal()
+	_modal_controller.sync_life_reveal_modal()
 	_sync_life_trigger_controls()
 	_sync_preview_panel()
 	selected_card_label.text = _selected_label_text(display_hand_player_id)
@@ -321,78 +372,41 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	var phase := str(snapshot.get("phase", "START"))
 	var can_bonus_draw := bool(snapshot.get("can_bonus_draw", false))
 	var human_input_enabled := _human_input_enabled()
-	bonus_draw_button.visible = phase == "DRAW"
-	bonus_draw_button.disabled = has_winner or has_pending_gate or not can_bonus_draw or not human_input_enabled
-	next_phase_button.disabled = has_winner or has_pending_gate or not human_input_enabled
-	play_front_button.disabled = play_front_button.disabled or has_winner or has_pending_gate
-	play_energy_button.disabled = play_energy_button.disabled or has_winner or has_pending_gate
-	use_event_button.disabled = use_event_button.disabled or has_winner or has_pending_gate
-	main_activate_button.disabled = main_activate_button.disabled or has_winner or has_pending_gate
-	step_button.disabled = step_button.disabled or has_winner or has_pending_gate
-	move_front_button.disabled = move_front_button.disabled or has_winner or has_pending_gate
-	sniper_attack_button.disabled = sniper_attack_button.disabled or has_winner or has_pending_gate
-	no_block_button.disabled = has_winner or has_pending_gate or not human_input_enabled
-	cancel_selection_button.disabled = cancel_selection_button.disabled or has_winner or has_pending_gate or not human_input_enabled
+	# 全局门禁：胜局或待处理关卡激活时禁用所有动作按钮（非累积，每次基于当前状态判定）
+	if has_winner or has_pending_gate:
+		play_front_button.disabled = true
+		play_energy_button.disabled = true
+		use_event_button.disabled = true
+		main_activate_button.disabled = true
+		step_button.disabled = true
+		move_front_button.disabled = true
+		sniper_attack_button.disabled = true
+		cancel_selection_button.disabled = true
+	elif not human_input_enabled:
+		cancel_selection_button.disabled = true
 	activate_life_button.disabled = true
 	skip_life_button.disabled = true
 	pending_decision_panel.visible = has_pending_decisions
 	if _is_preview_pending_decision(_current_pending_decision()):
 		pending_decision_panel.visible = false
 	resolve_pending_decision_button.disabled = has_winner or not has_pending_decisions or _selected_pending_decision_index < 0 or not human_input_enabled
-	_refresh_deck_selection_modal_state()
-
-func _load_deck_selection_options() -> void:
-	_deck_selector.load_options()
-
-func _show_deck_selection_modal() -> void:
-	_deck_selector.show_modal()
-
-func _hide_deck_selection_modal() -> void:
-	_deck_selector.hide_modal()
-
-func _refresh_deck_selection_modal_state() -> void:
-	_deck_selector.refresh_state()
-
-func _selected_deck_path(picker: OptionButton) -> String:
-	return _deck_selector._deck_path(picker)
-
-func _start_game_with_selected_decks() -> void:
-	_deck_selector.start_game()
-
-func _on_start_game_pressed() -> void:
-	_start_game_with_selected_decks()
+	_modal_controller.refresh_deck_selection_modal_state()
 
 func _on_hand_card_selected(card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
 		return
-	if _raid_target_selection_mode and _raid_source_card_uid != card_uid:
-		_clear_raid_selection()
-	_selected_hand_card_uid = card_uid
+	if _hand_controller.raid_target_selection_mode and _hand_controller.raid_source_card_uid != card_uid:
+		_hand_controller.clear_raid_selection()
 	_selected_board_card_uid = ""
 	_selected_board_zone_name = ""
 	_sniper_attack_source_uid = ""
+	_hand_controller.on_hand_card_selected(card_uid)
 	_update_action_buttons()
 	var display_hand_player_id := _display_hand_player_id()
 	selected_card_label.text = _selected_label_text(display_hand_player_id)
-	var card_data := _find_hand_card(display_hand_player_id, card_uid)
-	if not card_data.is_empty():
-		_set_preview_card(card_data, {
-			"relation_label": "己方",
-			"zone_label": "手牌",
-		})
 
 func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
-	# 悬停不再驱动底部预览面板显隐，避免 BottomContent 因新增预览面板高度而整体上抬。
-	if _selected_hand_card_uid == "":
-		return
-	if not is_hovered and card_uid == _selected_hand_card_uid:
-		var display_hand_player_id := _display_hand_player_id()
-		var card_data := _find_hand_card(display_hand_player_id, _selected_hand_card_uid)
-		if not card_data.is_empty():
-			_set_preview_card(card_data, {
-				"relation_label": "己方",
-				"zone_label": "手牌",
-			})
+	_hand_controller.on_hand_card_hovered(card_uid, is_hovered)
 
 func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_data: Dictionary = {}) -> void:
 	var card_data := pressed_card_data if not pressed_card_data.is_empty() else _find_board_card(player_id, card_uid)
@@ -403,9 +417,9 @@ func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_da
 	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
-	if _raid_target_selection_mode:
+	if _hand_controller.raid_target_selection_mode:
 		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
-			_execute_raid_play(card_uid)
+			_hand_controller.execute_raid_play(card_uid)
 		return
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var phase := str(_snapshot.get("phase", ""))
@@ -419,23 +433,21 @@ func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_da
 			_sniper_attack_source_uid = ""
 			_clear_selection()
 		return
-	if _pending_attack_uid != "":
-		if player_id == _pending_defender_player_id:
-			game_manager.resolve_attack(_pending_attack_uid, card_uid)
+	if _hud_controller.pending_attack_uid != "":
+		if player_id == _hud_controller.pending_defender_player_id:
+			game_manager.resolve_attack(_hud_controller.pending_attack_uid, card_uid)
 			_clear_pending_attack()
 		return
 	if player_id != active_player_id:
-		_clear_raid_selection()
+		_hand_controller.clear_raid_selection()
 		_selected_board_card_uid = ""
 		_selected_board_zone_name = ""
-		_selected_hand_card_uid = ""
 		_update_action_buttons()
 		selected_card_label.text = _selected_label_text(_display_hand_player_id())
 		return
-	_clear_raid_selection()
+	_hand_controller.clear_raid_selection()
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "front_line"
-	_selected_hand_card_uid = ""
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 	if phase == "ATTACK" and player_id == active_player_id:
@@ -457,23 +469,21 @@ func _on_energy_card_pressed(player_id: String, card_uid: String, pressed_card_d
 	if _has_pending_gate() or not _human_input_enabled():
 		return
 	# 处理RAID目标选择
-	if _raid_target_selection_mode:
+	if _hand_controller.raid_target_selection_mode:
 		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
-			_execute_raid_play(card_uid)
+			_hand_controller.execute_raid_play(card_uid)
 		return
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	if player_id != active_player_id:
-		_clear_raid_selection()
+		_hand_controller.clear_raid_selection()
 		_selected_board_card_uid = ""
 		_selected_board_zone_name = ""
-		_selected_hand_card_uid = ""
 		_update_action_buttons()
 		selected_card_label.text = _selected_label_text(_display_hand_player_id())
 		return
-	_clear_raid_selection()
+	_hand_controller.clear_raid_selection()
 	_selected_board_card_uid = card_uid
 	_selected_board_zone_name = "energy_line"
-	_selected_hand_card_uid = ""
 	_update_action_buttons()
 	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 	var card_name := str(card_data.get("name", card_uid))
@@ -485,92 +495,46 @@ func _on_energy_card_pressed(player_id: String, card_uid: String, pressed_card_d
 func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():
 		return
-	if str(_snapshot.get("phase", "")) != "MAIN":
-		return
-	if player_id != str(_snapshot.get("active_player_id", "")):
-		return
-	if zone_name == "front_line":
-		game_manager.play_card(card_uid, UATypes.Zone.FRONT_LINE)
-	elif zone_name == "energy_line":
-		game_manager.play_card(card_uid, UATypes.Zone.ENERGY_LINE)
+	_hand_controller.on_zone_drop_requested(player_id, zone_name, card_uid)
 	_clear_selection()
 
 func _on_blockers_requested(request: Dictionary) -> void:
-	var controller_types: Dictionary = _snapshot.get("controller_types", {})
-	var defender_player_id := str(request.get("defender_player_id", ""))
-	if str(controller_types.get(defender_player_id, "HUMAN")) != "HUMAN":
-		return
-	var blockers: Array = request.get("blockers", [])
-	if blockers.is_empty():
-		game_manager.resolve_attack(str(request.get("attacker_uid", "")))
-		return
-	_pending_attack_uid = str(request.get("attacker_uid", ""))
-	_pending_defender_player_id = defender_player_id
-	no_block_button.visible = true
-	selected_card_label.text = "Choose a blocker or click No Block"
+	_hud_controller.on_blockers_requested(request)
 
 func _on_next_phase_pressed() -> void:
-	if _has_pending_gate() or not _human_input_enabled():
-		return
-	_clear_pending_attack()
-	game_manager.advance_phase()
+	_hud_controller.on_next_phase_pressed()
 
 func _on_no_block_pressed() -> void:
-	if _has_pending_gate() or not _human_input_enabled():
-		return
-	if _pending_attack_uid == "":
-		return
-	game_manager.resolve_attack(_pending_attack_uid)
-	_clear_pending_attack()
+	_hud_controller.on_no_block_pressed()
 
 func _on_bonus_draw_pressed() -> void:
-	if _has_pending_gate() or not _human_input_enabled():
-		return
-	game_manager.request_bonus_draw()
+	_hud_controller.on_bonus_draw_pressed()
 
 func _on_play_front_pressed() -> void:
 	if _has_pending_gate() or not _human_input_enabled():
 		return
-	if _selected_hand_card_uid != "":
-		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.FRONT_LINE)
+	if _hand_controller.selected_hand_card_uid != "":
+		_hand_controller.on_play_front_pressed()
 		_clear_selection()
 
 func _on_play_energy_pressed() -> void:
 	if _has_pending_gate() or not _human_input_enabled():
 		return
-	if _selected_hand_card_uid != "":
-		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.ENERGY_LINE)
+	if _hand_controller.selected_hand_card_uid != "":
+		_hand_controller.on_play_energy_pressed()
 		_clear_selection()
 
 func _on_use_event_pressed() -> void:
 	if _has_pending_gate() or not _human_input_enabled():
 		return
-	if _selected_hand_card_uid != "":
-		game_manager.play_card(_selected_hand_card_uid, UATypes.Zone.OUTSIDE)
+	if _hand_controller.selected_hand_card_uid != "":
+		_hand_controller.on_use_event_pressed()
 		_clear_selection()
 
 func _on_raid_pressed() -> void:
-	if _has_pending_gate() or _selected_hand_card_uid == "" or not _human_input_enabled():
+	if _has_pending_gate() or _hand_controller.selected_hand_card_uid == "" or not _human_input_enabled():
 		return
-	_raid_source_card_uid = _selected_hand_card_uid
-	_raid_target_selection_mode = true
-	_update_action_buttons()
-	selected_card_label.text = "Choose a RAID target on your field"
-
-func _execute_raid_play(target_uid: String) -> void:
-	if _raid_source_card_uid == "":
-		return
-	var target_data := _find_board_card(str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)), target_uid)
-	var target_zone_name := str(target_data.get("zone", "front_line"))
-	var target_zone := UATypes.Zone.FRONT_LINE if target_zone_name == "front_line" else UATypes.Zone.ENERGY_LINE
-
-	game_manager.play_card(_raid_source_card_uid, target_zone, {"raid_target_uid": target_uid})
-	_clear_raid_selection()
-	_clear_selection()
-
-func _clear_raid_selection() -> void:
-	_raid_source_card_uid = ""
-	_raid_target_selection_mode = false
+	_hand_controller.on_raid_pressed()
 
 func _on_main_activate_pressed() -> void:
 	if _selected_board_card_uid == "" or _has_pending_gate() or not _human_input_enabled():
@@ -633,25 +597,41 @@ func _on_life_trigger_selected(index: int) -> void:
 	_selected_life_trigger_uid = str((pending[index] as Dictionary).get("card_uid", ""))
 	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 
+## ── 选中状态同步 ──
+## BattleScene 是导航状态的权威持有者；StateMachine 和 HandController 是镜像消费者。
+## 每次 BattleScene 修改导航变量后，调用本方法将状态推送到消费者。
+func _sync_nav_state_to_consumers() -> void:
+	_state_machine.selected_hand_card_uid = _hand_controller.selected_hand_card_uid
+	_state_machine.selected_board_card_uid = _selected_board_card_uid
+	_state_machine.selected_board_zone_name = _selected_board_zone_name
+	_state_machine.sniper_attack_source_uid = _sniper_attack_source_uid
+	_state_machine.raid_source_card_uid = _hand_controller.raid_source_card_uid
+	_state_machine.raid_target_selection_mode = _hand_controller.raid_target_selection_mode
+	_state_machine.selected_life_trigger_uid = _selected_life_trigger_uid
+	_state_machine.selected_pending_decision_index = _selected_pending_decision_index
+
+
 func _clear_selection() -> void:
-	_selected_hand_card_uid = ""
-	_selected_board_card_uid = ""
-	_selected_board_zone_name = ""
-	_sniper_attack_source_uid = ""
+	_hand_controller.clear_selection()
+	_sync_nav_state_to_consumers()
+	_state_machine.clear_selection()
+	# 从 StateMachine 回读清除后的状态
+	_hand_controller.clear_selection()
+	_selected_board_card_uid = _state_machine.selected_board_card_uid
+	_selected_board_zone_name = _state_machine.selected_board_zone_name
+	_sniper_attack_source_uid = _state_machine.sniper_attack_source_uid
+	_selected_life_trigger_uid = _state_machine.selected_life_trigger_uid
+	_preview_card_uid = ""
+	_preview_player_id = ""
+	_preview_zone_name = ""
 	_clear_preview_card()
-	_clear_raid_selection()
 	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(_display_hand_player_id())
+	selected_card_label.text = _state_machine.label_text()
 
 func _clear_pending_attack() -> void:
-	_pending_attack_uid = ""
-	_pending_defender_player_id = ""
-	no_block_button.visible = false
+	_hud_controller.clear_pending_attack()
 	bonus_draw_button.visible = false
 
-
-func _on_log_toggle_pressed() -> void:
-	log_panel.visible = not log_panel.visible
 
 func _selected_label_text(active_player_id: String) -> String:
 	if _is_board_target_selection_pending(_current_pending_decision()):
@@ -683,11 +663,11 @@ func _selected_label_text(active_player_id: String) -> String:
 			if str(entry.get("card_uid", "")) == _selected_life_trigger_uid:
 				return "Life trigger: %s chooses %s" % [owner_id, str(entry.get("card_name", "Unknown"))]
 		return "Resolve pending life triggers"
-	if _raid_target_selection_mode:
+	if _hand_controller.raid_target_selection_mode:
 		return "Choose a RAID target on your field"
 	if _sniper_attack_source_uid != "":
 		return "Choose an enemy front target for sniper attack"
-	if _pending_attack_uid != "":
+	if _hud_controller.pending_attack_uid != "":
 		return "Choose a blocker or click No Block"
 	if _selected_board_card_uid != "":
 		var board_card: Dictionary = _find_board_card(active_player_id, _selected_board_card_uid)
@@ -697,20 +677,12 @@ func _selected_label_text(active_player_id: String) -> String:
 		var preview_card := _find_preview_card()
 		if not preview_card.is_empty():
 			return "Previewing: %s" % str(preview_card.get("name", "Unknown"))
-	if _selected_hand_card_uid == "":
+	if _hand_controller.selected_hand_card_uid == "":
 		return "No card selected"
-	var card_data: Dictionary = _find_hand_card(active_player_id, _selected_hand_card_uid)
+	var card_data: Dictionary = _hand_controller.find_hand_card(active_player_id, _hand_controller.selected_hand_card_uid)
 	if card_data.is_empty():
 		return "No card selected"
 	return "Selected: %s" % str(card_data.get("name", "Unknown"))
-
-func _find_hand_card(player_id: String, card_uid: String) -> Dictionary:
-	var players: Dictionary = _snapshot.get("players", {})
-	var player_data: Dictionary = players.get(player_id, {})
-	for card_data in player_data.get("hand", []):
-		if str(card_data.get("uid", "")) == card_uid:
-			return card_data
-	return {}
 
 func _find_board_card(player_id: String, card_uid: String) -> Dictionary:
 	var players: Dictionary = _snapshot.get("players", {})
@@ -738,7 +710,7 @@ func _find_preview_card() -> Dictionary:
 	if _preview_card_uid == "":
 		return {}
 	if _preview_zone_name == "hand":
-		return _find_hand_card(_preview_player_id, _preview_card_uid)
+		return _hand_controller.find_hand_card(_preview_player_id, _preview_card_uid)
 	return _find_board_card(_preview_player_id, _preview_card_uid)
 
 func _set_preview_card(card_data: Dictionary, preview_context: Dictionary, player_id: String = "", zone_name: String = "") -> void:
@@ -765,20 +737,20 @@ func _on_zone_stack_requested(player_id: String, zone_name: String) -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var relation_label := "己方" if player_id == active_player_id else "对手"
 	var zone_label := "除外区" if zone_name == "removed" else "场外区"
-	_zone_cards_popup.show_zone_cards("%s %s" % [relation_label, zone_label], cards)
+	_modal_controller.show_zone_stack_popup("%s %s" % [relation_label, zone_label], cards)
 
 func _sync_preview_panel() -> void:
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var display_hand_player_id := _display_hand_player_id()
-	if _selected_hand_card_uid != "":
-		var hand_card := _find_hand_card(display_hand_player_id, _selected_hand_card_uid)
+	if _hand_controller.selected_hand_card_uid != "":
+		var hand_card := _hand_controller.find_hand_card(display_hand_player_id, _hand_controller.selected_hand_card_uid)
 		if not hand_card.is_empty():
 			_set_preview_card(hand_card, {
 				"relation_label": "己方",
 				"zone_label": "手牌",
 			}, display_hand_player_id, "hand")
 			return
-		_selected_hand_card_uid = ""
+		_hand_controller.selected_hand_card_uid = ""
 	if _selected_board_card_uid != "":
 		var board_card := _find_board_card(active_player_id, _selected_board_card_uid)
 		if not board_card.is_empty():
@@ -800,10 +772,11 @@ func _sync_preview_panel() -> void:
 	_clear_preview_card()
 
 func _update_action_buttons() -> void:
+	_sync_nav_state_to_consumers()
 	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
 	var display_hand_player_id := _display_hand_player_id()
 	var input_enabled := _human_input_enabled()
-	var card_data: Dictionary = _find_hand_card(display_hand_player_id, _selected_hand_card_uid)
+	var card_data: Dictionary = _hand_controller.find_hand_card(display_hand_player_id, _hand_controller.selected_hand_card_uid)
 	var card_type := str(card_data.get("card_type", ""))
 	var available_actions: Array = card_data.get("available_actions", [])
 	var special_play_rule: Dictionary = card_data.get("special_play_rule", {})
@@ -816,7 +789,7 @@ func _update_action_buttons() -> void:
 
 	# Keep RAID cards discoverable even when the current state makes RAID illegal.
 	raid_button.visible = is_raid_card
-	raid_button.disabled = not available_actions.has("RAID") or _raid_target_selection_mode or not input_enabled
+	raid_button.disabled = not available_actions.has("RAID") or _hand_controller.raid_target_selection_mode or not input_enabled
 	if available_actions.has("RAID"):
 		raid_button.tooltip_text = "选择己方场上的符合条件角色作为 RAID 底座。"
 	elif is_raid_card and bool(special_play_rule.get("life_trigger_only", false)):
@@ -827,7 +800,7 @@ func _update_action_buttons() -> void:
 		raid_button.tooltip_text = ""
 
 	# RAID选择模式时禁用其他打出按钮
-	if _raid_target_selection_mode:
+	if _hand_controller.raid_target_selection_mode:
 		play_front_button.disabled = true
 		play_energy_button.disabled = true
 		use_event_button.disabled = true
@@ -840,7 +813,7 @@ func _update_action_buttons() -> void:
 	move_front_button.disabled = not board_actions.has("MOVE_TO_FRONT") or not input_enabled
 	sniper_attack_button.visible = not board_card_data.is_empty() and board_actions.has("SNIPER_ATTACK")
 	sniper_attack_button.disabled = not board_actions.has("SNIPER_ATTACK") or _sniper_attack_source_uid != "" or not input_enabled
-	cancel_selection_button.disabled = (_selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == "" and _raid_source_card_uid == "") or not input_enabled
+	cancel_selection_button.disabled = (_hand_controller.selected_hand_card_uid == "" and _selected_board_card_uid == "" and _sniper_attack_source_uid == "" and _hand_controller.raid_source_card_uid == "") or not input_enabled
 
 func _sync_life_trigger_controls() -> void:
 	_selected_life_trigger_uid = ""
@@ -901,7 +874,7 @@ func _on_pending_decision_selected(index: int) -> void:
 	_selected_pending_decision_index = index
 	_selected_pending_decision_choice_index = 0
 	_rebuild_pending_decision_choices()
-	_sync_preview_selection_modal()
+	_modal_controller.sync_preview_selection_modal()
 	selected_card_label.text = _selected_label_text(_display_hand_player_id())
 
 func _on_pending_decision_choice_selected(index: int) -> void:
@@ -919,22 +892,6 @@ func _on_resolve_pending_decision_pressed() -> void:
 		"source_card_uid": str(decision.get("source_card_uid", "")),
 		"choice": choice_value,
 	})
-
-func _on_preview_modal_submitted(selected_values: Array) -> void:
-	if not _human_input_enabled():
-		return
-	var decision := _current_pending_decision()
-	if decision.is_empty():
-		return
-	var payload := {
-		"source_card_uid": str(decision.get("source_card_uid", "")),
-		"resolution_id": str(decision.get("resolution_id", "")),
-	}
-	if int(decision.get("max", 1)) == 1:
-		payload["choice"] = str(selected_values[0]) if not selected_values.is_empty() else ""
-	else:
-		payload["choices"] = selected_values.duplicate()
-	game_manager.resolve_pending_decision(str(decision.get("type", "")), payload)
 
 func _has_pending_life_triggers() -> bool:
 	return not (_snapshot.get("pending_life_triggers", []) as Array).is_empty()
@@ -962,67 +919,8 @@ func _current_pending_decision() -> Dictionary:
 func _is_preview_pending_decision(decision: Dictionary) -> bool:
 	return str(decision.get("ui_mode", "")) == "PREVIEW_PICK" or str(decision.get("ui_mode", "")) == "PREVIEW_REORDER"
 
-func _sync_preview_selection_modal() -> void:
-	var decision := _current_pending_decision()
-	if not _human_input_enabled() or decision.is_empty() or not _is_preview_pending_decision(decision):
-		preview_selection_modal.hide_modal()
-		return
-	preview_selection_modal.show_decision(decision)
-
-func _sync_life_reveal_modal() -> void:
-	var modal_data := _current_life_reveal_modal()
-	if not bool(modal_data.get("visible", false)):
-		if _life_reveal_modal != null:
-			_life_reveal_modal.hide_modal()
-		return
-	if _should_allow_board_selection_passthrough():
-		if _life_reveal_modal != null:
-			_life_reveal_modal.hide_modal()
-		return
-	if _life_reveal_modal != null:
-		_life_reveal_modal.show_modal(modal_data)
-		_life_reveal_modal.set_input_blocking(true)
-
-func _on_life_reveal_activate_requested(card_uid: String) -> void:
-	var modal_data := _current_life_reveal_modal()
-	if not bool(modal_data.get("can_activate", false)):
-		return
-	game_manager.resolve_life_trigger_decision(card_uid, true)
-
-func _on_life_reveal_skip_requested(card_uid: String) -> void:
-	var modal_data := _current_life_reveal_modal()
-	if not bool(modal_data.get("can_skip", false)):
-		return
-	game_manager.resolve_life_trigger_decision(card_uid, false)
-
-func _on_life_reveal_acknowledge_requested(card_uid: String) -> void:
-	var modal_data := _current_life_reveal_modal()
-	if not bool(modal_data.get("can_acknowledge", false)):
-		return
-	game_manager.acknowledge_life_reveal(card_uid)
-
 func _update_hand_playable_states(_player_id: String, hand_cards: Array) -> void:
-	var phase := str(_snapshot.get("phase", ""))
-	var playable_map := {}
-	if phase != "MAIN" or not _human_input_enabled():
-		hand_view.set_playable_cards(playable_map)
-		return
-
-	# 只有在 MAIN 阶段才标记可打出状态
-	if phase != "MAIN":
-		hand_view.set_playable_cards(playable_map)
-		return
-
-	# 检查每张手牌是否可打出
-	for card_data in hand_cards:
-		var card_uid := str(card_data.get("uid", ""))
-		var available_actions: Array = card_data.get("available_actions", [])
-
-		# 检查是否有可用的打出动作（包括RAID）
-		var is_playable := available_actions.has("PLAY_FRONT") or available_actions.has("PLAY_ENERGY") or available_actions.has("PLAY_EVENT") or available_actions.has("RAID")
-		playable_map[card_uid] = is_playable
-
-	hand_view.set_playable_cards(playable_map)
+	_hand_controller.update_hand_playable_states(hand_cards)
 
 func _human_input_enabled() -> bool:
 	return not _deck_selector.opening_setup_pending and bool(_snapshot.get("human_input_enabled", true))
@@ -1135,7 +1033,7 @@ func _run_layout_probe_if_requested() -> void:
 	if not OS.get_cmdline_user_args().has("--layout-probe"):
 		return
 	if _deck_selector.opening_setup_pending:
-		_start_game_with_selected_decks()
+		_modal_controller.start_game_with_selected_decks()
 	if game_state_has_opening_probe_pending():
 		game_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
 		game_manager.resolve_pending_decision("MULLIGAN_CHOICE", {"choice": "keep"})
@@ -1216,14 +1114,6 @@ func _zone_stack_rect_within_background(board: BoardView, node_name: String, bac
 		and rect.position.y >= background_rect.position.y - 1.0 \
 		and rect.position.x + rect.size.x <= background_rect.position.x + background_rect.size.x + 1.0 \
 		and rect.position.y + rect.size.y <= background_rect.position.y + background_rect.size.y + 1.0
-
-func _format_energy_total(energy_map: Dictionary) -> String:
-	if energy_map.is_empty():
-		return "0"
-	var total := 0
-	for color in energy_map.keys():
-		total += int(energy_map.get(color, 0))
-	return str(total)
 
 func game_state_has_opening_probe_pending() -> bool:
 	return game_manager.game_state.pending_decisions.size() >= 1 and str((game_manager.game_state.pending_decisions[0] as Dictionary).get("type", "")) == "MULLIGAN_CHOICE"
