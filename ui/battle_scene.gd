@@ -5,6 +5,8 @@ const BoardTargetSelectionHelper = preload("res://ui/board_target_selection_help
 const AIActionHint = preload("res://ui/ai_action_hint.gd")
 const DeckSelector = preload("res://ui/deck_selector.gd")
 const BoardPanel = preload("res://ui/board_panel.gd")
+const LifeStackView = preload("res://ui/life_stack_view.gd")
+const ZoneStackSummaryView = preload("res://ui/zone_stack_summary_view.gd")
 const SelectionStateMachine = preload("res://ui/selection_state_machine.gd")
 const BoardController = preload("res://ui/board_controller.gd")
 const HUDController = preload("res://ui/hud_controller.gd")
@@ -52,9 +54,7 @@ var _opponent_front_panel: BoardPanel
 var _player_front_panel: BoardPanel
 var _player_energy_panel: BoardPanel
 
-# P2: 附属堆叠（LifeStackView / ZoneStackSummaryView）
-const LifeStackView = preload("res://ui/life_stack_view.gd")
-const ZoneStackSummaryView = preload("res://ui/zone_stack_summary_view.gd")
+# P2: 附属堆叠
 var _opponent_life_stack: LifeStackView
 var _opponent_deck_stack: ZoneStackSummaryView
 var _opponent_outside_stack: ZoneStackSummaryView
@@ -568,90 +568,6 @@ func _on_hand_card_selected(card_uid: String) -> void:
 
 func _on_hand_card_hovered(card_uid: String, is_hovered: bool) -> void:
 	_hand_controller.on_hand_card_hovered(card_uid, is_hovered)
-
-func _on_front_card_pressed(player_id: String, card_uid: String, pressed_card_data: Dictionary = {}) -> void:
-	var card_data := pressed_card_data if not pressed_card_data.is_empty() else _find_board_card(player_id, card_uid)
-	if not card_data.is_empty():
-		_set_board_preview(player_id, "front_line", card_data)
-	if _resolve_board_target_selection_from_card(player_id, card_uid, "front_line"):
-		return
-	if _has_pending_gate() or not _human_input_enabled():
-		return
-	# 处理RAID目标选择
-	if _hand_controller.raid_target_selection_mode:
-		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
-			_hand_controller.execute_raid_play(card_uid)
-		return
-	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-	var phase := str(_snapshot.get("phase", ""))
-	var board_actions: Array = card_data.get("available_actions", [])
-	if _sniper_attack_source_uid != "":
-		if player_id != active_player_id:
-			game_manager.request_attack(_sniper_attack_source_uid, {
-				"target_kind": "FRONT_CHARACTER",
-				"target_uid": card_uid,
-			})
-			_sniper_attack_source_uid = ""
-			_clear_selection()
-		return
-	if _hud_controller.pending_attack_uid != "":
-		if player_id == _hud_controller.pending_defender_player_id:
-			game_manager.resolve_attack(_hud_controller.pending_attack_uid, card_uid)
-			_clear_pending_attack()
-		return
-	if player_id != active_player_id:
-		_hand_controller.clear_raid_selection()
-		_selected_board_card_uid = ""
-		_selected_board_zone_name = ""
-		_update_action_buttons()
-		selected_card_label.text = _selected_label_text(_display_hand_player_id())
-		return
-	_hand_controller.clear_raid_selection()
-	_selected_board_card_uid = card_uid
-	_selected_board_zone_name = "front_line"
-	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(_display_hand_player_id())
-	if phase == "ATTACK" and player_id == active_player_id:
-		if board_actions.has("SNIPER_ATTACK"):
-			_sniper_attack_source_uid = card_uid
-			_update_action_buttons()
-			selected_card_label.text = _selected_label_text(active_player_id)
-			return
-		if board_actions.has("ATTACK_PLAYER"):
-			game_manager.request_attack(card_uid)
-			return
-
-func _on_energy_card_pressed(player_id: String, card_uid: String, pressed_card_data: Dictionary = {}) -> void:
-	var card_data := pressed_card_data if not pressed_card_data.is_empty() else _find_board_card(player_id, card_uid)
-	if not card_data.is_empty():
-		_set_board_preview(player_id, "energy_line", card_data)
-	if _resolve_board_target_selection_from_card(player_id, card_uid, "energy_line"):
-		return
-	if _has_pending_gate() or not _human_input_enabled():
-		return
-	# 处理RAID目标选择
-	if _hand_controller.raid_target_selection_mode:
-		if player_id == str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE)):
-			_hand_controller.execute_raid_play(card_uid)
-		return
-	var active_player_id := str(_snapshot.get("active_player_id", UATypes.PLAYER_ONE))
-	if player_id != active_player_id:
-		_hand_controller.clear_raid_selection()
-		_selected_board_card_uid = ""
-		_selected_board_zone_name = ""
-		_update_action_buttons()
-		selected_card_label.text = _selected_label_text(_display_hand_player_id())
-		return
-	_hand_controller.clear_raid_selection()
-	_selected_board_card_uid = card_uid
-	_selected_board_zone_name = "energy_line"
-	_update_action_buttons()
-	selected_card_label.text = _selected_label_text(_display_hand_player_id())
-	var card_name := str(card_data.get("name", card_uid))
-	var action_text := ", ".join(card_data.get("available_actions", []) as Array)
-	if action_text == "":
-		action_text = "none"
-	game_manager.append_ui_log("Select energy card: %s | owner=%s | active=%s | phase=%s | actions=%s" % [card_name, player_id, active_player_id, str(_snapshot.get("phase", "")), action_text])
 
 func _on_zone_drop_requested(player_id: String, zone_name: String, card_uid: String) -> void:
 	if _has_pending_gate() or not _human_input_enabled():

@@ -3,7 +3,7 @@ class_name BoardPanel
 
 ## 通用战场面板 — 前线/能量线复用
 ## @export 参数化面板类型、标题、强调色
-## P2 增强：内建 DropZone + 暴露堆叠锚点供 BattleScene 挂载附属堆叠
+## P2 增强：内建 DropZone，由 BattleScene 通过 populate() 填充卡牌
 
 signal card_was_pressed(player_id: String, card_uid: String, zone_name: String)
 signal panel_drop_was_requested(player_id: String, zone_name: String, card_uid: String)
@@ -37,12 +37,8 @@ var _slot_count_label: Label
 var _title_bar: Control
 var _slot_container: HBoxContainer
 var _drop_zone: DropZone
-var _cards: Array = []
+var _cards: Array[Dictionary] = []
 var _zone_name := ""
-
-## 堆叠锚点：BattleScene 向这些 Control 下挂载 LifeStackView / ZoneStackSummaryView
-var left_stack_anchor: Control   ## 面板左侧外缘，挂载 Life / Removed 堆叠
-var right_stack_anchor: Control  ## 面板右侧外缘，挂载 Deck / Outside 堆叠
 
 
 func _ready() -> void:
@@ -51,7 +47,6 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	# 面板整体
 	custom_minimum_size = Vector2(600, 200)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
@@ -90,7 +85,7 @@ func _build_ui() -> void:
 	_title_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_slot_count_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 
-	# ── 槽位容器 (在 DropZone 之下) ──
+	# 槽位容器
 	_slot_container = HBoxContainer.new()
 	_slot_container.name = "SlotContainer"
 	_slot_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -101,25 +96,13 @@ func _build_ui() -> void:
 	_slot_container.offset_bottom = 0
 	add_child(_slot_container)
 
-	# ── DropZone 覆盖层（在槽位容器之上，接收拖拽） ──
+	# DropZone 覆盖层（在槽位容器之上，接收拖拽）
 	_drop_zone = DropZone.new()
 	_drop_zone.name = "DropZone"
 	_drop_zone.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_drop_zone.offset_top = 32
 	_drop_zone.card_dropped.connect(_on_panel_dropped)
 	add_child(_drop_zone)
-
-	# ── 堆叠锚点（面板外部，由 BattleScene 挂载堆叠视图） ──
-	left_stack_anchor = Control.new()
-	left_stack_anchor.name = "LeftStackAnchor"
-	left_stack_anchor.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# 默认贴在面板左侧外缘，BattleScene 会在 panel 外部设置实际位置
-	add_child(left_stack_anchor)
-
-	right_stack_anchor = Control.new()
-	right_stack_anchor.name = "RightStackAnchor"
-	right_stack_anchor.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(right_stack_anchor)
 
 	# 创建 4 个空槽位占位
 	for i in range(MAX_SLOTS):
@@ -142,18 +125,6 @@ func _make_empty_slot_style() -> StyleBoxFlat:
 	sb.shadow_color = Color(0, 0, 0, 0.12)
 	sb.shadow_size = 10
 	sb.shadow_offset = Vector2(0, 4)
-	return sb
-
-
-func _make_card_back_style() -> StyleBoxFlat:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.078, 0.102, 0.141, 1.0)
-	sb.set_corner_radius_all(10)
-	sb.border_width_left = 1
-	sb.border_width_right = 1
-	sb.border_width_top = 1
-	sb.border_width_bottom = 1
-	sb.border_color = Color(0.824, 0.863, 0.922, 0.20)
 	return sb
 
 
@@ -192,12 +163,10 @@ func _make_title_style(bg_color: Color) -> StyleBoxFlat:
 
 ## ── 外部接口 ──
 
-## 设置面板卡牌数据 — BoardController / BattleScene 调用
 func populate(cards_data: Array, zone_name: String) -> void:
 	set_cards(cards_data, zone_name)
 
 
-## 清除面板内容
 func clear() -> void:
 	set_cards([], _zone_name)
 
@@ -207,7 +176,6 @@ func set_cards(cards_data: Array, zone_name: String) -> void:
 	_zone_name = zone_name
 	_drop_zone.setup(player_id, zone_name, _calculate_card_size())
 
-	# 清空并重建卡牌行
 	for child in _slot_container.get_children():
 		_slot_container.remove_child(child)
 		child.queue_free()
