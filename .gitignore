@@ -18,7 +18,7 @@
 *.tar
 *.tar.gz
 *.import
-*.gd.uid
+*.uid
 
 # 编辑器与系统本地文件
 .DS_Store
@@ -33,3 +33,7 @@ desktop.ini
 .worktrees/
 __pycache__
 .cache/
+
+# AI
+.claude
+.rpiv
